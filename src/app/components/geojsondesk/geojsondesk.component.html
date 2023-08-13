@@ -1,0 +1,26 @@
+<div class="wrap">
+  <div class="nav">
+    <div class="search"></div>
+    <div class="dropdown"></div>
+    <form>
+      <div class="form-group">
+        <div *ngFor="let layer of dyCheckbox">
+          <label [for]="layer.name">
+            <input
+              type="checkbox"
+              [name]="layer.name"
+              [value]="layer.id"
+              [checked]="layer.select"
+              (change)="onchange($event)"
+              />
+              {{ layer.name }}
+            </label>
+          </div>
+      </div>
+    </form>
+  </div>
+  <div class="formap">
+    <div id="map"></div>
+  </div>
+</div>
+

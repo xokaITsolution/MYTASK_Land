@@ -1,0 +1,14 @@
+:host ::ng-deep button {
+  margin-right: .25em;
+}
+
+:host ::ng-deep .custom-toast .ui-toast-message {
+  color: red;
+  background: red ;
+  background: red;
+  background: red;
+}
+
+:host ::ng-deep .custom-toast .ui-toast-close-icon {
+  color: red;
+}

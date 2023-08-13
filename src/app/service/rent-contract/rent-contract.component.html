@@ -1,0 +1,62 @@
+<p-table [value]="rentContracts" [paginator]="true" [rows]="1">
+    <ng-template pTemplate="header">
+        <tr>
+            <th scope="col" translate>Rent contract id</th>
+            <th scope="col" translate>Property id</th>
+            <th scope="col" translate>Rent contract type</th>
+            <th scope="col" translate>Customer</th>
+            <th scope="col" translate>Price</th>
+            <th scope="col">
+                <button type="button" class="btn btn-primary" (click)="AddAsset()" translate>Add New
+                </button>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-contract>
+        <tr [class.active]="contract == selectedContract">
+            <td>{{contract.rent_Contract_ID}} </td>
+            <td>{{contract.property_ID}} </td>
+            <td>{{contract.rent_Contract_Type}}</td>
+            <td>{{contract.to_Customer}}</td>
+            <td>{{contract.price}}</td>
+            <td>
+                <button type="button" class="btn btn-primary" (click)="EditAsset(contract)" translate>Edit</button>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<div class="m-3" *ngIf="showForm">
+
+    <div class="m-3" *ngIf="isNew">
+        <!--forEdit-->
+        <div class="m-3">
+            <tabset #staticTabs>
+                <tab [heading]="'New Contract Form' | translate">
+                    <div class="mt-3">
+                        <app-contract-form (completed)="EnableFins()" [AppNo]="AppNo"
+                            [selectedContract]='selectedContract' [isNew]='isNew'>
+                        </app-contract-form>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+
+
+    <div class="m-3" *ngIf="!isNew">
+        <!--forEdit-->
+        <div class="m-3">
+            <tabset #staticTabs>
+                <tab [heading]="'Renew Contract Form' | translate">
+                    <div class="mt-3">
+                        <app-contract-form (completed)="EnableFins()" [AppNo]="AppNo"
+                            [selectedContract]='selectedContract' [isNew]='isNew'>
+                        </app-contract-form>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+
+    </div>
+</div>

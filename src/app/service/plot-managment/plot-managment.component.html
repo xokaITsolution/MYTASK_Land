@@ -1,0 +1,369 @@
+<form #f="ngForm" novalidate name="proform">
+  <div class="form-row">
+    <div class="form-group row col-md-6">
+      <label for="PlotID" class="col-sm-3 col-form-label" translate>{{Fields.FIELD_ONE}}</label>
+      <div class="col-sm-7 mr-0 pr-0">
+        <input type="text" class="form-control" [disabled]="disable || isploatDisabled"
+          [(ngModel)]="plotManagment.Plot_ID" name="PlotID" id="PlotID" [placeholder]="Fields.FIELD_ONE | translate"
+          #PlotID="ngModel" [ngClass]="{ 'is-invalid': PlotID.invalid }" required>
+      </div>
+      <div class="col-sm-1 ml-0 pl-0">
+        <button type="button" class="btn btn-primary" [disabled]="disable" (click)="displayGIS=true"><span
+            class="fa fa-map"></span></button>
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration date</label>
+      <div class="col-sm-9">
+        <input type="date" class="form-control" [disabled]="disable"
+         [(ngModel)]="plotManagment.Registration_Date"
+          name="RegisterationDate" id="RegisterationDate"
+           [placeholder]="'Registeration date' | translate"
+          #RegisterationDate="ngModel"
+           [ngClass]="{ 'is-invalid': RegisterationDate.invalid }" required>
+      </div>
+    </div>
+
+    <div class="form-group row col-md-6">
+      <label for="SubCity" class="col-sm-3 col-form-label" translate>Sub-City</label>
+      <div class="col-sm-9">
+        <select class="form-control" [disabled]="disable" 
+        [(ngModel)]="plotManagment.SDP_ID" name="SubCity" id="SubCity" disabled
+          #SubCity="ngModel"  
+          [ngClass]="{ 'is-invalid': SubCity.invalid }" 
+          (change)="regionSelectedd($event)" required>
+          <option disabled translate>select</option>
+          <option *ngFor="let SubCity of serviceComponent.ServiceDeliveryUnitLookUP;"
+            [value]="SubCity.organization_code">{{SubCity.name_en}}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="LandGrade" class="col-sm-3 col-form-label" translate>Land Grade</label>
+      <div class="col-sm-9">
+        <select class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.Land_Grade_ID" name="LandGrade"
+          id="LandGrade" #LandGrade="ngModel" [ngClass]="{ 'is-invalid': LandGrade.invalid }"
+          (input)="subcitySelected($event)" required>
+          <option disabled>select</option>
+          <option *ngFor="let Land_Grade of serviceComponent.Plot_Land_Grade_lookup;" [value]="Land_Grade.Land_Grade">
+            {{Land_Grade.Description}}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="landuse" class="col-sm-3 col-form-label" translate>Land Use</label>
+      <div class="col-sm-9">
+        <select class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.Type_Of_Use_ID" name="landuse"
+          id="landuse" #landuse="ngModel" [ngClass]="{ 'is-invalid': landuse.invalid }"
+          (input)="subcitySelected($event)" required>
+          <option disabled>select</option>
+          <option *ngFor="let landuse of serviceComponent.PlotLandUseLookUP;" [value]="landuse.Type_Of_Use_ID">
+            {{landuse.Type_Of_Use}}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group row col-md-6">
+      <label for="Description" class="col-sm-3 col-form-label" translate>Description</label>
+      <div class="col-sm-9">
+        <textarea class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.Description" name="Description"
+          id="Description" [placeholder]="'Description' | translate"></textarea>
+      </div>
+    </div>
+
+    <div class="form-group row col-md-6">
+      <label for="Woreda" class="col-sm-3 col-form-label" translate>Woreda</label>
+      <div class="col-sm-9">
+        <select class="form-control" [(ngModel)]="plotManagment.Wereda_ID" name="Woreda" id="Woreda" #Woreda="ngModel"
+          [ngClass]="{ 'is-invalid': Woreda.invalid }" required><option disabled>select</option>
+          <option *ngFor="let zoneOption of zoneOptions;" [value]="zoneOption['value']">
+            {{zoneOption['text']}}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="N-PlotID" class="col-sm-3 col-form-label" translate>N-PlotID</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.N_Plot_ID"
+          name="N-PlotID" id="N-PlotID" [placeholder]="'N-PlotID' | translate">
+      </div>
+    </div>
+   
+    <div class="form-group row col-md-6">
+      <label for="BLockNo" class="col-sm-3 col-form-label" translate>BLock No</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.Block_No" name="BLockNo"
+          id="BLockNo" [placeholder]="'BLock No' | translate" #BLockNo="ngModel"
+          [ngClass]="{ 'is-invalid': BLockNo.invalid }" required>
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="GISCoordinate" class="col-sm-3 col-form-label" translate>GIS Coordinate</label>
+      <div class="col-sm-7">
+        <input type="text" class="form-control" [disabled]="disable" (change)="closeModal('GisViewer')"
+          [(ngModel)]="plotManagment.GISCoordinate" name="GISCoordinate" id="GISCoordinate" disabled
+          [placeholder]="'GIS Coordinate' | translate">
+      </div>
+
+      <div class="col-sm-2">
+        <button type="button" *ngIf="!disable" class="btn btn-secondary" (click)="openModal('GisCoordinates')"
+          translate>fill GIS Cordinates</button>
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="S-PlotID" class="col-sm-3 col-form-label" translate>S-PlotID</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.S_Plot_ID"
+          name="S-PlotID" id="S-PlotID" [placeholder]="'S-PlotID' | translate">
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="ParcelNo" class="col-sm-3 col-form-label" translate>Parcel No</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.Parcel_No"
+          name="ParcelNo" id="ParcelNo" [placeholder]="'Parcel No' | translate" #ParcelNo="ngModel"
+          [ngClass]="{ 'is-invalid': ParcelNo.invalid }" required>
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="E-PlotID" class="col-sm-3 col-form-label" translate>E-PlotID</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.E_Plot_ID"
+          name="E-PlotID" id="E-PlotID" [placeholder]="'E-PlotID' | translate">
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="Area" class="col-sm-3 col-form-label" translate>Area(m2)</label>
+      <div class="col-sm-9">
+        <input type="number" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.Plot_Size_M2"
+          name="Area" id="Area" disabled [placeholder]="'Area(m2)' | translate" #Area="ngModel"
+          [ngClass]="{ 'is-invalid': Area.invalid }">
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="W-PlotID" class="col-sm-3 col-form-label" translate>W-PlotID</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.W_Plot_ID"
+          name="W-PlotID" id="W-PlotID" [placeholder]="'W-PlotID' | translate">
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="Status" class="col-sm-3 col-form-label" translate>Status</label>
+      <div class="col-sm-9">
+        <select class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.Plot_Status" name="Status"
+          id="Status" #Status="ngModel" [ngClass]="{ 'is-invalid': Status.invalid }" required>
+          <option disabled translate>select</option>
+          <option *ngFor="let Status of serviceComponent.PlotStutusLookUP;" [value]="Status.Plot_Status_ID">
+            {{Status.Name}}
+          </option>
+        </select>
+      </div>
+    </div>
+<div class="form-group row col-md-6">
+      <label for="N-PlotID" class="col-sm-3 col-form-label" translate>Nortech_No</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.N_Plot_ID"
+          name="Nortech_No" id="Nortech_No" [placeholder]="'Nortech_No' | translate">
+      </div>
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!isnew && !disable" (click)="Delete()"
+    translate>Save</button>
+  <!-- <button type="button" class="btn btn-danger ml-3" [disabled]="!f.valid" *ngIf="!isnew && !disable" (click)="Delete()"
+    translate>Delete</button> -->
+  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="isnew && !disable" (click)="add()"
+    translate>Save</button>
+</form>
+
+
+<ngx-smart-modal #GisCoordinates identifier="GisCoordinates">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left" translate>GIS Coordinate</h4>
+  </div>
+  <div class="modal-body">
+
+    <div class="form-row">
+      <div class="form-group row col-md-6">
+        <label for="X1" class="col-sm-3 col-form-label" translate>X1</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_X_Coordinate_1" name="X1" id="X1"
+            [placeholder]="'X1' | translate">
+        </div>
+      </div>
+      <div class="form-group row col-md-6">
+        <label for="Y1" class="col-sm-3 col-form-label" translate>Y1</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_Y_Coordinate_1" name="Y1" id="Y1"
+            [placeholder]="'Y1' | translate">
+        </div>
+      </div>
+      <div class="form-group row col-md-6">
+        <label for="X2" class="col-sm-3 col-form-label" translate>X2</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_X_Coordinate_2" name="X2" id="X2"
+            [placeholder]="'X2' | translate">
+        </div>
+      </div>
+      <div class="form-group row col-md-6">
+        <label for="Y2" class="col-sm-3 col-form-label" translate>Y2</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_Y_Coordinate_2" name="Y2" id="Y2"
+            [placeholder]="'Y2' | translate">
+        </div>
+      </div>
+      <div class="form-group row col-md-6">
+        <label for="X3" class="col-sm-3 col-form-label" translate>X3</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_X_Coordinate_3" name="X3" id="X3"
+            [placeholder]="'X3' | translate">
+        </div>
+      </div>
+      <div class="form-group row col-md-6">
+        <label for="Y3" class="col-sm-3 col-form-label" translate>Y3</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_Y_Coordinate_3" name="Y3" id="Y3"
+            [placeholder]="'Y3' | translate">
+        </div>
+      </div>
+      <div class="form-group row col-md-6">
+        <label for="X4" class="col-sm-3 col-form-label" translate>X4</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_X_Coordinate_4" name="X4" id="X4"
+            [placeholder]="'X4' | translate">
+        </div>
+      </div>
+      <div class="form-group row col-md-6">
+        <label for="Y4" class="col-sm-3 col-form-label" translate>Y4</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_Y_Coordinate_4" name="Y4" id="Y4"
+            [placeholder]="'Y4' | translate">
+        </div>
+      </div>
+      <div class="form-group row col-md-6">
+        <label for="X5" class="col-sm-3 col-form-label" translate>X5</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_X_Coordinate_5" name="X5" id="X5"
+            [placeholder]="'X5' | translate">
+        </div>
+      </div>
+      <div class="form-group row col-md-6">
+        <label for="Y5" class="col-sm-3 col-form-label" translate>Y5</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_Y_Coordinate_5" name="Y5" id="Y5"
+            [placeholder]="'Y5' | translate">
+        </div>
+      </div>
+      <div class="form-group row col-md-6">
+        <label for="X6" class="col-sm-3 col-form-label" translate>X6</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_X_Coordinate_6" name="X6" id="X6"
+            [placeholder]="'X6' | translate">
+        </div>
+      </div>
+      <div class="form-group row col-md-6">
+        <label for="Y6" class="col-sm-3 col-form-label" translate>Y6</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_Y_Coordinate_6" name="Y6" id="Y6"
+            [placeholder]="'Y6' | translate">
+        </div>
+      </div>
+      <div class="form-group row col-md-6">
+        <label for="X7" class="col-sm-3 col-form-label" translate>X7</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_X_Coordinate_7" name="X7" id="X7"
+            [placeholder]="'X7' | translate">
+        </div>
+      </div>
+      <div class="form-group row col-md-6">
+        <label for="Y7" class="col-sm-3 col-form-label" translate>Y7</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_Y_Coordinate_7" name="Y7" id="Y7"
+            [placeholder]="'Y7' | translate">
+        </div>
+      </div>
+      <div class="form-group row col-md-6">
+        <label for="X8" class="col-sm-3 col-form-label" translate>X8</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_X_Coordinate_8" name="X8" id="X8"
+            [placeholder]="'X8' | translate">
+        </div>
+      </div>
+      <div class="form-group row col-md-6">
+        <label for="Y8" class="col-sm-3 col-form-label" translate>Y8</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_Y_Coordinate_8" name="Y8" id="Y8"
+            [placeholder]="'Y8' | translate">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="closeModal('GisCoordinates')" translate>Done</button>
+  </div>
+</ngx-smart-modal>
+
+
+<ngx-smart-modal #GisViewer identifier="GisViewer">
+  <div style="width: 100%">
+
+  </div>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left" translate>Get GIS Plot ID</h4>
+  </div>
+  <div class="modal-body">
+
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="closeModal('GisViewer')" translate>Done</button>
+  </div>
+</ngx-smart-modal>
+
+
+
+<p-dialog [(visible)]="displayGIS" [responsive]="true"
+  [style]="{'minHeight':'10%','height':'800px','minWidth':'10%','width':'80%' }" [maximizable]="true"
+  [baseZIndex]="10000">
+  <p-header translate>
+    Get GIS Plot ID
+
+  </p-header>
+
+  <div class="modal-body">
+
+    <div style=" min-width: 1000px">
+
+      <!-- <app-esri-map [_center]="mapCenter" [_basemap]="basemapType" [_zoom]="mapZoomLevel"
+        (plotSelector)="plotSelector($event)">
+      </app-esri-map> -->
+      <app-gis class="a" (onPlotSelect)="selectPlotID($event)"></app-gis>
+
+    </div>
+  </div>
+
+  <p-footer>
+    <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="8" *ngIf="toogleSpin"></p-progressSpinner>
+    <button type="button" class="btn btn-primary" *ngIf="!toogleSpin" (click)="finishSelection()" translate>select
+    </button>
+
+  </p-footer>
+
+  <p-toast></p-toast>
+</p-dialog>
+
+
+
+<!-- <ngx-smart-modal>
+  <div class="modal-header">
+  </div>
+  <div> -->
+<!-- <app-gis></app-gis> -->
+<!-- </div>
+  <div class="modal-footer">
+    <span>Close</span>
+  </div>
+</ngx-smart-modal> -->

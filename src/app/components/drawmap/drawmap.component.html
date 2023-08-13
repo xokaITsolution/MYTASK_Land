@@ -1,0 +1,129 @@
+<!-- <div class="topbar">
+
+  <select [formControl]="basinId" class="form-control" name="basinId" (change)="dropdownchangelistener($event)">
+    <option disabled>BasinID</option>
+    <option *ngFor="let web of dropdownBasin_ID">{{web}}</option>
+</select>
+
+<select [formControl]="siteType" class="form-control" name="siteType" (change)="dropdownchangelistener($event)">
+  <option disabled>SiteType</option>
+  <option *ngFor="let web of dropdownSite_Type">{{web}}</option>
+</select>
+
+   <mat-form-field *ngIf="dropdownBasin_ID">
+    <mat-label>Basin_ID</mat-label>
+    <mat-select (change)="dropdownchangelistener($event)" [formControl]="basinId" name="food">
+      <mat-option *ngFor="let item of dropdownBasin_ID" [value]="item">
+        {{item}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field *ngIf="dropdownSite_Type">
+    <mat-label>Site_Type</mat-label>
+    <mat-select (change)="dropdownchangelistener($event)" [formControl]="siteType" name="food">
+      <mat-option *ngFor="let item of dropdownSite_Type" [value]="item">
+        {{item}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field> 
+
+  <mat-form-field class="example-form-field">
+    <input matInput type="text" placeholder="Site_ID" [(ngModel)]="value" [formControl]="siteId" >
+    <button mat-button *ngIf="siteId.value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field> 
+
+  <input (keyup)="keyup($event)" [formControl]="siteId" type="text" name="siteId" id="" placeholder="Site_Id"/>
+  <input (keyup)="keyup($event)" [formControl]="stationName" type="text" name="stationName" id="" placeholder="Station_Name"/>
+  <input (keyup)="keyup($event)" [formControl]="stationCode" type="text" name="stationCode" id="" placeholder="Station_Code"/>
+  <input (keyup)="keyup($event)" [formControl]="dataOwner" type="text" name="dataOwner" id="" placeholder="Data_Owner"/>
+
+</div>
+
+<div class="map" #map id="map" style="width: 100%; height: 532.2px"></div>
+
+
+
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource">
+
+     Position station_Code 
+    <ng-container matColumnDef="station_Code">
+      <th mat-header-cell *matHeaderCellDef> station_Code </th>
+      <td mat-cell *matCellDef="let element"> {{element.station_Code}} </td>
+    </ng-container>
+
+     station_Name Column 
+    <ng-container matColumnDef="station_Name">
+      <th mat-header-cell *matHeaderCellDef> station_Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.station_Name}} </td>
+    </ng-container>
+
+     locationName_Locality Column 
+    <ng-container matColumnDef="locationName_Locality">
+      <th mat-header-cell *matHeaderCellDef> locationName_Locality </th>
+      <td mat-cell *matCellDef="let element"> {{element.locationName_Locality}} </td>
+    </ng-container>
+
+     kebele Column 
+    <ng-container matColumnDef="kebele">
+      <th mat-header-cell *matHeaderCellDef> kebele </th>
+      <td mat-cell *matCellDef="let element"> {{element.kebele}} </td>
+    </ng-container>
+
+     coordinate Column 
+    <ng-container matColumnDef="coordinate">
+      <th mat-header-cell *matHeaderCellDef> coordinate </th>
+      <td mat-cell *matCellDef="let element"> {{element.coordinate}} </td>
+    </ng-container>
+
+     altitude Column 
+    <ng-container matColumnDef="altitude">
+      <th mat-header-cell *matHeaderCellDef> altitude </th>
+      <td mat-cell *matCellDef="let element"> {{element.altitude}} </td>
+    </ng-container>
+
+    data_Owner Column 
+    <ng-container matColumnDef="data_Owner">
+      <th mat-header-cell *matHeaderCellDef> data_Owner </th>
+      <td mat-cell *matCellDef="let element"> {{element.data_Owner}} </td>
+    </ng-container>
+
+  
+    <ng-container matColumnDef="data_Quality_Owner">
+      <th mat-header-cell *matHeaderCellDef> data_Quality_Owner </th>
+      <td mat-cell *matCellDef="let element"> {{element.data_Quality_Owner}} </td>
+    </ng-container>
+
+    
+    <ng-container matColumnDef="publish_Owner">
+      <th mat-header-cell *matHeaderCellDef> publish_Owner </th>
+      <td mat-cell *matCellDef="let element"> {{element.publish_Owner}} </td>
+    </ng-container>
+
+    
+    <ng-container matColumnDef="remarks">
+      <th mat-header-cell *matHeaderCellDef> remarks </th>
+      <td mat-cell *matCellDef="let element"> {{element.remarks}} </td>
+    </ng-container>
+
+    
+    <ng-container matColumnDef="site_Status">
+      <th mat-header-cell *matHeaderCellDef> site_Status </th>
+      <td mat-cell *matCellDef="let element"> {{element.site_Status}} </td>
+    </ng-container>
+
+    
+    <ng-container matColumnDef="license_Service_ID">
+      <th mat-header-cell *matHeaderCellDef> license_Service_ID </th>
+      <td mat-cell *matCellDef="let element"> {{element.license_Service_ID}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</div> -->

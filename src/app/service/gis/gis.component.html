@@ -1,0 +1,81 @@
+<div class="map-container">
+  <div class="w-25 mr-4">
+    <h3 class="mb-5" translate>Xoka Land</h3>
+
+    <div class="form-group">
+      <label for="wfs-capabilities" translate>Wfs capabilities</label>
+      <select id="wfs-capabilities" class="form-control">
+        <option selected translate>Choose...</option>
+        <option>...</option>
+      </select>
+    </div>
+
+    <label translate>Navigate</label>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <button
+          class="btn btn-outline-primary"
+          type="button"
+          id="goto-btn"
+          (click)="gotoCoordinate()"
+          translate
+        >
+          Goto
+        </button>
+      </div>
+      <input
+        type="number"
+        class="form-control"
+        [placeholder]="'lon' | translate"
+        [(ngModel)]="coordinate.lon"
+        aria-label="longitude"
+        aria-describedby="goto-btn"
+      />
+      <input
+        type="number"
+        class="form-control"
+        [placeholder]="'lat' | translate"
+        [(ngModel)]="coordinate.lat"
+        aria-label="latitude"
+        aria-describedby="goto-btn"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="layers">Tiles</label>
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          value=""
+          checked
+          id="tile-openstreetmap"
+          (change)="toogleTile($event)"
+        />
+        <label class="form-check-label" for="tile-openstreetmap" translate>
+          Open Street Map
+        </label>
+      </div>
+    </div>
+
+    <label for="layers" translate>Layers</label>
+    <div class="form-group layer-list">
+      <div *ngFor="let layer of dyCheckbox" class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          [value]="layer.name"
+          [checked]="layer.select"
+          [id]="layer.id"
+          (change)="toogleLayer($event)"
+        />
+        <label class="form-check-label ellipsis-text" for="layer-list">
+          {{ layer.name }}
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="map-frame">
+    <div id="map" name="map" (click)="getCoordOnClick($event)"></div>
+  </div>
+</div>

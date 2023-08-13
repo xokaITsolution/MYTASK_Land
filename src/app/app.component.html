@@ -1,0 +1,7 @@
+<select (change)="changlang(LangID)" [(ngModel)]="LangID" >
+  <option *ngFor="let lang of langs;"
+          [value]="lang.key"  >{{lang.lang}}</option>
+</select>
+
+
+<router-outlet></router-outlet>

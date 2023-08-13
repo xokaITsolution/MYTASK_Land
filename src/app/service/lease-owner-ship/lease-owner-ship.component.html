@@ -1,0 +1,236 @@
+<form #f="ngForm" novalidate name="leaseform">
+  <div class="form-row">
+    <div class="form-group row col-md-6">
+      <label for="LeaseID" class="col-sm-3 col-form-label" translate>Lease ID</label>
+      <div class="col-sm-9">
+        <input type="text" disabled class="form-control" [(ngModel)]="leaseOwnerShip.ID" name="LeaseID" id="LeaseID"
+          [placeholder]="'Lease ID' | translate">
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="FreeHold" class="col-sm-3 col-form-label" translate>Free Hold</label>
+      <div class="col-sm-9">
+
+        <input type="number" class="form-control" [disabled]="disable"  [(ngModel)]="leaseOwnerShip.Free_Hold_M2"
+          name="FreeHold" id="FreeHold" [placeholder]="'Free Hold' | translate" #FreeHold="ngModel"
+          [ngClass]="{ 'is-invalid': FreeHold.invalid }" min="0" required>
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="Type" class="col-sm-3 col-form-label" translate>Type</label>
+      <div class="col-sm-9">
+        <select class="form-control" [disabled]="disable" [(ngModel)]="leaseOwnerShip.Type_ID" name="Type" id="Type"
+          #Type="ngModel" [ngClass]="{ 'is-invalid': Type.invalid }" required>
+          <option disabled translate>select</option>
+          <option *ngFor="let type of serviceComponent.Lease_Type_Lookup;" [value]="type.Lease_Type_ID">
+            {{type.Lease_Type}}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="Status" class="col-sm-3 col-form-label" translate>Status</label>
+      <div class="col-sm-9">
+        <select class="form-control" [disabled]="disable" [(ngModel)]="leaseOwnerShip.Status" name="Status" id="Status"
+          #Status="ngModel" [ngClass]="{ 'is-invalid': Status.invalid }" required>
+          <option disabled translate>select</option>
+          <option *ngFor="let Status of serviceComponent.Lease_Stuts_Lookup;" [value]="Status.ID">{{Status.Status}}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="SubCity" class="col-sm-3 col-form-label" translate>SubCity</label>
+      <div class="col-sm-9">
+        <select class="form-control" [disabled]="disable" [(ngModel)]="leaseOwnerShip.SDP_ID" name="SubCity"
+          id="SubCity" #SubCity="ngModel" [ngClass]="{ 'is-invalid': SubCity.invalid }" >
+          <option disabled translate>select</option>
+          <option  *ngFor="let SubCity of serviceComponent.ServiceDeliveryUnitLookUP;"
+            [value]="SubCity.organization_code">{{SubCity.name_en}}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="LandHold" class="col-sm-3 col-form-label" translate>Lease Hold</label>
+      <div class="col-sm-9">
+        <input type="number" class="form-control" [disabled]="disable" [(ngModel)]="leaseOwnerShip.Lease_Hold_M2"
+          name="LandHold" id="LandHold" [placeholder]="'Lease Hold' | translate" #LandHold="ngModel"
+          [ngClass]="{ 'is-invalid': LandHold.invalid }" min="0" required>
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="LeaseContractNo" class="col-sm-3 col-form-label" translate>Lease Contract No</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="leaseOwnerShip.Lease_No"
+          name="LeaseContractNo" id="LeaseContractNo" [placeholder]="'Lease Contract No' | translate">
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="Customer" class="col-sm-3 col-form-label" translate>Customer</label>
+      <div class="col-sm-7">
+        <select disabled class="form-control" [(ngModel)]="leaseOwnerShip.Customer_ID" name="Customert" id="Customert">
+          <option disabled translate>select</option>
+          <option *ngFor="let customer of serviceComponent.CustomerLookUP;" [value]="customer.Customer_ID">
+            {{customer.FullName_EN}}
+          </option>
+        </select>
+        <input type="hidden" class="form-control" #Customert="ngModel" [(ngModel)]="leaseOwnerShip.Customer_ID"
+          name="Photo" id="NumberOfLift" [placeholder]="'Number of Lift' | translate" required>
+        <div *ngIf="Customert.invalid">
+          <span class="text-danger" translate>REQUIRED</span>
+        </div>
+
+        <div class="col-sm-2">
+          <button type="button" *ngIf="!disable" class="btn btn-secondary" (click)="openModal('leaseCustomer')"
+            translate>Select Customer</button>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="LeasePrice" class="col-sm-3 col-form-label" translate>Lease Price</label>
+      <div class="col-sm-9">
+        <input type="number" class="form-control" [disabled]="disable" [(ngModel)]="leaseOwnerShip.Lease_Price"
+          #LeasePrice="ngModel" name="LeasePrice" id="LeasePrice" [placeholder]="'Lease Price' | translate"
+          [ngClass]="{ 'is-invalid': LeasePrice.invalid }" min="0">
+      </div>
+    </div>
+
+
+    <div class="form-group row col-md-6">
+      <label for="Total_lease_amount_to_be_paid" class="col-sm-3 col-form-label" translate>
+        Total lease amount to be paid</label>
+      <div class="col-sm-9">
+        <input type="number" class="form-control" [disabled]="disable"
+          [(ngModel)]="leaseOwnerShip.Total_lease_amount_to_be_paid" #Total_lease_amount_to_be_paid="ngModel"
+          name="Total_lease_amount_to_be_paid" id="Total_lease_amount_to_be_paid"
+          [placeholder]="'Total lease amount to be paid' | translate"
+          [ngClass]="{ 'is-invalid': Total_lease_amount_to_be_paid.invalid }" min="0">
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="LeasePrice" class="col-sm-3 col-form-label" translate>Amount of down payment</label>
+      <div class="col-sm-9">
+        <input type="number" class="form-control" [disabled]="disable"
+          [(ngModel)]="leaseOwnerShip.Amount_of_down_payment" #Amount_of_down_payment="ngModel" name="LeasePrice"
+          id="Amount_of_down_payment" [placeholder]="'Amount of down payment' | translate"
+          [ngClass]="{ 'is-invalid': Amount_of_down_payment.invalid }" min="0">
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="LeasePrice" class="col-sm-3 col-form-label" translate>Amount of the annual lease payment</label>
+      <div class="col-sm-9">
+        <input type="number" class="form-control" [disabled]="disable"
+          [(ngModel)]="leaseOwnerShip.Amount_of_the_annual_lease_payment" #Amount_of_the_annual_lease_payment="ngModel"
+          name="LeasePrice" id="Amount_of_the_annual_lease_payment"
+          [placeholder]="'Amount of the annual lease payment' | translate"
+          [ngClass]="{ 'is-invalid': Amount_of_the_annual_lease_payment.invalid }" min="0">
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="LeasePrice" class="col-sm-3 col-form-label" translate>Lease period in Year</label>
+      <div class="col-sm-9">
+        <input type="number" class="form-control" [disabled]="disable" [(ngModel)]="leaseOwnerShip.Lease_period_in_Year"
+          #Lease_period_in_Year="ngModel" name="Lease_period_in_Year" id="Lease_period_in_Year"
+          [placeholder]="'Lease period in Year' | translate" [ngClass]="{ 'is-invalid': Lease_period_in_Year.invalid }"
+          min="0">
+      </div>
+    </div>
+    <div class="form-group row col-md-6">
+      <label for="Date_of_final_lease_payment" class="col-sm-3 col-form-label" translate>
+        Date of final lease payment</label>
+      <div class="col-sm-9">
+        <input type="date" class="form-control" [disabled]="disable"
+          [(ngModel)]="leaseOwnerShip.Date_of_final_lease_payment" #Date_of_final_lease_payment="ngModel"
+          name="Date_of_final_lease_payment" id="Date_of_final_lease_payment"
+          [placeholder]="'Date of final lease payment' | translate"
+          [ngClass]="{ 'is-invalid': Date_of_final_lease_payment.invalid }">
+      </div>
+    </div>
+
+
+  </div>
+  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!addnew && !disable" (click)="save()"
+    translate>Save
+  </button>
+  <button type="button" class="btn btn-danger ml-3" [disabled]="!f.valid" *ngIf="!addnew && !disable" (click)="Delete()"
+    translate>Delete
+  </button>
+  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="addnew && !disable" (click)="add()"
+    translate>Save
+  </button>
+</form>
+
+<p-table [value]="tasks" [paginator]="true" [rows]="5">
+  <ng-template pTemplate="header">
+    <tr>
+      <th scope="col" translate>Lease ID</th>
+      <th scope="col" translate>Plot ID</th>
+      <th scope="col" translate>Type</th>
+      <th scope="col" translate>Lease Contract No</th>
+      <th scope="col" translate>Lease Price</th>
+      <!--<th scope="col" translate>free hold</th>-->
+      <th scope="col" translate>Lease hold</th>
+      <th scope="col">
+        <button type="button" class="btn btn-primary" (click)=" addLease()" translate>Add New</button>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-lease>
+    <tr [class.active]="lease == leaseOwnerShip">
+      <td>{{lease.ID}}</td>
+      <td>{{lease.Plot_ID}}</td>
+      <td>{{lease.Type_ID}}</td>
+      <td>{{lease.Lease_No}}</td>
+      <td>{{lease.Lease_Price}}</td>
+     <!--<td>{{lease.Free_Hold_M2}}</td>--> 
+      <td>{{lease.Lease_Hold_M2}}</td>
+      <td>
+        <button type="button" class="btn btn-primary" (click)="selectLease(lease)" translate>Edit</button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+
+<ngx-smart-modal #leaseCustomer identifier="leaseCustomer">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left" translate>Customer</h4>
+  </div>
+  <div class="modal-body">
+
+
+    <p-table #dt [value]="serviceComponent.CustomerLookUP" [paginator]="true" [rows]="5"
+      [globalFilterFields]="['TIN','FullName_AM','FullName_EN','Applicant_Mother_Name_AM','Applicant_Mother_Name_EN','Mobile_No']">
+      <ng-template pTemplate="caption">
+        <div style="text-align: right">
+          <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+          <input type="text" pInputText size="50" [placeholder]="'Global Filter' | translate"
+            (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th translate>TIN</th>
+          <th translate>Full Name AM</th>
+          <th translate>Full Name EN</th>
+          <th translate>Mother Name AM</th>
+          <th translate>Mother Name EN</th>
+          <th translate>mobile Number</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-Customer>
+        <tr (click)="closeModal(Customer,'leaseCustomer')">
+          <td>{{Customer.TIN}}</td>
+          <td>{{Customer.FullName_AM}}</td>
+          <td>{{Customer.FullName_EN}}</td>
+          <td>{{Customer.Applicant_Mother_Name_AM}}</td>
+          <td>{{Customer.Applicant_Mother_Name_EN}}</td>
+          <td>{{Customer.Mobile_No}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+
+  </div>
+</ngx-smart-modal>

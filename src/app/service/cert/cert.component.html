@@ -1,0 +1,292 @@
+<div class="row m-3">
+  <div class="col-md-6">
+    <p-table [value]="BaseTable" [paginator]="true" [rows]="3">
+      <ng-template pTemplate="header">
+        <tr>
+          <th scope="col" translate>Title Deed No</th>
+          <th scope="col" translate>Registration Date</th>
+          <th scope="col" translate>{{Fields.FIELD_ONE}}</th>
+          <th scope="col">
+            <div *ngIf="BaseTable">
+              <!--<button type="button" *ngIf="BaseTable.length < noadds && !disable" class="btn btn-primary" (click)="AddBase('NewCretafcateBase')">AddNew</button></div>-->
+              <button type="button" *ngIf="!disable" class="btn btn-primary" (click)="AddBase('NewCretafcateBase')"
+                translate>AddNew</button>
+            </div>
+          </th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-Base>
+        <tr class="aa" [class.active]="Base == SelectedBase">
+          <td>{{Base.Title_Deed_No}}</td>
+          <td>{{Base.Registration_Date}}</td>
+          <td>
+            <select disabled class="form-control" [disabled]="disable" [(ngModel)]="Base.SDP_ID" name="SubCity"
+              id="SubCity">
+              <option disabled translate>select</option>
+              <option *ngFor="let SubCity of serviceComponent.ServiceDeliveryUnitLookUP;"
+                [value]="SubCity.organization_code">{{SubCity.name_en}}
+              </option>
+            </select>
+          </td>
+
+          <td>
+            <button type="button" class="btn btn-primary mr-1 mb-1" (click)="SelectBase(Base)" translate>select
+            </button>
+            <button type="button" class="btn btn-primary" *ngIf="!disable"
+              (click)="EditBaseView('NewCretafcateBase', Base)" translate>Edit
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <div class="col-md-6" *ngIf="CertificateVersion">
+
+    <div>
+
+      <p-table [value]="CertificateVersion" [paginator]="true" [rows]="3">
+        <ng-template pTemplate="header">
+          <tr>
+            <th scope="col" translate>Transfer ID</th>
+            <th scope="col" translate>Version No</th>
+            <th scope="col" translate>Is Active</th>
+            <th scope="col" translate>Is printed</th>
+            <th scope="col" translate>Is issued</th>
+            <th scope="col">
+              <button type="button" class="btn btn-primary" *ngIf="!disable" (click)="addversion()" translate>Add New
+              </button>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-version>
+          <tr [class.active]="version == Selectedcert">
+            <td>{{version.Ownership_ID}}</td>
+            <td>{{version.Version_No}}</td>
+            <td>
+              <p-checkbox [disabled]="true" [(ngModel)]="version.Is_Active" name="IsActive1" id="IsActive1"
+                binary="true"></p-checkbox>
+            </td>
+            <td>
+              <p-checkbox [disabled]="true" [(ngModel)]="version.Is_Printed" name="IsActive1" id="IsActive1"
+                binary="true"></p-checkbox>
+            </td>
+            <td>
+              <p-checkbox [disabled]="true" [(ngModel)]="version.IsIssued" name="IsActive1" id="IsActive1"
+                binary="true"></p-checkbox>
+            </td>
+            <td>
+              <button type="button" class="btn btn-primary" (click)="Selectversion(version)" translate>select
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <div class="col-md-10" *ngIf="certverForm">
+
+
+    <tabset #staticTabs>
+      <tab [heading]="'Certificate Version' | translate">
+        <div class="mt-3">
+          <app-certificate-version (completed)="EnableFins()" [Selectedcert]='Selectedcert'
+            [SelectedBase]="SelectedBase" [disable]="disable"></app-certificate-version>
+        </div>
+      </tab>
+      <!-- <tab [heading]="'Debt/SuspensionRecord' | translate">
+            <div class="mt-3">
+              <app-dept-suspension-record (completed)="EnableFins()" [Selectedcert]='Selectedcert' [disable]="disable" [LicenceData]="licenceData" 
+              [disable]="disable"></app-dept-suspension-record>
+            </div>
+          </tab> -->
+    </tabset>
+
+  </div>
+  <!--
+      <div class="col-md-2 m-10" *ngIf="certForm">
+        <div class="p-3 mb-2 bg-primary text-white h-100">
+    
+          <p class="text-center" translate>certificate Version</p>
+          <div class="text-center">
+    
+            <div>
+              <button type="button" class="btn btn-primary   col-lg-12" [disabled]="!selectedprofromtree" *ngIf="!disable" (click)="AddNew()">Add New
+              </button>
+            </div>
+            <div>
+              <tabset [vertical]="true">
+                <tab *ngFor="let version of CertificateVersion;" (select)="SelectcertVer(version)">
+                  <ng-template tabHeading class="bg-primary">
+                                    <span class="text-black-50"
+                                          (click)="SelectcertVer(version)">{{version.Version_No}}</span>
+                  </ng-template>
+                </tab>
+              </tabset>
+            </div>
+          </div>
+        </div>
+      </div>-->
+
+</div>
+
+<ngx-smart-modal #NewCretafcateBase identifier="NewCretafcateBase" class="nsm-dialog">
+  <div style="width: 100%">
+
+  </div>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left offset-md-3" translate>New Certificate Base</h4>
+  </div>
+  <div class="modal-body">
+
+    <form #f="ngForm" novalidate name="certBaseform">
+
+      <div class="form-group row offset-md-3 col-md-6">
+        <label for="Registration_Date" class="col-sm-3 col-form-label " translate>plot</label>
+        <div class="col-sm-9">
+          <select class="form-control" (ngModelChange)="getDeed($event)" [(ngModel)]="Base.Plot_ID" name="plot"
+            id="plot">
+            <option disabled>select</option>
+            <option *ngFor="let PLot of plotList;" [value]="PLot.ID">{{PLot.ID}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div [hidden]="showFullForm">
+
+        <div class="form-group row offset-md-3 col-md-6">
+          <label for="TitleDeedNo" class="col-sm-3 col-form-label" translate>Title Deed No</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="Base.Title_Deed_No"
+              name="TitleDeedNo" id="TitleDeedNo" [placeholder]="'TitleDeedNo' | translate" #TitleDeedNo="ngModel"
+              [ngClass]="{ 'is-invalid': TitleDeedNo.invalid }" required>
+          </div>
+        </div>
+        <div class="form-group row offset-md-3 col-md-6">
+          <label for="Registration_Date" class="col-sm-3 col-form-label" translate>Registration Date</label>
+          <div class="col-sm-9">
+            <input type="date" class="form-control" [disabled]="disable" [(ngModel)]="Base.Registration_Date"
+              name="Registration_Date" id="Registration_Date" [placeholder]="'Registration Date' | translate"
+              #Registration_Date="ngModel" [ngClass]="{ 'is-invalid': Registration_Date.invalid }" required>
+          </div>
+        </div>
+        <div class="form-group row offset-md-3 col-md-6">
+          <label for="SubCity2" class="col-sm-3 col-form-label" translate>{{Fields.FIELD_ONE}}</label>
+          <div class="col-sm-9">
+            <select class="form-control" disabled [(ngModel)]="Base.SDP_ID" name="SubCity2" id="SubCity2">
+              <option disabled translate>select</option>
+              <option *ngFor="let SubCity of serviceComponent.ServiceDeliveryUnitLookUP;"
+                [value]="SubCity.organization_code">{{SubCity.name_en}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row offset-md-3 col-md-6">
+          <label for="Ownership_ID" class="col-sm-3 col-form-label" translate>Transfer ID</label>
+          <div class="col-sm-7">
+
+            <input type="text" class="form-control" disabled [(ngModel)]="Base.Ownership_ID" #Ownership_ID="ngModel"
+              name="Ownership_ID" id="Ownership_ID" [placeholder]="'Title Deed ID' | translate"
+              [ngClass]="{ 'is-invalid': Ownership_ID.invalid }" #Ownership_ID="ngModel"
+              [ngClass]="{ 'is-invalid': Ownership_ID.invalid }" required>
+          </div>
+          <div class="col-sm-2">
+            <button type="button" *ngIf="!disable" class="btn btn-secondary" (click)="displayDeed=true"
+              translates>Select Deed</button>
+          </div>
+        </div>
+
+      </div>
+
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" [disabled]="!f.valid" (click)="SaveBase('NewCretafcateBase')"
+      *ngIf="isnewBase" translate>Save</button>
+    <button type="button" class="btn btn-primary" [disabled]="!f.valid" (click)="EditBase('NewCretafcateBase')"
+      *ngIf="!isnewBase" translate>Save</button>
+  </div>
+</ngx-smart-modal>
+
+
+
+<ngx-smart-modal #deed identifier="deed">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left" translate>Select Deed</h4>
+  </div>
+  <div class="modal-body">
+
+
+    <p-table #dt [value]="DeedTable" [paginator]="true" [rows]="5"
+      [globalFilterFields]="['Ownership_ID','Plot_ID','Property_ID','Date']">
+      <ng-template pTemplate="caption">
+        <div style="text-align: right">
+          <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+          <input type="text" pInputText size="50" [placeholder]="'Global Filter' | translate"
+            (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th translate>Ownership ID</th>
+          <th translate>Plot ID</th>
+          <th translate>Property ID</th>
+          <th translate>Date</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-Deed>
+        <tr (click)="closedeedModal(Deed,'deed')">
+          <td>{{Deed.Ownership_ID}}</td>
+          <td>{{Deed.Plot_ID}}</td>
+          <td>{{Deed.Property_ID}}</td>
+          <td>{{Deed.Date}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+
+  </div>
+</ngx-smart-modal>
+
+
+
+<p-dialog [(visible)]="displayDeed" [modal]="true" [responsive]="true"
+  [style]="{'minHeight':'10%','height':'800px','minWidth':'10%','width':'80%' }" [maximizable]="true"
+  [baseZIndex]="10000">
+  <p-header translate>
+    Select Deed
+  </p-header>
+
+  <div class="modal-body">
+
+    <p-table #dt [value]="DeedTable" [paginator]="true" [rows]="5"
+      [globalFilterFields]="['Ownership_ID','Plot_ID','Property_ID','Date']">
+      <ng-template pTemplate="caption">
+        <div style="text-align: right">
+          <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+          <input type="text" pInputText size="50" [placeholder]="'Global Filter' | translate"
+            (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th translate>Ownership ID</th>
+          <th translate>Plot ID</th>
+          <th translate>Property ID</th>
+          <th translate>Date</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-Deed>
+        <tr (click)="closedeedModal(Deed,'deed')">
+          <td>{{Deed.Ownership_ID}}</td>
+          <td>{{Deed.Plot_ID}}</td>
+          <td>{{Deed.Property_ID}}</td>
+          <td>{{Deed.Date}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</p-dialog>

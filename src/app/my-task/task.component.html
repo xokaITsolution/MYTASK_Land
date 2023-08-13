@@ -1,0 +1,30 @@
+<div>
+  <ul class="nav nav-tabs">
+    <li
+      class="nav-item"
+      (click)="tab = 'MyTask'"
+      [class.active]="tab == 'MyTask'"
+    >
+      <a class="nav-link" [routerLink]="['/task/MyTask']" translate>My Task</a>
+    </li>
+    <li
+      class="nav-item"
+      (click)="tab = 'SupervisorTask'"
+      [class.active]="tab == 'SupervisorTask'"
+    >
+      <a class="nav-link" [routerLink]="['/task/SupervisorTask']" translate
+        >Supervisor Task</a
+      >
+    </li>
+    <!-- <li class="nav-item" (click)="tab = 'Gis'" [class.active]="tab == 'Gis'">
+      <a class="nav-link" [routerLink]="['/task/Gis']" translate>Gis</a>
+    </li>
+    <li class="nav-item" (click)="tab = 'Gis'" [class.active]="tab == 'Gis'">
+      <a class="nav-link" [routerLink]="['/task/draw']" translate>Draw</a>
+    </li>
+    <li class="nav-item" (click)="tab = 'Gis'" [class.active]="tab == 'Gis'">
+      <a class="nav-link" [routerLink]="['/task/mehari']" translate>MehariFiles</a>
+    </li> -->
+  </ul>
+  <router-outlet></router-outlet>
+</div>

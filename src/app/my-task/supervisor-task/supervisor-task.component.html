@@ -1,0 +1,31 @@
+
+<div>
+  <div class="m-10">You have {{taskwaithing}} number of active tasks waiting</div>
+
+  <div>
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col" translate>#</th>
+        <th scope="col" translate>Application</th>
+        <th scope="col" translate>Date</th>
+        <th scope="col" translate>Task Description</th>
+        <th scope="col" translate>Task Status</th>
+        <th scope="col" translate>Type</th>
+        <th scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let task of tasks; let i = index;">
+        <th scope="row">{{i+1}}</th>
+        <td>{{task.Application}}</td>
+        <td>{{task.Date}}</td>
+        <td>{{task.TaskDescription}}</td>
+        <td>{{task.TaskStatus}}</td>
+        <td>{{task.Type}}</td>
+        <td><a href="" translate>GO</a></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

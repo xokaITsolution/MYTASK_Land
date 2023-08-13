@@ -1,0 +1,21 @@
+.message-next-prev {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1em;
+  }
+  .loading-spinner-container {
+    min-height: 30vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .loading-spinner {
+    font-size: 2.5em;
+  }
+  .nsm-dialog {
+    max-width: 40vw !important;
+  }
+  .message-not-available {
+    margin: 10vh 0;
+  }
+  

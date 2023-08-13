@@ -1,0 +1,42 @@
+Certificate_Code: null
+CustomerID: null
+Is_Paid: null
+JsonData: "{\"Geothermal\":\"item2\",\"Name of the Applicant\":\"gfghftg\",\"Nationality\":\"item6\",\"State/ Province\":\"item4\",\"Address\":\"t\",\"Address 2\":\"dtdrdrd\",\"Mobile Number\":65765765,\"Zip code/ P O Box\":65765765765,\"Office Number\":64546545,\"Email\":\"tdtdftfcg@gmail.com\",\"Region\":\"item6\",\"Zone / Sub-city\":\"item3\",\"question3\":\"item7\"}"
+Parcel_ID: null
+Plot_Merge_1: null
+Plot_Merge_2: null
+Plot_Merge_3: null
+Plot_Merge_4: null
+Property_ID: null
+RoleId: "89b4d811-c348-4b56-a386-43e55f44f6f4"
+SDP_ID: "89eb1aec-c875-4a08-aaf6-2c36c0864979"
+Service_ID: "25b9f49f-5e2a-49c3-8f9c-4541c56c2088"
+Service_Name: "WFD_UL_SRV      : \"\" / Well Field Development and Use license"
+UserId: null
+Wereda_ID: 1
+application_detail_id: "54dc350d-05f2-4e32-b4cc-d9d814d8cd77"
+date_created: null
+description_en: "Online application for Well Field Development and Use license\n"
+description_local: "Online application for Well Field Development and Use license\n"
+docId: "54dc350d-05f2-4e32-b4cc-d9d814d8cd77"
+elapsed_time_hours: 0.26
+end_date: "2021-07-19T00:23:57.6"
+form_code: "ff1c2342-dc3a-4d75-b6e5-656aa331c25a"
+form_name: "Online application for Well Field Development and Use license"
+jump_From: null
+level: 1
+looked: false
+notification_required: false
+physical_presence: false
+remarks: null
+schedule_date: "1"
+services_service_code: "25b9f49f-5e2a-49c3-8f9c-4541c56c2088"
+special_rules: false
+start_date: "2021-07-19T00:08:21.893"
+status: "C"
+system_users_id: "8bcf7d38-3587-42ac-b52a-4385df50b0ed"
+task_types_task_type_code: "f621d50b-f961-e111-95d6-00e04c05559b"
+tasks_task_code: "c6b67f3d-bcf1-42dd-83fd-b3b4c3018057"
+to_do_code: "f7cdf509-e659-412b-ba06-f7e095038efe"
+todo_comment: "AFR-1972021-637622501018322634"
+work_time_hours: "1"

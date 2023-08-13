@@ -1,0 +1,5 @@
+.list-group-horizontal {
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  flex-direction: row;
+}

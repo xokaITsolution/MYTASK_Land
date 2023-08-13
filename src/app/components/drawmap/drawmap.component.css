@@ -1,0 +1,12 @@
+.topbar{
+  /* display: flex;
+  justify-content: space-evenly;
+  align-items: center; */
+}
+select {
+  width:10%
+}
+select:invalid { color: gray; }
+table {
+  width: 100%;
+}

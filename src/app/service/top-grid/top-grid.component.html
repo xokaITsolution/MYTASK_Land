@@ -1,0 +1,39 @@
+<!-- <div class="p-4">
+  <p-table [value]="list" [paginator]="true" [rows]="5">
+    <ng-template pTemplate="header" class="bg-primary">
+      <tr>
+        <th scope="col" translate>License service ID</th>
+        <th scope="col" translate>Parcel ID</th>
+        <th scope="col" translate>Property ID</th>
+        <th scope="col" translate>Certificate ID</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-value>
+      <tr>
+        <td>{{ value.xxxx }}</td>
+        <td>{{ value.xxxx }}</td>
+        <td>{{ value.xxxx }}</td>
+        <td>{{ value.xxxx }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div> -->
+<p-table [value]="licenceData" [paginator]="true" [rows]="5" class="p-4">
+    <ng-template pTemplate="header">
+        <tr>
+            <th scope="col" translate>Licence Service ID</th>
+            <th scope="col" translate>Parcel ID</th>
+            <th scope="col" translate>Property ID</th>
+            <th scope="col" translate>Certificate Code</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-data>
+        <tr>
+            <td>{{data.Licence_Service_ID}} </td>
+            <td>{{data.Parcel_ID}} </td>
+            <td>{{data.Property_ID}}</td>
+            <td>{{data.Certificate_Code}}</td>
+        </tr>
+    </ng-template>
+</p-table>

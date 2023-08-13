@@ -1,0 +1,13 @@
+.nsm-dialog {
+    max-width:120vw !important;
+    max-height:1000vw !important;
+  }
+  .aa{
+    background-color: rgb(13, 34, 75) !important;
+    color:#f8f7f7 !important;
+      }
+      .smaller-modal {
+        max-width: 600px;
+        width: 70%;
+      }
+      

@@ -1,0 +1,87 @@
+<form *ngIf="deedform" #f="ngForm" novalidate name="titledeedForm">
+  <div class="form-row">
+
+    <div class="form-group row col-md-7">
+      <label for="Ownership_ID" class="col-sm-3 col-form-label" translate>Licenses id</label>
+      <div class="col-sm-9">
+
+        <input type="text" class="form-control" [(ngModel)]="titleDeedRegistration.Ownership_ID" name="Ownership_ID"
+          id="Ownership_ID" [placeholder]="'Transfer ID' | translate" #Ownership_ID="ngModel"
+          [ngClass]="{ 'is-invalid': Ownership_ID.invalid }" required>
+      </div>
+    </div>
+
+    <div class="form-group row col-md-7">
+      <label for="PropertyID" class="col-sm-3 col-form-label" translate>Property ID</label>
+      <div class="col-sm-9">
+        <input type="text" disabled class="form-control" [disabled]="disable"
+          [(ngModel)]="titleDeedRegistration.Property_ID" name="PropertyID" id="PropertyID"
+          [placeholder]="'Property ID' | translate">
+      </div>
+    </div>
+    <div class="form-group row col-md-7">
+      <label for="RegistrationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>
+      <div class="col-sm-9">
+        <input type="Date" class="form-control" [disabled]="disable" [(ngModel)]="titleDeedRegistration.Date"
+          name="RegistrationDate" id="RegistrationDate" [placeholder]="'Registration Date' | translate"
+          #RegistrationDate="ngModel" [ngClass]="{ 'is-invalid': RegistrationDate.invalid }" required>
+      </div>
+    </div>
+    <div class="form-group row col-md-7"
+      *ngIf="titleDeedRegistrationList && titleDeedRegistrationList != 'undefined' && titleDeedRegistrationList.length>0 && ((!titleDeedRegistration.Parent_Deed_ID && isnew)|| (titleDeedRegistration.Parent_Deed_ID && !isnew)) ">
+      <label for="ParentDeedID" class="col-sm-3 col-form-label" translate>Parent Deed ID</label>
+      <div class="col-sm-9">
+        <select class="form-control" [disabled]="disable" [(ngModel)]="titleDeedRegistration.Parent_Deed_ID"
+          name="ParentDeedID" id="ParentDeedID" #ParentDeedID="ngModel"
+          [ngClass]="{ 'is-invalid': ParentDeedID.invalid }" required>
+          <option disabled translate>select</option>
+          <option *ngFor="let deed of titleDeedRegistrationList;" [value]="deed.Ownership_ID">{{deed.Ownership_ID}}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row col-md-7">
+      <label for="IsActive" class="col-sm-3 col-form-label" translate>Is Active</label>
+      <div class="col-sm-8">
+        <p-checkbox [disabled]="disable" [(ngModel)]="titleDeedRegistration.Is_Active" name="IsActive" id="IsActive"
+          binary="true"></p-checkbox>
+      </div>
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary" *ngIf="!isnew && !disable" (click)="save();" [disabled]="!f.valid"
+    translate>Save</button>
+  <button type="button" class="btn btn-primary" *ngIf="isnew && !disable" (click)="add()" [disabled]="!f.valid"
+    translate>Save</button>
+  <button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="!f.valid" *ngIf="!isnew && !disable"
+    translate>Delete</button>
+</form>
+
+
+<p-table [value]="titleDeedRegistrationList" [paginator]="true" [rows]="1">
+  <ng-template pTemplate="header">
+    <tr>
+      <th scope="col" translate>Ownership Id</th>
+      <th scope="col" translate>Date</th>
+      <th scope="col" translate>isActive</th>
+      <th scope="col">
+        <button type="button" class="btn btn-primary" (click)=" adddeed()" *ngIf="!disable" translate>Add New</button>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-deed>
+    <tr [class.active]="deed.selected">
+      <td>{{deed.Ownership_ID}}</td>
+      <td>{{deed.Date}}</td>
+      <td>
+        <p-checkbox [(ngModel)]="deed.Is_Active" [disabled]="true" name="Is_Paid" id="Is_Paid" binary="true">
+        </p-checkbox>
+      </td>
+      <td>
+        <button type="button" class="btn btn-primary" (click)="selectdeed(deed)" *ngIf="!disable"
+          translate>Edit</button>
+        <button type="button" class="btn btn-primary" (click)="selectdeed(deed)" *ngIf="disable"
+          translate>Select</button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

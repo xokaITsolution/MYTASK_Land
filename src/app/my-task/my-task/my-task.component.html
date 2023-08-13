@@ -1,0 +1,94 @@
+<div *ngIf="taskList">
+  <div class="m-10" *ngIf="taskList.length>0"><span translate>You have </span>{{taskList.length}} <span translate>number of active tasks waiting</span></div>
+
+  <div>
+
+    <p-table [value]="taskList" [paginator]="true" [rows]="10">
+      <ng-template pTemplate="header">
+        <tr>
+          <th translate>#</th>
+          <th translate>Application</th>
+          <th translate>Date</th>
+          <th translate>Task Description</th>
+          <th translate>Task Status</th>
+          <th translate>Message</th>
+          <th translate>Type</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-task>
+
+
+        <tr [class.green]="
+            task.status == 'O' ||
+            task.status == 'A  ' ||
+            task.status == 'R  ' ||
+            task.status == 'AS'
+          " [class.yelow]="
+            task.status == 'S' || task.status == 'P' || task.status == 'B'
+          " [class.red]="task.Minutes_late > 0">
+          <td>{{ task.number }}</td>
+          <td *ngIf="task.status == 'O' || task.status == 'A  '">**********</td>
+          <td *ngIf="task.status !== 'O' && task.status !== 'A  '">
+            {{ task.todo_comment }}
+          </td>
+          <td>{{task.start_date}}</td>
+          <td>{{task.description}}</td>
+          <td>{{task.status}}</td>
+          <td (mouseenter)="task.showButton = true" (mouseleave)="task.showButton = false">
+            <span *ngIf="task.showButton" (click)="showMessage(task.todo_comment, task)" translate>
+              <span class="pi pi-comment"></span>
+              Show message
+            </span>
+          </td>
+          <td>{{task.TaskType}}</td>
+          <td>
+            <button  class="btn btn-primary" type="button" (click)="IsLockedBy_OtherUser(task)" translate>Pick</button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+<ngx-smart-modal identifier="messages">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left" translate>Message</h4>
+  </div>
+  <div class="modal-body">
+
+    <div *ngIf="!loadingMessage">
+      <div *ngIf="!messageObj.messages" class="alert alert-info message-not-available" role="alert" translate>
+        No message available!
+      </div>
+      <div class="messages-container" *ngIf="messageObj.messages">
+        <div class="message-box">
+          <textarea rows="8" class="form-control"
+            disabled>{{ messageObj.messages ? messageObj.currentMessage : null }}</textarea>
+        </div>
+        <div class="message-next-prev">
+          <button type="button" class="btn btn-light" [disabled]="!canGo(direction.PREV)" (click)="navigateMessage(direction.PREV)" translate>
+            <span class="pi pi-angle-left"></span>
+            Previous
+          </button>
+          <button type="button" class="btn btn-light" [disabled]="!canGo(direction.NEXT)" (click)="navigateMessage(direction.NEXT)" translate>
+            Next
+            <span class="pi pi-angle-right"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="loadingMessage" class="loading-spinner-container">
+      <span class="loading-spinner" translate>
+        <span class="pi pi-spin pi-spinner"></span>
+        Loading...
+      </span>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="closeModal('messages')" translate>Done</button>
+  </div>
+</ngx-smart-modal>
+<simple-notifications></simple-notifications>
+

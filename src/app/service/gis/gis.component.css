@@ -1,0 +1,38 @@
+:host {
+  --them-background-color: rgb(196, 196, 196);
+}
+
+.map-container {
+  /* position: absolute; */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 30px;
+  display: flex;
+  flex-direction: row;
+  /* margin-top: 15vh !important; */
+}
+
+.map-frame {
+  border: 2px solid black;
+  width: 100%;
+  height: 90vh;
+}
+
+#map {
+  height: 100%;
+}
+
+.ellipsis-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 90%;
+}
+
+.layer-list {
+  height: 35vh;
+  overflow-y: scroll;
+}
+

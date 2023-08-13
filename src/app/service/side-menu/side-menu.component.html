@@ -1,0 +1,17 @@
+<div class="list-group list-group-horizontal" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <a (click)="gotoForm('Plot')" class="list-group-item list-group-item-action"
+        [ngClass]="{ 'bg-primary text-white': currentForm == '1'}" translate>
+        Plot Registration</a>
+    <a (click)="gotoForm('Property')" class="list-group-item list-group-item-action"
+        [ngClass]="{ 'bg-primary text-white': currentForm == '2'}" translate>
+        Property Registration</a>
+</div>
+<!--
+<div class="list-group" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+  <a (click)="navigateByUrl('d052559d-4f90-4051-9087-9718e0d19849')" class="list-group-item list-group-item-action"
+    [ngClass]="{ 'bg-primary text-white': formcode == 'd052559d-4f90-4051-9087-9718e0d19849'}" translate>
+    Plot Registration</a>
+  <a (click)="navigateByUrl('114F025B-ADB1-4419-8C08-F7BF654A027D')" class="list-group-item list-group-item-action"
+    [ngClass]="{ 'bg-primary text-white': formcode == '114F025B-ADB1-4419-8C08-F7BF654A027D'}" translate>
+    Property Registration</a>
+</div> -->

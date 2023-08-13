@@ -1,0 +1,194 @@
+<form *ngIf="deptForm"  #f="ngForm" novalidate name="deptForm">
+  <div class="form-row">
+
+    <div class="form-group row col-md-7">
+      <label for="DebtSuspendID" class="col-sm-3 col-form-label" translate>Debt Suspend ID</label>
+      <div class="col-sm-9">
+        <input disabled type="text" class="form-control" [(ngModel)]="deptSuspensionRecord.ID" name="DebtSuspendID"
+               id="DebtSuspendID" placeholder="Debt Suspend ID">
+      </div>
+    </div>
+    <div class="form-group row col-md-5">
+      <label for="IsSuspended" class="col-sm-4 col-form-label" translate>Is Suspended</label>
+      <div class="col-sm-8">
+        <p-checkbox [(ngModel)]="deptSuspensionRecord.Is_Suspended"  [disabled]="disable" name="IsSuspended" id="IsSuspended"
+                    binary="true"></p-checkbox>
+      </div>
+    </div>
+
+    <div class="form-group row col-md-7">
+      <label for="VersionID" class="col-sm-3 col-form-label" translate>Version ID</label>
+      <div class="col-sm-9">
+        <input type="text" disabled class="form-control"  [disabled]="disable" [(ngModel)]="deptSuspensionRecord.Certificate_Version_No"
+               name="VersionID" id="VersionID" placeholder="Version ID">
+      </div>
+    </div>
+    <div class="form-group row col-md-5">
+      <label for="IsReleased" class="col-sm-4 col-form-label" translate>Is Released</label>
+      <div class="col-sm-8">
+        <p-checkbox [(ngModel)]="deptSuspensionRecord.Is_Released"  [disabled]="disable" name="IsReleased" id="IsReleased"
+                    binary="true"></p-checkbox>
+      </div>
+    </div>
+
+    <div class="form-group row col-md-7">
+      <label for="SuspendedBy" class="col-sm-3 col-form-label" translate>Suspended By</label>
+      <div class="col-sm-7">
+        <select  class="form-control"  disabled [(ngModel)]="deptSuspensionRecord.Suspended_By"
+                name="SuspendedBy"
+                id="SuspendedBy">
+          <option disabled translate>select</option>
+          <option *ngFor="let customer of serviceComponent.CustomerBankLookUP;" [value]="customer.Customer_ID">
+            {{customer.FullName_EN}}
+          </option>
+
+        </select>
+        
+        <div class="col-sm-2">
+          <button type="button" *ngIf="!disable" class="btn btn-secondary" (click)="openModal('Customer')" translate>Slelect Customer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row col-md-7">
+      <label for="StartDate" class="col-sm-3 col-form-label" translate>Start Date</label>
+      <div class="col-sm-9">
+        <input type="Date" class="form-control"  [disabled]="disable" [(ngModel)]="deptSuspensionRecord.Suspend_Start_Date" name="StartDate"
+               id="StartDate" placeholder="Start Date"
+               #StartDate="ngModel" [ngClass]="{ 'is-invalid': StartDate.invalid }" [min]= "currntDate">
+      </div>
+    </div>
+
+    <div class="form-group row col-md-7">
+      <label for="EndDate" class="col-sm-3 col-form-label" translate>End Date</label>
+      <div class="col-sm-9">
+        <input type="Date" class="form-control"  [disabled]="disable" [(ngModel)]="deptSuspensionRecord.Suspend_End_Date" name="EndDate"
+               id="EndDate" placeholder="End Date" #EndDate="ngModel" [ngClass]="{ 'is-invalid': EndDate.invalid }" [min]="deptSuspensionRecord.Suspend_Start_Date">
+      </div>
+    </div>
+
+    <div class="form-group row col-md-7">
+      <label for="SuspendedReason" class="col-sm-3 col-form-label" translate>Suspended Reason</label>
+      <div class="col-sm-9">
+        <select class="form-control"   [disabled]="disable" [(ngModel)]="deptSuspensionRecord.Suspend_Reason" name="SuspendedReason"
+                id="SuspendedReason">
+          <option disabled translate>select</option>
+          <option *ngFor="let SuspendedReason of serviceComponent.SuspendedReasonLookUP;" [value]="SuspendedReason.ID">
+            {{SuspendedReason.Suspension_Reason}}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group row col-md-7">
+      <label for="LetterRefNo" class="col-sm-3 col-form-label" translate>Letter Ref No</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control"  [disabled]="disable" [(ngModel)]="deptSuspensionRecord.Letter_Ref_No" name="LetterRefNo"
+               id="LetterRefNo" placeholder="Letter Ref No">
+      </div>
+    </div>
+    <div class="form-group row col-md-7">
+      <label for="LetterRefDate" class="col-sm-3 col-form-label" translate>Letter Ref Date</label>
+      <div class="col-sm-9">
+        <input type="date" class="form-control"  [disabled]="disable" [(ngModel)]="deptSuspensionRecord.Letter_Ref_Date" name="LetterRefDate"
+               id="LetterRefDate" placeholder="Letter Ref Date">
+      </div>
+    </div>
+
+    <div class="form-group row col-md-7">
+      <label for="Remark" class="col-sm-3 col-form-label" translate>Remark</label>
+      <div class="col-sm-9">
+        <textarea class="form-control"  [disabled]="disable" [(ngModel)]="deptSuspensionRecord.Remark" name="Remark" id="Remark"
+                  placeholder="Remark">
+
+        </textarea>
+      </div>
+    </div>
+
+
+  </div>
+  <div class="btn-toolbar" *ngIf="deptSuspensionRecord.ID  && !disable"><!--
+    <button  type="button" class="btn btn-primary mr-2" (click)="add()">New Version</button>-->
+    <button type="button" [disabled]="f.invalid"  class="btn btn-primary" (click)="save()" translate>Save</button>
+  </div>
+  <div class="btn-toolbar" *ngIf="!deptSuspensionRecord.ID  && !disable">
+    <button type="button" class="btn btn-primary" (click)="add()" translate>Save</button>
+  </div>
+</form>
+
+
+<p-table [value]="deptSuspensionRecordList" [paginator]="true" [rows]="5">
+  <ng-template pTemplate="header">
+    <tr >
+      <th scope="col" translate>Certefcate Version No</th>
+      <th scope="col" translate>Is Released</th>
+      <th scope="col" translate>Is Suspended</th>
+      <th scope="col" translate>Suspension Start Date</th>
+      <th scope="col" translate>Suspension End Date</th>
+      <th scope="col">
+        <button type="button" class="btn btn-primary" (click)=" adddeed()" *ngIf="!disable" translate>Add New</button>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-dept>
+    <tr [class.active]="dept == deptSuspensionRecord">
+      <td>{{dept.Certificate_Version_No}}</td>
+      <td>
+        <p-checkbox [(ngModel)]="dept.Is_Released" [disabled]="true" name="Is_Released" id="Is_Released"
+                    binary="true"></p-checkbox>
+      <td>
+        <p-checkbox [(ngModel)]="dept.Is_Suspended" [disabled]="true" name="Is_Suspended" id="Is_Suspended"
+                    binary="true"></p-checkbox>
+      </td>
+      <td>{{dept.Suspend_Start_Date}}</td>
+      <td>{{dept.Suspend_End_Date}}</td>
+      <td>
+        <button type="button" class="btn btn-primary" (click)="selectdeed(dept)" translate>Edit</button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+
+<ngx-smart-modal #Customer identifier="Customer">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left" translate>Suspended By</h4>
+  </div>
+  <div class="modal-body">
+
+
+    <p-table #dt [value]="serviceComponent.CustomerBankLookUP" [paginator]="true" [rows]="5"
+             [globalFilterFields]="['TIN','FullName_AM','FullName_EN','Applicant_Mother_Name_AM','Applicant_Mother_Name_EN','Mobile_No']">
+      <ng-template pTemplate="caption">
+        <div style="text-align: right">
+          <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+          <input type="text" pInputText size="50" placeholder="Global Filter"
+                 (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th translate>TIN</th>
+          <th translate>Full Name AM</th>
+          <th translate>Full Name EN</th>
+          <th translate>Mother Name AM</th>
+          <th translate>Mother Name EN</th>
+          <th translate>mobile Number</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-Customer>
+        <tr (click)="closeModal(Customer,'Customer')">
+          <td>{{Customer.TIN}}</td>
+          <td>{{Customer.FullName_AM}}</td>
+          <td>{{Customer.FullName_EN}}</td>
+          <td>{{Customer.Applicant_Mother_Name_AM}}</td>
+          <td>{{Customer.Applicant_Mother_Name_EN}}</td>
+          <td>{{Customer.Mobile_No}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+
+  </div>
+</ngx-smart-modal>
+

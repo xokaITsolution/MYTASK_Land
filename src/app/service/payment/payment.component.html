@@ -1,0 +1,191 @@
+<div>
+  <div class="m-3">
+    <p-table [value]="PaymentList" [paginator]="true" [rows]="5">
+      <ng-template pTemplate="header">
+        <tr>
+          <th scope="col" translate>Description</th>
+          <th scope="col" translate>Amount</th>
+          <th scope="col" translate>Invoice NO</th>
+          <th scope="col" translate>Payment Date</th>
+          <th scope="col">
+          </th>
+          <th scope="col">
+          </th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-payment>
+        <tr [class.active]="payment == currpayment">
+          <td>{{payment.Description}}</td>
+          <td>{{Amount}}</td>
+          <td>
+              <span  *ngIf="!disable"><input type="text"  class="form-control" [(ngModel)]="payment.Invoice_No"></span>
+            
+            <span  *ngIf="disable">{{payment.Invoice_No}}</span>
+          </td>
+          <td>{{payment.Date_Paid}}</td>
+          <td>
+            <button *ngIf="!disable" type="button" class="btn btn-primary" (click)="SavePayment(payment)" translate>Save</button>
+          </td>
+          <td>
+            <button type="button" class="btn btn-primary" (click)="SelectPayment(payment)" translate>select</button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+
+    <div class="m-3" *ngIf="PaymentForm">
+      <p-table [value]="PaymentDetailList" [paginator]="true" [rows]="5">
+        <ng-template pTemplate="header">
+          <tr>
+          <th scope="col" translate>TaskID</th>
+            <th scope="col" translate>Description</th>
+            <th scope="col" translate>Price Amount</th>
+            <th scope="col" translate>Remarks</th>
+            <th scope="col" translate>is Paid</th>
+            <th scope="col">
+              <button type="button" *ngIf="!disable" class="btn btn-primary" (click)="AddPaymentDetail()" translate>Add New</button>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-paymentDetail2>
+          <tr [class.active]="paymentDetail2 == PaymentDetail">
+            <td>{{paymentDetail2.Task_ID}}</td>
+            <td>{{paymentDetail2.Payment_Description}}</td>
+            <td>{{paymentDetail2.Price}}</td>
+            <td>{{paymentDetail2.Remark}}</td>
+            <td>
+              <p-checkbox [(ngModel)]="paymentDetail2.Is_Paid" [disabled]="true" name="Is_Paid" id="Is_Paid"
+                          binary="true"></p-checkbox>
+            </td>
+            <td>
+              <!--<button type="button" class="btn btn-primary" (click)="SelectPayment(paymentDetail)"
+                      *ngIf="environmenter.username==paymentDetail.Updated_By" translate>Edit
+              </button>-->
+              <button *ngIf="!disable" type="button" class="btn btn-primary" (click)="SelectPaymentDetail(paymentDetail2)"
+                      translate>Edit
+              </button>
+              <button *ngIf="disable" type="button" class="btn btn-primary" (click)="SelectPaymentDetail(paymentDetail2)"
+                      translate>select
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <div *ngIf="payedit" class="m-3 mb-5">
+
+        <form   #f="ngForm" novalidate name="payform">
+          <div class="col-sm-12 row">
+
+            <div class="form-group row col-sm-12">
+              <div class="col-sm-2"><label translate>description</label></div>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" [disabled]="disable"  [(ngModel)]="PaymentDetail.Payment_Description"
+                       name="Payment_Description"
+                       id="Payment_Description" [placeholder]="'Payment Description' | translate">
+              </div>
+
+            </div>
+
+            <div class="form-group row col-sm-12">
+              <div class="col-sm-2"><label translate>price Amount</label></div>
+              <div class="col-sm-10">
+                <input type="number" class="form-control" [disabled]="disable"  [(ngModel)]="PaymentDetail.Price" name="Price"
+                       id="Price" [placeholder]="'Price' | translate">
+              </div>
+
+            </div>
+
+            <div class="form-group row col-sm-12">
+              <div class="col-sm-2"><label translate>Remark</label></div>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" [disabled]="disable"  [(ngModel)]="PaymentDetail.Remark" name="Remark"
+                       id="Remark" [placeholder]="'Remark' | translate">
+              </div>
+
+            </div>
+            <div class="form-group row col-sm-12">
+              <div class="col-sm-2"><label translate>Process Invoice</label></div>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" [disabled]="disable"  [(ngModel)]="PaymentDetail.Process_Invoice" name="Process_Invoice"
+                       id="Process_Invoice" [placeholder]="'Process Invoice' | translate">
+              </div>
+              <div [hidden]="true" class="form-group row col-sm-12">
+                <div class="col-sm-2"><label translate>Pidd</label></div>
+              <div class="col-sm-10">
+               
+                <input type="text" class="form-control" [disabled]="disable"  [(ngModel)]="PaymentDetail.PIDDID" name="PIDDID"
+                       id="PIDDID" [placeholder]="'pay idd' | translate">
+              </div>
+            </div>
+
+</div>
+
+            <div class="form-group row col-sm-10">
+              <div class="col-sm-3"><label translate>Printed</label></div>
+              <div class="col-sm-9">
+                <p-checkbox [(ngModel)]="PaymentDetail.Printed" [disabled]="disable" name="Printed" id="Printed"
+                            binary="true"></p-checkbox>
+              </div>
+            </div>
+
+              <div class="form-group row col-sm-10">
+                <div class="col-sm-3"><label translate>IS Paid</label></div>
+                <div class="col-sm-9">
+                  <p-checkbox [(ngModel)]="PaymentDetail.Is_Paid" [disabled]="disable" name="Is_Paid" id="Is_Paidedit"
+                              binary="true"></p-checkbox>
+                </div>
+
+            </div>
+
+
+            <div class="col-sm-2 pull-right">
+              <button class="btn btn-primary" type="button" [disabled]="!f.valid"  *ngIf="isnew && !disable" (click)="AddnewPaymentDetail(PaymentDetail);" translate>Save</button>
+              <button class="btn btn-primary" type="button" [disabled]="!f.valid"  *ngIf="!isnew && !disable" (click)="SavePaymentDetail(PaymentDetail)"  translate>Save</button>
+            </div>
+          </div>
+
+
+        </form>
+      </div>
+      <div class="col-sm-12 mt-5">
+        <div class="text-center row">
+          <label class="col-sm-2" translate>Total Amount</label>
+          <div class="col-sm-4">
+            <input type="text" disabled class="form-control" [(ngModel)]="Amount">
+          </div><!--
+          <div class="col-sm-2">
+            <button class="btn btn-primary" type="button" translate>Save</button>
+          </div>-->
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="pull-right">
+  <button  *ngIf="!disable" type="button" class="btn btn-primary" (click)="prossesPayment('PaymentProcess')" translate>Process Payment</button>
+</div>
+</div>
+
+
+
+
+<ngx-smart-modal class="nsm-dialog" #PaymentProcess identifier="PaymentProcess">
+  
+
+  
+  <div class="modal-header">
+    <h4 class="modal-title pull-left" translate>Process Payment</h4>
+  </div>
+  <div class="modal-body">
+
+    <div class="mt-3">
+      <iframe  class="nsm-dialog" height="2000px" [src]="PaymentProcessPath" ></iframe>
+    </div>
+
+  </div>
+<!--  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="closeModal('GisViewer')" translate>Done</button>
+  </div>-->
+</ngx-smart-modal>
+

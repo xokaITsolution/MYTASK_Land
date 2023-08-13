@@ -1,0 +1,344 @@
+<form #f="ngForm" class="row" novalidate name="rentform">
+
+    <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Rent Contract Id</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" [(ngModel)]="selectedContract.rent_contract_id"
+                name="rent_contract_id" id="rent_contract_id" #rent_contract_id="ngModel"
+                [ngClass]="{ 'is-invalid': rent_contract_id.invalid }" required disabled>
+        </div>
+    </div>
+
+    <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Property Id</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" [(ngModel)]="selectedContract.property_id" name="property_id"
+                id="property_id" #property_id="ngModel" [ngClass]="{ 'is-invalid': property_id.invalid }" required
+                disabled>
+        </div>
+    </div>
+
+    <!-- <div class="form-group row col-md-6">
+    <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>From Organization Code</label>
+    <div class="col-sm-9">
+      <input type="text" class="form-control" [(ngModel)]="selectedContract.from_organization_code"
+        name="from_organization_code" id="from_organization_code" #from_organization_code="ngModel"
+        [ngClass]="{ 'is-invalid': from_organization_code.invalid }" required disabled>
+    </div>
+  </div> -->
+
+    <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Rent Contract Type</label>
+        <div class="col-sm-9">
+            <select class="form-control" [(ngModel)]="selectedContract.rent_contract_type" name="rent_contract_type"
+                id="rent_contract_type" #rent_contract_type="ngModel"
+                [ngClass]="{ 'is-invalid': rent_contract_type.invalid }" required>
+                <option disabled>select</option>
+                <option *ngFor="let rentContractType of rentContractTypes;" [value]="rentContractType.lkdetail_code">
+                    {{rentContractType.english_description}}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group row col-md-6">
+        <label for="to_Customer" class="col-sm-3 col-form-label" translate>Customer</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" [(ngModel)]="selectedContract.to_Customer" name="to_Customer"
+                id="to_Customer" #to_Customer="ngModel" [ngClass]="{ 'is-invalid': to_Customer.invalid }" required
+                disabled>
+            <button type="button" class="btn btn-secondary btn-lg mt-1" (click)="openModal('customer')">Select
+                cutomer</button>
+        </div>
+    </div>
+
+
+    <!--
+    <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Service Code</label>
+        <div class="col-sm-9">
+            <select class="form-control" [(ngModel)]="selectedContract.service_code" name="service_code" id="service_code" #service_code="ngModel" [ngClass]="{ 'is-invalid': service_code.invalid }" required>
+              <option disabled>select</option>serviceCode
+              <option *ngFor="let p of serviceCode;" [value]="p.name">{{p.name}}</option>
+          </select>
+        </div>
+    </div> -->
+
+    <!-- <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Application Code</label>
+        <div class="col-sm-9">
+            <select class="form-control" [(ngModel)]="selectedContract.application_code" name="application_code" id="application_code" #application_code="ngModel" [ngClass]="{ 'is-invalid': application_code.invalid }" required>
+              <option disabled>select</option>
+              <option *ngFor="let p of applicationCode;" [value]="p.name">{{p.name}}</option>
+          </select>
+        </div>
+    </div> -->
+    <!--
+    <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Application No</label>
+        <div class="col-sm-9">
+            <select class="form-control" [(ngModel)]="selectedContract.application_no" name="application_no" id="application_no" #application_no="ngModel" [ngClass]="{ 'is-invalid': application_no.invalid }" required>
+              <option disabled>select</option>
+              <option *ngFor="let p of propertyType;" [value]="p.name">{{p.name}}</option>
+          </select>
+        </div>
+    </div> -->
+
+    <!-- <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>To Customer</label>
+        <div class="col-sm-9">
+            <select class="form-control" [(ngModel)]="selectedContract.to_customer" name="to_customer" id="to_customer" #to_customer="ngModel" [ngClass]="{ 'is-invalid': to_customer.invalid }" required>
+              <option disabled>select</option>
+              <option *ngFor="let customer of serviceComponent.CustomerLookUP;" [value]="customer.Customer_ID">
+                {{customer.FullName_EN}}
+              </option>
+          </select>
+        </div>
+    </div> -->
+
+    <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Currency</label>
+        <div class="col-sm-9">
+            <!-- <input type="text" class="form-control" [(ngModel)]="selectedContract.currency" name="currency" id="currency"
+        [placeholder]="'Currency' | translate" #currency="ngModel" [ngClass]="{ 'is-invalid': currency.invalid }"
+        required> -->
+            <select class="form-control" [(ngModel)]="selectedContract.currency" name="currency" id="currency"
+                #currency="ngModel" [ngClass]="{ 'is-invalid': currency.invalid }" required>
+                <option disabled>select</option>
+                <option *ngFor="let currency of currencies" [value]="currency.currencyID">{{currency.name}}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Unit</label>
+        <div class="col-sm-9">
+            <!-- <input type="text" class="form-control" [(ngModel)]="selectedContract.unit" name="unit" id="unit"
+        [placeholder]="'Unit' | translate" #unit="ngModel" [ngClass]="{ 'is-invalid': unit.invalid }" required> -->
+            <select class="form-control" [(ngModel)]="selectedContract.unit" name="unit" id="unit" #unit="ngModel"
+                [ngClass]="{ 'is-invalid': unit.invalid }" required>
+                <option disabled>select</option>
+                <option *ngFor="let unit of units" [value]="unit.unit">{{unit.description}}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Price</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" [(ngModel)]="selectedContract.price" name="price" id="price"
+                [placeholder]="'Price' | translate" #price="ngModel" [ngClass]="{ 'is-invalid': price.invalid }"
+                required>
+        </div>
+    </div>
+
+    <div class="form-group row col-md-6">
+        <label for="start_date" class="col-sm-3 col-form-label" translate>Start Date</label>
+        <div class="col-sm-9">
+            <input type="date" class="form-control" [(ngModel)]="selectedContract.start_date" name="start_date"
+                id="start_date" [placeholder]="'Start Date' | translate" #start_date="ngModel"
+                [ngClass]="{ 'is-invalid': start_date.invalid }" required>
+        </div>
+    </div>
+
+
+    <div class="form-group row col-md-6">
+        <label for="end_date" class="col-sm-3 col-form-label" translate>End Date</label>
+        <div class="col-sm-9">
+            <input type="date" class="form-control" [(ngModel)]="selectedContract.end_date" name="end_date"
+                id="end_date" [placeholder]="'End Date' | translate" #end_date="ngModel"
+                [ngClass]="{ 'is-invalid': end_date.invalid }" required>
+        </div>
+    </div>
+
+    <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Renew Year</label>
+        <div class="col-sm-9">
+            <p-checkbox name="single" [(ngModel)]="selectedContract.renew_year" binary="true"></p-checkbox>
+        </div>
+    </div>
+
+    <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Renew Contract Document</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" [(ngModel)]="selectedContract.renew_contract_document"
+                name="renew_contract_document" id="renew_contract_document"
+                [placeholder]="'Renew Contract Document' | translate" #renew_contract_document="ngModel"
+                [ngClass]="{ 'is-invalid': renew_contract_document.invalid }">
+        </div>
+    </div>
+
+
+    <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Main Contract Document</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" [(ngModel)]="selectedContract.main_contract_document"
+                name="main_contract_document" id="main_contract_document"
+                [placeholder]="'Main Contract Document' | translate" #main_contract_document="ngModel"
+                [ngClass]="{ 'is-invalid': main_contract_document.invalid }">
+        </div>
+    </div>
+
+    <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Parent Contact</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" [(ngModel)]="selectedContract.parent_contact" name="parent_contact"
+                id="parent_contact" [placeholder]="'Parent Contact' | translate" #parent_contact="ngModel"
+                [ngClass]="{ 'is-invalid': parent_contact.invalid }">
+        </div>
+    </div>
+
+    <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Terminate</label>
+        <div class="col-sm-9">
+            <p-checkbox name="terminate" [(ngModel)]="selectedContract.terminate" binary="true"></p-checkbox>
+        </div>
+    </div>
+
+    <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Terminate Remark</label>
+        <div class="col-sm-9">
+            <p-checkbox name="terminate_remark" [(ngModel)]="selectedContract.terminate_remark" binary="true">
+            </p-checkbox>
+        </div>
+    </div>
+
+    <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Active</label>
+        <div class="col-sm-9">
+            <p-checkbox name="active" [(ngModel)]="selectedContract.is_active" binary="true"></p-checkbox>
+        </div>
+    </div>`
+
+    <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Active Remark</label>
+        <div class="col-sm-9">
+            <p-checkbox name="active_remark" [(ngModel)]="selectedContract.active_remark" binary="true"></p-checkbox>
+        </div>
+    </div>
+
+    <div class="form-group row col-md-6">
+        <label for="Description" class="col-sm-3 col-form-label" translate>Reference Letter</label>
+        <div class="col-sm-9">
+            <textarea class="form-control" [(ngModel)]="selectedContract.reference_letter" name="Description"
+                id="Description" [placeholder]="'Reference Letter' | translate"></textarea>
+        </div>
+    </div>
+
+    <div class="form-group row col-md-6">
+        <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Document Id</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" [(ngModel)]="selectedContract.document_id" name="document_id"
+                id="document_id" [placeholder]="'Document Id' | translate" #document_id="ngModel"
+                [ngClass]="{ 'is-invalid': document_id.invalid }">
+        </div>
+    </div>
+
+    <div class="form-group row col-md-6">
+        <label for="end_date" class="col-sm-3 col-form-label" translate>Contract No</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" [(ngModel)]="selectedContract.contract_NO" name="contract_NO"
+                id="contract_NO" [placeholder]="'Select Contract number' | translate" #contract_NO="ngModel"
+                [ngClass]="{ 'is-invalid': contract_NO.invalid }" required disabled>
+            <Button type="button" class="btn btn-secondary btn-lg mt-1" (click)="openModal('contract-no')">Select
+                Contract
+                number</Button>
+        </div>
+    </div>
+
+    <div class="form-group row col-md-12">
+        <div class="col-sm-9">
+            <button *ngIf="isNew" [disabled]="!f.valid" class="btn btn-primary ml-3" (click)="addContract()"
+                translate>Save</button>
+            <button *ngIf="!isNew" [disabled]="!f.valid" class="btn btn-primary ml-3" (click)="updateContract()"
+                translate>Save</button>
+            <button class="btn btn-success ml-3" (click)="openModal('letter')" translate>print contract</button>
+            <button *ngIf="!isNew" class="btn btn-danger ml-3" (click)="deleteContract()" translate>Delete</button>
+        </div>
+    </div>
+
+</form>
+
+<!--letter-->
+<ngx-smart-modal #letter identifier="letter">
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Letter</h4>
+    </div>
+    <div class="modal-body">
+        <!-- <iframe [src]="letterUrl"> -->
+        <iframe [src]="letterUrl.full" class="letter-window">
+        </iframe>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="closeModal('letter')" translate>Close</button>
+    </div>
+</ngx-smart-modal>
+
+<!--customer modal-->
+<ngx-smart-modal #customer identifier="customer">
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Customer</h4>
+    </div>
+    <div class="modal-body">
+
+        <p-table [value]="customers" [paginator]="true" [rows]="5">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th scope="col" translate>Customer id</th>
+                    <th scope="col" translate>name</th>
+                    <th scope="col" translate>telephone</th>
+                    <th scope="col" translate>address</th>
+                    <th scope="col" translate>website</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-customer>
+                <tr [class.active]="customer == selectedCustomer" (click)="selectCustomer(customer)">
+                    <td>{{customer.customer_ID}} </td>
+                    <td>{{customer.name}} </td>
+                    <td>{{customer.telephone_Office}}</td>
+                    <td>{{customer.address}}</td>
+                    <td>{{customer.website}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="closeModal('customer')" translate>Close</button>
+    </div>
+</ngx-smart-modal>
+
+<!--customer modal-->
+<ngx-smart-modal #contractNo identifier="contract-no">
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Contract</h4>
+    </div>
+    <div class="modal-body">
+
+        <p-table [value]="contracts" [paginator]="true" [rows]="5">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th scope="col" translate>Application code</th>
+                    <th scope="col" translate>Contract name</th>
+                    <th scope="col" translate>Contract number</th>
+                    <th scope="col" translate>Contract type</th>
+                    <th scope="col" translate>div</th>
+                    <th scope="col" translate>Organizatio id</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-contract>
+                <tr [class.active]="contract == selectedContractNo" (click)="selectContact(contract)">
+                    <td>{{contract.application_Code}} </td>
+                    <td>{{contract.contact_Name}} </td>
+                    <td>{{contract.contract_No}}</td>
+                    <td>{{contract.contract_Type}}</td>
+                    <td>{{contract.div}}</td>
+                    <td>{{contract.organization_ID}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="closeModal('contract-no')" translate>Close</button>
+    </div>
+</ngx-smart-modal>
