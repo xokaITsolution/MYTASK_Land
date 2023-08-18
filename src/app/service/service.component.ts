@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewEncapsulation, } from '@angular/core';
+import { Component, Input, OnInit,Renderer2, ElementRef, TemplateRef, ViewEncapsulation, } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ServiceService } from './service.service';
 import { NotificationsService } from 'angular2-notifications';
@@ -21,12 +21,13 @@ type AOA = any[][];
   styleUrls: ['./demo/demo.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
+
 export class ServiceComponent implements OnInit {
   [x: string]: any;
   data: AOA = [[1, 2], [3, 4]];
   wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
   fileName: string = 'SheetJS.xlsx';
-
+  @Input('isDisabled') isDisabled: boolean;
   _opened = false;
   public ID = 0;
   loading = true;
@@ -176,6 +177,7 @@ export class ServiceComponent implements OnInit {
     public serviceService: ServiceService, private router: Router,
     private notificationsService: NotificationsService, private sanitizer: DomSanitizer,
     public ngxModal: NgxSmartModalService,
+    private renderer: Renderer2, private el: ElementRef
   ) {
 
   }

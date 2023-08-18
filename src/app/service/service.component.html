@@ -224,7 +224,7 @@
 
     <!-- [disabled]="disablefins" -->
     <div class="btn-group">
-    <span class="btn-group" dropdown [isDisabled]="serviceService.disablefins">
+    <!-- <span class="btn-group" dropdown [isDisabled]="serviceService.disablefins">
       <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle mr-2 "
         aria-controls="dropdown-basic" translate>Required Action</button>
       <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
@@ -237,8 +237,25 @@
             (click)="showdialog(DropDownLists.task_rules_code, DropDownLists.rule_Code)">{{DropDownLists.decision_rule_en}}
             </a> </li>
       </ul>
+    </span> -->
+    <span class="btn-group dropup" dropdown [isDisabled]="serviceService.disablefins">
+      <button type="button" 
+      dropdownToggle id="button-basic" aria-controls="dropdown-basic" translate
+              class="btn btn-primary dropdown-toggle"
+              data-bs-toggle="dropdown">
+              Required Action
+      </button>
+      <span class="dropdown-menu dropdown-menu-end " id="dropdown-basic" role="menu" aria-labelledby="button-basic">
+        <li role="menuitem"><a class="dropdown-item" *ngIf="tskTyp!='c800fb16-f961-e111-95d6-00e04c05559b'"
+          (click)="Submit('00000000-0000-0000-0000-000000000000')" translate>Submit</a>
+         <span *ngIf="tskTyp == 'c800fb16-f961-e111-95d6-00e04c05559b'">
+        
+      </span></li>
+        <li *ngFor="let DropDownLists of DropDownList;" role="menuitem"><a class="dropdown-item"
+          (click)="showdialog(DropDownLists.task_rules_code, DropDownLists.rule_Code)">{{DropDownLists.decision_rule_en}}
+          </a> </li>
+        </span>
     </span>
-
     <div class="btn-group"> <button class="btn btn-primary mr-2" (click)="Close()" translate>Pend & close</button></div>
     </div>
 
