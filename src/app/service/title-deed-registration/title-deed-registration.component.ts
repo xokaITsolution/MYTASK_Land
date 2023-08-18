@@ -146,6 +146,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
     this.isnew = true;
     this.titleDeedRegistration = new TitleDeedRegistration();
     this.titleDeedRegistration.Property_ID = this.selectedpro.Property_ID;
+    this.titleDeedRegistration.Is_Active =true
   }
 
   selectdeed(deed) {
@@ -193,7 +194,7 @@ class TitleDeedRegistration {
   public Transfer_To_Customer: string;
   public Parent_Deed_ID: string;
   public Transfer_Type: string;
-  public Is_Active: boolean;
+  public Is_Active: true;
   public Is_Deleted: boolean;
   public Ownership_ID;
   public Licence_Service_Id;

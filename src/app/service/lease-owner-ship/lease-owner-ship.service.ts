@@ -11,6 +11,7 @@ export class LeaseOwnerShipService {
   private learseownerURL = environment.rootPath + 'Lease_and_Owned_Land';  // URL to web api
   private learseownerURLDelete =
     environment.rootPath + "Lease_and_Owned_Land/Delete"; // URL to web api
+  Plot_ID: string;
 
   constructor(private http: HttpClient) {
   }

@@ -33,6 +33,7 @@ export class PlotComponent implements OnChanges {
   plotForm;
   toLease;
   CanDone;
+  toMes;
   isnew;
   noinvalidplot;
   OnParcle = -1;
@@ -114,6 +115,8 @@ export class PlotComponent implements OnChanges {
 
   SelectPLot(plot) {
     this.SelectedPlot = plot;
+    console.log('dfghgfd',plot);
+    
     plot.SDP_ID = this.serviceComponent.licenceData.SDP_ID;
     plot.Licence_Service_ID = this.LicenceData.Licence_Service_ID;
     plot.Application_No = this.AppNo;
@@ -266,6 +269,7 @@ export class PlotComponent implements OnChanges {
               if (!this.Saved) {
                 this.completed.emit();
                 this.Saved = true;
+                this.CanDone = true;
               }
               // this.CanDone = true;
             }
@@ -366,7 +370,7 @@ export class PlotComponent implements OnChanges {
 
   EnableFinsLise() {
     this.isvalidated();
-
+    this.toMes=true;
     this.getPloat();
     this.CanDone = true;
   }

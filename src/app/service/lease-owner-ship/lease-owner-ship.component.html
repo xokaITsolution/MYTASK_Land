@@ -1,4 +1,5 @@
-<form #f="ngForm" novalidate name="leaseform">
+<form #f="ngForm" *ngIf ="isleaseForm"  novalidate name="leaseform">
+  <!--  -->
   <div class="form-row">
     <div class="form-group row col-md-6">
       <label for="LeaseID" class="col-sm-3 col-form-label" translate>Lease ID</label>
@@ -43,7 +44,7 @@
       <label for="SubCity" class="col-sm-3 col-form-label" translate>SubCity</label>
       <div class="col-sm-9">
         <select class="form-control" [disabled]="disable" [(ngModel)]="leaseOwnerShip.SDP_ID" name="SubCity"
-          id="SubCity" #SubCity="ngModel" [ngClass]="{ 'is-invalid': SubCity.invalid }" >
+          id="SubCity" #SubCity="ngModel" [ngClass]="{ 'is-invalid': SubCity.invalid }" (change)="addLease" disabled>
           <option disabled translate>select</option>
           <option  *ngFor="let SubCity of serviceComponent.ServiceDeliveryUnitLookUP;"
             [value]="SubCity.organization_code">{{SubCity.name_en}}
@@ -153,9 +154,9 @@
   <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!addnew && !disable" (click)="save()"
     translate>Save
   </button>
-  <button type="button" class="btn btn-danger ml-3" [disabled]="!f.valid" *ngIf="!addnew && !disable" (click)="Delete()"
+  <!-- <button type="button" class="btn btn-danger ml-3" [disabled]="!f.valid" *ngIf="!addnew && !disable" (click)="Delete()"
     translate>Delete
-  </button>
+  </button> -->
   <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="addnew && !disable" (click)="add()"
     translate>Save
   </button>

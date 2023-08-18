@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   rootPath: window['rootPath'],
   // formPath: '',
-  username: 'BL_Info_Mgr',
+  username: 'BL_Tech_Officer',
   phisicalPath: './assets/i18n/',
   localGisServer: window['local_GIS_server'],
   wfsGeoServer: window['wfs_geoserver'],

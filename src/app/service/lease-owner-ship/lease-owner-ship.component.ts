@@ -12,6 +12,9 @@ import { NgxSmartModalService } from "ngx-smart-modal";
 import { ConfirmationService } from "primeng/api";
 import { Guid } from "guid-typescript";
 import { PlotComponent } from "../plot/plot.component";
+import { Regions } from "../plot-managment/regions";
+import { ServiceService } from "../service.service";
+
 
 @Component({
   selector: 'app-lease-owner-ship',
@@ -20,9 +23,11 @@ import { PlotComponent } from "../plot/plot.component";
 })
 export class LeaseOwnerShipComponent implements OnChanges {
   @Output() completed = new EventEmitter();
+  @Output() hideLeaseForm: EventEmitter<void> = new EventEmitter<void>();
   tasks;
   leaseForm = false;
-  addnew = true;
+  addnew = true
+  isnew = false;
   @Input() SelectedPlot;
   @Input() disable;
   @Input() todoid;
@@ -31,6 +36,11 @@ export class LeaseOwnerShipComponent implements OnChanges {
   @Input() plotId;
   public leaseOwnerShip: LeaseOwnerShip;
   Saved= false;
+  isleaseForm: boolean;
+  zoneOptions=[];
+  selectedRegion
+  woredas =[];
+  
 
 
   constructor(
@@ -38,7 +48,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
     private leaseOwnerShipService: LeaseOwnerShipService,
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    public serviceService:ServiceService,
   ) {
     this.leaseOwnerShip = new LeaseOwnerShip();
     this.leaseOwnerShip.ID = Guid.create().toString();
@@ -52,13 +63,26 @@ export class LeaseOwnerShipComponent implements OnChanges {
         this.leaseOwnerShip.Plot_ID = this.SelectedPlot.Plot_ID;
         console.log("lease select", this.SelectedPlot);
         console.log("lease plot id", this.leaseOwnerShip.Plot_ID);
+         
+    this.leaseOwnerShip.SDP_ID=this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code
+    if( this.leaseOwnerShip.SDP_ID!=null || this.leaseOwnerShip.SDP_ID!=undefined ){
+      this.addLease()
+    }
         
       }
+      // if()
     }
 
     this.leaseForm = false;
-    // this.plotManagment = this.SelectedPlot;
+    //this.leaseOwnerShip = this.SelectedPlot;
   }
+  ngOnInit() {
+    this.leaseOwnerShip.SDP_ID=this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code
+    if( this.leaseOwnerShip.SDP_ID!=null || this.leaseOwnerShip.SDP_ID!=undefined ){
+      this.addLease()
+    }
+  }
+
 
   selectLease(task) {
     this.addnew = false;
@@ -67,14 +91,33 @@ export class LeaseOwnerShipComponent implements OnChanges {
   }
 
   addLease() {
+    this.isleaseForm = true;
     this.leaseOwnerShip = new LeaseOwnerShip();
+    this.leaseOwnerShip.ID = Guid.create().toString();
+    this.leaseOwnerShip.Plot_ID = this.SelectedPlot.Plot_ID;
     this.leaseOwnerShip.todoid = this.todoid;
     this.leaseOwnerShip.applicationo = this.applicationo;
-    this.leaseOwnerShip.SDP_ID = this.LicenceData.SDP_ID;
+   // this.leaseOwnerShip.SDP_ID = this.LicenceData.SDP_ID;
+    this.leaseOwnerShip.SDP_ID=this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code
     this.addnew = true;
     this.leaseForm = true;
-    this.leaseOwnerShip.Plot_ID = this.SelectedPlot.Plot_ID;
+   
+    
   }
+  // regionSelected(events) {
+  //   Regions.find(
+  //     region => {
+  //       if (region.orgCode == events) {
+  //         console.log('yuiop',events)
+          
+  //         this.selectedRegion = region;
+        
+  //         return true;
+  //       }
+  //       return false;
+  //     }
+  //   );
+  // }
 
   getleaseOwnerShip(plotID) {
     this.leaseOwnerShipService.getAll(plotID).subscribe(
@@ -101,6 +144,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
   }
 
   save() {
+    
     this.leaseOwnerShipService.save(this.leaseOwnerShip).subscribe(
       (deptSuspension) => {
         console.log("deptSuspension", deptSuspension);
@@ -134,9 +178,9 @@ export class LeaseOwnerShipComponent implements OnChanges {
   }
 
   Delete() {
-    this.confirmationService.confirm({
-      message: "Are you sure u want to delete this Lease?",
-      accept: () => {
+   // this.confirmationService.confirm({
+     // message: "Are you sure u want to delete this Lease?",
+      //accept: () => {
         this.leaseOwnerShip.Is_Deleted = true;
         this.leaseOwnerShipService.Delete(this.leaseOwnerShip.Lease_No).subscribe(
           (deptSuspension) => {
@@ -146,6 +190,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
             );
 
             this.leaseForm = false;
+            this.addnew = false;
 
             if (this.SelectedPlot) {
               this.getleaseOwnerShip(this.SelectedPlot.Plot_ID);
@@ -168,9 +213,9 @@ export class LeaseOwnerShipComponent implements OnChanges {
           }
         );
         console.log("saveing....");
-      },
-    });
-  }
+      }
+    //});
+  //}
 
   add() {
     this.leaseOwnerShipService.Add(this.leaseOwnerShip).subscribe(
@@ -180,12 +225,18 @@ export class LeaseOwnerShipComponent implements OnChanges {
           "Sucess",
           deptSuspension
         );
+        this.serviceService.disablefins = false;
         this.getleaseOwnerShip(this.SelectedPlot.Plot_ID);
         this.leaseForm = false;
+        this.isleaseForm = false;
         if(!this.Saved){
+         this.addnew = false
           this.completed.emit();
           this.Saved = true;
+          this.isleaseForm = false;
+          
         }
+        
       },
       (error) => {
         console.log(error);

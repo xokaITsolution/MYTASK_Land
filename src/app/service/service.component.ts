@@ -214,8 +214,32 @@ export class ServiceComponent implements OnInit {
       );
       }
   
-  
-
+      printForm() {
+        window.print();
+      }
+      downloadDocument(document: any) {
+        console.log('dddddd',document);
+        
+        const link = document.createElement('a');
+        link.href = document.File;
+        link.target = '_blank'; // Open the download in a new tab/window
+        link.setAttribute('download', `${document.description_en}.${this.getFileExtension(document.mimeType)}`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+      getFileExtension(mimeType: string): string {
+        
+        const mimeExtensions = {
+          'application/pdf': 'pdf',
+          'image/jpeg': 'jpg',
+          'image/png': 'png',
+          'image/gif': 'gif'
+        
+        };
+        const extension = mimeExtensions[mimeType];
+        return mimeExtensions[mimeType] || 'file';
+      }
   ngOnInit() {
 
     // this.preback();
@@ -664,9 +688,29 @@ else if (this.formcode =="da8c5bd4-ea3d-4f02-b1b2-38cf26d6d1f"){
   }
   sendNote() {
     //this.NoteObj.postit_note_code = this.DocID;
-    this.SubmitAR(this.serviceService.taskrul)
+    //this.SubmitAR(this.serviceService.taskrul)
     this.serviceService
       .sendNote(this.NoteObj.remarks, this.AppNo, this.NoteObj.postit_note_code, this.todoID, this.SDP_ID)
+      .subscribe(
+        (message) => {
+          const toast = this.notificationsService.success(
+            "Sucess",
+            "Sent Sucessfully"
+          );
+          this.GetNote(message);
+        },
+        (error) => {
+          const toast = this.notificationsService.error(
+            "Error",
+            "SomeThing Went Wrong"
+          );
+        }
+      );
+  }
+   sendNotte() {
+    this.SubmitAR(this.serviceService.taskrul)
+    this.serviceService
+    .sendNote(this.NoteObj.remarks, this.AppNo, this.NoteObj.postit_note_code, this.todoID, this.SDP_ID)
       .subscribe(
         (message) => {
           const toast = this.notificationsService.success(
@@ -950,7 +994,7 @@ else if (this.formcode =="da8c5bd4-ea3d-4f02-b1b2-38cf26d6d1f"){
     this.PreTaskData = [];
     for (let i = 0; i < this.PreAppData.length; i++) {
       if (this.PreAppData[i].tasks_task_code == task) {
-        // console.log('this.PreAppData[i]', this.PreAppData[i]);
+        console.log('this.PreAppData[i]', this.PreAppData[i]);
         this.PreTaskData.push(this.PreAppData[i]);
       }
     }
@@ -1095,11 +1139,11 @@ else if (this.formcode =="da8c5bd4-ea3d-4f02-b1b2-38cf26d6d1f"){
     });
 
   }
-  showdialog(data){
-    console.log("data",data)
+  showdialog(data, name){
+    console.log("vvvvvv",data)
     this.serviceService.taskrul=data
-     if(data=='044ee622-14d3-4f14-8b29-f3c60605892c'){
-       this.showdialoge=false;
+     if(name=="R  "){
+       this.showdialoge=true;
        
     }
    

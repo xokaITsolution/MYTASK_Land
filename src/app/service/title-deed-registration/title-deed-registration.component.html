@@ -44,7 +44,7 @@
       <label for="IsActive" class="col-sm-3 col-form-label" translate>Is Active</label>
       <div class="col-sm-8">
         <p-checkbox [disabled]="disable" [(ngModel)]="titleDeedRegistration.Is_Active" name="IsActive" id="IsActive"
-          binary="true"></p-checkbox>
+          binary="true" ></p-checkbox>
       </div>
     </div>
   </div>
@@ -52,8 +52,8 @@
     translate>Save</button>
   <button type="button" class="btn btn-primary" *ngIf="isnew && !disable" (click)="add()" [disabled]="!f.valid"
     translate>Save</button>
-  <button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="!f.valid" *ngIf="!isnew && !disable"
-    translate>Delete</button>
+  <!-- <button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="!f.valid" *ngIf="!isnew && !disable"
+    translate>Delete</button> -->
 </form>
 
 

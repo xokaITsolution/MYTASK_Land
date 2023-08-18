@@ -14,7 +14,7 @@ import { ServiceService } from "../service.service";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { ViewEncapsulation } from "@angular/core";
 import { Regions } from './regions';
-
+import { PlotComponent } from "../plot/plot.component";
 @Component({
   selector: 'app-plot-managment',
   templateUrl: './plot-managment.component.html',
@@ -54,6 +54,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     private notificationsService: NotificationsService,
     private confirmationService: ConfirmationService,
     private message: MessageService,
+    public plotcomponent:PlotComponent,
 
   ) {
     this.plotManagment = new PlotManagment();
@@ -133,7 +134,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
           this.zoneOptions = region.woredas;
           this.selectedRegion = region;
           this.woredas = [];
-          this.plotManagment.Land_Grade_ID = null;
+          this.plotManagment.Land_Grade_ID ;
           return true;
         }
         return false;
@@ -148,7 +149,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
           this.zoneOptions = region.woredas;
           this.selectedRegion = region;
           this.woredas = [];
-          this.plotManagment.Land_Grade_ID = null;
+          this.plotManagment.Land_Grade_ID ;
           return true;
         }
         return false;
@@ -320,6 +321,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
               deptSuspension
               
             );
+            this.serviceService.disablefins = false;
             
 
 
@@ -355,6 +357,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   // }
 
   add() {
+    
     this.ploatManagmentService.Add(this.plotManagment).subscribe(
       deptSuspension => {
         console.log("deptSuspension", deptSuspension);
@@ -364,6 +367,8 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         );
         
         this.serviceService.disablefins = false;
+        this.plotcomponent.toMes=true
+        this.plotcomponent.CanDone =true
         this.isnew = false;
         this.isploatDisabled = true;
         console.log("FinalPLoat before send", this.plotManagment);
@@ -412,7 +417,7 @@ export class PlotManagment {
   public Plot_Status: string;
   public Registration_Date: string;
   public Type_Of_Use_ID: string;
-  public Land_Grade_ID;
+  public Land_Grade_ID:string;
   public GIS_X_Coordinate_1: string;
   public GIS_X_Coordinate_2: string;
   public GIS_X_Coordinate_3: string;

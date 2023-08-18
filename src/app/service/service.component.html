@@ -215,47 +215,36 @@
 
   </div>
   <!--The content below is only a placeholder and can be replaced.-->
-
+  <div class="btn-group d-flex justify-content-center align-items-center">
   <div class="p-3 border-secondary border-5 bg-secondary text-white h-100 text-center  m-10 mt-10">
-    <button type="button" class="btn btn-primary mr-2" (click)="Back()" translate>
+    <div class="btn-group"><button type="button" class="btn btn-primary mr-2" (click)="Back()" translate>
       Back
-    </button>
-    <button type="button" class="btn btn-primary mr-2" (click)="openModal(template)" translate>Review</button>
+    </button></div>
+    <div class="btn-group"> <button type="button" class="btn btn-primary mr-2" (click)="openModal(template)" translate>Review</button></div>
 
     <!-- [disabled]="disablefins" -->
-<span class="btn-group" dropdown [isDisabled]="serviceService.disablefins">
-  <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle mr-2"
-    aria-controls="dropdown-basic" translate>
-    Required Action
-  </button>
-  <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
-    <li role="menuitem">
-      <a class="dropdown-item" *ngIf="tskTyp != 'c800fb16-f961-e111-95d6-00e04c05559b'"
-        (click)="Submit('00000000-0000-0000-0000-000000000000')" translate>
-        Submit
-      </a>
-      <span *ngIf="tskTyp == 'c800fb16-f961-e111-95d6-00e04c05559b'">
-        <span *ngFor="let DropDownLists of serviceService.DropDownList">
-          <a class="dropdown-item" (click)="showdialog(DropDownLists.task_rules_code)">
-            <!-- Content for the nested <a> tag -->
-          </a>
-        </span>
-      </span>
-    </li>
-    <li *ngFor="let DropDownLists of DropDownList;" role="menuitem">
-      <a class="dropdown-item" (click)="SubmitAR(DropDownLists.task_rules_code)">
-        {{ DropDownLists.decision_rule_en }}
-      </a>
-    </li>
-  </ul>
-</span>
+    <div class="btn-group">
+    <span class="btn-group" dropdown [isDisabled]="serviceService.disablefins">
+      <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle mr-2 "
+        aria-controls="dropdown-basic" translate>Required Action</button>
+      <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
+        <li role="menuitem"><a class="dropdown-item" *ngIf="tskTyp!='c800fb16-f961-e111-95d6-00e04c05559b'"
+            (click)="Submit('00000000-0000-0000-0000-000000000000')" translate>Submit</a>
+           <span *ngIf="tskTyp == 'c800fb16-f961-e111-95d6-00e04c05559b'">
+          
+        </span></li>
+        <li *ngFor="let DropDownLists of DropDownList;" role="menuitem"><a class="dropdown-item"
+            (click)="showdialog(DropDownLists.task_rules_code, DropDownLists.rule_Code)">{{DropDownLists.decision_rule_en}}
+            </a> </li>
+      </ul>
+    </span>
 
-    <button class="btn btn-primary mr-2" (click)="Close()" translate>Pend & close</button>
-
+    <div class="btn-group"> <button class="btn btn-primary mr-2" (click)="Close()" translate>Pend & close</button></div>
+    </div>
 
   </div>
 </div>
-
+</div>
 
 <div *ngIf="loading">
   <app-loading></app-loading>
@@ -403,6 +392,10 @@
                       <div class="alert alert-warning" role="alert" *ngIf="!RequerdDocpre.File && !loadingPreDoc">
                         Document not uploaded!</div>
                       <div *ngIf="RequerdDocpre.File">
+                        <button class="btn btn-primary" (click)="downloadDocument(RequerdDocpre.File)">
+                          Download
+                        </button>
+
                         <!--<button type="button" class="btn btn-primary" (click)="removeUpload(RequiredDoc)">
                     remove
                   </button>-->
@@ -477,6 +470,7 @@
 
   </div>
   <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="printForm()">Print</button>
     <button type="button" class="btn btn-primary" (click)="closeModal()" translate>Done</button>
   </div>
   <ngx-smart-modal #note_popup identifier="note_popup" class="dd">
@@ -518,14 +512,14 @@
     (click)="addNote()" translate> 
     Save
   </button>
-  <button type="button" class="btn btn-primary mx-4" *ngIf="this.NoteObj.postit_note_code"
+  <!-- <button type="button" class="btn btn-primary mx-4" *ngIf="this.NoteObj.postit_note_code"
     (click)="saveNote()" translate>
     Update
-  </button>
-  <button type="button" class="btn btn-danger mx-4" *ngIf="this.NoteObj.postit_note_code"
+  </button> -->
+  <!-- <button type="button" class="btn btn-danger mx-4" *ngIf="this.NoteObj.postit_note_code"
     (click)="DeleteNote()" translate>
     Delete
-  </button>
+  </button> -->
   <button type="button" class="btn btn-primary" *ngIf="this.NoteObj.postit_note_code"
     (click)="sendNotte()" translate>
     <span class="fa fa-telegram"></span> Send

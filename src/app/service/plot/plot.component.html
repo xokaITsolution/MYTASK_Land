@@ -8,8 +8,7 @@
         <th scope="col" translate>Registration Date</th>
         <th scope="col">
           <button type="button" class="btn btn-primary" (click)="AddPLot()"
-            *ngIf="!disable && PlotManagementList.length < 5" translate>Add New
-          </button>
+            *ngIf="!disable && PlotManagementList.length < 5" translate>Add New</button>
         </th>
       </tr>
     </ng-template>
@@ -28,10 +27,8 @@
         <td>{{Plot.Plot_Size_M2}}</td>
         <td>{{Plot.Registration_Date}}</td>
         <td>
-          <button type="button" class="btn btn-primary" (click)="SelectPLot(Plot)" *ngIf="disable" translate>select
-          </button>
-          <button type="button" class="btn btn-primary" (click)="SelectPLot(Plot)" *ngIf="!disable" translate>Edit
-          </button>
+          <button type="button" class="btn btn-primary" (click)="SelectPLot(Plot)" *ngIf="disable" translate>select</button>
+          <button type="button" class="btn btn-primary" (click)="SelectPLot(Plot)" *ngIf="!disable" translate>Edit</button>
         </td>
       </tr>
     </ng-template>
@@ -68,8 +65,8 @@
             [SelectedPlot]='SelectedPlot' [disable]="disable" [Fields]="Fields"></app-plot-managment>
         </div>
         <div class="pull-right">
-          <button type="button" class="btn btn-primary mr-1" [disabled]="!CanDone"  (click)="DoneNew()"
-            translate>Next</button>
+          <button type="button" class="btn btn-primary mr-1" [disabled]="!toMes"  (click)="DoneNew()"
+          awNextStep  translate>Next</button>
         </div>
       </aw-wizard-step>
       <aw-wizard-step [stepTitle]="'LEASE/OWNERSHIP' | translate"

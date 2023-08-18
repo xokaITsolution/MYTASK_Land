@@ -205,7 +205,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         
         if(!this.Saved){
           
-          this.completed.emit(this.propertyRegister);
+          this.completed.emit();
           this.Saved = true;
         }
       },
