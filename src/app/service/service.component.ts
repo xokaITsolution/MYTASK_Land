@@ -12,6 +12,7 @@ import { NgxDocViewerModule } from 'ngx-doc-viewer';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
+
 //import { log } from 'console';
 
 type AOA = any[][];
@@ -52,6 +53,7 @@ export class ServiceComponent implements OnInit {
   AppN;
   TaskN;
   SDP;
+  hideit: boolean=false;
 
 
   preAppID;
@@ -105,6 +107,8 @@ export class ServiceComponent implements OnInit {
   public notes = [];
   Saved = false;
   Save = false;
+  language = 'english';
+
 
   eventTypes = {
     JSONFOUND: 'ev001',
@@ -245,7 +249,12 @@ export class ServiceComponent implements OnInit {
   ngOnInit() {
 
     // this.preback();
-
+    if (environment.Lang_code === "am-et") {
+      this.language = 'amharic';
+    }
+    else {
+      this.language = 'english';
+    }
 
     console.log("Servicesssssssss")
     this.activatedRoute.params.subscribe((params: Params) => {
@@ -306,7 +315,7 @@ else if (this.formcode =="da8c5bd4-ea3d-4f02-b1b2-38cf26d6d1f"){
       this.ID = 0;
       this.se.on(this.eventTypes.JSONFOUND, () => {
         console.log('display form');
-
+console.log('ddd',this.formcode)
         this.serviceService.getFormData(this.formcode).subscribe(
           success => this.ID = 1,
           error => this.ID = 404
@@ -354,6 +363,7 @@ else if (this.formcode =="da8c5bd4-ea3d-4f02-b1b2-38cf26d6d1f"){
         1000
       );
     }
+    
   }
 
   // preback(){
@@ -475,10 +485,16 @@ else if (this.formcode =="da8c5bd4-ea3d-4f02-b1b2-38cf26d6d1f"){
         console.log("error");
       }
     );
+    
   }
 
 
   Back() {
+    this.formcode = this.route.snapshot.paramMap.get('formcode');
+    //console.log('ttt',this.formcode)
+if(this.formcode == 'bc52101a-f679-46ee-a16c-601bc04e6be9'){
+ this.hideit = !this.hideit
+}
     this.serviceService.Back(this.AppNo, this.todoID).subscribe(
       (message) => {
         if (message == true) {
@@ -945,6 +961,7 @@ else if (this.formcode =="da8c5bd4-ea3d-4f02-b1b2-38cf26d6d1f"){
                       appData => {
                         if (appData.tasks_task_code == this.tskID) {
                           console.warn('found already saved task :: ', appData);
+                          console.log('nnn',appData.form_code)
                           if (task['tasks_id'] != this.tskID) {
                             console.warn('found already passed task');
                             isPickable = false;
@@ -1017,7 +1034,7 @@ else if (this.formcode =="da8c5bd4-ea3d-4f02-b1b2-38cf26d6d1f"){
       task.form_code == 'db59ddfc-2b6f-4ff1-8f37-443322978064'
     ) {
       this.preAppID = 2;
-      // console.log('to', 2);
+       console.log('to', 2);
 
     } else if (
       task.form_code == 'b1a9c82a-9553-4055-a6cf-cd42d72cbe87' ||

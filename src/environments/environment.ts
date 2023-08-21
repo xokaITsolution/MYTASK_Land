@@ -8,6 +8,7 @@ export const environment = {
   // formPath: '',
   username: 'BL_Tech_Officer',
   phisicalPath: './assets/i18n/',
+  Lang_code: (window['lang'] as string).toLowerCase(),
   localGisServer: window['local_GIS_server'],
   wfsGeoServer: window['wfs_geoserver'],
   PaymentReportPath: window["PaymentReportPath"],

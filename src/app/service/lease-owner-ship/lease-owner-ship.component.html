@@ -99,8 +99,7 @@
 
 
     <div class="form-group row col-md-6">
-      <label for="Total_lease_amount_to_be_paid" class="col-sm-3 col-form-label" translate>
-        Total lease amount to be paid</label>
+      <label for="Total_lease_amount_to_be_paid" class="col-sm-3 col-form-label" translate>Total lease amount to be paid</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [disabled]="disable"
           [(ngModel)]="leaseOwnerShip.Total_lease_amount_to_be_paid" #Total_lease_amount_to_be_paid="ngModel"
@@ -138,8 +137,7 @@
       </div>
     </div>
     <div class="form-group row col-md-6">
-      <label for="Date_of_final_lease_payment" class="col-sm-3 col-form-label" translate>
-        Date of final lease payment</label>
+      <label for="Date_of_final_lease_payment" class="col-sm-3 col-form-label" translate>Date of final lease payment</label>
       <div class="col-sm-9">
         <input type="date" class="form-control" [disabled]="disable"
           [(ngModel)]="leaseOwnerShip.Date_of_final_lease_payment" #Date_of_final_lease_payment="ngModel"
@@ -151,9 +149,7 @@
 
 
   </div>
-  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!addnew && !disable" (click)="save()"
-    translate>Save
-  </button>
+  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!addnew && !disable" (click)="save()" translate>Save</button>
   <!-- <button type="button" class="btn btn-danger ml-3" [disabled]="!f.valid" *ngIf="!addnew && !disable" (click)="Delete()"
     translate>Delete
   </button> -->

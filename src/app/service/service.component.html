@@ -217,16 +217,16 @@
   <!--The content below is only a placeholder and can be replaced.-->
   <div class="btn-group d-flex justify-content-center align-items-center">
   <div class="p-3 border-secondary border-5 bg-secondary text-white h-100 text-center  m-10 mt-10">
-    <div class="btn-group"><button type="button" class="btn btn-primary mr-2" (click)="Back()" translate>
+    <div class="btn-group"><button *ngIf="!hideit" type="button" class="btn btn-primary mr-2" (click)="Back()" translate>
       Back
     </button></div>
     <div class="btn-group"> <button type="button" class="btn btn-primary mr-2" (click)="openModal(template)" translate>Review</button></div>
 
     <!-- [disabled]="disablefins" -->
     <div class="btn-group">
-    <!-- <span class="btn-group" dropdown [isDisabled]="serviceService.disablefins">
+    <span class="btn-group dropup" dropdown [isDisabled]="serviceService.disablefins">
       <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle mr-2 "
-        aria-controls="dropdown-basic" translate>Required Action</button>
+      mdbDropdownToggle aria-controls="dropdown-basic" translate>Required Action</button>
       <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
         <li role="menuitem"><a class="dropdown-item" *ngIf="tskTyp!='c800fb16-f961-e111-95d6-00e04c05559b'"
             (click)="Submit('00000000-0000-0000-0000-000000000000')" translate>Submit</a>
@@ -237,14 +237,13 @@
             (click)="showdialog(DropDownLists.task_rules_code, DropDownLists.rule_Code)">{{DropDownLists.decision_rule_en}}
             </a> </li>
       </ul>
-    </span> -->
+    </span>
+    </div>
+    <!-- <div class="btn-group">
     <span class="btn-group dropup" dropdown [isDisabled]="serviceService.disablefins">
       <button type="button" 
-      dropdownToggle id="button-basic" aria-controls="dropdown-basic" translate
-              class="btn btn-primary dropdown-toggle"
-              data-bs-toggle="dropdown">
-              Required Action
-      </button>
+      dropdownToggle id="button-basic" aria-controls="dropdown-basic" 
+              class="btn btn-primary dropdown-toggle mr-2 "data-bs-toggle="dropdown"translate>Required Action</button>
       <span class="dropdown-menu dropdown-menu-end " id="dropdown-basic" role="menu" aria-labelledby="button-basic">
         <li role="menuitem"><a class="dropdown-item" *ngIf="tskTyp!='c800fb16-f961-e111-95d6-00e04c05559b'"
           (click)="Submit('00000000-0000-0000-0000-000000000000')" translate>Submit</a>
@@ -256,8 +255,9 @@
           </a> </li>
         </span>
     </span>
+  </div> -->
     <div class="btn-group"> <button class="btn btn-primary mr-2" (click)="Close()" translate>Pend & close</button></div>
-    </div>
+    
 
   </div>
 </div>
@@ -304,8 +304,9 @@
       <div class="aa">
         <select *ngIf="ifTask" class="form-control" [(ngModel)]="TaskN" (change)="getTaskData(TaskN)"
           name="CustomerType" id="TaskList">
-          <option translate>select task</option>
-          <option *ngFor="let Task of PreAppData" [value]="Task.tasks_task_code">{{Task.description_en}}</option>
+          <option translate disabled >select task</option>
+          <option *ngFor="let Task of PreAppData" [value]="Task.tasks_task_code">{{ language === 'amharic' ? Task.description_local : Task.description_en }}</option>
+          
         </select>
       </div>
     </div>

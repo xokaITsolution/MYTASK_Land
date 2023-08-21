@@ -112,7 +112,7 @@
     </div>
 
     <div class="form-group row col-md-12">
-      <label for="Measurment" class="col-sm-3 col-form-label" translate>Measurment</label>
+      <label for="Measurment" class="col-sm-3 col-form-label" translate>Measurement</label>
 
       <div class="col-sm-9">
         <input type="number" class="form-control" [disabled]="disable" [(ngModel)]="measurment.Measurement"
@@ -135,8 +135,7 @@
       <th scope="col" translate>Measurement type</th>
       <th scope="col" translate>Measurement</th>
       <th scope="col">
-        <button type="button" class="btn btn-primary" *ngIf="!disable" (click)=" addmeasurment()" translate>Add New
-        </button>
+        <button type="button" class="btn btn-primary" *ngIf="!disable" (click)=" addmeasurment()" translate>Add New</button>
       </th>
     </tr>
   </ng-template>

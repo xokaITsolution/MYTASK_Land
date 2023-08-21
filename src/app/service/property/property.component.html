@@ -24,8 +24,7 @@
         <td>{{property.Registration_Date}}</td>
         <td>{{property.Plot_ID}}</td>
         <td>
-          <button type="button" class="btn btn-primary" (click)="SelectProprty(property)" translate>select
-          </button>
+          <button type="button" class="btn btn-primary" (click)="SelectProprty(property)" translate>Select</button>
         </td>
       </tr>
     </ng-template>
@@ -42,8 +41,7 @@
         </div>
         <div>
           <button type="button" class="btn btn-success col-lg-12" [disabled]="!selectedprofromtree" *ngIf="!disable"
-            (click)="AddNew()">Add New
-          </button>
+            (click)="AddNew()" translate>Add New</button>
         </div>
         <p-tree class="row col-lg-12" [value]="files" selectionMode="single" [(selection)]="selectedFile"
           (onNodeSelect)="nodeSelect()"></p-tree>
