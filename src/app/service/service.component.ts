@@ -413,6 +413,8 @@ console.log('ddd',this.formcode)
       (RequerdDocs) => {
         this.RequerdDocspre = RequerdDocs;
         if (this.RequerdDocs != null)
+        this.showProgressBar = false;
+
           for (let i = 0; i < this.RequerdDocs.length; i++) {
             if (this.RequerdDocs[i].description_en == "Dummy") {
               this.RequerdDocs.splice(i, 1);
@@ -501,11 +503,11 @@ console.log('ddd',this.formcode)
 
 
   Back() {
-    this.formcode = this.route.snapshot.paramMap.get('formcode');
+    //this.formcode = this.route.snapshot.paramMap.get('formcode');
     //console.log('ttt',this.formcode)
-if(this.formcode == 'bc52101a-f679-46ee-a16c-601bc04e6be9'){
- this.hideit = !this.hideit
-}
+//if(this.formcode == 'bc52101a-f679-46ee-a16c-601bc04e6be9'){
+//  this.hideit = !this.hideit
+//}
     this.serviceService.Back(this.AppNo, this.todoID).subscribe(
       (message) => {
         if (message == true) {
