@@ -68,7 +68,6 @@ export class ServiceService {
   todo: any;
   servID: any;
   taskrul: any;
-   formcode: string;
   constructor(private http: HttpClient) {
   }
 
@@ -184,9 +183,9 @@ export class ServiceService {
   
   }
   
-  Back(ApplicationNo, todoid, formcode) {
+  Back(ApplicationNo, todoid) {
     return (this.http.post(this.BackURL + '?' + 'ApplicationNo=' + ApplicationNo + '&UserName=' +
-      environment.username + '&todoid=' + todoid + '&formcode=' + formcode, null));
+      environment.username + '&todoid=' + todoid, null));
   }
   saveFile(DocData, FileType, ApplicationNo, RequrementID, TaskType, Requrement, DocID) {
     // console.log('File', File);
@@ -371,8 +370,8 @@ export class ServiceService {
   GetForm(docid) {
     return this.http.get(this.GetDataURL + '?docid=' + docid);
   }
-getFormData
-  (formcode) {
+
+  getFormData(formcode) {
     if (!environment.production) {
       return this.http.get<any>('http://land.xokait.com.et/DB/' + formcode + '.json');
     }

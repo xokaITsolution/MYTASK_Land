@@ -505,12 +505,7 @@ console.log('ddd',this.formcode)
 
 
   Back() {
-    //this.formcode = this.route.snapshot.paramMap.get('formcode');
-    //console.log('ttt',this.formcode)
-//if(this.formcode == 'bc52101a-f679-46ee-a16c-601bc04e6be9'){
-//  this.hideit = !this.hideit
-//}
-    this.serviceService.Back(this.AppNo, this.todoID, this.formcode,).subscribe(
+    this.serviceService.Back(this.AppNo, this.todoID).subscribe(
       (message) => {
         if (message == true) {
           const toast = this.notificationsService.success(
