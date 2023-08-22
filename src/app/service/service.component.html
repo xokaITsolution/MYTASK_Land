@@ -217,9 +217,7 @@
   <!--The content below is only a placeholder and can be replaced.-->
   <div class="btn-group d-flex justify-content-center align-items-center">
   <div class="p-3 border-secondary border-5 bg-secondary text-white h-100 text-center  m-10 mt-10">
-    <div class="btn-group"><button *ngIf="!hideit" type="button" class="btn btn-primary mr-2" (click)="Back()" translate>
-      Back
-    </button></div>
+    <div class="btn-group"><button *ngIf="!hideit" type="button" class="btn btn-primary mr-2" (click)="Back()" translate>Back</button></div>
     <div class="btn-group"> <button type="button" class="btn btn-primary mr-2" (click)="openModal(template)" translate>Review</button></div>
 
     <!-- [disabled]="disablefins" -->
@@ -229,7 +227,7 @@
       mdbDropdownToggle aria-controls="dropdown-basic" translate>Required Action</button>
       <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
         <li role="menuitem"><a class="dropdown-item" *ngIf="tskTyp!='c800fb16-f961-e111-95d6-00e04c05559b'"
-            (click)="Submit('00000000-0000-0000-0000-000000000000')" translate>Submit</a>
+            (click)="Submit('00000000-0000-0000-0000-000000000000')" translate>Submit/ላክ</a>
            <span *ngIf="tskTyp == 'c800fb16-f961-e111-95d6-00e04c05559b'">
           
         </span></li>
@@ -333,15 +331,18 @@
               <td>{{task.level}}</td>
               <td>
                 <button type="button" class="btn btn-primary" (click)="SelectTask(task)" translate>select</button>
+                
               </td>
             </tr>
           </ng-template>
         </p-table>
 
         <div *ngIf="ifTaskDetail">
+         
           <p-tabView>
+           
             <p-tabPanel [header]="'Form' | translate">
-
+              <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate"></mat-progress-bar>
               <div *ngIf="preAppID==1">
                 <app-form-display [formcode]="selectedTask.form_code" [formData]="selectedTask.JsonData"
                   [Mode]="'display'" [taskLevel]="taskLevel">

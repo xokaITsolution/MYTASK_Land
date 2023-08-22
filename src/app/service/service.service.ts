@@ -68,6 +68,7 @@ export class ServiceService {
   todo: any;
   servID: any;
   taskrul: any;
+   formcode: string;
   constructor(private http: HttpClient) {
   }
 
@@ -370,8 +371,8 @@ export class ServiceService {
   GetForm(docid) {
     return this.http.get(this.GetDataURL + '?docid=' + docid);
   }
-
-  getFormData(formcode) {
+getFormData
+  (formcode) {
     if (!environment.production) {
       return this.http.get<any>('http://land.xokait.com.et/DB/' + formcode + '.json');
     }

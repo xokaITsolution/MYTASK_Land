@@ -12,6 +12,7 @@ import { NgxDocViewerModule } from 'ngx-doc-viewer';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
+//import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 //import { log } from 'console';
 
@@ -79,6 +80,7 @@ export class ServiceComponent implements OnInit {
   se = new EventEmitter();
   aa = null;
   intervalId: any;
+  showProgressBar = false;
 
   public CustomerTypeLookUP;
   public CustomerLookUP;
@@ -247,7 +249,6 @@ export class ServiceComponent implements OnInit {
         return mimeExtensions[mimeType] || 'file';
       }
   ngOnInit() {
-
     // this.preback();
     if (environment.Lang_code === "am-et") {
       this.language = 'amharic';
@@ -255,11 +256,12 @@ export class ServiceComponent implements OnInit {
     else {
       this.language = 'english';
     }
-
+    
     console.log("Servicesssssssss")
     this.activatedRoute.params.subscribe((params: Params) => {
       console.log('appppppp',params); 
       // this.ID = params['id'];
+      this.formcode =params['formcode']
       this.AppNo = params['AppNo'];
       this.SDP_ID = params['SDP_ID'];
       this.getAll(this.AppNo);
@@ -273,7 +275,8 @@ export class ServiceComponent implements OnInit {
       this.todoID = params['todoID'];
       this.formcode = params['formcode'];
     });
-
+    
+    this.hideBackButton()
     this.getLookups();
     this.getRequiredDocs();
     this.GetPlot_Land_Grade_lookup();
@@ -365,7 +368,14 @@ console.log('ddd',this.formcode)
     }
     
   }
-
+  hideBackButton(){
+    console.log('ttt',this.formcode)
+    if(this.formcode == 'bc52101a-f679-46ee-a16c-601bc04e6be9'){
+     this.hideit = true
+     }
+    else{
+      this.hideit=false}
+  }
   // preback(){
   //window.history.forward();
   // setTimeout("preback()",0);
@@ -444,6 +454,7 @@ console.log('ddd',this.formcode)
         console.log("pdf file", SavedFiles)
         this.SavedFilespre = SavedFiles;
         if (this.RequerdDocspre != null)
+        this.showProgressBar = false;
           for (let i = 0; i < this.RequerdDocspre.length; i++) {
             for (let j = 0; j < SavedFiles.length; j++) {
               if (
@@ -1022,6 +1033,7 @@ if(this.formcode == 'bc52101a-f679-46ee-a16c-601bc04e6be9'){
 
   SelectTask(task) {
     // console.log('task', task);
+    this.showProgressBar = true;
     this.selectedpreTask = task;
     this.selectedTask = task;
     this.taskLevel = task.level;
@@ -1030,6 +1042,7 @@ if(this.formcode == 'bc52101a-f679-46ee-a16c-601bc04e6be9'){
     this.getAllDocumentpre(this.SelectedpreApp.Licence_Service_ID, task.docId);
 
     this.getAllDocumentpre(this.SelectedpreApp.Licence_Service_ID, task.docId);
+
     if (
       task.form_code == 'db59ddfc-2b6f-4ff1-8f37-443322978064'
     ) {

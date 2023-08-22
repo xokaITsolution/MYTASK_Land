@@ -86,7 +86,9 @@ export class LeaseOwnerShipComponent implements OnChanges {
 
   selectLease(task) {
     this.addnew = false;
-    this.leaseForm = true;
+   // this.leaseForm = true;
+    this.isleaseForm = true;
+
     this.leaseOwnerShip = task;
   }
 

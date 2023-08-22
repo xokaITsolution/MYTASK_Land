@@ -67,6 +67,7 @@ import {
   MatGridListModule,
   MatCardModule,
   MatCheckboxModule,
+  MatProgressBarModule,
   
  
 } from '@angular/material';
@@ -131,7 +132,8 @@ import { ExplorationLicenseComponent } from './exploration-license/exploration-l
     MatCardModule,
     MatCheckboxModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatProgressBarModule
     //material
   ],
   
