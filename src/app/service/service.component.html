@@ -411,9 +411,14 @@
                       <div class="alert alert-warning" role="alert" *ngIf="!RequerdDocpre.File && !loadingPreDoc">
                         Document not uploaded!</div>
                       <div *ngIf="RequerdDocpre.File">
-                        <button class="btn btn-primary" (click)="downloadDocument(RequerdDocpre.File)">
-                          Download
-                        </button>
+                        
+                          <div class="alert alert-info">
+                            <a [href]='RequerdDocpre.File'
+                              [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType].extension" >
+                              Attached - Please download!</a>
+                            
+                          </div>
+                        
 
                         <!--<button type="button" class="btn btn-primary" (click)="removeUpload(RequiredDoc)">
                     remove
@@ -439,14 +444,7 @@
                           *ngIf="mimeExtension[RequerdDocpre.mimeType].extension == 'jpg' || mimeExtension[RequerdDocpre.mimeType].extension == 'png' || mimeExtension[RequerdDocpre.mimeType].extension == 'gif'">
                           <img width="100%" [src]="RequerdDocpre.File" alt="FileUPloaded" />
                         </div>
-                        <div *ngIf="!mimeExtension[RequerdDocpre.mimeType].previewable">
-                          <div class="alert alert-info">
-                            <a [href]='RequerdDocpre.File'
-                              [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType].extension">
-                              Attached - Please download!
-                            </a>
-                          </div>
-                        </div>
+                        
                       </div>
                     </div>
                   </div>

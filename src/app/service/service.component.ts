@@ -55,6 +55,7 @@ export class ServiceComponent implements OnInit {
   TaskN;
   SDP;
   hideit: boolean=false;
+  isDownloading = false;
 
 
   preAppID;
@@ -225,6 +226,7 @@ export class ServiceComponent implements OnInit {
       printForm() {
         window.print();
       }
+      startDownload(){}
       downloadDocument(document: any) {
         console.log('dddddd',document);
         
@@ -508,7 +510,7 @@ console.log('ddd',this.formcode)
 //if(this.formcode == 'bc52101a-f679-46ee-a16c-601bc04e6be9'){
 //  this.hideit = !this.hideit
 //}
-    this.serviceService.Back(this.AppNo, this.todoID).subscribe(
+    this.serviceService.Back(this.AppNo, this.todoID, this.formcode,).subscribe(
       (message) => {
         if (message == true) {
           const toast = this.notificationsService.success(
