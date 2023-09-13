@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   rootPath: window["rootPath"],
   // formPath: '',
-  username: "0975352282",
+  username: "BL_Info_Mgr",
   // username: 'BL_Tech_Officer',
   // username: 'BL_Data_Encoder',
   phisicalPath: "./assets/i18n/",
