@@ -4,21 +4,26 @@
 
 export const environment = {
   production: false,
-  rootPath: window['rootPath'],
+  rootPath: window["rootPath"],
   // formPath: '',
+<<<<<<< HEAD
   imagepath:window["_imagepath"] ,
   username: '0911565749',
   iconpath:window["iconpath"],
   formPath: window["formPath"], 
+=======
+  username: "BL_Info_Mgr",
+>>>>>>> 8f0b678fc8865bdf790f2c8db93d6bc86ba9e23f
   // username: 'BL_Tech_Officer',
   // username: 'BL_Data_Encoder',
-  phisicalPath: './assets/i18n/',
-  Lang_code: (window['lang'] as string).toLowerCase(),
-  localGisServer: window['local_GIS_server'],
-  wfsGeoServer: window['wfs_geoserver'],
+  phisicalPath: "./assets/i18n/",
+  Lang_code: (window["lang"] as string).toLowerCase(),
+  localGisServer: window["local_GIS_server"],
+  wfsGeoServer: window["wfs_geoserver"],
   PaymentReportPath: window["PaymentReportPath"],
   certReportPath: window["certReportPath"],
   LetterReportPath: window["LetterReportPath"],
+<<<<<<< HEAD
   resourcePath: '',
   overlayLayer: window['overlayLayer'],
   layerConfig: window['layerConfig'],
@@ -28,6 +33,11 @@ export const environment = {
     geoserverUrl: window['geoserverUrl'],
       geoserverUrlwfs: window['geoserverUrlwfs'],
      groupName: window['groupName']
+=======
+  resourcePath: "",
+  overlayLayer: window["overlayLayer"],
+  layerConfig: window["layerConfig"],
+>>>>>>> 8f0b678fc8865bdf790f2c8db93d6bc86ba9e23f
 };
 
 /*
