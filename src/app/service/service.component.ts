@@ -185,20 +185,17 @@ export class ServiceComponent implements OnInit {
     FIELD_ONE: "Branch name",
   };
   plotRegistrationFields = {
-    FIELD_ONE: "Plot id",
-  };
+    FIELD_ONE: 'Plot id'
+  }
 
-  constructor(
-    private modalService: BsModalService,
-    private activatedRoute: ActivatedRoute,
-    public serviceService: ServiceService,
-    private router: Router,
-    private notificationsService: NotificationsService,
-    private sanitizer: DomSanitizer,
+  constructor(private modalService: BsModalService, private activatedRoute: ActivatedRoute,
+    public serviceService: ServiceService, private router: Router,
+    private notificationsService: NotificationsService, private sanitizer: DomSanitizer,
     public ngxModal: NgxSmartModalService,
-    private renderer: Renderer2,
-    private el: ElementRef
-  ) {}
+    private renderer: Renderer2, private el: ElementRef
+  ) {
+
+  }
   saveFormm(formData) {
     console.log("save-form", JSON.stringify(formData));
     this.serviceService
@@ -225,6 +222,7 @@ export class ServiceComponent implements OnInit {
           //  this.todoID = response[2];
           this.getAll(this.AppNo);
           const toast = this.notificationsService.success("Success", "Saved");
+          this.validated = true;
         },
         (error) => {
           console.log("save-form-error", error);
@@ -234,37 +232,56 @@ export class ServiceComponent implements OnInit {
           );
         }
       );
-  }
-
-  printForm() {
-    window.print();
-  }
-  startDownload() {}
-  downloadDocument(document: any) {
-    console.log("dddddd", document);
-
-    const link = document.createElement("a");
-    link.href = document.File;
-    link.target = "_blank"; // Open the download in a new tab/window
-    link.setAttribute(
-      "download",
-      `${document.description_en}.${this.getFileExtension(document.mimeType)}`
-    );
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-  getFileExtension(mimeType: string): string {
-    const mimeExtensions = {
-      "application/pdf": "pdf",
-      "image/jpeg": "jpg",
-      "image/png": "png",
-      "image/gif": "gif",
-    };
-    const extension = mimeExtensions[mimeType];
-    return mimeExtensions[mimeType] || "file";
-  }
+      }
+  
+      printForm() {
+        window.print();
+      }
+      startDownload(){}
+      downloadDocument(document: any) {
+        console.log('dddddd',document);
+        
+        const link = document.createElement('a');
+        link.href = document.File;
+        link.target = '_blank'; // Open the download in a new tab/window
+        link.setAttribute('download', `${document.description_en}.${this.getFileExtension(document.mimeType)}`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+      getFileExtension(mimeType: string): string {
+        
+        const mimeExtensions = {
+          'application/pdf': 'pdf',
+          'image/jpeg': 'jpg',
+          'image/png': 'png',
+          'image/gif': 'gif'
+        
+        };
+        const extension = mimeExtensions[mimeType];
+        return mimeExtensions[mimeType] || 'file';
+      }
   ngOnInit() {
+    setInterval(() => {
+    this.serviceService.getdbstatus('00000000-0000-0000-0000-000000000000').subscribe((response:any) => {
+console.log('response',response)
+if(response==true){
+  this.okdb=true
+}else{
+  this.okdb=false
+}
+    })},1000)
+    this.serviceService.getUserRole().subscribe(
+      (response:any) => {
+        console.log('responseresponseresponse',response , response[0].RoleId)
+        if(response[0].RoleId=="8e759c69-1ed6-445b-b7f8-32c3fd44e8be"){
+          this.hideit=true
+        }
+        else {
+          this.hideit=false
+        }
+
+  })
     // this.preback();
     if (environment.Lang_code === "am-et") {
       this.language = "amharic";
@@ -308,9 +325,11 @@ export class ServiceComponent implements OnInit {
       this.formcode == "fa3720f6-28f3-41a3-8867-426df29f4d76"
     ) {
       this.ID = 5;
-    } else if (this.formcode == "9c286262-ee30-4b63-b356-e140d85b6499") {
-      if (this.tskID == "d3465fc3-e54f-4b8e-ba40-a084bd713bd0") {
-        this.prepareCertificateFields.FIELD_ONE = "Issued by";
+    }
+
+    else if (this.formcode == "9c286262-ee30-4b63-b356-e140d85b6499") {
+      if (this.tskID == 'd3465fc3-e54f-4b8e-ba40-a084bd713bd0') {
+        this.prepareCertificateFields.FIELD_ONE = 'Issued by'
       }
       this.ID = 6;
     } else if (this.formcode == "a0f4df42-5216-4c03-b286-35866c47a866") {
@@ -373,13 +392,13 @@ export class ServiceComponent implements OnInit {
       }, 1000);
     }
   }
-  hideBackButton() {
-    console.log("ttt", this.formcode);
-    if (this.formcode == "bc52101a-f679-46ee-a16c-601bc04e6be9") {
-      this.hideit = true;
-    } else {
-      this.hideit = false;
-    }
+  hideBackButton(){
+    console.log('ttt',this.formcode)
+    if(this.formcode == 'bc52101a-f679-46ee-a16c-601bc04e6be9'){
+     this.hideit = true
+     }
+    else{
+      this.hideit=false}
   }
   // preback(){
   //window.history.forward();
@@ -629,20 +648,14 @@ export class ServiceComponent implements OnInit {
     );
   }
   getorganizationLookUP() {
-    this.serviceService.getServiceDeliveryUnitLookUP().subscribe(
-      (orginizationlookup) => {
-        this.orginizationlookup = orginizationlookup;
-        this.orginizationlookup = Object.assign([], this.orginizationlookup);
-        this.orginizationlookup = this.orginizationlookup.filter(
-          (value) =>
-            value["organization_code"] == "24d45c72-8088-4591-810a-bc674f9f0a57"
-        );
-        console.log("orginizationlookup mmmmm", orginizationlookup);
-      },
-      (error) => {
-        console.log("error");
-      }
-    );
+    this.serviceService.getServiceDeliveryUnitLookUP().subscribe(orginizationlookup => {
+      this.orginizationlookup = orginizationlookup;
+      this.orginizationlookup = (Object.assign([], this.orginizationlookup));
+      this.orginizationlookup = this.orginizationlookup.filter(value => value['organization_code'] == '24d45c72-8088-4591-810a-bc674f9f0a57');
+      console.log('orginizationlookup mmmmm', orginizationlookup);
+    }, error => {
+      console.log('error');
+    });
   }
 
   GetPlot_Land_Grade_lookup() {
@@ -771,6 +784,26 @@ export class ServiceComponent implements OnInit {
         }
       );
   }
+  sendNottte() {
+    this.Back()
+    this.serviceService
+    .sendNote(this.NoteObj.remarks, this.AppNo, this.NoteObj.postit_note_code, this.todoID, this.SDP_ID)
+      .subscribe(
+        (message) => {
+          const toast = this.notificationsService.success(
+            "Sucess",
+            "Sent Sucessfully"
+          );
+          this.GetNote(message);
+        },
+        (error) => {
+          const toast = this.notificationsService.error(
+            "Error",
+            "SomeThing Went Wrong"
+          );
+        }
+      );
+  }
 
   GetNote(message) {
     this.serviceService.GetNote(this.AppNo).subscribe(
@@ -860,33 +893,22 @@ export class ServiceComponent implements OnInit {
         })
       );
 
-      console.log("this.DocID", this.DocID);
-      this.serviceService
-        .saveFile(
-          base64FileData,
-          type,
-          this.AppNo,
-          RequiredDoc.requirement_code,
-          "Start",
-          RequiredDoc.description_en,
-          this.DocID
-        )
-        .subscribe(
-          (message: HttpEvent<any>) => {
-            if (message.type === HttpEventType.UploadProgress) {
-              var eventTotal = message.total ? message.total : 0;
-              this.progress = Math.round(
-                (message.loaded / message.total) * 100
-              );
-              console.log(`Uploaded! ${this.progress}%`);
-            }
-            console.log("message", message);
-            if (message[0] !== "" || message[1] !== "" || message[2] !== "") {
-              RequiredDoc.File =
-                this.sanitizer.bypassSecurityTrustResourceUrl(fullbase64);
-              RequiredDoc.fileName = File.name;
-              RequiredDoc.fileType = File.type;
-              RequiredDoc.document_code = message[2];
+      console.log('this.DocID', this.DocID);
+      this.serviceService.saveFile(base64FileData, type, this.AppNo, RequiredDoc.requirement_code,
+        'Start', RequiredDoc.description_en, this.DocID).subscribe((message: HttpEvent<any>) => {
+
+          if (message.type === HttpEventType.UploadProgress) {
+            var eventTotal = message.total ? message.total : 0;
+            this.progress = Math.round(message.loaded / message.total * 100);
+            console.log(`Uploaded! ${this.progress}%`);
+
+          }
+          console.log('message', message);
+          if (message[0] !== "" || message[1] !== "" || message[2] !== "") {
+            RequiredDoc.File = this.sanitizer.bypassSecurityTrustResourceUrl(fullbase64);
+            RequiredDoc.fileName = File.name;
+            RequiredDoc.fileType = File.type;
+            RequiredDoc.document_code = message[2];
 
               fild.clear();
               const toast = this.notificationsService.success(
@@ -1092,22 +1114,29 @@ export class ServiceComponent implements OnInit {
 
     this.getAllDocumentpre(this.SelectedpreApp.Licence_Service_ID, task.docId);
 
-    if (task.form_code == "db59ddfc-2b6f-4ff1-8f37-443322978064") {
+    if (
+      task.form_code == 'db59ddfc-2b6f-4ff1-8f37-443322978064'
+    ) {
       this.preAppID = 2;
-      console.log("to", 2);
+       console.log('to', 2);
+
     } else if (
-      task.form_code == "b1a9c82a-9553-4055-a6cf-cd42d72cbe87" ||
-      task.form_code == "39d82943-6633-4df8-bb7a-6aa0933135e2"
+      task.form_code == 'b1a9c82a-9553-4055-a6cf-cd42d72cbe87' ||
+      task.form_code == '39d82943-6633-4df8-bb7a-6aa0933135e2'
     ) {
       this.preAppID = 5;
+    }
 
       // console.log('to', 3);
-    } else if (task.form_code == "9c286262-ee30-4b63-b356-e140d85b6499") {
+
+    } else if (task.form_code == '9c286262-ee30-4b63-b356-e140d85b6499') {
       this.preAppID = 6;
       // console.log('to', 4);
-    } else if (task.form_code == "6a32fd93-16db-49ce-8475-122d6aa85ce6") {
+    }
+    else if (task.form_code == '6a32fd93-16db-49ce-8475-122d6aa85ce6') {
       this.preAppID = 7;
     } else {
+
       this.preAppID = 1;
       // console.log('to', 1);
     }
@@ -1522,47 +1551,22 @@ export class ServiceComponent implements OnInit {
       }
     );
   }
-
+lode
   getCustomerLookUP() {
-    this.serviceService.getcustomer().subscribe(
-      (CustomerLookUP: any) => {
-        this.CustomerLookUP = CustomerLookUP.procCustomers;
-        for (let i = 0; i < this.CustomerLookUP.length; i++) {
-          this.CustomerLookUP[i].FullName_AM =
-            this.CustomerLookUP[i].applicant_First_Name_AM +
-            " " +
-            this.CustomerLookUP[i].applicant_Middle_Name_AM +
-            " " +
-            this.CustomerLookUP[i].applicant_Last_Name_AM;
-          this.CustomerLookUP[i].FullName_EN =
-            this.CustomerLookUP[i].applicant_First_Name_EN +
-            " " +
-            this.CustomerLookUP[i].applicant_Middle_Name_En +
-            " " +
-            this.CustomerLookUP[i].applicant_Last_Name_EN;
-        }
-        console.log("CustomerLookUP", this.CustomerLookUP);
-        this.getCustomerBankLookUP();
-      },
-      (error) => {
-        console.log("error");
+    this.serviceService.getCustomerLookUP().subscribe(CustomerLookUP => {
+      this.CustomerLookUP = CustomerLookUP;
+      this.CustomerLookUP = (Object.assign([], this.CustomerLookUP.list));
+      for (let i = 0; i < this.CustomerLookUP.length; i++) {
+        this.CustomerLookUP[i].FullName_AM = this.CustomerLookUP[i].Applicant_First_Name_AM + ' ' + this.CustomerLookUP[i].Applicant_Middle_Name_AM + ' ' + this.CustomerLookUP[i].Applicant_Last_Name_AM;
+        this.CustomerLookUP[i].FullName_EN = this.CustomerLookUP[i].Applicant_First_Name_EN + ' ' + this.CustomerLookUP[i].Applicant_Middle_Name_En + ' ' + this.CustomerLookUP[i].Applicant_Last_Name_EN;
       }
-    );
+      this.getCustomerBankLookUP();
+      console.log('CustomerLookUP', this.CustomerLookUP);
+    }, error => {
+      console.log('error');
+    });
   }
-  // getCustomerLookUP() {
-  //   this.serviceService.getCustomerLookUP().subscribe(CustomerLookUP => {
-  //     this.CustomerLookUP = CustomerLookUP;
-  //     this.CustomerLookUP = (Object.assign([], this.CustomerLookUP.list));
-  //     for (let i = 0; i < this.CustomerLookUP.length; i++) {
-  //       this.CustomerLookUP[i].FullName_AM = this.CustomerLookUP[i].Applicant_First_Name_AM + ' ' + this.CustomerLookUP[i].Applicant_Middle_Name_AM + ' ' + this.CustomerLookUP[i].Applicant_Last_Name_AM;
-  //       this.CustomerLookUP[i].FullName_EN = this.CustomerLookUP[i].Applicant_First_Name_EN + ' ' + this.CustomerLookUP[i].Applicant_Middle_Name_En + ' ' + this.CustomerLookUP[i].Applicant_Last_Name_EN;
-  //     }
-  //     this.getCustomerBankLookUP();
-  //     console.log('CustomerLookUP', this.CustomerLookUP);
-  //   }, error => {
-  //     console.log('error');
-  //   });
-  // }
+
   getCustomerBankLookUP() {
     this.CustomerBankLookUP = [];
     for (let i = 0; i < this.CustomerLookUP.length; i++) {

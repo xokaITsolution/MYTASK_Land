@@ -40,6 +40,7 @@ import { environment } from "src/environments/environment";
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
+    
     // HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService, {dataEncapsulation: false}),
     AngularFontAwesomeModule,
     ServiceModule,

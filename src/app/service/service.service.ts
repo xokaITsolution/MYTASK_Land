@@ -75,7 +75,6 @@ export class ServiceService {
   private SaveDataObjURL = environment.rootPath + "BPEL/SaveDataObj"; // URL to web api
   private getAllDocumentURL = environment.rootPath + "BPEL/getAllDocument";
   private MytasksUrl = environment.rootPath + "BPEL/GetlistofTodo"; // URL to web api
-  public customerUrl = environment.rootPathApi + "Customer/procCustomer";
   ApplicationNo: any;
   todo: any;
   servID: any;
@@ -372,6 +371,9 @@ export class ServiceService {
         plotid +
         "&searchStringByPID&searchStringByPloteID&pageIndex&pageSize"
     );
+  }
+  getPropertyLists(plotid) {
+    return this.http.get(this.propertreg + "/" + plotid);
   }
 
   getDeedTable(propertyID) {

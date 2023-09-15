@@ -9,6 +9,7 @@ import { ServiceService } from "../service.service";
 import { PlotManagment } from "../plot-managment/plot-managment.component";
 import { ServiceComponent } from "../service.component";
 import { NotificationsService } from "angular2-notifications";
+import { environment } from "src/environments/environment";
 @Component({
   selector: 'app-plot',
   templateUrl: './plot.component.html',
@@ -39,15 +40,24 @@ export class PlotComponent implements OnChanges {
   OnParcle = -1;
   plotId = null;
   Saved = false;
+  language: string;
 
   constructor(
     private serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    
   ) {
   }
 
   ngOnChanges() {
+    this.serviceService.toMes=true
+    if (environment.Lang_code === "am-et") {
+      this.language = 'amharic';
+    }
+    else {
+      this.language = 'english';
+    }
     console.log("emptying list", this.PlotManagementList);
     this.PlotManagementList = [];
     this.noinvalidplot = 0;
@@ -79,22 +89,41 @@ export class PlotComponent implements OnChanges {
       this.getPlotManagement(this.Parcel_mearge4);
     }
   }
+  async getEthiopianToGregorian(date){
 
+    if(date){
+    var datenow=  await this.serviceService.getEthiopianToGregorian(date).toPromise()
+       console.log(datenow);
+       return datenow.nowTime
+ 
+    }
+  }
+  async getgregorianToEthiopianDate(date) {
+    if(date != '0001-01-01T00:00:00'){
+    var  datenow = await this.serviceService.getgregorianToEthiopianDate(date).toPromise();
+       console.log(datenow);
+       return  datenow.nowTime
+    }
+  }
   getPlotManagement(Parcel_ID) {
     let a;
     this.serviceService.getPlotManagement(Parcel_ID).subscribe(
-      (PlotManagementList) => {
-        a = PlotManagementList;
+      async (PlotManagementLists) => {
+        a = PlotManagementLists;
+       
         let b = false;
-        for (let i = 0; i < (PlotManagementList as any).list.length; i++) {
-          if (a.list[0].Plot_ID == (PlotManagementList as any).list[i].Plot_ID) {
+        for (let i = 0; i < (PlotManagementLists as any).list.length; i++) {
+          if (a.list[0].Plot_ID == (PlotManagementLists as any).list[i].Plot_ID) {
             b = true;
             // this.PlotManagementList[i] = a.list[0];
           }
         }
         if (b) {
           this.noinvalidplot = this.noinvalidplot + 1;
+          if(this.language == 'amharic'){
+            a.list[0].Registration_Date= await this.getgregorianToEthiopianDate(a.list[0].Registration_Date)}
           this.PlotManagementList.push(a.list[0]);
+          console.log(this.PlotManagementList)
           this.isisvalidated(
             this.todoid,
             this.tskID,
@@ -104,7 +133,7 @@ export class PlotComponent implements OnChanges {
           );
         }
 
-        console.log("PlotManagementList", PlotManagementList);
+        console.log("PlotManagementList", PlotManagementLists);
         console.log("this.PlotManagementList", this.PlotManagementList);
       },
       (error) => {
@@ -116,22 +145,48 @@ export class PlotComponent implements OnChanges {
   SelectPLot(plot) {
     this.SelectedPlot = plot;
     console.log('dfghgfd',plot);
-    
+  
     plot.SDP_ID = this.serviceComponent.licenceData.SDP_ID;
     plot.Licence_Service_ID = this.LicenceData.Licence_Service_ID;
     plot.Application_No = this.AppNo;
     if (plot.Registration_Date) {
       plot.Registration_Date = plot.Registration_Date.split("T")[0];
     }
-    this.plotForm = true;
-    this.isnew = false;
+    // this.plotForm = true;
+     
+  }
+  highlighted
+  tab1;
+  tab2;
+  initTabs() {
+    this.tab1 = true;
+    this.tab2 = false;
+  }
+  tabChanged(e) {
+    console.log(e.index);
+    if (e.index == 0) {
+      this.tab1 = true;
+      this.tab2 = false;
+    } else if (e.index == 1) {
+
+      this.tab1 = false;
+      this.tab2 = true;
+    }
   }
 
+  public selectedTab = 0;
+  showform() {
+     this.plotForm = true;
+     this.isnew = false;
+     this.serviceService.isleaseForm = false;
+  }
   AddPLot() {
+    this.serviceService.toMes=true
     this.isnew = true;
     this.plotForm = true;
     const plot = new PlotManagment();
     // plot.SDP_ID = this.LicenceData.SDP_ID;
+    console.log(this.Parcel_ID)
     plot.Licence_Service_ID = this.LicenceData.Licence_Service_ID;
     plot.Application_No = this.AppNo;
     if (this.Parcel_ID) {

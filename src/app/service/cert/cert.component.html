@@ -1,5 +1,5 @@
 <div class="row m-3">
-  <div class="col-md-6">
+  <div class="col-md-6" *ngIf="!displayGIS">
     <p-table [value]="BaseTable" [paginator]="true" [rows]="3">
       <ng-template pTemplate="header">
         <tr>
@@ -9,7 +9,7 @@
           <th scope="col">
             <div *ngIf="BaseTable">
               <!--<button type="button" *ngIf="BaseTable.length < noadds && !disable" class="btn btn-primary" (click)="AddBase('NewCretafcateBase')">AddNew</button></div>-->
-              <button type="button" *ngIf="!disable" class="btn btn-primary" (click)="AddBase('NewCretafcateBase')"
+              <button type="button" *ngIf="!disable" class="btn btn-primary" (click)="AddBase(template)"
                 translate>AddNew</button>
             </div>
           </th>
@@ -17,7 +17,7 @@
       </ng-template>
 
       <ng-template pTemplate="body" let-Base>
-        <tr class="aa" [class.active]="Base == SelectedBase">
+        <tr class="aaaa" [class.active]="Base == SelectedBase">
           <td>{{Base.Title_Deed_No}}</td>
           <td>{{Base.Registration_Date}}</td>
           <td>
@@ -31,11 +31,9 @@
           </td>
 
           <td>
-            <button type="button" class="btn btn-primary mr-1 mb-1" (click)="SelectBase(Base)" translate>select
-            </button>
+            <button type="button" class="btn btn-primary mr-1 mb-1" (click)="SelectBase(Base)" translate>select</button>
             <button type="button" class="btn btn-primary" *ngIf="!disable"
-              (click)="EditBaseView('NewCretafcateBase', Base)" translate>Edit
-            </button>
+              (click)="EditBaseView(template, Base)" translate>Edit</button>
           </td>
         </tr>
       </ng-template>
@@ -55,8 +53,7 @@
             <th scope="col" translate>Is printed</th>
             <th scope="col" translate>Is issued</th>
             <th scope="col">
-              <button type="button" class="btn btn-primary" *ngIf="!disable" (click)="addversion()" translate>Add New
-              </button>
+              <button type="button" class="btn btn-primary" *ngIf="!disable" (click)="addversion()" translate>Add New</button>
             </th>
           </tr>
         </ng-template>
@@ -86,7 +83,7 @@
     </div>
   </div>
 
-  <div class="col-md-10" *ngIf="certverForm">
+  <div class="col-md-10" *ngIf="certverForm" [hidden]="displayGIS">
 
 
     <tabset #staticTabs>
@@ -132,7 +129,10 @@
 
 </div>
 
-<ngx-smart-modal #NewCretafcateBase identifier="NewCretafcateBase" class="nsm-dialog">
+<div  *ngIf="displayGIS" class="p-3 w-80  mb-5 bg-white rounded"
+  style=" box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px; margin-top: 20px; margin-left: 3%; margin-bottom: 20px; margin-right: 3%;">
+
+  
   <div style="width: 100%">
 
   </div>
@@ -164,7 +164,16 @@
               [ngClass]="{ 'is-invalid': TitleDeedNo.invalid }" required>
           </div>
         </div>
-        <div class="form-group row offset-md-3 col-md-6">
+        <div class="form-group row offset-md-3 col-md-6" *ngIf="language === 'amharic'">
+          <label for="Registration_Date" class="col-sm-3 col-form-label" translate>Registration Date</label>
+          <div class="col-sm-9">
+            <input type="text" readonly class="form-control" [disabled]="disable" [(ngModel)]="Base.Registration_Date"
+              name="Registration_Date" id="Registration_Date" [placeholder]="'Registration Date' | translate"
+              #Registration_Date="ngModel" [ngClass]="{ 'is-invalid': Registration_Date.invalid }" required appDatepickerEthiopian
+              (dateEmitter)="selectedDateTime($event,1)">
+          </div>
+        </div>  
+        <div class="form-group row offset-md-3 col-md-6" *ngIf="language !== 'amharic'">
           <label for="Registration_Date" class="col-sm-3 col-form-label" translate>Registration Date</label>
           <div class="col-sm-9">
             <input type="date" class="form-control" [disabled]="disable" [(ngModel)]="Base.Registration_Date"
@@ -194,7 +203,7 @@
           </div>
           <div class="col-sm-2">
             <button type="button" *ngIf="!disable" class="btn btn-secondary" (click)="displayDeed=true"
-              translates>Select Deed</button>
+              translate>Select Deed</button>
           </div>
         </div>
 
@@ -204,12 +213,14 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary" [disabled]="!f.valid" (click)="SaveBase('NewCretafcateBase')"
+    <button type="button" class="btn btn-primary" [disabled]="!f.valid" (click)="SaveBase(template);"
       *ngIf="isnewBase" translate>Save</button>
-    <button type="button" class="btn btn-primary" [disabled]="!f.valid" (click)="EditBase('NewCretafcateBase')"
-      *ngIf="!isnewBase" translate>Save</button>
+      <button type="button" class="btn btn-primary" [disabled]="!f.valid" (click)="EditBase(template)"
+      *ngIf="!isnewBase" translate>Update</button>
+      <button style="float: right; margin: 5px;" type="button" (click)="displayGIS=false" class="btn btn-danger mb-2" translate>Close</button>
   </div>
-</ngx-smart-modal>
+
+  </div>
 
 
 
@@ -253,7 +264,7 @@
 
 
 
-<p-dialog [(visible)]="displayDeed" [modal]="true" [responsive]="true"
+<p-dialog [(visible)]="displayDeed"  [responsive]="true"
   [style]="{'minHeight':'10%','height':'800px','minWidth':'10%','width':'80%' }" [maximizable]="true"
   [baseZIndex]="10000">
   <p-header translate>

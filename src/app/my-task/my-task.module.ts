@@ -8,23 +8,59 @@ import { SupervisorTaskComponent } from './supervisor-task/supervisor-task.compo
 import { MyTaskService } from './my-task.service';
 import { TableModule } from 'primeng/table';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgxSmartModalModule } from 'ngx-smart-modal';
+import { NgxSmartModalModule, NgxSmartModalService } from 'ngx-smart-modal';
 import { ToastModule } from 'primeng/toast';
 import { SimpleNotificationsModule } from 'angular2-notifications';
-
-
+import { FormsModule } from '@angular/forms';
+import { FileUploadModule } from 'primeng/fileupload';
+import { AccordionModule, BsDropdownModule, TabsModule } from 'ngx-bootstrap';
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
+import { ServiceRoutingModule } from '../service/service-routing.module';
+import { DialogModule } from 'primeng/dialog';
+import { ArchwizardModule } from 'angular-archwizard';
+import { CheckboxModule } from 'primeng/checkbox';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { FieldsetModule } from 'primeng/fieldset';
+import { ServiceService } from '../service/service.service';
+import { ServiceComponent } from '../service/service.component';
+import { MessageService } from 'primeng/api';
+import { PersonComponent } from './person/person.component';
+import { ArchiveComponent } from './archive/archive.component';
+import { NgxDocViewerModule } from 'ngx-doc-viewer';
 @NgModule({
   imports: [
     CommonModule,
+    NgxDocViewerModule,
     TableModule,
+    FormsModule,
     ToastModule,
+    TableModule,
     SimpleNotificationsModule,
     MyTaskRoutingModule,
     TranslateModule.forChild({}),
-    NgxSmartModalModule
+    NgxSmartModalModule,
+    DialogModule,
+    CommonModule,
+    FormsModule,
+    ServiceRoutingModule,
+    AngularFontAwesomeModule,
+    TableModule,
+    SimpleNotificationsModule.forRoot(),
+    ArchwizardModule,
+    TabsModule.forRoot(),
+    CheckboxModule,
+    BrowserAnimationsModule,
+    BsDropdownModule.forRoot(),
+    NgxSpinnerModule,
+    AccordionModule,
+    FieldsetModule,
+    FileUploadModule,
+    TranslateModule.forChild({}),
+    NgxSmartModalModule.forChild(),
   ],
-  declarations: [TaskComponent, MyTaskComponent, SupervisorTaskComponent,],
-  providers: [MyTaskService]
+  declarations: [TaskComponent, MyTaskComponent, PersonComponent,SupervisorTaskComponent, ArchiveComponent,],
+  providers: [MyTaskService, MessageService, NgxSmartModalService]
 })
 export class MyTaskModule {
 }

@@ -139,18 +139,15 @@
       </th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-measurment2>
-    <tr [class.active]="measurment2 ==  measurment">
+  <ng-template pTemplate="body" let-measurment2 let-rowData>
+    <tr (click)='highlighted = rowData;selectmeasurment(measurment2)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
+   
       <td>{{measurment2.Comment}}</td>
       <td>{{measurment2.Measurement}}</td>
       <td>
         <button type="button" class="btn btn-primary" (click)="selectmeasurment(measurment2)" translate
-          *ngIf="!disable">
-          Edit
-        </button>
-        <button type="button" class="btn btn-primary" (click)="selectmeasurment(measurment2)" translate *ngIf="disable">
-          select
-        </button>
+          *ngIf="!disable">Edit</button>
+        <button type="button" class="btn btn-primary" (click)="selectmeasurment(measurment2)" translate *ngIf="disable">select</button>
       </td>
     </tr>
   </ng-template>

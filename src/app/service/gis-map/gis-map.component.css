@@ -1,0 +1,74 @@
+.sv_main .sv_nav .sv_nav_btn {
+    float: right;
+    margin: 0 700px;
+  }
+  .fade{
+    opacity: 1  !important;
+    background: rgba(0,0,0,.5);
+  }
+  .modal-content {
+    background-color: #f0f0f0;
+    border: 2px solid #ccc;
+  }
+  
+  .modal-header {
+    background-color: #ff0000;
+    color: #fff;
+  }
+  .modal-body {
+    background-color: #f0f0f0;
+    color: red;
+  }
+  .modal-dialog {
+    max-width: 300px;
+    margin: 1.75rem auto;
+  }
+  .modal-footer {
+    background-color: #f0f0f0;
+    
+  }
+/* .sidebar {
+    height: 100vh;
+    background-color: #aff0af;
+    overflow-y: auto;
+    transition: width 0.3s ease;
+}
+
+.sidebar-content {
+    padding: 20px;
+}
+
+.sidebar-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    background-color: #f1f1f1;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-toggle i {
+    margin-top: 14px;
+    margin-left: 12px;
+}
+
+.sidebar-collapsed {
+    width: 0;
+}
+
+/* .map-content {
+    height: 100vh;
+    padding: 0;
+} */
+.zoomcontainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease-in-out;
+  }

@@ -1,4 +1,4 @@
-<form #f="ngForm" *ngIf ="isleaseForm"  novalidate name="leaseform">
+<form #f="ngForm" *ngIf ="serviceService.isleaseForm"  novalidate name="leaseform">
   <!--  -->
   <div class="form-row">
     <div class="form-group row col-md-6">
@@ -20,7 +20,7 @@
     <div class="form-group row col-md-6">
       <label for="Type" class="col-sm-3 col-form-label" translate>Type</label>
       <div class="col-sm-9">
-        <select class="form-control" [disabled]="disable" [(ngModel)]="leaseOwnerShip.Type_ID" name="Type" id="Type"
+        <select class="form-select"  [disabled]="disable" [(ngModel)]="leaseOwnerShip.Type_ID" name="Type" id="Type"
           #Type="ngModel" [ngClass]="{ 'is-invalid': Type.invalid }" required>
           <option disabled translate>select</option>
           <option *ngFor="let type of serviceComponent.Lease_Type_Lookup;" [value]="type.Lease_Type_ID">
@@ -32,7 +32,7 @@
     <div class="form-group row col-md-6">
       <label for="Status" class="col-sm-3 col-form-label" translate>Status</label>
       <div class="col-sm-9">
-        <select class="form-control" [disabled]="disable" [(ngModel)]="leaseOwnerShip.Status" name="Status" id="Status"
+        <select class="form-select"  [disabled]="disable" [(ngModel)]="leaseOwnerShip.Status" name="Status" id="Status"
           #Status="ngModel" [ngClass]="{ 'is-invalid': Status.invalid }" required>
           <option disabled translate>select</option>
           <option *ngFor="let Status of serviceComponent.Lease_Stuts_Lookup;" [value]="Status.ID">{{Status.Status}}
@@ -43,7 +43,7 @@
     <div class="form-group row col-md-6">
       <label for="SubCity" class="col-sm-3 col-form-label" translate>SubCity</label>
       <div class="col-sm-9">
-        <select class="form-control" [disabled]="disable" [(ngModel)]="leaseOwnerShip.SDP_ID" name="SubCity"
+        <select class="form-select"  [disabled]="disable" [(ngModel)]="leaseOwnerShip.SDP_ID" name="SubCity"
           id="SubCity" #SubCity="ngModel" [ngClass]="{ 'is-invalid': SubCity.invalid }" (change)="addLease" disabled>
           <option disabled translate>select</option>
           <option  *ngFor="let SubCity of serviceComponent.ServiceDeliveryUnitLookUP;"
@@ -57,7 +57,7 @@
       <div class="col-sm-9">
         <input type="number" class="form-control" [disabled]="disable" [(ngModel)]="leaseOwnerShip.Lease_Hold_M2"
           name="LandHold" id="LandHold" [placeholder]="'Lease Hold' | translate" #LandHold="ngModel"
-          [ngClass]="{ 'is-invalid': LandHold.invalid }" min="0" required>
+          [ngClass]="{ 'is-invalid': LandHold.invalid }" min="75" oninput="this.value = Math.abs(this.value)" required>
       </div>
     </div>
     <div class="form-group row col-md-6">
@@ -70,20 +70,21 @@
     <div class="form-group row col-md-6">
       <label for="Customer" class="col-sm-3 col-form-label" translate>Customer</label>
       <div class="col-sm-7">
-        <select disabled class="form-control" [(ngModel)]="leaseOwnerShip.Customer_ID" name="Customert" id="Customert">
+        <!-- <select disabled class="form-control" [(ngModel)]="leaseOwnerShip.Customer_ID" name="Customert" id="Customert">
           <option disabled translate>select</option>
-          <option *ngFor="let customer of serviceComponent.CustomerLookUP;" [value]="customer.Customer_ID">
-            {{customer.FullName_EN}}
+          <option *ngFor="let Customer of customerdata;" [value]="Customer.Customer_ID">
+            {{language === 'amharic' ? Customer.applicant_First_Name_AM  + '  '+ Customer.applicant_Middle_Name_AM  + ' '+ Customer.applicant_Last_Name_AM : Customer.applicant_First_Name_EN  + '  '+ Customer.applicant_Middle_Name_En  + ' '+ Customer.applicant_Last_Name_EN}}
           </option>
-        </select>
-        <input type="hidden" class="form-control" #Customert="ngModel" [(ngModel)]="leaseOwnerShip.Customer_ID"
+        </select> -->
+        <input type="text" disabled class="form-control"  [(ngModel)]="Customer_NAME" name="Customer_NAME">
+        <input type="text" [hidden]="true" class="form-control" #Customert="ngModel" [(ngModel)]="leaseOwnerShip.Customer_ID"
           name="Photo" id="NumberOfLift" [placeholder]="'Number of Lift' | translate" required>
         <div *ngIf="Customert.invalid">
           <span class="text-danger" translate>REQUIRED</span>
         </div>
 
         <div class="col-sm-2">
-          <button type="button" *ngIf="!disable" class="btn btn-secondary" (click)="openModal('leaseCustomer')"
+          <button type="button" *ngIf="!disable" class="btn btn-secondary" (click)="visible=true"
             translate>Select Customer</button>
         </div>
       </div>
@@ -136,26 +137,35 @@
           min="0">
       </div>
     </div>
-    <div class="form-group row col-md-6">
+    <div class="form-group row col-md-6"  *ngIf="language !== 'amharic'">
       <label for="Date_of_final_lease_payment" class="col-sm-3 col-form-label" translate>Date of final lease payment</label>
       <div class="col-sm-9">
         <input type="date" class="form-control" [disabled]="disable"
           [(ngModel)]="leaseOwnerShip.Date_of_final_lease_payment" #Date_of_final_lease_payment="ngModel"
           name="Date_of_final_lease_payment" id="Date_of_final_lease_payment"
           [placeholder]="'Date of final lease payment' | translate"
-          [ngClass]="{ 'is-invalid': Date_of_final_lease_payment.invalid }">
+          [ngClass]="{ 'is-invalid': Date_of_final_lease_payment.invalid }" >
+      </div>
+    </div>  <div class="form-group row col-md-6"  *ngIf="language === 'amharic'">
+      <label for="Date_of_final_lease_payment" class="col-sm-3 col-form-label" translate>Date of final lease payment</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" readonly [disabled]="disable"
+          [(ngModel)]="leaseOwnerShip.Date_of_final_lease_payment" #Date_of_final_lease_payment="ngModel"
+          name="Date_of_final_lease_payment" id="Date_of_final_lease_payment"
+          [placeholder]="'Date of final lease payment' | translate"
+          [ngClass]="{ 'is-invalid': Date_of_final_lease_payment.invalid }" appDatepickerEthiopian
+          (dateEmitter)="selectedDateTime($event,2)">
       </div>
     </div>
 
 
   </div>
-  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!addnew && !disable" (click)="save()" translate>Save</button>
+  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!addnew && !disable" (click)="save()" translate>Update</button>
   <!-- <button type="button" class="btn btn-danger ml-3" [disabled]="!f.valid" *ngIf="!addnew && !disable" (click)="Delete()"
     translate>Delete
   </button> -->
   <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="addnew && !disable" (click)="add()"
-    translate>Save
-  </button>
+    translate>Save</button>
 </form>
 
 <p-table [value]="tasks" [paginator]="true" [rows]="5">
@@ -173,8 +183,9 @@
       </th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-lease>
-    <tr [class.active]="lease == leaseOwnerShip">
+  <ng-template pTemplate="body" let-lease let-rowData>
+  <tr (click)='highlighted = rowData;selectLease(lease)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
+    
       <td>{{lease.ID}}</td>
       <td>{{lease.Plot_ID}}</td>
       <td>{{lease.Type_ID}}</td>
@@ -190,44 +201,58 @@
 </p-table>
 
 
-<ngx-smart-modal #leaseCustomer identifier="leaseCustomer">
-  <div class="modal-header">
-    <h4 class="modal-title pull-left" translate>Customer</h4>
-  </div>
+<p-dialog [header]="'Customer' | translate" [(visible)]="visible" [responsive]="true" [width]="900" [minY]="70" [maximizable]="true" [positionTop]="1"
+[baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                         'max-height': '80vh','min-height':'250px'}">
+    
   <div class="modal-body">
 
 
-    <p-table #dt [value]="serviceComponent.CustomerLookUP" [paginator]="true" [rows]="5"
+    <p-table #dt [value]="customerdata" [paginator]="true" [rows]="5"
       [globalFilterFields]="['TIN','FullName_AM','FullName_EN','Applicant_Mother_Name_AM','Applicant_Mother_Name_EN','Mobile_No']">
+    
       <ng-template pTemplate="caption">
-        <div style="text-align: right">
-          <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
-          <input type="text" pInputText size="50" [placeholder]="'Global Filter' | translate"
-            (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        <div class="table-header">
+          <span class="p-input-icon-left">
+            <div class="input-group mb-3">
+            <input   type="text" style="border-color: #007bff;"   [(ngModel)]="globvar"  name="globvar"
+            id="globvar">
+            <!-- <input type="text" pInputText [(ngModel)]="phoneNumber" placeholder="Enter phone number...">
+           <input type="text" pInputText [(ngModel)]="firstName" placeholder="Enter first name...">
+           <input type="text" pInputText [(ngModel)]="lastName" placeholder="Enter last name...">  -->
+           <div class="input-group-append">
+            <button class="btn btn-primary" type="button" translate  (click)="getcustomer(globvar)">Search</button>
+          </div>
         </div>
+        <!-- <button type="button" class="btn btn-primary" (click)="add()" style="float: right;" translate>Add New</button> -->
+          </span>
+        
+        </div>
+  <!-- <input class="form-control border-end-0 border"   type="text" [placeholder]="'Search'|translate" (input)="cust.filterGlobal($event.target.value, 'contains')"  id="form1" class="form-control"> -->
       </ng-template>
       <ng-template pTemplate="header">
-        <tr>
+        <tr >
           <th translate>TIN</th>
-          <th translate>Full Name AM</th>
-          <th translate>Full Name EN</th>
-          <th translate>Mother Name AM</th>
-          <th translate>Mother Name EN</th>
+          <th translate>Full Name</th>
+          <th translate>Mother Name</th>
           <th translate>mobile Number</th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-Customer>
-        <tr (click)="closeModal(Customer,'leaseCustomer')">
-          <td>{{Customer.TIN}}</td>
-          <td>{{Customer.FullName_AM}}</td>
-          <td>{{Customer.FullName_EN}}</td>
-          <td>{{Customer.Applicant_Mother_Name_AM}}</td>
-          <td>{{Customer.Applicant_Mother_Name_EN}}</td>
-          <td>{{Customer.Mobile_No}}</td>
+      <ng-template pTemplate="body" let-Customer  let-rowData>
+        <tr (click)='highlighted = rowData;closeModal(Customer)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
+       
+          <td>{{Customer.tin}}</td>
+          <td>{{ language === 'amharic' ? Customer.applicant_First_Name_AM  + '  '+ Customer.applicant_Middle_Name_AM  + ' '+ Customer.applicant_Last_Name_AM : Customer.applicant_First_Name_EN  + '  '+ Customer.applicant_Middle_Name_En  + ' '+ Customer.applicant_Last_Name_EN}}</td>
+      
+          <td>{{ language === 'amharic' ? Customer.applicant_Mother_Name_AM:Customer.applicant_Mother_Name_EN }}</td>
+          <td>{{Customer.mobile_No}}</td>
         </tr>
       </ng-template>
     </p-table>
-
+<div *ngIf="serviceComponent.lode">
+  <p-progressBar mode="indeterminate"></p-progressBar>
+</div>
 
   </div>
-</ngx-smart-modal>
+  <button type="button" class="btn btn-primary" (click)="visible=false" style="float: right;" translate>Done</button>
+</p-dialog>

@@ -55,6 +55,7 @@ import { ConfirmationService } from 'primeng/api';
 import { PaymentComponent } from './payment/payment.component';
 import {TabViewModule} from 'primeng/tabview';
 import { CertletterComponent } from "./certletter/certletter.component";
+
 //import { BackButtonDisableModule } from 'angular-disable-browser-back-button';
 //material
 import {
@@ -79,6 +80,11 @@ import { ReportDialogComponent } from './report-dialog/report-dialog.component';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import { NgxDocViewerModule } from 'ngx-doc-viewer';
 import { ExplorationLicenseComponent } from './exploration-license/exploration-license.component';
+import { NgxSimplePrintDirective } from './ngx-simple-print.directive';
+import { GisMapComponent } from './gis-map/gis-map.component';
+import { GisMapService } from './gis-map/gis-map.service';
+import { DatepickerEthiopianDirective } from './datepicker-ethiopian.directive';
+import { CustomAlertComponent } from './gis-map/CustomAlertComponent';
 
 
 
@@ -87,7 +93,7 @@ import { ExplorationLicenseComponent } from './exploration-license/exploration-l
     //BackButtonDisableModule.forRoot({
     //  preserveScrollPosition: true
    // }),
-
+   NgxDocViewerModule,
     TabViewModule,
     ArchwizardModule,
     NgxDocViewerModule,
@@ -138,6 +144,7 @@ import { ExplorationLicenseComponent } from './exploration-license/exploration-l
   ],
   
   declarations: [
+    
     PaymentComponent,
     ServiceComponent,
     SurveyComponent,
@@ -163,14 +170,16 @@ import { ExplorationLicenseComponent } from './exploration-license/exploration-l
     ContractFormComponent,
     ReportDialogComponent,
     ExplorationLicenseComponent,
-
-  
-   
+    GisMapComponent,
+    NgxSimplePrintDirective,
+    DatepickerEthiopianDirective,
+    CustomAlertComponent,
   ],
- 
+   entryComponents: [GisMapComponent,CustomAlertComponent],
   providers: [
     ConfirmationService,
     ServiceService,
+    GisMapService,
     MessageService,
     CertificateVersionService,
     DeptSuspensionRecordService,

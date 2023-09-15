@@ -77,17 +77,17 @@ export class MyTaskComponent implements OnInit {
   IsLockedBy_OtherUser(task) {
     this.myTaskService.IsLockedBy_OtherUser(task.id).subscribe(message => {
       
-      if(task.tasks_id =="d553ccb8-e40d-4bee-9418-5754805609fd"){
-        const warningMessage = "የሊዝ ወይም የነባር ይዞታ መመዝገቡን አረጋግጥ/Check lease or freehold record is active for this plot";
-        const toastWarning = this.notificationsService.warn(
-          "Warning",
-          warningMessage
-        );
-      this.go(task);
-      }
-      else{
+      // if(task.tasks_id =="d553ccb8-e40d-4bee-9418-5754805609fd"){
+      //   const warningMessage = "የሊዝ ወይም የነባር ይዞታ መመዝገቡን አረጋግጥ/Check lease or freehold record is active for this plot";
+      //   const toastWarning = this.notificationsService.warn(
+      //     "Warning",
+      //     warningMessage
+      //   );
+      // this.go(task);
+      // }
+      // else{
         this.go(task);
-      }
+    //  }
       },
     error => {
       console.error(error);

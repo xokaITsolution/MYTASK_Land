@@ -15,6 +15,23 @@
       <a class="nav-link" [routerLink]="['/task/SupervisorTask']" translate
         >Supervisor Task</a
       >
+    </li>  <li
+      class="nav-item"
+      (click)="tab = 'Customer'"
+      [class.active]="tab == 'Customer'"
+    >
+      <a class="nav-link" [hidden]="showcustomer"  [routerLink]="['/task/Customer']" translate
+        >Customer</a
+      >
+    </li>
+    <li
+      class="nav-item"
+      (click)="tab = 'Archive'"
+      [class.active]="tab == 'Archive'"
+    >
+      <a class="nav-link"  [routerLink]="['/task/Archive']" translate
+        >Archive</a
+      >
     </li>
     <!-- <li class="nav-item" (click)="tab = 'Gis'" [class.active]="tab == 'Gis'">
       <a class="nav-link" [routerLink]="['/task/Gis']" translate>Gis</a>

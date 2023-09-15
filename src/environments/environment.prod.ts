@@ -14,4 +14,12 @@ export const environment = {
   resourcePath: window["resourcePath"],
   overlayLayer: window["overlayLayer"],
   layerConfig: window["layerConfig"],
+  iconpath: window["iconpath"],
+  rootPath2: window["rootPath2"],
+  formPath: window["formPath"],
+  rootPath3: window["rootPath3"],
+  groupLayerName: window["groupLayerName"],
+  geoserverUrl: window["geoserverUrl"],
+  geoserverUrlwfs: window["geoserverUrlwfs"],
+  groupName: window["groupName"],
 };

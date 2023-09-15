@@ -12,8 +12,9 @@
         </th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-Plot>
-      <tr [class.active]="Plot == SelectedPlot ">
+    <ng-template pTemplate="body" let-Plot  let-rowData>
+      <tr (click)='highlighted = rowData;SelectPLot(Plot);showform()' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
+        
         <td>{{Plot.Plot_ID}} </td>
         <td>
           <select class="form-control" disabled [(ngModel)]="Plot.Plot_Status" name="Status" id="Status"
@@ -27,8 +28,8 @@
         <td>{{Plot.Plot_Size_M2}}</td>
         <td>{{Plot.Registration_Date}}</td>
         <td>
-          <button type="button" class="btn btn-primary" (click)="SelectPLot(Plot)" *ngIf="disable" translate>select</button>
-          <button type="button" class="btn btn-primary" (click)="SelectPLot(Plot)" *ngIf="!disable" translate>Edit</button>
+          <button type="button" class="btn btn-primary" (click)="SelectPLot(Plot);showform()" *ngIf="disable" translate>select</button>
+          <button type="button" class="btn btn-primary" (click)="SelectPLot(Plot);showform()" *ngIf="!disable" translate>Edit</button>
         </td>
       </tr>
     </ng-template>
@@ -38,19 +39,22 @@
 <div class="m-3" *ngIf="plotForm">
   <!--forEdit-->
   <div class="m-3" *ngIf="!isnew">
-    <tabset #staticTabs>
-      <tab [heading]="'Plot Management' | translate">
+    <p-tabView (onChange)="tabChanged($event)" [(activeIndex)]="selectedTab"  selected="true">
+      <p-tabPanel [header]="'Plot Management' | translate">
         <div class="mt-3">
-          <app-plot-managment (completed)="EnableFins()" (completeddel)="EnableFinsDel()" [SelectedPlot]='SelectedPlot'
+          <app-plot-managment (completed)="EnableFins()" (completeddel)="EnableFinsDel()" [SelectedPlot]='SelectedPlot' [LicenceData]="LicenceData"
             [disable]="disable" [Fields]="Fields"></app-plot-managment>
+            <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1" translate>Next</button></div>
         </div>
-      </tab>
-      <tab [heading]="'LEASE/OWNERSHIP' | translate">
+      </p-tabPanel>
+      <p-tabPanel  [header]="'LEASE/OWNERSHIP' | translate">
         <div class="mt-3">
-        <app-lease-owner-ship (completed)="completed" (SelectedPlot)="(SelectedPlot)" (disable)="(disable)" [SelectedPlot]='SelectedPlot' (todoid)="(todoid)" (applicationo)="AppNo" (LicenceData)="(LicenceData)" (plotId)="plotId"></app-lease-owner-ship> 
+        <app-lease-owner-ship (completed)="completed" (SelectedPlot)="(SelectedPlot)" [disable]="disable"  [SelectedPlot]='SelectedPlot' (todoid)="(todoid)" (applicationo)="AppNo" (LicenceData)="(LicenceData)" (plotId)="plotId"></app-lease-owner-ship>
+       <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" [disabled]="!CanDone" (click)="DoneNew()"
+        translate>Finish</button> </div>
       </div>
-      </tab>
-    </tabset>
+     </p-tabPanel>
+    </p-tabView>
   </div>
 
   <!--forNew-->
@@ -62,11 +66,12 @@
         <div class="mt-3">
 
           <app-plot-managment (completed)="EnableFinsPloat($event)" (completeddel)="EnableFinsDel()"
-            [SelectedPlot]='SelectedPlot' [disable]="disable" [Fields]="Fields"></app-plot-managment>
+            [SelectedPlot]='SelectedPlot' [disable]="disable" [Fields]="Fields" [LicenceData]="LicenceData" ></app-plot-managment>
         </div>
-        <div class="pull-right">
-          <button type="button" class="btn btn-primary mr-1" [disabled]="!toMes"  (click)="DoneNew()"
+        <div class="pull-right"  *ngFor="let Plot of PlotManagementList">
+          <button type="button" class="btn btn-primary mr-1" [disabled]="serviceService.toMes"  (click)="SelectPLot(Plot)"
           awNextStep  translate>Next</button>
+          <span style="color:red;font-weight: bolder;font-size: large;"  *ngIf="serviceService.toMess"  translate>you need to save Plote Location first</span>
         </div>
       </aw-wizard-step>
       <aw-wizard-step [stepTitle]="'LEASE/OWNERSHIP' | translate"
@@ -74,11 +79,11 @@
 
       <div class="mt-3">
 
-        <app-lease-owner-ship (completed)="completed" (SelectedPlot)="(SelectedPlot)" (disable)="(disable)" [SelectedPlot]='SelectedPlot' (todoid)="(todoid)" (applicationo)="AppNo" (LicenceData)="(LicenceData)" (plotId)="plotId"></app-lease-owner-ship> 
+        <app-lease-owner-ship (completed)="completed"  [disable]="disable"  [SelectedPlot]='SelectedPlot' (todoid)="(todoid)" (applicationo)="AppNo" (LicenceData)="(LicenceData)" (plotId)="plotId"></app-lease-owner-ship> 
       </div>
       <div class="pull-right">
         <button type="button" class="btn btn-primary mr-1" [disabled]="!CanDone" (click)="DoneNew()"
-          translate>Done</button>
+          translate>Finish</button>
       </div>
     </aw-wizard-step>
     </aw-wizard>

@@ -38,19 +38,18 @@
                     <form #f="ngForm" novalidate name="proform">
                       <div class="form-group row col-md-12" *ngFor="let RequiredDoc of RequerdDocs; let i = index;">
                         <label for="File" class="col-md-4 col-form-label">
-                          {{ RequiredDoc.description_en }}
+                          {{ language === 'amharic' ? RequiredDoc.description_Local :RequiredDoc.description_en }}
                         </label>
                         <div class="col-md-8">
                           <div>
 
                           </div>
                           <div *ngIf="!RequiredDoc.File">
-                            <p-fileUpload #fild id="File" name="demo[]" customUpload="true"
-                              (uploadHandler)="upload($event,RequiredDoc,fild)"
-                              accept=".pdf,.jpg,.png,.gif,.doc,.docx,.xls,.xlsx,.csv,.geojson,.zip"
-                              maxFileSize="25000000">
-                            </p-fileUpload>
-
+                            <p-fileUpload [hidden]="disable" #fild id="File" name="demo[]" customUpload="true"
+                            (uploadHandler)="upload($event,RequiredDoc,fild)" [auto]="true"
+                            [accept]="RequiredDoc.type" [chooseLabel]="'Upload' | translate"
+                           [maxFileSize]="RequiredDoc.size">
+                          </p-fileUpload>
                           </div>
                           <div *ngIf="RequiredDoc.File">
                             <button type="button" class="btn btn-primary" (click)="removeUpload(RequiredDoc)"
@@ -104,17 +103,11 @@
                   [(ngModel)]="NoteObj.remarks" placeholder="write post in note here ...">
                                 </textarea>
                 <button type="button" class="btn btn-primary mx-2" *ngIf="!this.NoteObj.postit_note_code"
-                  (click)="addNote()" translate>
-                  Save
-                </button>
+                  (click)="addNote()" translate>Save</button>
                 <button type="button" class="btn btn-primary mx-4" *ngIf="this.NoteObj.postit_note_code"
-                  (click)="saveNote()" translate>
-                  Edit
-                </button>
+                  (click)="saveNote()" translate>Edit</button>
                 <button type="button" class="btn btn-danger mx-4" *ngIf="this.NoteObj.postit_note_code"
-                  (click)="DeleteNote()" translate>
-                  Delete
-                </button>
+                  (click)="DeleteNote()" translate>Delete</button>
                 <button type="button" class="btn btn-primary" *ngIf="this.NoteObj.postit_note_code"
                   (click)="sendNote()">
                   <span class="fa fa-telegram"></span> <span translate>Send</span>
@@ -156,7 +149,7 @@
                   </div>
                   <div class="col-md-12">
                     <div *ngIf="CurrentForm === '1'">
-                      <app-plot (completed)="EnableFins();plot();" [Parcel_ID]="licenceData.Parcel_ID" [disable]="false"
+                      <app-plot (completed)="EnableFins();plot();saveFormm('{}');" [Parcel_ID]="licenceData.Parcel_ID" [disable]="false"
                         [Parcel_mearge1]="licenceData.Plot_Merge_1" [Parcel_mearge2]="licenceData.Plot_Merge_2"
                         [Parcel_mearge3]="licenceData.Plot_Merge_3" [Parcel_mearge4]="licenceData.Plot_Merge_4"
                         [LicenceData]="licenceData" [AppNo]="AppNo" [todoid]="todoID" [DocID]="DocID" [tskID]="tskID"
@@ -172,18 +165,18 @@
               </div>
 
               <div *ngIf="ID==6">
-                <app-cert [disable]="false" (completed)="EnableFins();saveForm('{}');" [licenceData]="licenceData"
+                <app-cert [disable]="false" (completed)="EnableFins();saveFormm2('{}');" [licenceData]="licenceData"
                   [todoid]="todoID" [Certificate_Code]="licenceData.Certificate_Code" [disable]="false" [AppNo]="AppNo"
                   [Fields]="prepareCertificateFields">
                 </app-cert>
               </div>
 
               <div *ngIf="ID==5;">
-                <app-payment [disable]="false" (completed)="EnableFins();saveForm('{}');" (send)="payment()"
+                <app-payment [disable]="false" (completed)="EnableFins();saveFormm2('{}');" (send)="payment()"
                   [tskID]="tskID" [AppNo]="AppNo" [todoid]="todoID"></app-payment>
               </div>
               <div *ngIf="ID==7">
-                <app-certletter [disable]="false" (completed)="EnableFins();saveForm('{}');" [AppNo]="AppNo"
+                <app-certletter [disable]="false" (completed)="EnableFins();saveFormm2('{}');" [AppNo]="AppNo"
                   [certCode]="licenceData.Certificate_Code" [licenceData]="licenceData"></app-certletter>
               </div>
               <div *ngIf="ID==9">
@@ -215,28 +208,44 @@
 
   </div>
   <!--The content below is only a placeholder and can be replaced.-->
-  <div class="btn-group d-flex justify-content-center align-items-center">
-  <div class="p-3 border-secondary border-5 bg-secondary text-white h-100 text-center  m-10 mt-10">
-    <div class="btn-group"><button *ngIf="!hideit" type="button" class="btn btn-primary mr-2" (click)="Back()" translate>Back</button></div>
-    <div class="btn-group"> <button type="button" class="btn btn-primary mr-2" (click)="openModal(template)" translate>Review</button></div>
+  <div class="p-3 border-secondary border-5 bg-secondary text-white h-100 text-center m-10 mt-10">
+    <div class="btn-group">
+      <button class="btn btn-primary mr-2" *ngIf="!hideit"  type="button" (click)="showdialogs()" translate>Not Complete</button>
+
+ <!-- <button *ngIf="!hideit" type="button" class="btn btn-primary mr-2" (click)="Back()" translate>Back</button> -->
+   <button type="button" class="btn btn-primary mr-2" (click)="openModal(template)" translate>Review</button>
 
     <!-- [disabled]="disablefins" -->
-    <div class="btn-group">
-    <span class="btn-group dropup" dropdown [isDisabled]="serviceService.disablefins">
-      <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle mr-2 "
-      mdbDropdownToggle aria-controls="dropdown-basic" translate>Required Action</button>
-      <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
-        <li role="menuitem"><a class="dropdown-item" *ngIf="tskTyp!='c800fb16-f961-e111-95d6-00e04c05559b'"
-            (click)="Submit('00000000-0000-0000-0000-000000000000')" translate>Submit/ላክ</a>
-           <span *ngIf="tskTyp == 'c800fb16-f961-e111-95d6-00e04c05559b'">
-          
-        </span></li>
-        <li *ngFor="let DropDownLists of DropDownList;" role="menuitem"><a class="dropdown-item"
-            (click)="showdialog(DropDownLists.task_rules_code, DropDownLists.rule_Code)">{{DropDownLists.decision_rule_en}}
-            </a> </li>
-      </ul>
-    </span>
-    </div>
+
+    <span class="dropdown dropup">
+      <button
+      [disabled]="serviceService.disablefins"
+          type="button"
+          class="btn btn-primary dropdown-toggle mr-2"
+          data-toggle="dropdown"
+          translate
+        
+        >Required Action</button>
+
+        <span class="dropdown-menu">
+          <a
+            class="dropdown-item"
+            *ngIf="tskTyp != 'c800fb16-f961-e111-95d6-00e04c05559b'"
+            (click)="Submit('00000000-0000-0000-0000-000000000000')"
+            >Submit/ላከው</a
+          >
+          <span *ngIf="tskTyp == 'c800fb16-f961-e111-95d6-00e04c05559b'">
+            <span *ngFor="let DropDownLists of DropDownList">
+            <a class="dropdown-item"
+            (click)="showdialog(DropDownLists.task_rules_code, DropDownLists.rule_Code)">{{ language === 'amharic' ? DropDownLists.decision_rule_Local : DropDownLists.decision_rule_en }}
+            </a>
+              <li class="divider dropdown-divider"></li>
+            </span>
+          </span>
+        </span>
+      </span>
+
+   
     <!-- <div class="btn-group">
     <span class="btn-group dropup" dropdown [isDisabled]="serviceService.disablefins">
       <button type="button" 
@@ -254,13 +263,14 @@
         </span>
     </span>
   </div> -->
-    <div class="btn-group"> <button class="btn btn-primary mr-2" (click)="Close()" translate>Pend & close</button></div>
-    
+  <button class="btn btn-primary mr-2" (click)="Close()" translate>Pend & close</button>
 
   </div>
 </div>
 </div>
+<div *ngIf="okdb" _ngcontent-c5="" class="col-md-12" ><!----><div _ngcontent-c5="" class="ng-star-inserted"><div _ngcontent-c5="" class="p-3 bg-success text-white"><table _ngcontent-c5="" class="table"><thead _ngcontent-c5=""><tr _ngcontent-c5=""><th _ngcontent-c5="" scope="col"><span _ngcontent-c5="" translate="">Status: Database</span></th></tr></thead></table></div></div><!----></div>
 
+<div *ngIf="!okdb"  _ngcontent-c5="" class="col-md-12" ><!----><div _ngcontent-c5="" class="ng-star-inserted"><div _ngcontent-c5="" class="p-3 bg-danger text-white"><table _ngcontent-c5="" class="table"><thead _ngcontent-c5=""><tr _ngcontent-c5=""><th _ngcontent-c5="" scope="col"><span _ngcontent-c5="" translate="">Status: Database</span></th></tr></thead></table></div></div><!----></div>
 <div *ngIf="loading">
   <app-loading></app-loading>
 </div>
@@ -302,7 +312,7 @@
       <div class="aa">
         <select *ngIf="ifTask" class="form-control" [(ngModel)]="TaskN" (change)="getTaskData(TaskN)"
           name="CustomerType" id="TaskList">
-          <option translate disabled >select task</option>
+          <option translate>select task</option>
           <option *ngFor="let Task of PreAppData" [value]="Task.tasks_task_code">{{ language === 'amharic' ? Task.description_local : Task.description_en }}</option>
           
         </select>
@@ -343,49 +353,63 @@
            
             <p-tabPanel [header]="'Form' | translate">
               <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate"></mat-progress-bar>
-              <div *ngIf="preAppID==1">
+              <div *ngIf="preAppID==1" id="dform">
                 <app-form-display [formcode]="selectedTask.form_code" [formData]="selectedTask.JsonData"
                   [Mode]="'display'" [taskLevel]="taskLevel">
                 </app-form-display>
               </div>
+        
               <div *ngIf="preAppID==2">
-                <app-top-grid [AppNo]="AppNo"></app-top-grid>
-                <div class="row">
-                  <div class="col-md-6">
-                    <app-side-menu (changeForm)="changeForm($event)"></app-side-menu>
-                  </div>
-                  <div class="col-md-12">
-                    <div *ngIf="CurrentForm === '1'">
-                      <app-plot (completed)="EnableFins()" [Parcel_ID]="licenceData.Parcel_ID" [disable]="true"
-                        [Parcel_mearge1]="licenceData.Plot_Merge_1" [Parcel_mearge2]="licenceData.Plot_Merge_2"
-                        [Parcel_mearge3]="licenceData.Plot_Merge_3" [Parcel_mearge4]="licenceData.Plot_Merge_4"
-                        [LicenceData]="licenceData" [AppNo]="AppNo" [todoid]="todoID" [DocID]="DocID" [tskID]="tskID">
-                      </app-plot>
-                    </div>
-                    <div *ngIf="CurrentForm === '2'">
-                      <app-property (completed)="EnableFins()" [LicenceData]="licenceData"
-                        [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="true" [AppNo]="AppNo"
-                        [Service_ID]="licenceData.Service_ID" [todoid]="todoID" [tskID]="tskID" [DocID]="DocID" >
-                      </app-property>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <div *ngIf="CurrentForm === '1'">
+                <app-plot (completed)="EnableFins();plot();saveForm('{}')" [Parcel_ID]="licenceData.Parcel_ID" [disable]="true"
+                  [Parcel_mearge1]="licenceData.Plot_Merge_1" [Parcel_mearge2]="licenceData.Plot_Merge_2"
+                  [Parcel_mearge3]="licenceData.Plot_Merge_3" [Parcel_mearge4]="licenceData.Plot_Merge_4"
+                  [LicenceData]="licenceData" [AppNo]="AppNo" [todoid]="todoID" [DocID]="DocID" [tskID]="tskID"
+                  [Fields]="plotRegistrationFields">
+                </app-plot>
+              </div></div>
+           
+
+    
+       
+
+        <div *ngIf="preAppID==6">
+          <app-cert [disable]="true" (completed)="EnableFins();saveForm('{}');" [licenceData]="licenceData"
+            [todoid]="todoID" [Certificate_Code]="licenceData.Certificate_Code" [disable]="true" [AppNo]="AppNo"
+            [Fields]="prepareCertificateFields">
+          </app-cert>
+        </div>
+
+        <div *ngIf="preAppID==5">
+          <app-payment [disable]="true" (completed)="EnableFins();saveForm('{}');" (send)="payment()"
+            [tskID]="tskID" [AppNo]="AppNo" [todoid]="todoID"></app-payment>
+        </div>
+        <div *ngIf="preAppID==7">
+          <app-certletter [disable]="true" (completed)="EnableFins();saveForm('{}');" [AppNo]="AppNo"
+            [certCode]="licenceData.Certificate_Code" [licenceData]="licenceData"></app-certletter>
+        </div>
+        <div *ngIf="preAppID==9">
+          <app-property (completed)="EnableFins();saveForm('{}')" [LicenceData]="licenceData"
+                  [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="true" [AppNo]="AppNo"
+                  [Service_ID]="licenceData.Service_ID" [todoid]="todoID" [tskID]="tskID" [DocID]="DocID" >
+                </app-property>   </div>
+             
+            
+       
 
 
-
-              <div *ngIf="preAppID==6">
+              <!-- <div *ngIf="preAppID==6" id="dform">
                 <app-cert [disable]="true" (completed)="EnableFins()" [licenceData]="licenceData" [todoid]="todoID"
                   [Certificate_Code]="licenceData.Certificate_Code" [AppNo]="AppNo"></app-cert>
               </div>
-              <div *ngIf="preAppID==5">
+              <div *ngIf="preAppID==5" id="dform">
                 <app-payment [disable]="true" (completed)="EnableFins()" [tskID]="tskID" [AppNo]="AppNo"
                   [todoid]="todoID"></app-payment>
               </div>
-              <div *ngIf="preAppID==7">
+              <div *ngIf="preAppID==7" id="dform">
                 <app-certletter [disable]="true" (completed)="EnableFins()" [AppNo]="AppNo"
                   [certCode]="licenceData.Certificate_Code" [licenceData]="licenceData"></app-certletter>
-              </div>
+              </div> -->
             </p-tabPanel>
             <p-tabPanel [header]="'Document' | translate">
               <div class="mt-3">
@@ -394,8 +418,8 @@
                       let RequerdDocpre of RequerdDocspre;
                       let i = index
                     ">
-                    <label class="col-sm-12 col-form-label m-0">{{
-                      RequerdDocpre.description_en
+                    <label class="col-sm-12 col-form-label m-0">
+                      {{ language === 'amharic' ? RequerdDocpre.description_Local :RequerdDocpre.description_en 
                       }}</label>
                     <div class="col-sm-12 m-0 text-center">
                       <div *ngIf="loadingPreDoc">
@@ -459,7 +483,6 @@
                 <ng-template pTemplate="header">
                   <tr>
                     <th>#</th>
-                    <th scope="col" translate>userid</th>
                     <th scope="col" translate>note</th>
 
                   </tr>
@@ -468,12 +491,11 @@
 
                   <tr>
                     <td>{{note.number}}</td>
-                    <td>{{ note.UserId}}</td>
                     <td style=" white-space: nowrap; 
                     width: 100px; 
                     overflow: hidden;
                     text-overflow: ellipsis;
-                   " (click)="openPoopup('note_popup'); preNoteObj.remarks = note.remarks">{{ note.remarks }}</td>
+                   " (click)="openPoopup('note_popup'); preNoteObj.remarks = note.remarks"><textarea>{{ note.remarks }}</textarea></td>
 
                   </tr>
                 </ng-template>
@@ -487,7 +509,10 @@
 
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="printForm()">Print</button>
+  
+ 
+    <button type="button" class="btn btn-success" roNgxSimplePrint [printContentId]="'dform'"  id="printPageButton" 
+    translate (click)="print()"> <i class="fa fa-print"></i>print</button>
     <button type="button" class="btn btn-primary" (click)="closeModal()" translate>Done</button>
   </div>
   <ngx-smart-modal #note_popup identifier="note_popup" class="dd">
@@ -526,9 +551,7 @@
   <button type="button" class="btn btn-primary mx-2" 
   [disabled]="myInput.value.length==0"
   *ngIf="!this.NoteObj.postit_note_code"
-    (click)="addNote()" translate> 
-    Save
-  </button>
+    (click)="addNote()" translate>Save</button>
   <!-- <button type="button" class="btn btn-primary mx-4" *ngIf="this.NoteObj.postit_note_code"
     (click)="saveNote()" translate>
     Update
@@ -539,6 +562,47 @@
   </button> -->
   <button type="button" class="btn btn-primary" *ngIf="this.NoteObj.postit_note_code"
     (click)="sendNotte()" translate>
+    <span class="fa fa-telegram"></span> Send
+  </button>
+</div>
+   </div>
+  </p-dialog>
+  
+<p-dialog  [(visible)]="showdialoges"  header="Post It Note"  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
+[positionTop]="1" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                         'max-height': '80vh','min-height':'250px'}">
+                          <div class="modal-body">
+
+<div class="form-group row col-sm-10 m-0" >
+   <textarea
+   #myInput
+   [maxlength]="200"
+
+   class="form-control mx-2 mb-2 border-primary" 
+  rows="4" style="background: rgb(202, 236, 255)" 
+  [(ngModel)]="NoteObj.remarks"
+  [ngClass]="{ 'is-invalid': myInput.invalid }"
+ >{{aaa}}
+ </textarea>
+<span style="background-color: rgba(250, 240, 222, 0.693);">
+  
+  <span style="font-weight: bolder;" translate>Characters</span>:-<span style="font-weight: bolder; color: green; ">{{myInput.value.length}} </span>/ <span translate style="font-weight: bolder;">no of Characters</span>:-<span style="font-size: larger; font-weight: bolder; color: green;">{{maxChars}}</span>
+</span>
+
+  <button type="button" class="btn btn-primary mx-2" 
+  [disabled]="myInput.value.length==0"
+  *ngIf="!this.NoteObj.postit_note_code"
+    (click)="addNote()" translate>Save</button>
+  <!-- <button type="button" class="btn btn-primary mx-4" *ngIf="this.NoteObj.postit_note_code"
+    (click)="saveNote()" translate>
+    Update
+  </button> -->
+  <!-- <button type="button" class="btn btn-danger mx-4" *ngIf="this.NoteObj.postit_note_code"
+    (click)="DeleteNote()" translate>
+    Delete
+  </button> -->
+  <button type="button" class="btn btn-primary" *ngIf="this.NoteObj.postit_note_code"
+    (click)="sendNottte()" translate>
     <span class="fa fa-telegram"></span> Send
   </button>
 </div>

@@ -10,6 +10,7 @@ import { ServiceService } from "../service.service";
 import { TreeNode } from "primeng/api";
 import { NotificationsService } from "angular2-notifications";
 import { ServiceComponent } from "../service.component";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-property",
@@ -20,6 +21,7 @@ export class PropertyComponent implements OnChanges {
   @Output() completed = new EventEmitter();
   @Output() getpro = new EventEmitter();
   @Input() LicenceData;
+  highlighted;
   @Input() Mode;
   @Input() Licence_Service_ID;
   @Input() disable;
@@ -36,7 +38,7 @@ export class PropertyComponent implements OnChanges {
   selectedprofromtree;
   selectedFile;
   disabled;
-  toMes;
+  PropertyTypeLookUP: any;
   totitleDeed;
   toFixedasset;
   isnew = true;
@@ -44,16 +46,22 @@ export class PropertyComponent implements OnChanges {
   novalidprops;
 
   public SelectedProprtyPlot;
-  files: TreeNode[] = [];
+
   Saved = false;
+  language: string;
 
   constructor(
-    private serviceService: ServiceService,
+    public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService
   ) {}
 
   ngOnChanges() {
+    if (environment.Lang_code === "am-et") {
+      this.language = "amharic";
+    } else {
+      this.language = "english";
+    }
     this.propertyForm = false;
     this.propertyregForm = false;
     this.PlotManagementList = [];
@@ -95,11 +103,28 @@ export class PropertyComponent implements OnChanges {
       this.getPlotManagement(this.LicenceData.Plot_Merge_4);
     }
   }
-
+  async getEthiopianToGregorian(date) {
+    if (date) {
+      var datenow = await this.serviceService
+        .getEthiopianToGregorian(date)
+        .toPromise();
+      console.log(datenow);
+      return datenow.nowTime;
+    }
+  }
+  async getgregorianToEthiopianDate(date) {
+    if (date != "0001-01-01T00:00:00") {
+      var datenow = await this.serviceService
+        .getgregorianToEthiopianDate(date)
+        .toPromise();
+      console.log(datenow);
+      return datenow.nowTime;
+    }
+  }
   getPlotManagement(Parcel_ID) {
     let a;
     this.serviceService.getPlotManagement(Parcel_ID).subscribe(
-      (PlotManagementList) => {
+      async (PlotManagementList) => {
         a = PlotManagementList;
         let b = false;
         console.log("this.PlotManagementList", this.PlotManagementList);
@@ -115,14 +140,20 @@ export class PropertyComponent implements OnChanges {
         }
         if (b) {
           this.novalidprops = this.novalidprops + 1;
+          if (this.language == "amharic") {
+            a.list[0].Registration_Date =
+              await this.getgregorianToEthiopianDate(
+                a.list[0].Registration_Date
+              );
+          }
           this.PlotManagementList.push(a.list[0]);
-          this.isisvalidated(
-            this.todoid,
-            this.tskID,
-            a.list[0].Plot_ID,
-            "00000000-0000-0000-0000-000000000000",
-            this.DocID
-          );
+          // this.isisvalidated(
+          //   this.todoid,
+          //   this.tskID,
+          //   a.list[0].Plot_ID,
+          //   "00000000-0000-0000-0000-000000000000",
+          //   this.DocID
+          // );
         }
 
         console.log("PlotManagementList", PlotManagementList);
@@ -139,18 +170,18 @@ export class PropertyComponent implements OnChanges {
     this.propertyregForm = false;
     this.SelectedProperty = property;
     this.getPropertyList();
-    this.disable = false;
+    // this.disable=false;
   }
 
   getPropertyList() {
     this.serviceService
-      .getPropertyList(this.SelectedProperty.Plot_ID)
+      .getPropertyLists(this.SelectedProperty.Plot_ID)
       .subscribe(
-        (PropertyList) => {
-          this.PropertyList = PropertyList;
-          this.PropertyList = Object.assign([], this.PropertyList.list);
+        (PropertyList: any) => {
+          this.PropertyList = PropertyList.procProperty_Registrations;
+          this.PropertyList = Object.assign([], this.PropertyList);
           console.log("PropertyList", PropertyList);
-          this.PropertyList.push({ Property_ID: "No Parent" });
+          this.PropertyList.push({ property_ID: "No Parent" });
           this.getTree(Object.assign([], this.PropertyList));
           this.novalidprops = this.PropertyList.length;
           this.isvalidated();
@@ -162,22 +193,22 @@ export class PropertyComponent implements OnChanges {
   }
 
   getTree(List) {
-    this.files = [];
+    this.serviceService.files = [];
     for (let i = 0; i < this.PropertyList.length; i++) {
       let a;
       if (
-        this.PropertyList[i].Property_Parent_ID == null ||
-        this.PropertyList[i].Property_Parent_ID == 0
+        this.PropertyList[i].property_Parent_ID == null ||
+        this.PropertyList[i].property_Parent_ID == 0
       ) {
         a = Object.assign({}, this.PropertyList[i]);
-        a.label = Object.assign(this.PropertyList[i].Property_ID);
+        a.label = Object.assign(this.PropertyList[i].property_ID);
         a.children = [];
         const l1 = Object.assign([], this.PropertyList);
         for (let j = 0; j < l1.length; j++) {
           let b;
-          if (l1[j].Property_Parent_ID == a.Property_ID) {
+          if (l1[j].property_Parent_ID == a.property_ID) {
             b = Object.assign({}, l1[j]);
-            b.label = Object.assign(l1[j].Property_ID);
+            b.label = Object.assign(l1[j].property_ID);
             b.children = [];
             a.children.push(b);
             l1[j].children = [];
@@ -185,19 +216,19 @@ export class PropertyComponent implements OnChanges {
             const l2 = Object.assign([], this.PropertyList);
             for (let k = 0; k < l2.length; k++) {
               let c;
-              if (l2[k].Property_Parent_ID == b.Property_ID) {
+              if (l2[k].Property_Parent_ID == b.property_ID) {
                 c = Object.assign({}, l2[k]);
-                c.label = Object.assign(l2[k].Property_ID);
+                c.label = Object.assign(l2[k].property_ID);
                 c.children = [];
                 b.children.push(c);
               }
             }
           }
         }
-        this.files.push(a);
+        this.serviceService.files.push(a);
       }
     }
-    console.log("this.files", this.files);
+    console.log("this.files", this.serviceService.files);
   }
 
   AddNew() {
@@ -206,25 +237,68 @@ export class PropertyComponent implements OnChanges {
     this.propertyregForm = true;
     this.selectedprofromtree = {};
     if (this.selectedFile) {
-      this.selectedprofromtree.Property_Parent_ID =
-        this.selectedFile.Property_ID;
+      this.selectedprofromtree.property_Parent_ID =
+        this.selectedFile.property_ID;
     }
-    this.selectedprofromtree.Plot_ID = this.SelectedProperty.Plot_ID;
-    this.selectedprofromtree.Licence_Service_ID = this.Licence_Service_ID;
+    this.selectedprofromtree.plot_ID = this.SelectedProperty.plot_ID;
+    this.selectedprofromtree.licence_Service_ID = this.Licence_Service_ID;
   }
-
+  selectedTab = 0;
+  tab1;
+  tab2;
+  initTabs() {
+    this.tab1 = true;
+    this.tab2 = false;
+  }
+  tabChanged(e) {
+    console.log(e.index);
+    if (e.index == 0) {
+      this.tab1 = true;
+      this.tab2 = false;
+    } else if (e.index == 1) {
+      this.tab1 = false;
+      this.tab2 = true;
+    }
+  }
   nodeSelect() {
-    if (this.selectedFile.Property_ID == "No Parent") {
+    console.log(this.selectedFile.property_Type_ID);
+
+    if (this.selectedFile.property_ID == "No Parent") {
+      this.serviceService
+        .getPropertyTypeLookUP()
+        .subscribe((PropertyTypeLookUP) => {
+          this.PropertyTypeLookUP = PropertyTypeLookUP;
+          this.PropertyTypeLookUP = Object.assign(
+            [],
+            this.PropertyTypeLookUP.list
+          );
+          // console.log('PropertyTypeLookUP', PropertyTypeLookUP);
+        });
       this.propertyregForm = false;
+
+      this.serviceService.hide = true;
     } else {
-      this.serviceComponent.PropertyTypeLookUP =
-        this.serviceComponent.PropertyTypeLookUP.filter(
-          (x) => x.Property_Type_ID != 1
-        );
+      this.serviceService
+        .getPropertyTypeLookUP()
+        .subscribe((PropertyTypeLookUP) => {
+          this.PropertyTypeLookUP = PropertyTypeLookUP;
+          this.PropertyTypeLookUP = Object.assign(
+            [],
+            this.PropertyTypeLookUP.list
+          );
+          this.PropertyTypeLookUP = this.PropertyTypeLookUP.filter(
+            (x) => x.Property_Type_ID != 1
+          );
+          // console.log('PropertyTypeLookUP', PropertyTypeLookUP);
+        });
       this.propertyregForm = true;
       this.isnew = false;
     }
-    this.selectedprofromtree = this.selectedFile;
+    if (this.selectedFile.property_Type_ID == 1) {
+      this.selectedprofromtree = false;
+    } else {
+      this.selectedprofromtree = this.selectedFile;
+    }
     console.log("any", this.selectedprofromtree);
   }
 
@@ -236,12 +310,12 @@ export class PropertyComponent implements OnChanges {
   isvalidated() {
     if (this.PropertyList !== null && this.PropertyList !== undefined) {
       for (let i = 0; i < this.PropertyList.length; i++) {
-        if (this.PropertyList[i].Property_ID !== "No Parent") {
+        if (this.PropertyList[i].property_ID !== "No Parent") {
           this.isisvalidated(
             this.todoid,
             this.tskID,
-            this.PropertyList[i].Plot_ID,
-            this.PropertyList[i].Property_ID,
+            this.PropertyList[i].plot_ID,
+            this.PropertyList[i].property_ID,
             this.DocID
           );
         }
@@ -303,10 +377,10 @@ export class PropertyComponent implements OnChanges {
     this.selectedFile = Property;
     // this.completed.emit();
     console.log("next to measurement");
-    this.toMes = true;
+
     this.selectedprofromtree;
     this.selectedprofromtree = {
-      Property_ID: Property.Property_ID,
+      property_ID: Property.property_ID,
     };
     this.getPropertyList();
   }

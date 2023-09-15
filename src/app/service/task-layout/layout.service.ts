@@ -12,13 +12,13 @@ export class LayoutService {
   getFormData(formcode, taskLevel): Observable<FormData> {
     if (!environment.production) {
       return this.http.get<any>(
-        "http://land.xokait.com.et/db/" + formcode + ".json"
+        "http://land.xokait.com.et/DB/" + formcode + ".json"
       );
     } else {
       if (taskLevel != 1) {
-        return this.http.get<any>("/db/" + formcode + ".json");
+        return this.http.get<any>(environment.formPath + formcode + ".json");
       } else {
-        return this.http.get<any>("/db/" + formcode + ".json");
+        return this.http.get<any>(environment.formPath + formcode + ".json");
       }
     }
   }

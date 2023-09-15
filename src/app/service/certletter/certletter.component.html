@@ -4,16 +4,16 @@
 <div class="col-md-12 row">
   <div class="col-md-6">
     <p-table [value]="BaseTable" [paginator]="true" [rows]="5">
-      <ng-template pTemplate="header">
-        <tr >
+      <ng-template pTemplate="header"><tr>
           <th scope="col" translate>Title Deed No</th>
           <th scope="col" translate>Registration Date</th>
           <th scope="col" translate>Branch</th>
           <th scope="col"></th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-Base>
-        <tr  [class.active]="Base == SelectedBase" class="aa">
+      <ng-template pTemplate="body" let-Base let-rowData>
+        <tr (click)='highlighted = rowData;SelectBase(Base)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
+       
           <td>{{Base.Title_Deed_No}}</td>
           <td>{{Base.Registration_Date}}</td>
           <td>
@@ -27,8 +27,7 @@
           </td>
 
           <td>
-            <button type="button" class="btn btn-primary" (click)="SelectBase(Base)" translate>select
-            </button>
+            <button type="button" class="btn btn-primary" (click)="SelectBase(Base)" translate>select</button>
           </td>
         </tr>
       </ng-template>
@@ -40,22 +39,21 @@
     <div>
 
       <p-table [value]="CertificateVersion" [paginator]="true" [rows]="3">
-        <ng-template pTemplate="header">
-          <tr>
+        <ng-template pTemplate="header"><tr>
             <th scope="col" translate>Transfer ID</th>
             <th scope="col" translate>Version ID</th>
             <th scope="col" translate>Title Deed No</th>
             <th scope="col"></th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-version>
-          <tr [class.active]="version == Selectedcert" class="aa">
+        <ng-template pTemplate="body" let-version let-rowData>
+          <tr (click)='highlighted = rowData;Selectversion(version)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
+         
             <td>{{version.Ownership_ID}}</td>
             <td>{{version.Version_ID}}</td>
             <td>{{version.Title_Deed_No}}</td>
             <td>
-              <button type="button" class="btn btn-primary" (click)="Selectversion(version)" translate>select
-              </button>
+              <button type="button" class="btn btn-primary" (click)="Selectversion(version)" translate>select</button>
             </td>
           </tr>
         </ng-template>
@@ -79,8 +77,9 @@
             </th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-cerltter2>
-          <tr  [class.active]="cerltter2 == cerltter">
+        <ng-template pTemplate="body" let-cerltter2 let-rowData>
+          <tr (click)='highlighted = rowData;selectcerltter(cerltter2)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
+         
             <td>{{cerltter2.Document_Number}}</td>
             <td>{{cerltter2.Title_Deed_No}}</td>
             <td>{{cerltter2.Regstration_Date}}</td>
@@ -95,53 +94,61 @@
 
 
 
-  <form class="form-group row col-sm-12" *ngIf="cerlettrform">
-    <div class="row mb-2 col-sm-6">
-      <label  class="col-sm-3" translate>Document No</label>
-      <input class="form-control col-sm-9" [disabled]="disable"   name="DocumentNo" id="DocumentNo" [(ngModel)]="cerltter.Document_Number" [placeholder]="'Document No' | translate">
-    </div>
-    <div class="row  mb-2 col-sm-6">
-      <label  class="col-sm-3" translate>Shelf Column</label>
-      <input class="form-control col-sm-9"  [disabled]="disable"   name="ShelfColumn" id="ShelfColumn" [(ngModel)]="cerltter.Shelf_Column" [placeholder]="'Shelf Column' | translate">
-    </div>
-    <div class="row mb-2 col-sm-6">
-      <label  class="col-sm-3" translate>Shelf No</label>
-      <input class="form-control col-sm-9" [disabled]="disable"   name="ShelfNo" id="ShelfNo" [(ngModel)]="cerltter.Shelf_NO" [placeholder]="'Shelf No' | translate">
-    </div>
-    <div class="row mb-2 col-sm-6">
-      <label  class="col-sm-3" translate>File Room No</label>
-      <input class="form-control col-sm-9"   [disabled]="disable"  name="FileRoomNo" id="FileRoomNo" [(ngModel)]="cerltter.Room" [placeholder]="'File Room No' | translate">
-    </div>
-    <div class="row mb-2 col-sm-6">
-      <label  class="col-sm-3" translate>Shelf Row</label>
-      <input class="form-control col-sm-9" [disabled]="disable"   name="ShelfRow" id="ShelfRow" [(ngModel)]="cerltter.Shelf_Raw" [placeholder]="'Shelf Row' | translate">
-    </div>
-    <div class="row mb-2 col-sm-6">
-      <label  class="col-sm-3" translate>Block/Floor</label>
-      <input class="form-control col-sm-9"  [disabled]="disable"  name="Block/Floor" id="Block/Floor" [(ngModel)]="cerltter.Block_Floor" [placeholder]="'Block/Floor' | translate">
-    </div>
-    <div class="row mb-2 col-sm-6">
-      <label  class="col-sm-3" translate>Site</label>
-      <input class="form-control col-sm-9" [disabled]="disable"   name="Site" id="Site" [(ngModel)]="cerltter.Site" [placeholder]="'Site' | translate">
-    </div>
-    <!--<div class="row mb-2 col-sm-6">
-      <label  class="col-sm-3" translate>Date Created</label>
-      <input type="date" class="form-control col-sm-9"  name="Block/Floor" id="Date_Created" [(ngModel)]="cerltter.Created_Date" [placeholder]="Date Created">
+  <form class="form-row" *ngIf="cerlettrform">
+    <div class="col-md-6">
+      <div class="form-group row col-12">
+      <label  class="col-sm-4 col-form-label" translate>Document No</label>
+      <div class="col-sm-8">
+      <input class="form-control" [disabled]="disable"   name="DocumentNo" id="DocumentNo" [(ngModel)]="cerltter.Document_Number" [placeholder]="'Document No' | translate">
+    </div></div>
+    <div class="form-group row col-12">
+      <label  class="col-sm-4 col-form-label" translate>Shelf Column</label>
+      <div class="col-sm-8">
+      <input class="form-control"  [disabled]="disable"   name="ShelfColumn" id="ShelfColumn" [(ngModel)]="cerltter.Shelf_Column" [placeholder]="'Shelf Column' | translate">
+    </div></div>
+      <div class="form-group row col-12">
+      <label  class="col-sm-4 col-form-label" translate>Shelf No</label>      <div class="col-sm-8">
+      <input class="form-control" [disabled]="disable"   name="ShelfNo" id="ShelfNo" [(ngModel)]="cerltter.Shelf_NO" [placeholder]="'Shelf No' | translate">
+    </div></div>
+      <div class="form-group row col-12">
+      <label  class="col-sm-4 col-form-label" translate>File Room No</label>      <div class="col-sm-8">
+      <input class="form-control"   [disabled]="disable"  name="FileRoomNo" id="FileRoomNo" [(ngModel)]="cerltter.Room" [placeholder]="'File Room No' | translate">
+    </div></div>
+      <div class="form-group row col-12">
+      <label  class="col-sm-4 col-form-label" translate>Shelf Row</label>      <div class="col-sm-8">
+      <input class="form-control" [disabled]="disable"   name="ShelfRow" id="ShelfRow" [(ngModel)]="cerltter.Shelf_Raw" [placeholder]="'Shelf Row' | translate">
+    </div></div>  </div> <div class="col-md-6">
+      <div class="form-group row col-12">
+      <label  class="col-sm-4 col-form-label" translate>Block/Floor</label>      <div class="col-sm-8">
+      <input class="form-control"  [disabled]="disable"  name="Block/Floor" id="Block/Floor" [(ngModel)]="cerltter.Block_Floor" [placeholder]="'Block/Floor' | translate">
+    </div></div>
+      <div class="form-group row col-12">
+      <label  class="col-sm-4 col-form-label" translate>Site</label>      <div class="col-sm-8">
+      <input class="form-control" [disabled]="disable"   name="Site" id="Site" [(ngModel)]="cerltter.Site" [placeholder]="'Site' | translate">
+    </div></div>
+    <!--  <div class="form-group row col-12">
+      <label  class="col-sm-4 col-form-label" translate>Date Created</label>
+      <input type="date" class="form-control"  name="Block/Floor" id="Date_Created" [(ngModel)]="cerltter.Created_Date" [placeholder]="Date Created">
     </div>-->
-    <div class="row mb-2 col-sm-6">
-      <label  class="col-sm-3" translate>Regstration Date</label>
-      <input type="date" class="form-control col-sm-9"  [disabled]="disable"  name="Regstration_Date" id="Regstration_Date" [(ngModel)]="cerltter.Regstration_Date" [placeholder]="'Regstration Date' | translate">
-    </div>
-    <div class="row mb-2 col-sm-6">
-      <label  class="col-sm-3" translate>Title Deed No </label>
-      <input type="text" disabled class="form-control col-sm-9" [disabled]="disable"   name="Title_Deed_No" id="Title_Deed_No " [(ngModel)]="cerltter.Title_Deed_No " [placeholder]="'Title Deed No' | translate">
-    </div>
+    <div class="form-group row col-12"  *ngIf="language !== 'amharic'">
+      <label  class="col-sm-4 col-form-label" translate>Regstration Date</label>      <div class="col-sm-8">
+      <input type="date" class="form-control"  [disabled]="disable"  name="Regstration_Date" id="Regstration_Date" [(ngModel)]="cerltter.Regstration_Date" [placeholder]="'Regstration Date' | translate">
+    </div>  </div>
+    <div  class="form-group row col-12"  *ngIf="language === 'amharic'">
+      <label  class="col-sm-4 col-form-label" translate>Regstration Date</label>      <div class="col-sm-8">
+      <input type="text" class="form-control" readonly [disabled]="disable"  name="Regstration_Date" id="Regstration_Date" [(ngModel)]="cerltter.Regstration_Date" [placeholder]="'Regstration Date' | translate" appDatepickerEthiopian
+      (dateEmitter)="selectedDateTime($event,1)">
+    </div></div>
+      <div class="form-group row col-12">
+      <label  class="col-sm-4 col-form-label" translate>Title Deed No</label>      <div class="col-sm-8">
+      <input type="text" disabled class="form-control" [disabled]="disable"   name="Title_Deed_No" id="Title_Deed_No " [(ngModel)]="cerltter.Title_Deed_No " [placeholder]="'Title Deed No' | translate">
+    </div></div>
     <div class=" col-sm-7 pull-right" *ngIf="!isnew">
       <button *ngIf="!disable"  type="button" class="btn btn-primary" (click)="save()"translate>Update</button>
     </div>
     <div class=" col-sm-7 pull-right" *ngIf="isnew">
       <button *ngIf="!disable"  type="button" class="btn btn-primary" (click)="add()" translate>Save</button>
-    </div>
+    </div></div>
   </form>
 
   <div class="m-3" *ngIf="certltrview">
