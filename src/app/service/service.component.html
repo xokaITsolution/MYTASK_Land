@@ -164,7 +164,7 @@
                       </app-plot>
                     </div>
                     <div *ngIf="CurrentForm === '1'">
-                      
+                     
                     </div>
 
                   </div>
@@ -187,7 +187,7 @@
                   [certCode]="licenceData.Certificate_Code" [licenceData]="licenceData"></app-certletter>
               </div>
               <div *ngIf="ID==9">
-                <app-property (completed)="EnableFins()" [LicenceData]="licenceData"
+                <app-property (completed)="EnableFins()" (getpro)="getPropertyTypeLookUP()" [LicenceData]="licenceData"
                         [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="true" [AppNo]="AppNo"
                         [Service_ID]="licenceData.Service_ID" [todoid]="todoID" [tskID]="tskID" [DocID]="DocID" >
                       </app-property>   </div>

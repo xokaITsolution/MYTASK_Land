@@ -12,12 +12,13 @@ import { NotificationsService } from "angular2-notifications";
 import { ServiceComponent } from "../service.component";
 
 @Component({
-  selector: 'app-property',
-  templateUrl: './property.component.html',
-  styleUrls: ['./property.component.css']
+  selector: "app-property",
+  templateUrl: "./property.component.html",
+  styleUrls: ["./property.component.css"],
 })
 export class PropertyComponent implements OnChanges {
   @Output() completed = new EventEmitter();
+  @Output() getpro = new EventEmitter();
   @Input() LicenceData;
   @Input() Mode;
   @Input() Licence_Service_ID;
@@ -46,14 +47,11 @@ export class PropertyComponent implements OnChanges {
   files: TreeNode[] = [];
   Saved = false;
 
-
   constructor(
     private serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService
-  ) {
-
-  }
+  ) {}
 
   ngOnChanges() {
     this.propertyForm = false;
@@ -106,9 +104,11 @@ export class PropertyComponent implements OnChanges {
         let b = false;
         console.log("this.PlotManagementList", this.PlotManagementList);
         for (let i = 0; i < (PlotManagementList as any).list.length; i++) {
-          console.log('plot list loop');
+          console.log("plot list loop");
 
-          if (a.list[0].Plot_ID == (PlotManagementList as any).list[i].Plot_ID) {
+          if (
+            a.list[0].Plot_ID == (PlotManagementList as any).list[i].Plot_ID
+          ) {
             b = true;
             break;
           }
@@ -139,7 +139,7 @@ export class PropertyComponent implements OnChanges {
     this.propertyregForm = false;
     this.SelectedProperty = property;
     this.getPropertyList();
-    this.disable=false;
+    this.disable = false;
   }
 
   getPropertyList() {
@@ -201,11 +201,13 @@ export class PropertyComponent implements OnChanges {
   }
 
   AddNew() {
+    this.getpro.emit();
     this.isnew = true;
     this.propertyregForm = true;
     this.selectedprofromtree = {};
     if (this.selectedFile) {
-      this.selectedprofromtree.Property_Parent_ID = this.selectedFile.Property_ID;
+      this.selectedprofromtree.Property_Parent_ID =
+        this.selectedFile.Property_ID;
     }
     this.selectedprofromtree.Plot_ID = this.SelectedProperty.Plot_ID;
     this.selectedprofromtree.Licence_Service_ID = this.Licence_Service_ID;
@@ -215,6 +217,10 @@ export class PropertyComponent implements OnChanges {
     if (this.selectedFile.Property_ID == "No Parent") {
       this.propertyregForm = false;
     } else {
+      this.serviceComponent.PropertyTypeLookUP =
+        this.serviceComponent.PropertyTypeLookUP.filter(
+          (x) => x.Property_Type_ID != 1
+        );
       this.propertyregForm = true;
       this.isnew = false;
     }
@@ -228,8 +234,7 @@ export class PropertyComponent implements OnChanges {
   }
 
   isvalidated() {
-    if (this.PropertyList !== null &&
-      this.PropertyList !== undefined) {
+    if (this.PropertyList !== null && this.PropertyList !== undefined) {
       for (let i = 0; i < this.PropertyList.length; i++) {
         if (this.PropertyList[i].Property_ID !== "No Parent") {
           this.isisvalidated(
@@ -253,7 +258,6 @@ export class PropertyComponent implements OnChanges {
             this.novalidprops = this.novalidprops - 1;
             console.log("novalidprops", this.novalidprops);
             if (this.novalidprops == 0) {
-
               if (!this.Saved) {
                 this.completed.emit();
                 this.Saved = true;
@@ -288,7 +292,7 @@ export class PropertyComponent implements OnChanges {
 
   EnableFinsFixedasset() {
     // this.propertyregForm = false;
-    console.log('fixed asset');
+    console.log("fixed asset");
     this.toFixedasset = true;
     this.getPropertyList();
     this.isvalidated();
@@ -298,11 +302,11 @@ export class PropertyComponent implements OnChanges {
     // this.propertyregForm = false;
     this.selectedFile = Property;
     // this.completed.emit();
-    console.log('next to measurement');
+    console.log("next to measurement");
     this.toMes = true;
     this.selectedprofromtree;
     this.selectedprofromtree = {
-      Property_ID: Property.Property_ID
+      Property_ID: Property.Property_ID,
     };
     this.getPropertyList();
   }

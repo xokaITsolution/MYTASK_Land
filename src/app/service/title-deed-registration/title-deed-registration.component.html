@@ -1,4 +1,4 @@
-<form *ngIf="deedform" #f="ngForm" novalidate name="titledeedForm">
+<!-- <form *ngIf="deedform" #f="ngForm" novalidate name="titledeedForm">
   <div class="form-row">
 
     <div class="form-group row col-md-7">
@@ -52,8 +52,116 @@
     translate>Save</button>
   <button type="button" class="btn btn-primary" *ngIf="isnew && !disable" (click)="add()" [disabled]="!f.valid"
     translate>Save</button>
-  <!-- <button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="!f.valid" *ngIf="!isnew && !disable"
-    translate>Delete</button> -->
+button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="!f.valid" *ngIf="!isnew && !disable"
+    translate>Delete</button>
+</form>
+
+
+<p-table [value]="titleDeedRegistrationList" [paginator]="true" [rows]="1">
+  <ng-template pTemplate="header">
+    <tr>
+      <th scope="col" translate>Ownership Id</th>
+      <th scope="col" translate>Date</th>
+      <th scope="col" translate>isActive</th>
+      <th scope="col">
+        <button type="button" class="btn btn-primary" (click)=" adddeed()" *ngIf="!disable" translate>Add New</button>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-deed>
+    <tr [class.active]="deed.selected">
+      <td>{{deed.Ownership_ID}}</td>
+      <td>{{deed.Date}}</td>
+      <td>
+        <p-checkbox [(ngModel)]="deed.Is_Active" [disabled]="true" name="Is_Paid" id="Is_Paid" binary="true">
+        </p-checkbox>
+      </td>
+      <td>
+        <button type="button" class="btn btn-primary" (click)="selectdeed(deed)" *ngIf="!disable"
+          translate>Edit</button>
+        <button type="button" class="btn btn-primary" (click)="selectdeed(deed)" *ngIf="disable"
+          translate>Select</button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table> -->
+
+<form *ngIf="deedform" #f="ngForm" novalidate name="titledeedForm">
+  <div class="form-row">
+
+    <div class="form-group row col-md-7">
+      <label for="Ownership_ID" class="col-sm-3 col-form-label" translate>Licenses id</label>
+      <div class="col-sm-9">
+    
+        <input type="text" class="form-control" [(ngModel)]="titleDeedRegistration.Ownership_ID" name="Ownership_ID"
+          id="Ownership_ID" [placeholder]="'Transfer ID' | translate" #Ownership_ID="ngModel"
+          [ngClass]="{ 'is-invalid': Ownership_ID.invalid }" required>
+      </div>
+    </div>
+
+      <div class="form-group row col-md-7">
+        <label for="RegistrationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>
+        <div class="col-sm-9">
+          <input type="Date" class="form-control" [disabled]="disable" [(ngModel)]="titleDeedRegistration.Date"
+            name="RegistrationDate" id="RegistrationDate" [placeholder]="'Registration Date' | translate"
+            #RegistrationDate="ngModel" [ngClass]="{ 'is-invalid': RegistrationDate.invalid }" required>
+        </div>
+      </div>
+
+    <div class="form-group row col-md-7">
+      <label for="TransferredFrom" class="col-sm-3 col-form-label" translate>Transferred From</label>
+      <div class="col-sm-9">
+          <input type="text" class="form-control"  [(ngModel)]="titleDeedRegistration.Transfer_From_Customer"
+            name="TransferredFromid" id="customer" [placeholder]="'select customer' | translate" hidden>
+
+        <input type="text" class="form-control" [disabled]="disable"  [(ngModel)]="Transfer_From_CustomerName"
+          name="TransferredFrom" id="TransferredFrom" [placeholder]="'select customer' | translate"
+        (click)="openModal(template)" readonly >
+
+          <!-- <select disabled class="form-control" name="TransferredFrom" id="TransferredFrom"
+            [(ngModel)]="titleDeedRegistration.Transfer_From_Customer">
+            <option *ngFor="let customer of CustomerLookUP;" [value]="titleDeedRegistration.Transfer_From_Customer">
+            {{customer.FullName_AM}}
+            </option>
+          </select> -->
+      </div>
+    </div>
+  <div class="form-group row col-md-7">
+    <label for="ParentDeedID" class="col-sm-3 col-form-label" translate>Parent Deed ID</label>
+    <div class="col-sm-9">
+      <select class="form-control" [disabled]="disable" [(ngModel)]="titleDeedRegistration.Parent_Deed_ID"
+        name="ParentDeedID" id="ParentDeedID" #ParentDeedID="ngModel" [ngClass]="{ 'is-invalid': ParentDeedID.invalid }"
+        required>
+        <option disabled translate>select</option>
+        <option *ngFor="let deed of titleDeedRegistrationList;" [value]="deed.Ownership_ID">{{deed.Ownership_ID}}
+        </option>
+      </select>
+    </div>
+  </div>
+    <div class="form-group row col-md-7">
+      <label for="TransferType" class="col-sm-3 col-form-label" translate>Transfer Type</label>
+      <div class="col-sm-9">
+        <select class="form-control" [(ngModel)]="titleDeedRegistration.Transfer_Type" name="TransferType"
+          id="TransferType">
+          <option disabled translate>select</option>
+          <option *ngFor="let TransferType of serviceComponent.TransferTypeLookUP;" [value]="TransferType.Transfer_ID">
+            {{TransferType.Type}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row col-md-7">
+      <label for="IsActive" class="col-sm-3 col-form-label" translate>Is Active</label>
+      <div class="col-sm-8">
+        <p-checkbox [(ngModel)]="titleDeedRegistration.Is_Active" name="IsActive" id="IsActive"
+          binary="true"></p-checkbox>
+      </div>
+    </div>
+  </div>
+    <button type="button" class="btn btn-primary" *ngIf="!isnew && !disable" (click)="save();" [disabled]="!f.valid"
+      translate>Save</button>
+    <button type="button" class="btn btn-primary" *ngIf="isnew && !disable" (click)="add()" [disabled]="!f.valid"
+      translate>Save</button>
+
 </form>
 
 
@@ -85,3 +193,49 @@
     </tr>
   </ng-template>
 </p-table>
+
+
+
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Transferred From</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+    <p-table #dt [value]="CustomerLookUP" [paginator]="true" [rows]="5"
+      [globalFilterFields]="['tin','FullName_AM','FullName_EN','applicant_Mother_Name_AM','applicant_Mother_Name_EN','mobile_No']">
+      <ng-template pTemplate="caption">
+        <div style="text-align: right">
+          <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+          <input type="text" pInputText size="50" placeholder="Global Filter"
+            (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th>TIN</th>
+          <th>Full Name AM</th>
+          <th>Full Name EN</th>
+          <th>Mother Name AM</th>
+          <th>Mother Name EN</th>
+          <th>mobile Number</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-Customer>
+        <tr (click)="closeModal(Customer)">
+          <td>{{Customer.tin}}</td>
+          <td>{{Customer.FullName_AM}}</td>
+          <td>{{Customer.FullName_EN}}</td>
+          <td>{{Customer.applicant_Mother_Name_AM}}</td>
+          <td>{{Customer.applicant_Mother_Name_EN}}</td>
+          <td>{{Customer.mobile_No}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+
+  </div>
+</ng-template>

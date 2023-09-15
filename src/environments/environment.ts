@@ -5,10 +5,11 @@
 export const environment = {
   production: false,
   rootPath: window["rootPath"],
+  rootPathApi: window["rootPathApi"],
   // formPath: '',
-  username: "BL_Info_Mgr",
+  //username: "0975352282",
   // username: 'BL_Tech_Officer',
-  // username: 'BL_Data_Encoder',
+  username: "0911565749",
   phisicalPath: "./assets/i18n/",
   Lang_code: (window["lang"] as string).toLowerCase(),
   localGisServer: window["local_GIS_server"],
