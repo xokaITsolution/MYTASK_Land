@@ -2,18 +2,18 @@
   <div class="form-row">
     <div class="form-group row col-md-6">
       <label for="PlotID" class="col-sm-3 col-form-label" translate>{{Fields.FIELD_ONE}}</label>
-      <div class="col-sm-7 mr-0 pr-0">
+      <div class="col-sm-9">
         <input type="text" class="form-control" [disabled]="disable || isploatDisabled"
           [(ngModel)]="plotManagment.Plot_ID" name="PlotID" id="PlotID" [placeholder]="Fields.FIELD_ONE | translate"
           #PlotID="ngModel" [ngClass]="{ 'is-invalid': PlotID.invalid }" required>
       </div>
-      <div class="col-sm-1 ml-0 pl-0">
+      <!-- <div class="col-sm-1 ml-0 pl-0">
         <button type="button" class="btn btn-primary" [disabled]="disable" (click)="displayGIS=true"><span
             class="fa fa-map"></span></button>
-      </div>
+      </div> -->
     </div>
-    <div class="form-group row col-md-6">
-      <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration date</label>
+    <div class="form-group row col-md-6"  *ngIf="language !== 'amharic'">
+      <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>
       <div class="col-sm-9">
         <input type="date" class="form-control" [disabled]="disable"
          [(ngModel)]="plotManagment.Registration_Date"
@@ -23,11 +23,22 @@
            [ngClass]="{ 'is-invalid': RegisterationDate.invalid }" required>
       </div>
     </div>
-
+    <div class="form-group row col-md-6"  *ngIf="language === 'amharic'">
+      <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>
+      <div class="col-sm-9">
+        <input type="text" readonly class="form-control" [disabled]="disable"
+         [(ngModel)]="plotManagment.Registration_Date"
+          name="RegisterationDate" id="RegisterationDate"
+           [placeholder]="'Registeration date' | translate"
+          #RegisterationDate="ngModel"
+           [ngClass]="{ 'is-invalid': RegisterationDate.invalid }" required appDatepickerEthiopian
+           (dateEmitter)="selectedDateTime($event,1)">
+      </div>
+    </div>
     <div class="form-group row col-md-6">
       <label for="SubCity" class="col-sm-3 col-form-label" translate>Sub-City</label>
       <div class="col-sm-9">
-        <select class="form-control" [disabled]="disable" 
+        <select class="form-select"  [disabled]="disable" 
         [(ngModel)]="plotManagment.SDP_ID" name="SubCity" id="SubCity" disabled
           #SubCity="ngModel"  
           [ngClass]="{ 'is-invalid': SubCity.invalid }" 
@@ -42,7 +53,7 @@
     <div class="form-group row col-md-6">
       <label for="LandGrade" class="col-sm-3 col-form-label" translate>Land Grade</label>
       <div class="col-sm-9">
-        <select class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.Land_Grade_ID" name="LandGrade"
+        <select class="form-select" [disabled]="disable" [(ngModel)]="plotManagment.Land_Grade_ID" name="LandGrade"
           id="LandGrade" #LandGrade="ngModel" [ngClass]="{ 'is-invalid': LandGrade.invalid }"
           (input)="subcitySelected($event)" required>
           <option disabled>select</option>
@@ -55,7 +66,7 @@
     <div class="form-group row col-md-6">
       <label for="landuse" class="col-sm-3 col-form-label" translate>Land Use</label>
       <div class="col-sm-9">
-        <select class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.Type_Of_Use_ID" name="landuse"
+        <select class="form-select"  [disabled]="disable" [(ngModel)]="plotManagment.Type_Of_Use_ID" name="landuse"
           id="landuse" #landuse="ngModel" [ngClass]="{ 'is-invalid': landuse.invalid }"
           (input)="subcitySelected($event)" required>
           <option disabled>select</option>
@@ -77,7 +88,7 @@
     <div class="form-group row col-md-6">
       <label for="Woreda" class="col-sm-3 col-form-label" translate>Woreda</label>
       <div class="col-sm-9">
-        <select class="form-control" [(ngModel)]="plotManagment.Wereda_ID" name="Woreda" id="Woreda" #Woreda="ngModel"
+        <select class="form-select"  [(ngModel)]="plotManagment.Wereda_ID" name="Woreda" id="Woreda" #Woreda="ngModel"
           [ngClass]="{ 'is-invalid': Woreda.invalid }" required><option disabled>select</option>
           <option *ngFor="let zoneOption of zoneOptions;" [value]="zoneOption['value']">
             {{zoneOption['text']}}
@@ -101,7 +112,7 @@
           [ngClass]="{ 'is-invalid': BLockNo.invalid }" required>
       </div>
     </div>
-    <div class="form-group row col-md-6">
+    <!-- <div class="form-group row col-md-6">
       <label for="GISCoordinate" class="col-sm-3 col-form-label" translate>GIS Coordinate</label>
       <div class="col-sm-7">
         <input type="text" class="form-control" [disabled]="disable" (change)="closeModal('GisViewer')"
@@ -113,7 +124,7 @@
         <button type="button" *ngIf="!disable" class="btn btn-secondary" (click)="openModal('GisCoordinates')"
           translate>fill GIS Cordinates</button>
       </div>
-    </div>
+    </div> -->
     <div class="form-group row col-md-6">
       <label for="S-PlotID" class="col-sm-3 col-form-label" translate>S-PlotID</label>
       <div class="col-sm-9">
@@ -154,7 +165,7 @@
     <div class="form-group row col-md-6">
       <label for="Status" class="col-sm-3 col-form-label" translate>Status</label>
       <div class="col-sm-9">
-        <select class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.Plot_Status" name="Status"
+        <select class="form-select"  [disabled]="disable" [(ngModel)]="plotManagment.Plot_Status" name="Status"
           id="Status" #Status="ngModel" [ngClass]="{ 'is-invalid': Status.invalid }" required>
           <option disabled translate>select</option>
           <option *ngFor="let Status of serviceComponent.PlotStutusLookUP;" [value]="Status.Plot_Status_ID">
@@ -172,7 +183,8 @@
     </div>
   </div>
   <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!isnew && !disable" (click)="Delete()"
-    translate>Save</button>
+    translate>Update</button>
+    <button type="button" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate (click)="getplotlocbyid();openModall(templattte)" *ngIf="!isnew">Spatial</button>
   <!-- <button type="button" class="btn btn-danger ml-3" [disabled]="!f.valid" *ngIf="!isnew && !disable" (click)="Delete()"
     translate>Delete</button> -->
   <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="isnew && !disable" (click)="add()"
@@ -323,36 +335,48 @@
   </div>
 </ngx-smart-modal>
 
+<!-- <div  *ngIf="displayGIS" class="p-3 w-80  mb-5 bg-white rounded"
+  style=" box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px; margin-top: 20px; margin-left: 3%; margin-bottom: 20px; margin-right: 3%;">
+
+  
+  <app-gis-map></app-gis-map>
 
 
+  <button style="float: right; margin: 5px;" type="button" (click)="displayGIS=false" class="btn btn-danger mb-2" translate>Close</button>
+&nbsp; &nbsp;
+<button style="float: right; margin: 5px;" type="button" (click)="onConfirm()" class="btn btn-primary mb-2" translate>Select </button>
+
+
+</div> -->
+ 
 <p-dialog [(visible)]="displayGIS" [responsive]="true"
-  [style]="{'minHeight':'10%','height':'800px','minWidth':'10%','width':'80%' }" [maximizable]="true"
-  [baseZIndex]="10000">
-  <p-header translate>
-    Get GIS Plot ID
+[style]="{'minHeight':'10%','height':'800px','minWidth':'10%','width':'80%' }" [maximizable]="true"
+[baseZIndex]="10000">
+<p-header translate>
+  Get GIS Plot ID
 
-  </p-header>
+</p-header>
 
-  <div class="modal-body">
+<div class="modal-body">
 
-    <div style=" min-width: 1000px">
+  <div style=" min-width: 1000px">
 
-      <!-- <app-esri-map [_center]="mapCenter" [_basemap]="basemapType" [_zoom]="mapZoomLevel"
-        (plotSelector)="plotSelector($event)">
-      </app-esri-map> -->
-      <app-gis class="a" (onPlotSelect)="selectPlotID($event)"></app-gis>
+    <!-- <app-esri-map [_center]="mapCenter" [_basemap]="basemapType" [_zoom]="mapZoomLevel"
+      (plotSelector)="plotSelector($event)">
+    </app-esri-map> -->
+    <app-gis class="a" (onPlotSelect)="selectPlotID($event)"></app-gis>
 
-    </div>
   </div>
+</div>
 
-  <p-footer>
-    <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="8" *ngIf="toogleSpin"></p-progressSpinner>
-    <button type="button" class="btn btn-primary" *ngIf="!toogleSpin" (click)="finishSelection()" translate>select
-    </button>
+<p-footer>
+  <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="8" *ngIf="toogleSpin"></p-progressSpinner>
+  <button type="button" class="btn btn-primary" *ngIf="!toogleSpin" (click)="finishSelection()" translate>select
+  </button>
 
-  </p-footer>
+</p-footer>
 
-  <p-toast></p-toast>
+<p-toast></p-toast>
 </p-dialog>
 
 
@@ -367,3 +391,28 @@
     <span>Close</span>
   </div>
 </ngx-smart-modal> -->
+
+
+<ng-template #templattte>
+
+    
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title" translate>Spatial</h4>
+        <button type="button" class="close" (click)="closeModall()">&times;</button>
+      </div>
+      
+      <!-- Modal body -->
+      <div class="modal-body">
+        <app-gis-map [changing]="changingValue" ></app-gis-map>
+      </div>
+        
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="saveplotloc();closeModall()" *ngIf="isplotllocnew &&  !disable" translate>Save</button>
+        <button type="button" class="btn btn-primary" (click)="updateplotloc();closeModall()" *ngIf="!isplotllocnew &&  !disable" translate>Update</button>
+        <button type="button" class="btn btn-danger" (click)="closeModall()" translate>Close</button>
+      </div>
+        
+  </ng-template>
+  

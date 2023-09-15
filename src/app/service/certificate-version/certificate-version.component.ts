@@ -84,6 +84,7 @@ export class CertificateVersionComponent implements OnChanges {
     this.certificateVersionService.SaveCertificate(this.certificateVersion).subscribe(certificateVersion => {
       console.log('certificateVersion', certificateVersion);
       const toast = this.notificationsService.success('Sucess', certificateVersion);
+      this.serviceService.disablefins = false;
       if(!this.Saved){
         this.completed.emit();
         this.Saved = true;
@@ -110,7 +111,7 @@ export class CertificateVersionComponent implements OnChanges {
     this.certificateVersionService.AddCertificate(this.certificateVersion).subscribe(message => {
       console.log('message', message);
       const toast = this.notificationsService.success('Sucess', message);
-
+      this.serviceService.disablefins = false;
       if(!this.Saved){
         this.completed.emit();
         this.Saved = true;

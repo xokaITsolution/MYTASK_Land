@@ -1,0 +1,579 @@
+
+<form class="m-10" #personalformIsvalid ="ngForm" *ngIf="iform" name="personalForm"> 
+ 
+    <div>
+      <p-fieldset legend="Information">
+        <div class="m-3">
+          <p-fieldset legend="Information" [toggleable]="true">
+            <div class="form-row">
+              <div class="form-group row col-md-4" >
+                <label for="CustomerID" class="col-sm-4 col-form-label" translate>Customer ID</label>
+                <div class="col-sm-8">
+                  <input type="text" disabled class="form-control"  [(ngModel)]="person.customer_ID" name="CustomerID"
+                    id="CustomerID" [placeholder]="'Customer ID' | translate">
+                </div>
+              </div>
+              <div class="form-group row col-md-4">
+                <label for="FirstName" class="col-sm-4 col-form-label"  translate>First Name</label>
+                <!-- <label for="FirstName" class="col-sm-4 col-form-label" [hidden]="individual" translate>Company Name</label> -->
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" [(ngModel)]="person.applicant_First_Name_EN" required name="FirstName"
+                    id="FirstName" [placeholder]="'Name' | translate" #FirstName="ngModel"
+                    [ngClass]="{ 'is-invalid': FirstName.invalid }"  pattern="[a-zA-Z\s]+" [disabled]="disabled">
+                  <div *ngIf="FirstName.invalid && (FirstName.dirty || FirstName.touched)" class="invalid-feedback">
+                    <div *ngIf="FirstName.errors.required">Name is required.</div>
+                    <div *ngIf="FirstName.errors.pattern">Name should contain only English letters and spaces.</div>
+                  </div>
+  
+                </div>
+              </div>
+              <div class="form-group row col-md-4">
+  
+                <label for="FirstNameAm" class="col-sm-4 col-form-label"  translate>First Name Am</label>
+                <!-- <label for="FirstNameAm" class="col-sm-4 col-form-label" [hidden]="individual" translate>Company Name Amharic</label> -->
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" [(ngModel)]="person.applicant_First_Name_AM" required name="FirstNameAm"
+                    id="FirstNameAm" [placeholder]="'FirstName Am' | translate" #FirstNameAm="ngModel"
+                    [ngClass]="{ 'is-invalid': FirstNameAm.invalid }" onkeypress="return !((event.keyCode >=33 &&  event.keyCode<=127))" [disabled]="disabled">
+                    <div *ngIf="FirstNameAm.invalid && (FirstNameAm.dirty || FirstNameAm.touched)" class="invalid-feedback">
+                      <div *ngIf="FirstNameAm.errors.required">First name is required.</div>
+                      <div *ngIf="FirstNameAm.errors.pattern">First name should contain only Amaharic letters and spaces.</div>
+                    </div>
+  
+                </div>
+              </div>
+              <div class="form-group row col-md-4" >
+                <label for="Customer_Type" class="col-sm-4 col-form-label" translate>Customer Type</label>
+  
+                <div class="col-sm-8">
+                  <select [disabled]="disabled"   style="height: 50px;"class="form-control" style="height: 50px;" (change)="pass($event)" [(ngModel)]="person.customer_Type_ID" name="Customer_Type"
+                    id="Customer_Type" #Customer_Type="ngModel" [ngClass]="{ 'is-invalid': Customer_Type.invalid }"
+                    required>
+                    <option disabled>select</option>
+                    <option *ngFor="let Status of CustomerTypeLookUP;"
+                      [value]="Status.Customer_Type_ID">
+                      {{Status.Customer_Type}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+    <div class="form-group row col-md-4" >
+    <label for="MiddleName" class="col-sm-4 col-form-label" translate>Middle Name</label>
+    <div class="col-sm-8">
+      <input type="text" class="form-control" [(ngModel)]="person.applicant_Middle_Name_En" required name="MiddleName"
+        id="MiddleName" [placeholder]="'Middle Name' | translate" #MiddleName="ngModel"
+        [ngClass]="{ 'is-invalid': MiddleName.invalid }" pattern="[a-zA-Z\s]+" [disabled]="disabled" >
+        <div *ngIf="MiddleName.invalid && (MiddleName.dirty || MiddleName.touched)" class="invalid-feedback">
+          <div *ngIf="MiddleName.errors.required">Middle name is required.</div>
+          <div *ngIf="MiddleName.errors.pattern">Middle name should contain only English letters and spaces.</div>
+        </div>
+  
+    </div>
+  </div>
+  
+  <div class="form-group row col-md-4">
+    <label for="MiddleNameAm" class="col-sm-4 col-form-label" translate>Middle Name Am</label>
+    <div class="col-sm-8">
+      <input type="text" class="form-control" [(ngModel)]="person.applicant_Middle_Name_AM"  required name="MiddleNameAm"
+        id="MiddleNameAm" [placeholder]="'Middle Name Am' | translate" #MiddleNameAm="ngModel"
+        [ngClass]="{ 'is-invalid': MiddleNameAm.invalid }" onkeypress="return !((event.keyCode >=33 &&  event.keyCode<=127))" [disabled]="disabled">
+          <div *ngIf="MiddleNameAm.invalid && (MiddleNameAm.dirty || MiddleNameAm.touched)" class="invalid-feedback">
+            <div *ngIf="MiddleNameAm.errors.required">Middle name is required.</div>
+            <div *ngIf="MiddleNameAm.errors.pattern">middle name should contain only Amaharic letters and spaces.</div>
+          </div>
+    </div>
+  </div>
+              
+              <div class="form-group row col-md-4" >
+                <label for="Nationality" class="col-sm-4 col-form-label" translate>Nationality</label>
+                <div class="col-sm-8">
+                  <select [disabled]="disabled" style="height: 50px;"class="form-control" [(ngModel)]="person.nationality" name="Nationality" id="Nationality">
+                    <option disabled>select</option>
+                    <option *ngFor="let Country of CountryLookUP;" [value]="Country.Code">
+                      {{Country.Name}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+           
+              <div class="form-group row col-md-4" >
+                <label for="LastName" class="col-sm-4 col-form-label" translate>Last Name</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" [(ngModel)]="person.applicant_Last_Name_EN" required name="LastName"
+                    id="LastName" [placeholder]="'Last Name' | translate" #LastName="ngModel"
+                    [ngClass]="{ 'is-invalid': LastName.invalid }" pattern="[a-zA-Z\s]+" [disabled]="disabled">
+                      <div *ngIf="LastName.invalid && (LastName.dirty || LastName.touched)" class="invalid-feedback">
+                        <div *ngIf="LastName.errors.required">last name is required.</div>
+                        <div *ngIf="LastName.errors.pattern">last name should contain only English letters and spaces.</div>
+                      </div>
+                </div>
+              </div>
+              <div class="form-group row col-md-4" [hidden]="notindividual" >
+                <label for="Parent_Customer_ID" class="col-sm-4 col-form-label" translate>Working No</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" [(ngModel)]="parentname"  name="parentname"
+                    [required]="individual" readonly placeholder="click" (click)="getcoustomer()">
+                      <input type="text"  class="form-control" [(ngModel)]="person.parent_Customer_ID" name="Parent_Customer_ID"
+                       hidden >
+                </div>
+              </div>
+              <div class="form-group row col-md-4" >
+                <label for="LastNameAm" class="col-sm-4 col-form-label" translate>Last Name Am</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" [(ngModel)]="person.applicant_Last_Name_AM" required name="LastNameAm"
+                    id="LastNameAm" [placeholder]="'Last Name Am' | translate"  #LastNameAm="ngModel"
+                    [ngClass]="{ 'is-invalid': LastNameAm.invalid }"  onkeypress="return !((event.keyCode >=33 &&  event.keyCode<=127))" [disabled]="disabled">
+                      <div *ngIf="LastNameAm.invalid && (LastNameAm.dirty || LastNameAm.touched)" class="invalid-feedback">
+                        <div *ngIf="LastNameAm.errors.required">last name is required.</div>
+                        <div *ngIf="LastNameAm.errors.pattern">last name should contain only Amaharic letters and spaces.</div>
+                      </div>
+                </div>
+              </div>
+              <div class="form-group row col-md-4" >
+                <label for="ResidenceCountry" class="col-sm-4 col-form-label" translate>Residence Country</label>
+                <div class="col-sm-8">
+                  <select style="height: 50px;"class="form-control" [(ngModel)]="person.residence_Country" name="ResidenceCountry"
+                    id="ResidenceCountry"  [disabled]="disabled">
+                    
+                    <option *ngFor="let Country of CountryLookUP;" [value]="Country.Code" >
+                      {{Country.Name}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="form-group row col-md-4" >
+                <label for="MotherName" class="col-sm-4 col-form-label" translate>Mother Name</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" required [(ngModel)]="person.applicant_Mother_Name_EN" name="MotherName"
+                    id="MotherName" [placeholder]="'Mother Name' | translate" #MotherName="ngModel"
+                    [ngClass]="{ 'is-invalid': MotherName.invalid }" pattern="[a-zA-Z\s]+" [disabled]="disabled">
+                      <div *ngIf="MotherName.invalid && (MotherName.dirty || MotherName.touched)" class="invalid-feedback">
+                        <div *ngIf="MotherName.errors.required">Mother name is required.</div>
+                        <div *ngIf="MotherName.errors.pattern">Mother name should contain only English letters and spaces.</div>
+                      </div>
+                </div>
+              </div>
+              <div class="form-group row col-md-4" >
+                <label for="MotherNameAm" class="col-sm-4 col-form-label" translate>Mother Name Am</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" [(ngModel)]="person.applicant_Mother_Name_AM" required name="MotherNameAm"
+                    id="MotherNameAm" [placeholder]="'MotherName Am' | translate" #MotherNameAm="ngModel"
+                    [ngClass]="{ 'is-invalid': MotherNameAm.invalid }" onkeypress="return !((event.keyCode >=33 &&  event.keyCode<=127))" [disabled]="disabled">
+                      <div *ngIf="MotherNameAm.invalid && (MotherNameAm.dirty || MotherNameAm.touched)" class="invalid-feedback">
+                        <div *ngIf="MotherNameAm.errors.required">Mother name is required.</div>
+                        <div *ngIf="MotherNameAm.errors.pattern">Mother  name should contain only Amharic letters and spaces.</div>
+                      </div>
+                </div>
+              </div>
+            </div>
+          </p-fieldset>
+        </div>
+  
+        <div class="m-3">
+          <p-fieldset legend="Contact Information" [toggleable]="true">
+            <div class="form-row">
+              <div class="form-group col-md-8">
+                <div class="form-row">
+  
+                  <div class="form-group row col-md-6">
+                    <label for="State/Region" class="col-sm-4 col-form-label" translate>State/Region</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" [(ngModel)]="person.state_Region" name="State/Region"
+                        id="State/Region" [placeholder]="'State/Region' | translate" #State="ngModel" [disabled]="disabled"
+                        [ngClass]="{ 'is-invalid': State.invalid }" >
+                    </div>
+                  </div>
+                  <!-- <div class="form-group row col-6">
+                    <label for="State_Region" class="col-sm-4 col-form-label" translate>State/Region</label>
+                    <div class="col-sm-8">
+                      <select [disabled]="disabled" style="height: 50px;"class="form-control" [(ngModel)]="person.State_Region" name="State_Region"
+                      id="State_Region" >
+                      <option *ngFor="let regions of region;"
+                        [value]="regions.label"  >
+                        {{regions.label}}
+                      </option>
+                    </select>
+                    </div>
+                  </div> -->
+                  <div class="form-group row col-md-6 ">
+                    <label for="SubCity" class="col-sm-4 col-form-label" translate >Sub city</label>
+                    <div class="col-sm-8">
+                      <!-- <input type="text" class="form-control" [(ngModel)]="person.City" name="City" id="City"
+                        placeholder="City" #Cityy="ngModel"> -->
+                      <select style="height: 50px;"class="form-control" (ngModelChange)="getWoredaLookUPbyorg($event)"
+                        [(ngModel)]="person.sDP_ID" name="SubCity" id="SubCity" #SubCity="ngModel"
+                        [ngClass]="{ 'is-invalid': SubCity.invalid }" >
+                        <option disabled>select</option>
+                        <option *ngFor="let SubCity of ServiceDeliveryUnitLookUP;"
+                          [value]="SubCity.organization_code">{{SubCity.name_en}}
+                        </option>
+                          <select style="height: 50px;" [disabled]="disabled" class="form-control" name="SubCity" id="SubCity" [(ngModel)]="person.sDP_ID" 
+                            >
+                            <option *ngFor="let city of zones" [value]="city.lkdetail_code">{{ city.english_description }}
+                            </option>
+                          </select>
+                        </select>
+                    </div>
+                  </div>
+                  <div class="form-group row col-md-6" >
+                    <label for="Woreda" class="col-sm-4 col-form-label" translate>Woreda</label>
+                    <div class="col-sm-8">
+                      <input [disabled]="disabled" type="number" class="form-control" [(ngModel)]="person.wereda_ID" name="Woreda" id="Woreda"
+                        [placeholder]="'Woreda' | translate"  min="1" max="14">
+                        <!-- <select [disabled]="disabled" class="form-control" name="woreda" id="woreda" [(ngModel)]="person.Wereda_ID" 
+                          >
+                          <option *ngFor="let woreda of woredaList" [value]="woreda.organization_code">{{ woreda.name_am }}
+                          </option>
+                        </select> -->
+                         <!-- [ngClass]="{ 'is-invalid': Woreda.invalid }" > -->
+  
+                      <!-- <select style="height: 50px;"class="form-control" [(ngModel)]="person.Wereda_ID" name="Woreda" id="Woreda"
+                              #Woreda="ngModel" [ngClass]="{ 'is-invalid': Woreda.invalid }" >
+                        <option disabled>select</option>
+                        <option *ngFor="let Woreda of WoredaLookUP;" [value]="Woreda.Woreda_ID">
+                          {{Woreda.Woreda_Name}}
+                        </option>
+                      </select> -->
+                    </div>
+                  </div>
+                  <!-- <div class="form-group row col-md-6">
+                    <label for="Kebele" class="col-sm-4 col-form-label" translate>Kebele</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" [(ngModel)]="person.Kebele" name="Kebele" id="Kebele"
+                        placeholder="Kebele" [required]="required1" #Kebeles="ngModel"
+                        [ngClass]="{ 'is-invalid': Kebeles.invalid }"  >
+                    </div>
+                  </div> -->
+                  <div class="form-group row col-md-6" hidden>
+                    <label for="City" class="col-sm-4 col-form-label" translate>City</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" [(ngModel)]="person.city" name="City" id="City"
+                        [placeholder]="'City' | translate"  >
+                        <!-- [ngClass]="{ 'is-invalid': City.invalid }" > -->
+                    </div>
+                  </div>
+                  <div class="form-group row col-md-6" >
+                    <label for="TIN" class="col-sm-4 col-form-label" translate>TIN</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" [(ngModel)]="person.tin"  [pattern]="mobNumberPattern" name="TIN"  id="TIN"
+                        [placeholder]="'TIN' | translate"  [maxlength]="10" [required]="required" [disabled]="disabled">
+                    </div>
+                  </div>
+                  <div class="form-group row col-md-6" >
+                    <label for="PassportID" class="col-sm-4 col-form-label" translate>Passport ID</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" [(ngModel)]="person.passport_ID" name="PassportID"
+                        id="PassportID" [placeholder]="'Passport ID' | translate" [disabled]="disabled">
+                    </div>
+                  </div>
+                  <div class="form-group row col-md-6">
+                    <label for="Email" class="col-sm-4 col-form-label" translate>Email</label>
+                    <div class="col-sm-8">
+                      <input type="Email" class="form-control" [(ngModel)]="person.email" name="Email" id="Email"
+                        [placeholder]="'Email' | translate"  [disabled]="disabled">
+                    </div>
+                  </div>
+                  <div class="form-group  col-md-6">
+                    <span class="form-group row" *ngIf="person.Customer_Type_ID == 1">
+                      <label for="CustomerStatus" class="col-sm-4 col-form-label" translate>Customer Marital Status</label>
+                      <div class="col-sm-7">
+                        <select [disabled]="disabled" style="height: 50px;"class="form-control" [(ngModel)]="person.customer_Status" name="CustomerStatus"
+                          id="CustomerStatus" #CustomerStatus="ngModel" [required]="individual"
+                          [ngClass]="{ 'is-invalid': CustomerStatus.invalid }"  (change)="passs($event)">
+                          <option disabled>select</option>
+                          <option *ngFor="let Status of CustomerStatusLookUP;" [value]="Status.ID">
+                            {{Status.Customer_Status}}
+                          </option>
+                        </select>
+                      </div>
+                    </span>
+                  </div>
+                  <div class="form-group row col-md-6">
+                    <label for="MobileNo" class="col-sm-4 col-form-label" translate>Mobile No</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" [(ngModel)]="person.mobile_No" name="MobileNo"
+                        id="MobileNo" [placeholder]="'Mobile No' | translate" #MobileNo="ngModel"  [pattern]="mobNumberPattern" required
+                        [ngClass]="{ 'is-invalid': MobileNo.invalid }" min="900000000" max="999999999" [disabled]="disabled">
+                         
+                    </div>
+                  </div>
+                  <!-- <div class="form-group row col-md-6">
+                    <label for="IsRepresented" class="col-sm-4 col-form-label" translate>Is Represented</label>
+  
+                    <div class="col-sm-8">
+                      <p-checkbox [(ngModel)]="person.Is_Represented" name="isActive" id="IsRepresented" binary="true">
+                      </p-checkbox>
+                    </div>
+                  </div> -->
+                  <div class="form-group row col-md-6" [hidden]="notindividual">
+                    <label for="Sex" class="col-sm-4 col-form-label" translate>Sex</label>
+                    <div class="col-sm-8">
+                      <select [disabled]="disabled" style="height: 50px;"class="form-control" [(ngModel)]="person.gender" name="Sex" id="Sex" #Sex="ngModel" re
+                        [ngClass]="{ 'is-invalid': Sex.invalid }"  [required]="required1">
+                        <option disabled translate>select</option>
+                        <option value="Male" translate>Male</option>
+                        <option value="Female" translate>Female</option>
+                      </select>
+                    </div>
+                  </div>
+                  <!--<div class="form-group row col-md-6">
+                    <label for="IsThem" class="col-sm-4 col-form-label" translate>Is Them</label>
+  
+                    <div class="col-sm-8">
+                      <p-checkbox [(ngModel)]="person.Is_them" name="IsThem" id="IsThem" binary="true"></p-checkbox>
+                    </div>
+                  </div>-->
+                  <div class="form-group row col-md-6">
+                    <label for="Address" class="col-sm-4 col-form-label" translate>Address</label>
+                    <div class="col-sm-8">
+                      <textarea class="form-control" [(ngModel)]="person.address" name="Address" id="Address"
+                        [placeholder]="'Address' | translate"  required  #address="ngModel"
+                        [ngClass]="{ 'is-invalid': address.invalid }" [disabled]="disabled">
+                      </textarea>
+                    </div>
+                  </div>
+                  <!--<div class="form-group row col-md-6">
+                    <label for="IsRepresentative" class="col-sm-4 col-form-label" translate>Is Representative</label>
+  
+                    <div class="col-sm-8">
+                      <p-checkbox [(ngModel)]="person.Is_Representative" name="isActive" id="IsRepresentative"
+                                  binary="true"></p-checkbox>
+                    </div>
+                  </div>-->
+                  <div class="form-group row col-md-6">
+                    <label for="HomeTele" class="col-sm-4 col-form-label" translate>Home Tele</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" [(ngModel)]="person.home_Telephone" name="HomeTele"
+                      id="HomeTele" [placeholder]="'Home Tele' | translate"
+                         [maxlength]="12" [disabled]="disabled">
+                    </div>
+                  </div>
+                  <!--<div class="form-group row col-md-6">
+                    <label for="RepresentingCustomer" class="col-sm-4 col-form-label" translate>Representing
+                      Customer</label>
+                    <div class="col-sm-8">
+  
+                      <select style="height: 50px;"class="form-control" (click)="openModal(template)" [(ngModel)]="person.Parent_Customer_ID"
+                              name="RepresentingCustomer" id="RepresentingCustomer">
+                        <option disabled>select</option>
+                        <option *ngFor="let Customer of CustomerLookUP" [value]="Customer.Customer_ID">
+                          {{Customer.FullName_AM}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>-->
+                  <div class="form-group row col-md-6">
+                    <label for="HouseNo" class="col-sm-4 col-form-label" translate>House No</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" [(ngModel)]="person.house_No" name="HouseNo" id="HouseNo"
+                        [placeholder]="'House No' | translate"  [disabled]="disabled" >
+                    </div>
+                  </div>
+  
+                  
+                  <div class="form-group row col-md-6">
+                  </div>
+                </div>
+              </div>
+  
+              <div class="form-group col-md-4" >
+                <div class="form-row">
+                  <label class="col-sm-2 col-form-label" translate>Photo</label>
+                  <div class="col-sm-10">
+                    <!-- <input type="file" class="form-control" [(ngModel)]="person.Photo" name="Photo" id="Photo"
+                            placeholder="Photo">
+                   </div>
+                   <img height="300px" class="m-5 mr-5" src="../../../assets/images.jpg">-->
+                        <div *ngIf="!disabled">
+                    <p-fileUpload #form customUpload="true" (uploadHandler)="upload($event,form)" accept="image/*">
+                    </p-fileUpload>
+                       </div>
+  
+                    <input type="hidden" class="form-control" #file="ngModel" [(ngModel)]="person.photo" name="Photo"
+                      id="NumberOfLift" [placeholder]="'Number of Lift' | translate" [required]="individual">
+                    <div *ngIf="file.invalid">
+                      <span class="text-danger" translate>REQUIRED</span>
+                    </div>
+  
+                    <div *ngIf="pictoShow">
+                      <img width="100%" [src]="pictoShow" alt="Photo" />
+                    </div>
+                    <div *ngIf="!pictoShow">
+                      <img width="100%" alt="Photo" [src]="placeHolderImage">
+                    </div>
+                  </div>
+                </div>
+  
+                <div class="col-md-8">
+                  <div>
+  
+                  </div>
+                </div>
+              </div>
+            </div>
+          </p-fieldset>
+          <div class="pull-right">
+            <button type="button" class="btn btn-primary" [disabled]="file.invalid" *ngIf="isnew"
+              (click)="Save2()" id="personsave" translate>Save</button>
+              
+              <div class="text-danger mt-2" *ngIf="file.invalid" translate>Please fill out all required fields.</div>
+            <button type="button" class="btn btn-primary"  *ngIf="!isnew"
+              (click)="update()" [disabled]="disabled" id="PersonUpdate" translate>Update</button>
+  
+          </div>
+        </div>
+      </p-fieldset>
+  
+  
+    </div>
+  </form>
+  
+  
+  <ng-template #template>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left" translate>Representing Customer</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+  
+  
+      <p-table #dt [value]="CustomerLookUP" [paginator]="true" [rows]="5"
+        [globalFilterFields]="['TIN','FullName_AM','FullName_EN','Applicant_Mother_Name_AM','Applicant_Mother_Name_EN','Mobile_No']">
+        <ng-template pTemplate="caption">
+          <div style="text-align: right">
+            <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+            <input type="text" pInputText size="50" [placeholder]="'Global Filter' | translate"
+              (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th translate>TIN</th>
+            <th translate>Full Name AM</th>
+            <th translate>Full Name EN</th>
+            <th translate>Mother Name AM</th>
+            <th translate>Mother Name EN</th>
+            <th translate>mobile Number</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-Customer>
+          <tr (click)="closeModal(Customer)">
+            <td>{{Customer.TIN}}</td>
+            <td>{{Customer.FullName_AM}}</td>
+            <td>{{Customer.FullName_EN}}</td>
+            <td>{{Customer.Applicant_Mother_Name_AM}}</td>
+            <td>{{Customer.Applicant_Mother_Name_EN}}</td>
+            <td>{{Customer.Mobile_No}}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+  
+  
+    </div>
+  </ng-template>
+  <p-table #tablehouse [value]="customerdata" [paginator]="true" [rows]="5" selectionMode="single"
+  [globalFilterFields]="[ 'applicant_First_Name_AM',
+  'applicant_First_Name_EN','TIN','mobile_No','home_Telephone','address']" #cust>
+   
+    <ng-template pTemplate="caption">
+      <div class="table-header">
+        <span class="p-input-icon-left">
+          <div class="input-group mb-3">
+          <input   type="text" style="border-color: #007bff;"   [(ngModel)]="globvar"  name="globvar"
+          id="globvar">
+          <!-- <input type="text" pInputText [(ngModel)]="phoneNumber" placeholder="Enter phone number...">
+         <input type="text" pInputText [(ngModel)]="firstName" placeholder="Enter first name...">
+         <input type="text" pInputText [(ngModel)]="lastName" placeholder="Enter last name...">  -->
+         <div class="input-group-append">
+          <button class="btn btn-primary" type="button" translate  (click)="getcustomer(globvar)">Search</button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-primary" (click)="add()" style="float: right;" translate>Add New</button>
+        </span>
+      
+      </div>
+<!-- <input class="form-control border-end-0 border"   type="text" [placeholder]="'Search'|translate" (input)="cust.filterGlobal($event.target.value, 'contains')"  id="form1" class="form-control"> -->
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+      <tr>
+        
+        <th translate>Full Name</th>
+        <th translate>Mother Name</th>
+        <th translate>Address</th>
+        <th translate>Residence Country</th>
+        <th translate>Mobile No</th>
+        <th translate>Email</th>
+        <th translate>TIN</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-prop let-rowData>
+      <tr (click)='highlighted = rowData;Selectcustomers(prop)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
+        
+        <td>{{ language === 'amharic' ? prop.applicant_First_Name_AM  + '  '+ prop.applicant_Middle_Name_AM  + ' '+ prop.applicant_Last_Name_AM : prop.applicant_First_Name_EN  + '  '+ prop.applicant_Middle_Name_En  + ' '+ prop.applicant_Last_Name_EN}}</td>
+        <td>{{ language === 'amharic' ? prop.applicant_Mother_Name_AM:prop.applicant_Mother_Name_EN }}</td>
+        <td>{{ prop.residence_Country }}</td>
+        <td>{{ prop.address }}</td>
+        <td>{{ prop.mobile_No }}</td>
+        <td>{{ prop.email }}</td> 
+        <td>{{ prop.tin }}</td>
+        <td>
+          <button type="button" class="btn btn-primary" (click)="Selectcustomers(prop)" translate>Select</button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+    <p-dialog  [(visible)]="display">
+      <p-table #tablehouse [value]="customerworkfrom" [paginator]="true" [rows]="5" selectionMode="single"
+      [globalFilterFields]="[ 'applicant_First_Name_AM',
+      'applicant_First_Name_EN','TIN','mobile_No','home_Telephone','address']" #cust>
+       
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <h1 translate>List of organization</h1> 
+          </div>
+  <input class="form-control border-end-0 border"   type="text" [placeholder]="'Search'|translate" (input)="cust.filterGlobal($event.target.value, 'contains')"  id="form1" class="form-control">
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+          <tr>
+            
+            <th translate>Name AM</th>
+            <th translate>Name EN</th>
+            <th translate>Residence Country</th>
+            <th translate>Address</th>
+            <th translate>Home Telephone</th>
+            <th translate>Mobile No</th>
+            <th translate>Email</th>
+            <th translate>TIN</th>
+            <th></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-prop  let-rowData>
+          <tr (click)='highlighted = rowData;Selectcustomer(prop)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
+            
+            <td >{{ prop.applicant_First_Name_AM }}</td>
+            <td >{{ prop.applicant_First_Name_EN }}</td>
+            <td>{{ prop.residence_Country }}</td>
+            <td >{{ prop.address }}</td>
+            <td>{{ prop.home_Telephone }}</td>
+            <td>{{ prop.mobile_No }}</td>
+            <td>{{ prop.email }}</td> 
+            <td>{{ prop.tin }}</td>
+            <td>
+              <button type="button" class="btn btn-primary" (click)="Selectcustomer(prop)" translate>Select</button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <div class=" float-left">
+        <button  (click)="display=false;"  class="btn btn-danger ml-2" translate>Close</button>
+         
+      </div>
+    </p-dialog>
+    <simple-notifications></simple-notifications>

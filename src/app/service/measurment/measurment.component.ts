@@ -14,6 +14,7 @@ export class MeasurmentComponent implements OnChanges {
   public measurment: Measurment;
   @Input() selectedpro;
   @Input() disable;
+  highlighted
   @Input() Licence_Service_ID;
   measurmentList;
   measurmentform = false;

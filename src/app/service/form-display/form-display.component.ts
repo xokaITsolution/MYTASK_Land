@@ -36,7 +36,7 @@ export class FormDisplayComponent implements OnInit {
     });
   }
 
-
+  
   viewform(data: any): any {
     console.log(data);
     this.surveyModel = new Survey.Model(data);

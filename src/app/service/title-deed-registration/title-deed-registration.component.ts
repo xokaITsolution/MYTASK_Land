@@ -5,6 +5,8 @@ import { NotificationsService } from 'angular2-notifications';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { ConfirmationService } from 'primeng/api';
 import { ServiceService } from '../service.service';
+import { environment } from 'src/environments/environment';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-title-deed-registration',
@@ -17,69 +19,156 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   titleDeedRegistrationList;
   deedform = false;
   isnew = false;
+  highlighted
   @Input() selectedpro;
   @Input() Licence_Service_ID;
   @Input() AppNo;
   @Input() Service_ID;
   @Input() disable;
   Saved: boolean;
+  language: string;
+  urlParams: any;
+  Customer_NAMEe: string;
+  Customer_NAME: string;
+  customerdata: any;
 
   constructor(private ngxSmartModalService: NgxSmartModalService,
     private titleDeedRegistrationService: TitleDeedRegistrationService,
     public serviceComponent: ServiceComponent,
     public serviceService: ServiceService,
+    private routerService: ActivatedRoute,
     private confirmationService: ConfirmationService, private notificationsService: NotificationsService) {
     this.titleDeedRegistration = new TitleDeedRegistration();
+
   }
-
+  visible
+  visiblee
   ngOnInit() {
-
+    this.routerService.params.subscribe((params) => {
+      this.urlParams = params;
+    });
+    if (environment.Lang_code === "am-et") {
+      this.language = 'amharic';
+    }
+    else {
+      this.language = 'english';
+    }
     console.log('chang detected', this.disable, this.isnew);
   }
+  closeModalll(customer) {
+    this.visible=false
+    this.titleDeedRegistration.Transfer_From_Customer = customer.customer_ID; 
+    if(this.language=="amharic"){
+      this.Customer_NAME= customer.applicant_First_Name_AM  + '  '+ customer.applicant_Middle_Name_AM  + ' '+ customer.applicant_Last_Name_AM 
+      console.log("closeing.....");
+      
+    }
+    else{
+      this.Customer_NAME= customer.applicant_First_Name_EN  + '  '+ customer.applicant_Middle_Name_En  + ' '+ customer.applicant_Last_Name_EN
+    }
+   
+  }
+  closeModall(customer) {
+    this.visible=false
+    this.titleDeedRegistrationList.Transfer_To_Customer = customer.customer_ID; 
+    if(this.language=="amharic"){
+      this.Customer_NAME= customer.applicant_First_Name_AM  + '  '+ customer.applicant_Middle_Name_AM  + ' '+ customer.applicant_Last_Name_AM 
+      console.log("closeing.....");
+      
+    }
+    else{
+      this.Customer_NAMEe= customer.applicant_First_Name_EN  + '  '+ customer.applicant_Middle_Name_En  + ' '+ customer.applicant_Last_Name_EN
+    }
+   
+  }
+
 
   ngOnChanges() {
     console.log('chang detected');
+    this.routerService.params.subscribe((params) => {
+      this.urlParams = params;
 
+    });
     this.deedform = false;
     this.getdeed(this.selectedpro.Property_ID);
     console.log(this.selectedpro.Property_ID)
   }
 
   getdeed(propertyid) {
-    this.titleDeedRegistrationService.getAll(propertyid).subscribe(titleDeedRegistration => {
+    this.titleDeedRegistrationService.getAll(propertyid).subscribe(async titleDeedRegistration => {
       let a;
       a = titleDeedRegistration;
-      this.titleDeedRegistrationList = a.list;
-      console.log('this.titleDeedRegistration', this.titleDeedRegistrationList);
-    }, error => {
+      var titleDeedRegistrationList = a.list;
+      if(this.language == 'amharic'){
+      if(titleDeedRegistrationList.length>0){
+      for (let i = 0; i < titleDeedRegistrationList.length; i++) {
+        titleDeedRegistrationList[i].Date=await this.getgregorianToEthiopianDate(titleDeedRegistrationList[i].Date)
+      }
+    }}
+    this.titleDeedRegistrationList= titleDeedRegistrationList
+    console.log('this.titleDeedRegistration', this.titleDeedRegistrationList);
+  }, error => {
       console.log(error);
     });
   }
+  selectedDateTime(dates: any,selecter){
+    if(selecter == 2){
+  
+       
+        this.titleDeedRegistration.Date= dates[0]._day +"/"+ dates[0]._month +"/"+ dates[0]._year
+     
+          
+      
+    }
+   
+   }
+   async getEthiopianToGregorian(date){
 
-
-  save() {
+    if(date){
+    var datenow=  await this.serviceService.getEthiopianToGregorian(date).toPromise()
+       console.log(datenow);
+       return datenow.nowTime
+ 
+    }
+  }
+  async getgregorianToEthiopianDate(date) {
+    if(date != '0001-01-01T00:00:00'){
+    var  datenow = await this.serviceService.getgregorianToEthiopianDate(date).toPromise();
+       console.log(datenow);
+       return  datenow.nowTime
+    }
+  }
+  async save() {
+   
+    this.titleDeedRegistration.Date=await this.getEthiopianToGregorian(this.titleDeedRegistration.Date)
     this.titleDeedRegistrationService.save(this.titleDeedRegistration).subscribe(deptSuspension => {
       console.log('deptSuspension', deptSuspension);
       const toast = this.notificationsService.success('Sucess', deptSuspension);
 
-      if (!this.Saved) {
-        this.completed.emit();
-        this.Saved = true;
-      }
-      this.serviceService.disablefins = false;
-    }, error => {
-      console.log(error);
+      // if (!this.Saved) {
+      //   this.completed.emit();
+      //   this.Saved = true;
+      // }
+      this.adddeed()
+      this.getdeed(this.selectedpro.Property_ID);
+      this.serviceService.disablefins = false;},
+      error => {
+        console.log(error);
+        if (error.status == '400') 
       if (error.status == '400') {
+        console.log(error);
         const toast = this.notificationsService.error('Error', error.error.InnerException.Errors[0].message);
-
+        this.adddeed()
       } else {
+        this.adddeed()
         const toast = this.notificationsService.error('Error', 'SomeThing Went Wrong');
       }
     });
     console.log('saveing....');
   }
 
-  add() {
+  async add() {
+    this.titleDeedRegistration.Date=await this.getEthiopianToGregorian(this.titleDeedRegistration.Date)
     this.titleDeedRegistration.Licence_Service_Id = this.Licence_Service_ID;
     this.titleDeedRegistration.Application_No = this.AppNo;
     this.titleDeedRegistration.Service_ID = this.Service_ID;
@@ -87,18 +176,20 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
       console.log('deptSuspension', deptSuspension);
       const toast = this.notificationsService.success('Sucess', deptSuspension);
       this.getdeed(this.selectedpro.Property_ID);
-      if (!this.Saved) {
-        this.completed.emit();
-        this.Saved = true;
-      }
+      this.adddeed()
+      // if (!this.Saved) {
+      //   this.completed.emit();
+      //   this.Saved = true;
+      // }
       this.serviceService.disablefins = false;
     }, error => {
       console.log(error);
       console.log(error);
       if (error.status == '400') {
         const toast = this.notificationsService.error('Error', error.error.InnerException.Errors[0].message);
-
+        this.adddeed()
       } else {
+        this.adddeed()
         const toast = this.notificationsService.error('Error', 'SomeThing Went Wrong');
       }
     }
@@ -168,15 +259,22 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
     console.log('closeing.....');
     this.ngxSmartModalService.getModal(modal).close();
   }
-
+  getcustomer(globvar){
+    console.log(globvar)
+    this.serviceService.getcustomer(globvar).subscribe((resp:any)=>{
+      this.customerdata=resp.procCustomers
+    })
+   
+  }
   closeModalTo(customer, modal) {
     this.titleDeedRegistration.Transfer_To_Customer = customer.Customer_ID;
     console.log('closeing.....');
     this.ngxSmartModalService.getModal(modal).close();
   }
 
-  getFromFromDeed(Ownership_ID) {
+  async getFromFromDeed(Ownership_ID) {
     for (let i = 0; i < this.titleDeedRegistrationList.length; i++) {
+      // this.titleDeedRegistration.Date=await this.getgregorianToEthiopianDate(this.titleDeedRegistrationList[i].Date)
       if (this.titleDeedRegistrationList[i].Ownership_ID == Ownership_ID) {
         this.titleDeedRegistration.Transfer_From_Customer = this.titleDeedRegistrationList[i].Transfer_To_Customer;
       }

@@ -10,9 +10,9 @@
 
     <tabset #staticTabs>
       <tab [heading]="'Property And Parcel' | translate">
-        <div class="mt-3">
-     
-          <div class="form-group row col-md-8">
+        <div class="form-row">
+          <div class="col-md-6">
+       <div class="form-group row col-12">
             <label for="Ownership_ID" class="col-sm-4 col-form-label" translate>Transfer ID</label>
             <div class="col-sm-8">
 
@@ -21,14 +21,14 @@
                 disabled>
             </div>
           </div>
-          <div class="form-group row col-md-8">
+       <div class="form-group row col-12">
             <label for="VersionID" class="col-sm-4 col-form-label" translate>Version ID</label>
             <div class="col-sm-8">
               <input type="text" [disabled]="disable" disabled class="form-control" [(ngModel)]="certificateVersion.Version_ID"
-                name="VersionID" id="VersionID" [placeholder]="'First Name2' | translate">
+                name="VersionID" id="VersionID" >
             </div>
           </div>
-          <div class="form-group row col-md-8">
+       <div class="form-group row col-12">
             <label for="TitleDeedID" class="col-sm-4 col-form-label" translate>Title Deed No</label>
             <div class="col-sm-8">
 
@@ -37,14 +37,14 @@
                 disabled>
             </div>
           </div>
-          <div class="form-group row col-md-8">
+       <div class="form-group row col-12">
             <label for="Color" class="col-sm-4 col-form-label" translate>Color</label>
             <div class="col-sm-8">
               <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Color" name="Color" id="Color"
                 [placeholder]="'Color' | translate">
             </div>
           </div>
-          <div class="form-group row col-md-8">
+       <div class="form-group row col-12">
             <label for="IssuedBy" class="col-sm-4 col-form-label" translate>Issued By</label>
             <div class="col-sm-6">
               <select disabled class="form-control" [(ngModel)]="certificateVersion.Issued_By" name="IssuedBy" id="IssuedBy">
@@ -58,28 +58,30 @@
               </div>
             </div>
           </div>
-          <div class="form-group row col-md-8">
+       <div class="form-group row col-12">
             <label for="VersionNo" class="col-sm-4 col-form-label" translate>VersionNo</label>
             <div class="col-sm-8">
               <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Version_No" name="VersionNo"
                 id="VersionNo" [placeholder]="'VersionNo' | translate">
             </div>
           </div>
-          <div class="form-group row col-md-8">
+       <div class="form-group row col-12">
             <label for="VersionNo" class="col-sm-4 col-form-label" translate>Licence Area/Permit area</label>
             <div class="col-sm-8">
               <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Compound_Size_M2" name="Compound_Size_M2"
                 id="Compound_Size_M2" [placeholder]="'Licence Area/Permit area' | translate">
             </div>
           </div>
-          <div class="form-group row col-md-8">
+       <div class="form-group row col-12">
             <label for="VersionNo" class="col-sm-4 col-form-label" translate>Property Status</label>
             <div class="col-sm-8">
               <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Property_Status" name="Property_Status"
                 id="Property_Status" [placeholder]="'Property_Status' | translate">
             </div>
           </div>
-          <div class="form-group row col-md-8">
+        </div>
+        <div class="col-md-6">
+       <div class="form-group row col-12">
             <label for="VersionNo" class="col-sm-4 col-form-label" translate>Property Type</label>
             <div class="col-sm-8">
               <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Property_Type" name="Property_Type"
@@ -100,7 +102,7 @@
                 name="Proportional_from_Compound_Size" id="Proportional_from_Compound_Size" [placeholder]="'Proportional from Compound Size' | translate">
             </div>
           </div> -->
-          <div class="form-group row col-md-8">
+       <div class="form-group row col-12">
             <label for="ExpiredDate" class="col-sm-4 col-form-label" translate>Expired Date</label>
             <div class="col-sm-8">
               <input type="Date" disabled class="form-control" [(ngModel)]="certificateVersion.Expired_Date" name="ExpiredDate"
@@ -114,7 +116,7 @@
                 id="BuiltUpArea" [placeholder]="'Built Up Area' | translate">
             </div>
           </div> -->
-          <div class="form-group row col-md-8">
+       <div class="form-group row col-12">
             <label for="SerialNo" class="col-sm-4 col-form-label" translate>Serial No</label>
             <div class="col-sm-8">
               <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="certificateVersion.Serial_No"
@@ -138,7 +140,7 @@
             </div>
           </div>-->
 
-          <div class="form-group row col-md-8">
+       <div class="form-group row col-12">
             <label for="Remark" class="col-sm-4 col-form-label" translate>Remark</label>
             <div class="col-sm-8">
               <input type="text" [disabled]="disable" class="form-control" [(ngModel)]="certificateVersion.Remark" name="Remark"
@@ -146,14 +148,14 @@
             </div>
           </div>
 
-          <div class="form-group row col-md-8">
+       <div class="form-group row col-12">
             <label for="isActive" class="col-sm-4 col-form-label" translate>Is Active</label>
 
             <div class="col-sm-8">
               <p-checkbox [(ngModel)]="certificateVersion.Is_Active" [disabled]="disable" name="isActive" id="isActive"
                 binary="true"></p-checkbox>
             </div>
-          </div>
+          </div></div>
         </div>
       </tab>
       <tab [heading]="'Basic information' | translate">
@@ -344,11 +346,9 @@
     </div>
   </div>
   <button type="button" class="btn btn-primary" *ngIf="!isnew" (click)="Save()" [disabled]="!f.valid"
-    translate>Save
-  </button>
+    translate>Update</button>
   <button type="button" class="btn btn-primary" *ngIf="isnew" (click)="add()" [disabled]="!f.valid"
-    translate>Save
-  </button>
+    translate>Save</button>
 </form>
 
 

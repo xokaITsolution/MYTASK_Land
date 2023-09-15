@@ -4,6 +4,7 @@ import {
   Input,
   OnChanges,
   Output,
+  TemplateRef,
 } from "@angular/core";
 import { ServiceService } from "../service.service";
 import { ServiceComponent } from "../service.component";
@@ -11,6 +12,8 @@ import { NgxSmartModalService } from "ngx-smart-modal";
 import { NotificationsService } from "angular2-notifications";
 import { CertificateVersionService } from "../certificate-version/certificate-version.service";
 import { ViewEncapsulation } from "@angular/core";
+import { environment } from "src/environments/environment";
+import { BsModalRef, BsModalService } from "ngx-bootstrap";
 
 @Component({
   selector: "app-cert",
@@ -30,6 +33,7 @@ export class CertComponent implements OnChanges {
   DeedTable;
   BaseTable;
   // SelectedDeed;
+  displayGIS
   toLease;
   SelectedBase;
   certForm;
@@ -50,17 +54,25 @@ export class CertComponent implements OnChanges {
     Ownership_ID: "",
   };
   Saved = false;
+  language: string;
 
   constructor(
     private serviceService: ServiceService,
     private ngxSmartModalService: NgxSmartModalService,
+    private modalService: BsModalService,
     private certificateVersionService: CertificateVersionService,
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService,
 
   ) { }
-
+ 
   ngOnChanges() {
+    if (environment.Lang_code === "am-et") {
+      this.language = 'amharic';
+    }
+    else {
+      this.language = 'english';
+    }
     this.BaseTable = [];
     this.noadds = 0;
     this.plotList = [];
@@ -96,7 +108,33 @@ export class CertComponent implements OnChanges {
     }
     //this.getDeed();
   }
+  async getEthiopianToGregorian(date){
 
+    if(date){
+    var datenow=  await this.serviceService.getEthiopianToGregorian(date).toPromise()
+       console.log(datenow);
+       return datenow.nowTime
+ 
+    }
+  }
+  async getgregorianToEthiopianDate(date) {
+    if(date != '0001-01-01T00:00:00'){
+    var  datenow = await this.serviceService.getgregorianToEthiopianDate(date).toPromise();
+       console.log(datenow);
+       return  datenow.nowTime
+    }
+  }
+  selectedDateTime(dates: any,selecter){
+    if(selecter == 1){
+  
+       
+        this.Base.Registration_Date= dates[0]._day +"/"+ dates[0]._month +"/"+ dates[0]._year
+     
+          
+      
+    }
+   
+   }
   getDeed(plotID) {
     this.DeedTable = [];
     this.certificateVersionService.getDeedTable(plotID).subscribe(
@@ -130,8 +168,10 @@ export class CertComponent implements OnChanges {
 
   getBase(ploat) {
     this.serviceService.getBaseTable(ploat).subscribe(
-      (BaseTable) => {
+      async (BaseTable) => {
         if (BaseTable) {
+          if(this.language == 'amharic'){
+          BaseTable[0].Registration_Date= await this.getgregorianToEthiopianDate(BaseTable[0].Registration_Date)}
           this.BaseTable.push(BaseTable[0]);
         }
         // this.BaseTable = (Object.assign([], this.BaseTable));
@@ -142,24 +182,35 @@ export class CertComponent implements OnChanges {
       }
     );
   }
-
-  SaveBase(modal) {
+  modalRef: BsModalRef;
+  openModall(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template, Object.assign({}, { class: 'gray modal-lg' }));
+  }
+  closeModall() {
+    // console.log('closeing.....');
+    this.modalRef.hide();
+  }
+  async SaveBase(modal) {
     console.log("saveing.....");
+    this.Base.Registration_Date=await this.getEthiopianToGregorian(this.Base.Registration_Date)
     this.serviceService.SaveBase(this.Base).subscribe(
       (certafcateCode) => {
         console.log("certafcateCode", certafcateCode);
         this.notificationsService.success("Sucess", "suceesfully created");
-        this.closeModal(modal);
+        this.displayGIS=false
+        // this.closeModall();
         this.getBase(this.Base.Plot_ID);
       },
-      (error) => {
+      async (error) => {
         console.log(error);
         if (error.status == "400") {
+          this.Base.Registration_Date=await this.getgregorianToEthiopianDate(this.Base.Registration_Date)
           const toast = this.notificationsService.error(
             "Error",
             error.error.InnerException.Errors[0].message
           );
         } else {
+          this.Base.Registration_Date=await this.getgregorianToEthiopianDate(this.Base.Registration_Date)
           const toast = this.notificationsService.error(
             "Error",
             "SomeThing Went Wrong"
@@ -169,13 +220,15 @@ export class CertComponent implements OnChanges {
     );
   }
 
-  EditBase(modal) {
+  async EditBase(modal) {
     console.log("saveing.....");
+    this.Base.Registration_Date=await this.getEthiopianToGregorian(this.Base.Registration_Date)
     this.serviceService.EditBase(this.Base).subscribe(
       (certafcateCode) => {
         console.log("certafcateCode", certafcateCode);
         this.notificationsService.success("Sucess", "suceesfully edited");
-        this.closeModal(modal);
+        this.displayGIS=false
+        // this.closeModall();
         this.getBase(this.Base.Plot_ID);
       },
       (error) => {
@@ -264,16 +317,18 @@ export class CertComponent implements OnChanges {
     this.Base.SDP_ID = this.licenceData.SDP_ID;
     this.isnewBase = true;
     this.showFullForm = true;
-    this.openModal(modal);
+    this.displayGIS=true
+    // this.openModall(modal);
   }
 
   EditBaseView(modal, Base) {
     this.Base = Base;
     this.Base.Registration_Date = this.Base.Registration_Date.split("T")[0];
     this.isnewBase = false;
-
+this.displayGIS=true
     this.showFullForm = false;
-    this.openModal(modal);
+    // this.openModall(modal);
+
   }
 
   closeModal(modal) {

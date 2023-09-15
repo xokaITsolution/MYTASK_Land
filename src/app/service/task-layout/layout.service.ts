@@ -17,10 +17,10 @@ export class LayoutService {
     }
     else {
       if(taskLevel != 1){
-        return this.http.get<any>('/DB/' + formcode + '.json');
+        return this.http.get<any>(environment.formPath + formcode + '.json');
       }
       else{
-        return this.http.get<any>('/DB/' + formcode + '.json');
+        return this.http.get<any>(environment.formPath + formcode + '.json');
       }
     }
   }

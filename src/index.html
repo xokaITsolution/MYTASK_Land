@@ -8,19 +8,27 @@
   <script>
     (function () {
       window['_UserName'] = "@HttpContext.Current.User.Identity.Name";
-
+      window["_imagepath"] = '<button type="button" class="trigger">' + 
+           '<img src="http://job.xokait.com.et/datepicker/img/calendar.gif" alt="Popup"></button>';
+           window["iconpath"]='/DesktopModules/MVC/XOKA_Application_App/Views/Item/assets/assets/marker-icon.png'
       window['rootPath'] = 'http://197.156.93.110/XOKA.eoffice.bpel_land/api/';
       // window['local_GIS_server'] = 'http://localhost/geojson';
       window['local_GIS_server'] = './assets/geojson';
       // window['wfs_geoserver'] = 'http://192.168.0.150:8080/geoserver/ows';
       // window['wfs_geoserver'] = 'http://localhost:8082/geoserver/ows';
       window['wfs_geoserver'] = 'http://192.168.0.133:8082/geoserver/ows';
+      window["rootPath2"] = "http://197.156.93.110/XOKA.eoffice.bpel_land/api/";
+        window["rootPath3"] = "http://197.156.93.110/Xoka_land_API/api/";
       //console.log("window['_UserName']", window['_UserName']);
       //console.log(window.location.pathname);
+      window['groupLayerName'] = "Ormiya_Miniral_WS:Ormiya_Miniral_Group";
+    window['groupName'] = "Ormiya_Miniral_Group";
+    window['geoserverUrl'] = "http://omda.xokait.com.et:8080/geoserver/Ormiya_Miniral_WS/wms";
+    window['geoserverUrlwfs'] = "http://omda.xokait.com.et:8080/geoserver/Ormiya_Miniral_WS/ows";
       window['PaymentReportPath'] = 'http://192.168.0.150/xokaswcms/en-us/payment';
       window['certReportPath'] = '/certificate';
       window['LetterReportPath'] = '/Letter';
-      window['lang'] = (window.location.pathname.split('/')[1] ?? 'en-us').toLowerCase();
+      window["lang"] = window.location.pathname.split("/")[1];
       window['resourcePath'] = "DesktopModules/MVC/xokamytasks/Views/Item/assets/";
       window['phisicalPath'] = '/DesktopModules/MVC/XOKA_Application_App/Views/Item/assets/assets/i18n/';
       window['overlayLayer'] = "Ethiopia - Admin Level 3.json";
@@ -31,30 +39,58 @@
         }
       ];
 
-      if (window.location.pathname !== '/')
-        if (
-          window.location.pathname.split('/')[1] !== 'task' &&
-          window.location.pathname.split('/')[1] !== 'service' &&
-          window.location.pathname.split('/')[1] !== 'services') {
-          //console.log(window.location.pathname.split('/')[1]);
-          let urlSegment = window.location.pathname.split('/');
-          let langPrefix = urlSegment[1].toLowerCase()
-          if (
-            urlSegment[1] != 'MAP-GIS' &&
-            urlSegment[2] != 'MAP-GIS'
-          ) {
-            window['_app_base'] = `/${urlSegment[1]}${langPrefix == 'am-et' || langPrefix == 'en-us' ? '/' + urlSegment[2] : ''}`;
-          }
-          else {
-            window['_app_base'] = `${langPrefix == 'am-et' || langPrefix == 'en-us' ? '/' + urlSegment[1] : '/'}`;
-          }
+      // if (window.location.pathname !== '/')
+      //   if (
+      //     window.location.pathname.split('/')[1] !== 'task' &&
+      //     window.location.pathname.split('/')[1] !== 'service' &&
+      //     window.location.pathname.split('/')[1] !== 'services') {
+      //     //console.log(window.location.pathname.split('/')[1]);
+      //     let urlSegment = window.location.pathname.split('/');
+      //     let langPrefix = urlSegment[1].toLowerCase()
+      //     if (
+      //       urlSegment[1] != 'MAP-GIS' &&
+      //       urlSegment[2] != 'MAP-GIS'
+      //     ) {
+      //       window['_app_base'] = `/${urlSegment[1]}${langPrefix == 'am-et' || langPrefix == 'en-us' ? '/' + urlSegment[2] : ''}`;
+      //     }
+      //     else {
+      //       window['_app_base'] = `${langPrefix == 'am-et' || langPrefix == 'en-us' ? '/' + urlSegment[1] : '/'}`;
+      //     }
 
           //console.log('/' + window.location.pathname.split('/')[1] + '/' + window.location.pathname.split('/')[2]);
-        }
+        // }
 
       //if it is still not working comment all the above code, and un comment the below code.
       // window['_app_base'] ='xokaswcms/my-tasks';
-    })();
+    // })();
+    if (window.location.pathname !== "/")
+          if (
+            window.location.pathname.split("/")[1] !== "task" &&
+            window.location.pathname.split("/")[1] !== "service" &&
+            window.location.pathname.split("/")[1] !== "services" &&
+            window.location.pathname.split("/")[2] == "language"
+          ) {
+            window["_app_base"] =
+              "/" +
+              window.location.pathname.split("/")[1] +
+              "/" +
+              window.location.pathname.split("/")[2] +
+              "/"  +
+              window.location.pathname.split("/")[3] ;
+          } else if (
+            window.location.pathname.split("/")[1] !== "task" &&
+            window.location.pathname.split("/")[1] !== "service" &&
+            window.location.pathname.split("/")[1] !== "services"
+          ) {
+            window["_app_base"] =
+              "/" +
+              window.location.pathname.split("/")[1] +
+              "/" +
+              window.location.pathname.split("/")[2]
+              "/"  +
+              window.location.pathname.split("/")[3] ;
+          }
+      })();
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -62,13 +98,23 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
           rel="stylesheet" >
           <!-- integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
-     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" ></script>
+    
      <!-- integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"> -->
    
 </head>
 
 <body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" ></script>
   <app-root></app-root>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="http://job.xokait.com.et/datepicker/jquery.calendars.js"></script>
+  <script src="http://job.xokait.com.et/datepicker/jquery.calendars.plus.js"></script>
+  <script src="http://job.xokait.com.et/datepicker/jquery.plugin.js"></script>
+  <script src="http://job.xokait.com.et/datepicker/jquery.calendars.picker.js"></script>
+  <script src="http://job.xokait.com.et/datepicker/jquery.calendars-am.js"></script>
+  <script src="http://job.xokait.com.et/datepicker/jquery.calendars.ethiopian-am.js"></script>
+  <script src="http://job.xokait.com.et/datepicker/jquery.calendars.ethiopian.js"></script>
+  <script src="http://job.xokait.com.et/datepicker/jquery.calendars.picker-am.js"></script>
 </body>
 
 </html>

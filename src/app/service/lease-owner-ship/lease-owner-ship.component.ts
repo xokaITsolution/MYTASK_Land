@@ -3,7 +3,8 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  Output
+  Output,
+  ViewEncapsulation
 } from "@angular/core";
 import { LeaseOwnerShipService } from "./lease-owner-ship.service";
 import { ServiceComponent } from "../service.component";
@@ -14,12 +15,14 @@ import { Guid } from "guid-typescript";
 import { PlotComponent } from "../plot/plot.component";
 import { Regions } from "../plot-managment/regions";
 import { ServiceService } from "../service.service";
+import { environment } from "src/environments/environment";
 
 
 @Component({
   selector: 'app-lease-owner-ship',
   templateUrl: './lease-owner-ship.component.html',
-  styleUrls: ['./lease-owner-ship.component.css']
+  styleUrls: ['./lease-owner-ship.component.css'],
+
 })
 export class LeaseOwnerShipComponent implements OnChanges {
   @Output() completed = new EventEmitter();
@@ -36,10 +39,13 @@ export class LeaseOwnerShipComponent implements OnChanges {
   @Input() plotId;
   public leaseOwnerShip: LeaseOwnerShip;
   Saved= false;
-  isleaseForm: boolean;
+  isleaseForm: boolean=false;
   zoneOptions=[];
   selectedRegion
   woredas =[];
+  customerdata: any;
+  language: string;
+  Customer_NAME: string;
   
 
 
@@ -54,8 +60,14 @@ export class LeaseOwnerShipComponent implements OnChanges {
     this.leaseOwnerShip = new LeaseOwnerShip();
     this.leaseOwnerShip.ID = Guid.create().toString();
   }
-
+  highlighted
   ngOnChanges() {
+    if (environment.Lang_code === "am-et") {
+      this.language = 'amharic';
+    }
+    else {
+      this.language = 'english';
+    }
     console.log("haha lease", this.SelectedPlot);
     if (this.SelectedPlot) {
       this.getleaseOwnerShip(this.SelectedPlot.Plot_ID);
@@ -65,9 +77,9 @@ export class LeaseOwnerShipComponent implements OnChanges {
         console.log("lease plot id", this.leaseOwnerShip.Plot_ID);
          
     this.leaseOwnerShip.SDP_ID=this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code
-    if( this.leaseOwnerShip.SDP_ID!=null || this.leaseOwnerShip.SDP_ID!=undefined ){
-      this.addLease()
-    }
+    // if( this.leaseOwnerShip.SDP_ID!=null || this.leaseOwnerShip.SDP_ID!=undefined ){
+    //   this.addLease()
+    // }
         
       }
       // if()
@@ -77,23 +89,80 @@ export class LeaseOwnerShipComponent implements OnChanges {
     //this.leaseOwnerShip = this.SelectedPlot;
   }
   ngOnInit() {
-    this.leaseOwnerShip.SDP_ID=this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code
-    if( this.leaseOwnerShip.SDP_ID!=null || this.leaseOwnerShip.SDP_ID!=undefined ){
-      this.addLease()
+    if (environment.Lang_code === "am-et") {
+      this.language = 'amharic';
     }
+    else {
+      this.language = 'english';
+    }
+    this.leaseOwnerShip.SDP_ID=this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code
+    // if( this.leaseOwnerShip.SDP_ID!=null || this.leaseOwnerShip.SDP_ID!=undefined ){
+    //   this.addLease()
+    // }
   }
 
+  getcustomer(globvar){
+    console.log(globvar)
+    this.serviceService.getcustomer(globvar).subscribe((resp:any)=>{
+      this.customerdata=resp.procCustomers
+    })
+   
+  }
+  async getEthiopianToGregorian(date){
 
-  selectLease(task) {
+    if(date){
+    var datenow=  await this.serviceService.getEthiopianToGregorian(date).toPromise()
+       console.log(datenow);
+       return datenow.nowTime
+ 
+    }
+  }
+  async getgregorianToEthiopianDate(date) {
+    if(date != '0001-01-01T00:00:00'){
+    var  datenow = await this.serviceService.getgregorianToEthiopianDate(date).toPromise();
+       console.log(datenow);
+       return  datenow.nowTime
+    }
+  }
+  selectedDateTime(dates: any,selecter){
+    if(selecter == 2){
+  
+       
+        this.leaseOwnerShip.Date_of_final_lease_payment= dates[0]._day +"/"+ dates[0]._month +"/"+ dates[0]._year
+     
+          
+      
+    }
+   
+   }
+  async selectLease(task) {
+    console.log('tasktasktasktask',task)
     this.addnew = false;
    // this.leaseForm = true;
-    this.isleaseForm = true;
-
-    this.leaseOwnerShip = task;
+   if(this.language=="amharic"){
+    if(task.Date_of_final_lease_payment!=null ||task.Date_of_final_lease_payment!=undefined ){
+      task.Date_of_final_lease_payment=await this.getgregorianToEthiopianDate( task.Date_of_final_lease_payment)
+    }}
+    this.serviceService.isleaseForm = true;
+    this.serviceService.getcustomerbyid(task.Customer_ID).subscribe( (resp:any)=>{
+      console.log('tasktasktasktask',resp.procCustomers)
+      this.customerdata=resp.procCustomers
+      let customer=this.customerdata[0]
+    
+     if(this.language=="amharic"){
+        this.Customer_NAME= customer.applicant_First_Name_AM  + '  '+ customer.applicant_Middle_Name_AM  + ' '+ customer.applicant_Last_Name_AM 
+        console.log("closeing.....");  
+        // 
+      }
+      else{
+        this.Customer_NAME= customer.applicant_First_Name_EN  + '  '+ customer.applicant_Middle_Name_En  + ' '+ customer.applicant_Last_Name_EN
+      }
+      this.leaseOwnerShip = task;
+    })
   }
 
   addLease() {
-    this.isleaseForm = true;
+    this.serviceService.isleaseForm = true;
     this.leaseOwnerShip = new LeaseOwnerShip();
     this.leaseOwnerShip.ID = Guid.create().toString();
     this.leaseOwnerShip.Plot_ID = this.SelectedPlot.Plot_ID;
@@ -145,15 +214,23 @@ export class LeaseOwnerShipComponent implements OnChanges {
     );
   }
 
-  save() {
-    
+  async save() {
+    if((this.leaseOwnerShip.Lease_Hold_M2)<75){
+      const toast = this.notificationsService.warn(
+        "Lease Hold is not less than 75/የሊዝ ይዞታ ከ 75 መብለጥ የለበትም"
+      );
+      return
+    }
+    this.leaseOwnerShip.Date_of_final_lease_payment=await this.getEthiopianToGregorian( this.leaseOwnerShip.Date_of_final_lease_payment)
     this.leaseOwnerShipService.save(this.leaseOwnerShip).subscribe(
-      (deptSuspension) => {
+      async (deptSuspension) => {
         console.log("deptSuspension", deptSuspension);
         const toast = this.notificationsService.success(
           "Sucess",
           deptSuspension
         );
+        this.serviceService.disablefins=false
+        this.leaseOwnerShip.Date_of_final_lease_payment=await this.getgregorianToEthiopianDate( this.leaseOwnerShip.Date_of_final_lease_payment)
         this.getleaseOwnerShip(this.SelectedPlot.Plot_ID);
 
         if(!this.Saved){
@@ -161,18 +238,20 @@ export class LeaseOwnerShipComponent implements OnChanges {
           this.Saved = true;
         }
       },
-      (error) => {
+      async (error) => {
         console.log(error);
         if (error.status == "400") {
           const toast = this.notificationsService.error(
             "Error",
             error.error.InnerException.Errors[0].message
           );
+          this.leaseOwnerShip.Date_of_final_lease_payment=await this.getgregorianToEthiopianDate( this.leaseOwnerShip.Date_of_final_lease_payment)
         } else {
           const toast = this.notificationsService.error(
             "Error",
             "SomeThing Went Wrong"
           );
+          this.leaseOwnerShip.Date_of_final_lease_payment=await this.getgregorianToEthiopianDate( this.leaseOwnerShip.Date_of_final_lease_payment)
         }
       }
     );
@@ -219,39 +298,54 @@ export class LeaseOwnerShipComponent implements OnChanges {
     //});
   //}
 
-  add() {
+  async add() {
+    if((this.leaseOwnerShip.Lease_Hold_M2)<75){
+      const toast = this.notificationsService.warn(
+        "Lease Hold is not less than 75/የሊዝ ይዞታ ከ 75 መብለጥ የለበትም"
+      );
+      return
+    }
+    this.leaseOwnerShip.Date_of_final_lease_payment=await this.getEthiopianToGregorian( this.leaseOwnerShip.Date_of_final_lease_payment)
     this.leaseOwnerShipService.Add(this.leaseOwnerShip).subscribe(
-      (deptSuspension) => {
+      async (deptSuspension) => {
         console.log("deptSuspension", deptSuspension);
         const toast = this.notificationsService.success(
           "Sucess",
           deptSuspension
         );
+        this.leaseOwnerShip.Date_of_final_lease_payment=await this.getgregorianToEthiopianDate( this.leaseOwnerShip.Date_of_final_lease_payment)
         this.serviceService.disablefins = false;
         this.getleaseOwnerShip(this.SelectedPlot.Plot_ID);
         this.leaseForm = false;
-        this.isleaseForm = false;
+        this.serviceService.isleaseForm= false;
         if(!this.Saved){
          this.addnew = false
           this.completed.emit();
           this.Saved = true;
-          this.isleaseForm = false;
+          this.serviceService.isleaseForm= false;
           
         }
+        // const warningMessage = "የሊዝ ወይም የነባር ይዞታ መመዝገቡን አረጋግጥ/Check lease or freehold record is active for this plot";
+        // const toastWarning = this.notificationsService.warn(
+        //   "Warning",
+        //   warningMessage
+        // );
         
       },
-      (error) => {
+      async (error) => {
         console.log(error);
         if (error.status == "400") {
           const toast = this.notificationsService.error(
             "Error",
             error.error.InnerException.Errors[0].message
           );
+          this.leaseOwnerShip.Date_of_final_lease_payment=await this.getgregorianToEthiopianDate( this.leaseOwnerShip.Date_of_final_lease_payment)
         } else {
           const toast = this.notificationsService.error(
             "Error",
             "SomeThing Went Wrong"
           );
+          this.leaseOwnerShip.Date_of_final_lease_payment=await this.getgregorianToEthiopianDate( this.leaseOwnerShip.Date_of_final_lease_payment)
         }
       }
     );
@@ -261,11 +355,19 @@ export class LeaseOwnerShipComponent implements OnChanges {
   openModal(modal) {
     this.ngxSmartModalService.getModal(modal).open();
   }
-
-  closeModal(customer, modal) {
-    this.leaseOwnerShip.Customer_ID = customer.Customer_ID;
-    console.log("closeing.....");
-    this.ngxSmartModalService.getModal(modal).close();
+  visible
+  closeModal(customer) {
+    this.visible=false
+    this.leaseOwnerShip.Customer_ID = customer.customer_ID; 
+    if(this.language=="amharic"){
+      this.Customer_NAME= customer.applicant_First_Name_AM  + '  '+ customer.applicant_Middle_Name_AM  + ' '+ customer.applicant_Last_Name_AM 
+      console.log("closeing.....");
+      
+    }
+    else{
+      this.Customer_NAME= customer.applicant_First_Name_EN  + '  '+ customer.applicant_Middle_Name_En  + ' '+ customer.applicant_Last_Name_EN
+    }
+   
   }
 }
 
@@ -274,8 +376,8 @@ class LeaseOwnerShip {
   public Type_ID: string;
   public Lease_No: string;
   public Lease_Price: string;
-  public Free_Hold_M2: string;
-  public Lease_Hold_M2: string;
+  public Free_Hold_M2: any;
+  public Lease_Hold_M2: any;
   public Customer_ID: string;
   public Plot_ID: string;
   public Status;

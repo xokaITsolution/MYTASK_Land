@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
   rootPath: window['rootPath'],
+  imagepath:window["_imagepath"] ,
   //formPath: '/DesktopModules/MVC/XOKA_SW_DNNModuleMyTask/Views/Item/assets/',
   username: window['_UserName'],
   phisicalPath: window['phisicalPath'],
@@ -12,5 +13,13 @@ export const environment = {
   LetterReportPath: window["LetterReportPath"],
   resourcePath: window["resourcePath"],
   overlayLayer: window['overlayLayer'],
-  layerConfig: window['layerConfig']
+  layerConfig: window['layerConfig'],
+  iconpath:window["iconpath"],
+  rootPath2:window["rootPath2"] ,
+  formPath: window["formPath"],
+  rootPath3:window["rootPath3"],
+  groupLayerName: window['groupLayerName'],
+  geoserverUrl: window['geoserverUrl'],
+    geoserverUrlwfs: window['geoserverUrlwfs'],
+   groupName: window['groupName'] 
 };

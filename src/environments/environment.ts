@@ -6,7 +6,10 @@ export const environment = {
   production: false,
   rootPath: window['rootPath'],
   // formPath: '',
-  username: 'BL_Info_Mgr',
+  imagepath:window["_imagepath"] ,
+  username: '0911565749',
+  iconpath:window["iconpath"],
+  formPath: window["formPath"], 
   // username: 'BL_Tech_Officer',
   // username: 'BL_Data_Encoder',
   phisicalPath: './assets/i18n/',
@@ -18,7 +21,13 @@ export const environment = {
   LetterReportPath: window["LetterReportPath"],
   resourcePath: '',
   overlayLayer: window['overlayLayer'],
-  layerConfig: window['layerConfig']
+  layerConfig: window['layerConfig'],
+  rootPath2:window["rootPath2"],
+    rootPath3:window["rootPath3"] ,
+    groupLayerName: window['groupLayerName'],
+    geoserverUrl: window['geoserverUrl'],
+      geoserverUrlwfs: window['geoserverUrlwfs'],
+     groupName: window['groupName']
 };
 
 /*

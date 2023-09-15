@@ -6,6 +6,8 @@ import { TaskComponent } from "./task.component";
 import { GisComponent } from "../service/gis/gis.component";
 //import { DrawmapComponent } from "../components/drawmap/drawmap.component";
 import { GeojsondeskComponent } from "../components/geojsondesk/geojsondesk.component";
+import { PersonComponent } from "./person/person.component";
+import { ArchiveComponent } from "./archive/archive.component";
 
 const routes: Routes = [
   {
@@ -32,10 +34,19 @@ const routes: Routes = [
         path: "SupervisorTask",
         component: SupervisorTaskComponent,
         pathMatch: "prefix",
+      }, 
+         {
+        path: "Customer",
+        component: PersonComponent,
+        pathMatch: "prefix",
       },
       {
         path: "Gis",
         component: GisComponent,
+        pathMatch: "prefix",
+      },{
+        path: "Archive",
+        component: ArchiveComponent,
         pathMatch: "prefix",
       },
       {
