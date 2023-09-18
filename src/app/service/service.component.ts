@@ -954,7 +954,6 @@ export class ServiceComponent implements OnInit {
           data: base64file,
         })
       );
-
       console.log("this.DocID", this.DocID);
       this.serviceService
         .saveFile(
