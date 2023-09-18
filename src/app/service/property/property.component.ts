@@ -49,6 +49,7 @@ export class PropertyComponent implements OnChanges {
 
   Saved = false;
   language: string;
+  newplot: boolean = true;
 
   constructor(
     public serviceService: ServiceService,
@@ -169,6 +170,8 @@ export class PropertyComponent implements OnChanges {
     this.propertyForm = true;
     this.propertyregForm = false;
     this.SelectedProperty = property;
+    console.log("plotManagment", this.SelectedProperty);
+
     this.getPropertyList();
     // this.disable=false;
   }
@@ -240,7 +243,9 @@ export class PropertyComponent implements OnChanges {
       this.selectedprofromtree.property_Parent_ID =
         this.selectedFile.property_ID;
     }
-    this.selectedprofromtree.plot_ID = this.SelectedProperty.plot_ID;
+    console.log("plotManagment", this.SelectedProperty.Plot_ID);
+
+    this.selectedprofromtree.Plot_ID = this.SelectedProperty.Plot_ID;
     this.selectedprofromtree.licence_Service_ID = this.Licence_Service_ID;
   }
   selectedTab = 0;
@@ -261,45 +266,50 @@ export class PropertyComponent implements OnChanges {
     }
   }
   nodeSelect() {
-    console.log(this.selectedFile.property_Type_ID);
+    console.log("selectedFile", this.selectedFile);
 
     if (this.selectedFile.property_ID == "No Parent") {
-      this.serviceService
-        .getPropertyTypeLookUP()
-        .subscribe((PropertyTypeLookUP) => {
-          this.PropertyTypeLookUP = PropertyTypeLookUP;
-          this.PropertyTypeLookUP = Object.assign(
-            [],
-            this.PropertyTypeLookUP.list
-          );
-          // console.log('PropertyTypeLookUP', PropertyTypeLookUP);
-        });
+      this.getpro.emit();
+      // this.serviceService
+      //   .getPropertyTypeLookUP()
+      //   .subscribe((PropertyTypeLookUP) => {
+      //     this.PropertyTypeLookUP = PropertyTypeLookUP;
+      //     this.PropertyTypeLookUP = Object.assign(
+      //       [],
+      //       this.PropertyTypeLookUP.list
+      //     );
+      //     // console.log('PropertyTypeLookUP', PropertyTypeLookUP);
+      //   });
+
+      this.newplot = false;
       this.propertyregForm = false;
 
       this.serviceService.hide = true;
+      this.isnew = true;
     } else {
-      this.serviceService
-        .getPropertyTypeLookUP()
-        .subscribe((PropertyTypeLookUP) => {
-          this.PropertyTypeLookUP = PropertyTypeLookUP;
-          this.PropertyTypeLookUP = Object.assign(
-            [],
-            this.PropertyTypeLookUP.list
-          );
-          this.PropertyTypeLookUP = this.PropertyTypeLookUP.filter(
-            (x) => x.Property_Type_ID != 1
-          );
-          // console.log('PropertyTypeLookUP', PropertyTypeLookUP);
-        });
+      // this.serviceService
+      //   .getPropertyTypeLookUP()
+      //   .subscribe((PropertyTypeLookUP) => {
+      //     this.PropertyTypeLookUP = PropertyTypeLookUP;
+      //     this.PropertyTypeLookUP = Object.assign(
+      //       [],
+      //       this.PropertyTypeLookUP.list
+      //     );
+
+      //   });
+      this.serviceComponent.PropertyTypeLookUP =
+        this.serviceComponent.PropertyTypeLookUP.filter(
+          (x) => x.Property_Type_ID != 1
+        );
       this.propertyregForm = true;
       this.isnew = false;
     }
-    if (this.selectedFile.property_Type_ID == 1) {
-      this.selectedprofromtree = false;
-    } else {
-      this.selectedprofromtree = this.selectedFile;
-    }
-    console.log("any", this.selectedprofromtree);
+    // if (this.selectedFile.property_Type_ID == 1) {
+    //   this.selectedprofromtree = false;
+    // } else {
+    //   this.selectedprofromtree = this.selectedFile;
+    // }
+    //console.log("any", this.selectedprofromtree);
   }
 
   SelectPropertyPLot(ProprtyPlot) {

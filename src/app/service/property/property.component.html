@@ -41,7 +41,7 @@
           <p class="text-center" translate>Property List</p>
         </div>
         <div>
-          <button type="button" class="btn btn-success col-lg-12" [disabled]="!selectedprofromtree" *ngIf="!disable"
+          <button type="button" class="btn btn-success col-lg-12" [disabled]="newplot" 
             (click)="AddNew()" translate>Add New</button>
         </div>
         <p-tree class="row col-lg-12" [value]="serviceService.files" selectionMode="single" [(selection)]="selectedFile"
@@ -59,7 +59,7 @@
           <p-tabPanel [header]="'Property Registration' | translate">
             <div class="mt-3">
               <app-property-register (completed)="EnableFinspro()" (completeddel)="EnabledelFinspro()"
-                [selectedpro]='selectedprofromtree' [disable]="disable" [LicenceData]="LicenceData">
+                [selectedpro]='selectedFile' [disable]="disable" [LicenceData]="LicenceData">
               </app-property-register>
               <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1" translate>Next</button></div>
      
@@ -67,7 +67,7 @@
           </p-tabPanel>
           <p-tabPanel [header]="'Measurement' | translate">
             <div class="mt-3">
-              <app-measurment (completed)="EnableFins()" [selectedpro]='selectedprofromtree'  [disable]="disable"
+              <app-measurment (completed)="EnableFins()" [selectedpro]='selectedFile'  [disable]="disable"
                 [Licence_Service_ID]="Licence_Service_ID"></app-measurment>
                 <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 2" translate>Next</button></div>
      
@@ -75,7 +75,7 @@
           </p-tabPanel>
           <p-tabPanel [header]="'Title Deed Registration' | translate">
             <div class="mt-3">
-              <app-title-deed-registration (completed)="EnableFins()" [selectedpro]='selectedprofromtree'
+              <app-title-deed-registration (completed)="EnableFins()" [selectedpro]='selectedFile'
                 [disable]="disable" [Licence_Service_ID]="Licence_Service_ID" [AppNo]="AppNo" [Service_ID]="Service_ID">
               </app-title-deed-registration>
             </div>

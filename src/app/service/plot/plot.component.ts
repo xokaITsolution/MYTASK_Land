@@ -4,16 +4,22 @@ import {
   Input,
   OnChanges,
   Output,
+  TemplateRef,
 } from "@angular/core";
 import { ServiceService } from "../service.service";
-import { PlotManagment } from "../plot-managment/plot-managment.component";
+import {
+  PlatformLocation,
+  PlotManagment,
+} from "../plot-managment/plot-managment.component";
 import { ServiceComponent } from "../service.component";
 import { NotificationsService } from "angular2-notifications";
 import { environment } from "src/environments/environment";
+import { BsModalRef, BsModalService } from "ngx-bootstrap";
+import { Subject } from "rxjs";
 @Component({
-  selector: 'app-plot',
-  templateUrl: './plot.component.html',
-  styleUrls: ['./plot.component.css']
+  selector: "app-plot",
+  templateUrl: "./plot.component.html",
+  styleUrls: ["./plot.component.css"],
 })
 export class PlotComponent implements OnChanges {
   @Output() completed = new EventEmitter();
@@ -41,22 +47,26 @@ export class PlotComponent implements OnChanges {
   plotId = null;
   Saved = false;
   language: string;
+  plotloc: any;
+  public platformLocation: PlatformLocation;
+  isplotllocnew: boolean;
+  Plot_ID: any;
+  displayGIS: boolean;
+  geo: any;
 
   constructor(
     private serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService,
-    
-  ) {
-  }
-
+    private modalService: BsModalService
+  ) {}
+  changingValue: Subject<boolean> = new Subject();
   ngOnChanges() {
-    this.serviceService.toMes=true
+    this.serviceService.toMes = true;
     if (environment.Lang_code === "am-et") {
-      this.language = 'amharic';
-    }
-    else {
-      this.language = 'english';
+      this.language = "amharic";
+    } else {
+      this.language = "english";
     }
     console.log("emptying list", this.PlotManagementList);
     this.PlotManagementList = [];
@@ -65,7 +75,241 @@ export class PlotComponent implements OnChanges {
     this.getPloat();
     // this.isvalidated();
   }
+  modalRef: BsModalRef;
+  openModall(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(
+      template,
+      Object.assign({}, { class: "gray modal-lg" })
+    );
+  }
+  tellChild(aa) {
+    console.log("value is changing", aa);
+    this.geo = aa;
+    this.serviceService.check = false;
+    this.changingValue.next(aa);
+  }
+  getplotloc(plotid) {
+    this.serviceService.getPlotloc(plotid).subscribe((response: any) => {
+      this.plotloc = response.procPlot_Locations;
 
+      console.log("plotloc:", this.plotloc);
+      if (this.plotloc.length > 0) {
+        this.platformLocation = this.plotloc[0];
+        this.isplotllocnew = false;
+      } else {
+        this.isplotllocnew = true;
+      }
+    });
+  }
+  getplotlocbyid(Plot_ID) {
+    this.serviceService.getPlotloc(Plot_ID).subscribe((response: any) => {
+      this.plotloc = response.procPlot_Locations;
+      if (this.plotloc.length > 0) {
+        this.platformLocation = this.plotloc[0];
+        console.log(this.plotloc[0]);
+
+        this.convertPolygonCoordinates(this.plotloc[0].geowithzone);
+
+        console.log("plotloc:", this.plotloc, this.plotloc[0].geowithzone);
+        this.isplotllocnew = true;
+      } else {
+        this.platformLocation = new PlatformLocation();
+        this.isplotllocnew = false;
+      }
+    });
+  }
+  convertPolygonCoordinates(polygonString: string): any[] {
+    const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
+
+    const result = [];
+
+    if (coordinates) {
+      for (const coord of coordinates) {
+        console.log("coordcoordcoord", coord);
+
+        const [easting, northing, hemisphere, zone] = coord.split(" ");
+
+        result.push({
+          northing: northing,
+          easting: easting,
+          hemisphere: hemisphere,
+          zone: zone,
+        });
+      }
+    }
+    console.log("result", result);
+    this.convertCoordinates(result);
+
+    return result;
+  }
+  convertCoordinates(data) {
+    const convertedCoordinates = [];
+    // Convert UTM coordinates to the desired format
+    convertedCoordinates.push(["northing", "easting", "hemisphere", "zone"]);
+
+    for (const coord of data) {
+      convertedCoordinates.push([
+        coord.northing,
+        coord.easting,
+        coord.hemisphere,
+        coord.zone,
+      ]);
+    }
+    this.tellChild(convertedCoordinates);
+    console.log(
+      "convertedCconvertedCoordinatesoordinates",
+      convertedCoordinates
+    );
+  }
+  closeModall() {
+    // console.log('closeing.....');
+    this.modalRef.hide();
+  }
+  updateplotloc() {
+    console.log("coordinatcoordinat", this.serviceService.coordinate);
+    if (this.serviceService.coordinate) {
+      let coordinate = this.convertToMultiPoint(this.serviceService.coordinate);
+      let coordinate2 = this.convertToMultiPoints(
+        this.serviceService.coordinate
+      );
+      this.platformLocation.geo = coordinate2;
+      this.platformLocation.geowithzone = coordinate;
+      this.serviceService.getUserRole().subscribe((response: any) => {
+        console.log("responseresponseresponse", response, response[0].RoleId);
+        this.platformLocation.updated_By = response[0].UserId;
+        this.platformLocation.updated_Date = new Date();
+        if (response[0].RoleId == "f8dda85e-f967-4ac5-bf79-4d989ecfb863") {
+          this.platformLocation.team_Leader_Approved_By = response[0].UserId;
+          this.platformLocation.team_Leader_Approved = true;
+          console.log(
+            this.platformLocation.team_Leader_Approved_By,
+            this.platformLocation.team_Leader_Approved
+          );
+        } else if (
+          response[0].RoleId == "fe7be2e0-e717-4230-b732-5b810a8bb875"
+        ) {
+          this.platformLocation.baseMap_Approved_By = response[0].UserId;
+          this.platformLocation.baseMap_Approved = true;
+          console.log(
+            this.platformLocation.team_Leader_Approved_By,
+            this.platformLocation.team_Leader_Approved
+          );
+        }
+        this.serviceService.updatePlotloc(this.platformLocation).subscribe(
+          (CustID) => {
+            this.serviceService.toMes = false;
+            this.getplotloc(this.platformLocation.ploteId);
+            const toast = this.notificationsService.success(
+              "Sucess",
+              "Succesfully Upadted"
+            );
+          },
+          (error) => {
+            console.log("error");
+            const toast = this.notificationsService.error(
+              "error",
+              `unable to Update ${
+                error["status"] == 0
+                  ? error["message"]
+                  : JSON.stringify(JSON.stringify(error["error"]))
+              }`
+            );
+          }
+        );
+      });
+    }
+  }
+  saveplotloc() {
+    console.log("coordinatcoordinat", this.serviceService.coordinate);
+    if (this.serviceService.coordinate) {
+      // let coordinate= this.convertToMultiPoint(this.serviceService.coordinate)
+      // console.log('coordinatecoordinate',coordinate)
+
+      // let coordinate= this.convertToMultiPoint(this.serviceService.coordinate)
+      // this.platformLocation.geowithzone=coordinate
+      this.serviceService.getUserRole().subscribe((response: any) => {
+        let coordinates = this.convertToMultiPoints(
+          this.serviceService.coordinate
+        );
+        console.log("coordinatecoordinate", coordinates);
+        this.platformLocation.geo = coordinates;
+        let coordinate = this.convertToMultiPoint(
+          this.serviceService.coordinate
+        );
+        this.platformLocation.geowithzone = coordinate;
+        console.log("responseresponseresponse", response, response[0].RoleId);
+
+        this.platformLocation.ploteId = this.Plot_ID;
+        this.platformLocation.created_By = response[0].RoleId;
+        this.platformLocation.created_Date = new Date();
+        this.serviceService.savePlotloc(this.platformLocation).subscribe(
+          (CustID) => {
+            this.getplotloc(this.platformLocation.ploteId);
+            this.serviceService.toMes = false;
+            this.serviceService.toMess = false;
+            const toast = this.notificationsService.success(
+              "Sucess",
+              "Succesfully saved"
+            );
+          },
+          (error) => {
+            console.log("error");
+            const toast = this.notificationsService.error(
+              "error",
+              `unable to Save ${
+                error["status"] == 0
+                  ? error["message"]
+                  : JSON.stringify(JSON.stringify(error["error"]))
+              }`
+            );
+          }
+        );
+      });
+    }
+  }
+
+  convertToMultiPoint(
+    points: {
+      easting: number;
+      northing: number;
+      hemisphere: string;
+      zone: number;
+    }[]
+  ): string {
+    const multiPointArray = points
+      .map(
+        (point) =>
+          `${point.easting} ${point.northing} ${point.hemisphere} ${point.zone}`
+      )
+      .join(", ");
+
+    // const multiPointString = `MULTIPOINT(${multiPointArray})`;
+    const multiPointString = `POLYGON((${multiPointArray}))`;
+
+    return multiPointString;
+  }
+  convertToMultiPoints(
+    points: { easting: number; northing: number }[]
+  ): string {
+    const multiPointArray = points
+      .map((point) => `${point.easting} ${point.northing}`)
+      .join(", ");
+
+    // const multiPointString = `MULTIPOINT(${multiPointArray})`;
+    const multiPointString = `POLYGON((${multiPointArray}))`;
+
+    return multiPointString;
+  }
+  onConfirm(): void {
+    // Handle confirm action
+    console.log("Dialog confirmed");
+    if (this.serviceService.coordinate) {
+      let coordinate = this.convertToMultiPoint(this.serviceService.coordinate);
+      // let coordinate2= this.convertToMultiPoints(this.serviceService.coordinate)
+      this.Plot_ID = this.serviceService.coordinate.toString();
+    }
+    this.displayGIS = false;
+  }
   getPloat() {
     this.PlotManagementList = [];
     if (this.Parcel_ID) {
@@ -89,20 +333,22 @@ export class PlotComponent implements OnChanges {
       this.getPlotManagement(this.Parcel_mearge4);
     }
   }
-  async getEthiopianToGregorian(date){
-
-    if(date){
-    var datenow=  await this.serviceService.getEthiopianToGregorian(date).toPromise()
-       console.log(datenow);
-       return datenow.nowTime
- 
+  async getEthiopianToGregorian(date) {
+    if (date) {
+      var datenow = await this.serviceService
+        .getEthiopianToGregorian(date)
+        .toPromise();
+      console.log(datenow);
+      return datenow.nowTime;
     }
   }
   async getgregorianToEthiopianDate(date) {
-    if(date != '0001-01-01T00:00:00'){
-    var  datenow = await this.serviceService.getgregorianToEthiopianDate(date).toPromise();
-       console.log(datenow);
-       return  datenow.nowTime
+    if (date != "0001-01-01T00:00:00") {
+      var datenow = await this.serviceService
+        .getgregorianToEthiopianDate(date)
+        .toPromise();
+      console.log(datenow);
+      return datenow.nowTime;
     }
   }
   getPlotManagement(Parcel_ID) {
@@ -110,20 +356,29 @@ export class PlotComponent implements OnChanges {
     this.serviceService.getPlotManagement(Parcel_ID).subscribe(
       async (PlotManagementLists) => {
         a = PlotManagementLists;
-       
+
         let b = false;
         for (let i = 0; i < (PlotManagementLists as any).list.length; i++) {
-          if (a.list[0].Plot_ID == (PlotManagementLists as any).list[i].Plot_ID) {
+          if (
+            a.list[0].Plot_ID == (PlotManagementLists as any).list[i].Plot_ID
+          ) {
             b = true;
             // this.PlotManagementList[i] = a.list[0];
           }
         }
         if (b) {
           this.noinvalidplot = this.noinvalidplot + 1;
-          if(this.language == 'amharic'){
-            a.list[0].Registration_Date= await this.getgregorianToEthiopianDate(a.list[0].Registration_Date)}
+          if (this.language == "amharic") {
+            a.list[0].Registration_Date =
+              await this.getgregorianToEthiopianDate(
+                a.list[0].Registration_Date
+              );
+          }
           this.PlotManagementList.push(a.list[0]);
-          console.log(this.PlotManagementList)
+          this.PlotManagementList = this.removeDuplicates(
+            this.PlotManagementList
+          );
+          console.log("PlotManagementList", this.PlotManagementList);
           this.isisvalidated(
             this.todoid,
             this.tskID,
@@ -141,11 +396,21 @@ export class PlotComponent implements OnChanges {
       }
     );
   }
+  removeDuplicates(data) {
+    const uniqueArray = data.filter(
+      (item, index, self) =>
+        self.findIndex((i) => i.Application_No === item.Application_No) ===
+        index
+    );
+
+    return uniqueArray;
+  }
 
   SelectPLot(plot) {
     this.SelectedPlot = plot;
-    console.log('dfghgfd',plot);
-  
+    console.log("dfghgfd", plot);
+    this.Plot_ID = this.SelectedPlot.Plot_ID;
+    this.getplotlocbyid(this.Plot_ID);
     plot.SDP_ID = this.serviceComponent.licenceData.SDP_ID;
     plot.Licence_Service_ID = this.LicenceData.Licence_Service_ID;
     plot.Application_No = this.AppNo;
@@ -153,9 +418,8 @@ export class PlotComponent implements OnChanges {
       plot.Registration_Date = plot.Registration_Date.split("T")[0];
     }
     // this.plotForm = true;
-     
   }
-  highlighted
+  highlighted;
   tab1;
   tab2;
   initTabs() {
@@ -168,7 +432,6 @@ export class PlotComponent implements OnChanges {
       this.tab1 = true;
       this.tab2 = false;
     } else if (e.index == 1) {
-
       this.tab1 = false;
       this.tab2 = true;
     }
@@ -176,17 +439,17 @@ export class PlotComponent implements OnChanges {
 
   public selectedTab = 0;
   showform() {
-     this.plotForm = true;
-     this.isnew = false;
-     this.serviceService.isleaseForm = false;
+    this.plotForm = true;
+    this.isnew = false;
+    this.serviceService.isleaseForm = false;
   }
   AddPLot() {
-    this.serviceService.toMes=true
+    this.serviceService.toMes = true;
     this.isnew = true;
     this.plotForm = true;
     const plot = new PlotManagment();
     // plot.SDP_ID = this.LicenceData.SDP_ID;
-    console.log(this.Parcel_ID)
+    console.log(this.Parcel_ID);
     plot.Licence_Service_ID = this.LicenceData.Licence_Service_ID;
     plot.Application_No = this.AppNo;
     if (this.Parcel_ID) {
@@ -425,7 +688,7 @@ export class PlotComponent implements OnChanges {
 
   EnableFinsLise() {
     this.isvalidated();
-    this.toMes=true;
+    this.toMes = true;
     this.getPloat();
     this.CanDone = true;
   }

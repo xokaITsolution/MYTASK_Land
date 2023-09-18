@@ -9,13 +9,14 @@ export const environment = {
   // formPath: '',
 
   imagepath: window["_imagepath"],
-  username: "0911565749",
+  username: "0945845912",
   iconpath: window["iconpath"],
   formPath: window["formPath"],
 
-  // username: 'BL_Tech_Officer',
+  //username: "BL_Data_Encoder",
+  //username: "BL_Cashier",
   phisicalPath: "./assets/i18n/",
-  Lang_code: (window["lang"] as string).toLowerCase(),
+  Lang_code: window["lang"],
   localGisServer: window["local_GIS_server"],
   wfsGeoServer: window["wfs_geoserver"],
   PaymentReportPath: window["PaymentReportPath"],

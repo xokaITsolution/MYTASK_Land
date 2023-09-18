@@ -184,7 +184,7 @@
   </div>
   <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!isnew && !disable" (click)="Delete()"
     translate>Update</button>
-    <button type="button" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate (click)="getplotlocbyid();openModall(templattte)" *ngIf="!isnew">Spatial</button>
+   
   <!-- <button type="button" class="btn btn-danger ml-3" [disabled]="!f.valid" *ngIf="!isnew && !disable" (click)="Delete()"
     translate>Delete</button> -->
   <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="isnew && !disable" (click)="add()"
@@ -393,26 +393,4 @@
 </ngx-smart-modal> -->
 
 
-<ng-template #templattte>
-
-    
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h4 class="modal-title" translate>Spatial</h4>
-        <button type="button" class="close" (click)="closeModall()">&times;</button>
-      </div>
-      
-      <!-- Modal body -->
-      <div class="modal-body">
-        <app-gis-map [changing]="changingValue" ></app-gis-map>
-      </div>
-        
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="saveplotloc();closeModall()" *ngIf="isplotllocnew &&  !disable" translate>Save</button>
-        <button type="button" class="btn btn-primary" (click)="updateplotloc();closeModall()" *ngIf="!isplotllocnew &&  !disable" translate>Update</button>
-        <button type="button" class="btn btn-danger" (click)="closeModall()" translate>Close</button>
-      </div>
-        
-  </ng-template>
   

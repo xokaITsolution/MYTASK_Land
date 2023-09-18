@@ -10,7 +10,7 @@
       window['_UserName'] = "@HttpContext.Current.User.Identity.Name";
       window["_imagepath"] = '<button type="button" class="trigger">' + 
            '<img src="http://job.xokait.com.et/datepicker/img/calendar.gif" alt="Popup"></button>';
-           window["iconpath"]='/DesktopModules/MVC/XOKA_Application_App/Views/Item/assets/assets/marker-icon.png'
+           window["iconpath"]='/DesktopModules/MVC/TASK/Views/Item/assets/assets/marker-icon.png'
       window['rootPath'] = 'http://197.156.93.110/XOKA.eoffice.bpel_land/api/';
        window["rootPathApi"] = "http://197.156.93.110/Xoka_land_API/api/";
       // window['local_GIS_server'] = 'http://localhost/geojson';
@@ -27,12 +27,14 @@
     window['geoserverUrl'] = "http://omda.xokait.com.et:8080/geoserver/Ormiya_Miniral_WS/wms";
     window['geoserverUrlwfs'] = "http://omda.xokait.com.et:8080/geoserver/Ormiya_Miniral_WS/ows";
       window['PaymentReportPath'] = 'http://192.168.0.150/xokaswcms/en-us/payment';
-      window['certReportPath'] = '/certificate';
-      window['LetterReportPath'] = '/Letter';
-      window["lang"] = window.location.pathname.split("/")[1];
+      window['certReportPath'] = 'http://land.xokait.com.et/en-us/certificate';
+      window['LetterReportPath'] = 'http://land.xokait.com.et/en-us/Letter';
+      window["lang"] = window.location.pathname.split("/")[2];
       window['resourcePath'] = "DesktopModules/MVC/xokamytasks/Views/Item/assets/";
-      window['phisicalPath'] = '/DesktopModules/MVC/XOKA_Application_App/Views/Item/assets/assets/i18n/';
+      window['phisicalPath'] = '/DesktopModules/MVC/TASK/Views/Item/assets/assets/i18n/';
       window['overlayLayer'] = "Ethiopia - Admin Level 3.json";
+      window['formPath'] = "http://land.xokait.com.et/db/";
+
       window['layerConfig'] = [ 
         {
           'name': "Ethiopia - Admin Level 1.json",
@@ -75,9 +77,8 @@
               "/" +
               window.location.pathname.split("/")[1] +
               "/" +
-              window.location.pathname.split("/")[2] +
-              "/"  +
-              window.location.pathname.split("/")[3] ;
+              window.location.pathname.split("/")[2] + "/MY-Task"
+           
           } else if (
             window.location.pathname.split("/")[1] !== "task" &&
             window.location.pathname.split("/")[1] !== "service" &&
@@ -87,9 +88,8 @@
               "/" +
               window.location.pathname.split("/")[1] +
               "/" +
-              window.location.pathname.split("/")[2]
-              "/"  +
-              window.location.pathname.split("/")[3] ;
+              window.location.pathname.split("/")[2] +"/MY-Task"
+              
           }
       })();
   </script>

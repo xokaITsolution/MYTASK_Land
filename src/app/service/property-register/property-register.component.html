@@ -73,7 +73,7 @@
     <div class="form-group row col-md-6">
       <label for="PropertyParent" class="col-sm-3 col-form-label" translate>Property Parent</label>
       <div class="col-sm-9">
-        <!--<input type="text" class="form-control"   name="PropertyParent"  id="PropertyParent" placeholder="Property Parent">-->
+      <input type="text" class="form-control"   name="PropertyParent"  id="PropertyParent" placeholder="Property Parent">
 
 
         <select  class="form-select" [(ngModel)]="propertyRegister.property_Parent_ID" name="PropertyParent" [disabled]="disable || serviceService.hide"  id="PropertyParent">
@@ -222,49 +222,58 @@
 
 
 
+
 <form #f="ngForm" novalidate name="proform">
   <div class="form-row">
     <div class="form-group row col-md-6">
       <label for="PlotID" class="col-sm-3 col-form-label" translate>PlotID</label>
       <div class="col-sm-9">
-        <input type="text" disabled class="form-control" [(ngModel)]="propertyRegister.Plot_ID" name="PlotID"
+        <input type="text" disabled class="form-control" [(ngModel)]="propertyRegister.plot_ID" name="PlotID"
           id="PlotID" placeholder="PlotID">
       </div>
     </div>
     <div class="form-group row col-md-6">
       <label for="NumberOfLift" class="col-sm-3 col-form-label" translate>Number of Lift</label>
       <div class="col-sm-9">
-        <input type="number" class="form-control" [(ngModel)]="propertyRegister.Number_of_Lift" name="NumberOfLift"
+        <input type="number" class="form-control" [(ngModel)]="propertyRegister.number_of_Lift" name="NumberOfLift"
           id="NumberOfLift" placeholder="Number of Lift">
       </div>
     </div>
     <div class="form-group row col-md-6">
       <label for="PropertyID" class="col-sm-3 col-form-label" translate>Property ID</label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" [(ngModel)]="propertyRegister.Property_ID" name="PropertyID"
+        <input type="text" class="form-control" [(ngModel)]="propertyRegister.property_ID" name="PropertyID"
           id="PropertyID" placeholder="Property ID">
       </div>
     </div>
     <div class="form-group row col-md-6">
       <label for="BuildingSize" class="col-sm-3 col-form-label" translate>Building Size (M2)</label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" [(ngModel)]="propertyRegister.Compound_Size_M2" name="BuildingSize"
-          id="BuildingSize" placeholder="Building Size (M2">
+        <input type="text" class="form-control" [(ngModel)]="propertyRegister.building_Size_M2" name="BuildingSize"
+          id="BuildingSize" placeholder="Building Size (M2)">
       </div>
     </div>
     <div class="form-group row col-md-6">
       <label for="Description" class="col-sm-3 col-form-label" translate>Description</label>
       <div class="col-sm-9">
-        <textarea class="form-control" [(ngModel)]="propertyRegister.Description" name="Description" id="Description"
+        <textarea class="form-control" [(ngModel)]="propertyRegister.description" name="Description" id="Description"
           placeholder="Description">
 
         </textarea>
       </div>
     </div>
+        <div class="form-group row col-md-6">
+          <label class="col-sm-3 col-form-label" for="Proportional_from_Compound_Size" translate="">Proportional from Compound
+            Size</label>
+          <div class="col-sm-9">
+            <input class="form-control" id="Proportional_from_Compound_Size"
+              name="Proportional_from_Compound_Size" [(ngModel)]="propertyRegister.proportional_from_Compound_Size" placeholder="'Proportional from Compound Size'|translate" required="" type="number">
+          </div>
+        </div>
     <div class="form-group row col-md-6">
       <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Property Status</label>
       <div class="col-sm-9">
-        <select class="form-control" [(ngModel)]="propertyRegister.Property_Status_ID" name="PropertyStatus"
+        <select class="form-control" [(ngModel)]="propertyRegister.property_Status_ID" name="PropertyStatus"
           id="PropertyStatus">
           <option disabled>select</option>
           <option *ngFor="let PropertyStatus of serviceComponent.PropertyStatusLookUP;"
@@ -275,7 +284,7 @@
     <div class="form-group row col-md-6">
       <label for="PropertyType" class="col-sm-3 col-form-label" translate>Property Type</label>
       <div class="col-sm-9">
-        <select class="form-control" [(ngModel)]="propertyRegister.Property_Type_ID" name="PropertyType"
+        <select class="form-control" [(ngModel)]="propertyRegister.property_Type_ID" name="PropertyType"
           id="PropertyType">
           <option disabled>select</option>
           <option *ngFor="let PropertyType of serviceComponent.PropertyTypeLookUP;"
@@ -286,14 +295,21 @@
     <div class="form-group row col-md-6">
       <label for="TotalCompoundSize" class="col-sm-3 col-form-label" translate>Total Compound Size</label>
       <div class="col-sm-9">
-        <input type="number" class="form-control" [(ngModel)]="propertyRegister.Compound_Size_M2"
+        <input type="number" class="form-control" [(ngModel)]="propertyRegister.compound_Size_M2"
           name="TotalCompoundSize" id="TotalCompoundSize" placeholder="Total Compound Size">
       </div>
     </div>
+      <div class="form-group row col-md-6"><label class="col-sm-3 col-form-label" for="Size_In_Proportional" translate="">Size
+          In Proportional</label>
+        <div class="col-sm-9">
+          <input class="form-control" id="Size_In_Proportional" name="Size_In_Proportional"
+            [(ngModel)]="propertyRegister.size_In_Proportional" placeholder="Size In Proportional" type="number">
+        </div>
+      </div>
     <div class="form-group row col-md-6">
       <label for="BasementFloor" class="col-sm-3 col-form-label" translate>Basement Floor</label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" [(ngModel)]="propertyRegister.Basement_Floor_No" name="BasementFloor"
+        <input type="text" class="form-control" [(ngModel)]="propertyRegister.basement_Floor_No" name="BasementFloor"
           id="BasementFloor" placeholder="Basement Floor">
       </div>
     </div>
@@ -303,11 +319,11 @@
         <!--<input type="text" class="form-control"   name="PropertyParent"  id="PropertyParent" placeholder="Property Parent">-->
 
 
-        <select class="form-control" [(ngModel)]="propertyRegister.Property_Parent_ID" name="PropertyParent"
+        <select class="form-control" [(ngModel)]="propertyRegister.property_Parent_ID" name="PropertyParent"
           id="PropertyParent">
           <option disabled>select</option>
-          <option *ngFor="let Property of propertyComponent.PropertyList;" [value]="Property.Property_ID">
-            {{Property.Property_ID}}</option>
+          <option *ngFor="let Property of propertyComponent.PropertyList;" [value]="Property.property_ID">
+            {{Property.property_ID}}</option>
         </select>
 
       </div>
@@ -315,57 +331,87 @@
     <div class="form-group row col-md-6">
       <label for="UpperFloor" class="col-sm-3 col-form-label" translate>Upper Floor</label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" [(ngModel)]="propertyRegister.Upper_Floor_No" name="UpperFloor"
+        <input type="text" class="form-control" [(ngModel)]="propertyRegister.upper_Floor_No" name="UpperFloor"
           id="UpperFloor" placeholder="Upper Floor">
       </div>
     </div>
-      <div class="form-group row col-md-6">
-        <label class="col-sm-3 col-form-label" translate>Map Plan</label>
-        <div class="col-sm-9">
-          <p-fileUpload *ngIf="!disable" #form customUpload="true" (uploadHandler)="upload($event,form)"
-            maxFileSize="25000000" accept="image/*"></p-fileUpload>
-      
-          <input type="hidden" class="form-control" [(ngModel)]="propertyRegister.Map_Floor_Plan" name="MapFloorPlan"
-            id="MapFloorPlan" [placeholder]="'Map Floor Plan' | translate" #MapFloorPlan="ngModel" required>
-          <div *ngIf="MapFloorPlan.invalid">
-            <span translate class="text-danger">Requierd</span>
-          </div>
-          <div *ngIf="pictoShow">
-            <button type="button" class="btn btn-primary" (click)="openModal('pic')" translate>Show</button>
-          </div>
+   <div class="form-group row col-md-6">
+      <label class="col-sm-3 col-form-label" translate>Map Plan</label>
+      <div class="col-sm-9">
+        <p-fileUpload *ngIf="!disable" #form customUpload="true" (uploadHandler)="upload($event,form)"
+          maxFileSize="25000000" accept="image/*"></p-fileUpload>
+
+        <input type="hidden" class="form-control" [(ngModel)]="propertyRegister.map_Floor_Plan" name="MapFloorPlan"
+          id="MapFloorPlan" [placeholder]="'Map Floor Plan' | translate" #MapFloorPlan="ngModel" required>
+        <div *ngIf="MapFloorPlan.invalid">
+          <span translate class="text-danger">Requierd</span>
+        </div>
+        <div *ngIf="pictoShow">
+          <button type="button" class="btn btn-primary" (click)="openModal('pic')" translate>Show</button>
         </div>
       </div>
+    </div>
     <div class="form-group row col-md-6">
       <label for="ParkingSize" class="col-sm-3 col-form-label" translate>Parking size</label>
       <div class="col-sm-9">
-        <input type="number" class="form-control" [(ngModel)]="propertyRegister.Parking_Area_M2" name="ParkingSize"
+        <input type="number" class="form-control" [(ngModel)]="propertyRegister.parking_Area_M2" name="ParkingSize"
           id="ParkingSize" placeholder="Parking size">
       </div>
     </div>
     <div class="form-group row col-md-6">
       <label for="HouseNo" class="col-sm-3 col-form-label" translate>House No</label>
       <div class="col-sm-9">
-        <input type="number" class="form-control" [(ngModel)]="propertyRegister.HouseNo" name="HouseNo" id="HouseNo"
+        <input type="number" class="form-control" [(ngModel)]="propertyRegister.houseNo" name="HouseNo" id="HouseNo"
           placeholder="House No">
       </div>
     </div>
     <div class="form-group row col-md-6">
       <label for="EstimatedPrice" class="col-sm-3 col-form-label" translate>Estimated Price</label>
       <div class="col-sm-9">
-        <input type="number" class="form-control" [(ngModel)]="propertyRegister.Estimated_Price" name="EstimatedPrice"
+        <input type="number" class="form-control" [(ngModel)]="propertyRegister.estimated_Price" name="EstimatedPrice"
           id="EstimatedPrice" placeholder="Estimated Price">
       </div>
     </div>
+    <div class="form-group row col-md-6"><label class="col-sm-3 col-form-label" for="RegistrationDate"
+        translate="">Registration Date</label>
+      <div class="col-sm-9">
+        <input class="form-control" id="RegistrationDate"
+          name="RegistrationDate" placeholder="RegistrationDate" [(ngModel)]="propertyRegister.registration_Date" required="" type="date"></div>
+    </div>
+    
+    <!-- <div class="form-group row col-md-6"><label class="col-sm-3 col-form-label" for="LocationName" translate="">Location
+        Name</label>
+      <div class="col-sm-9"><input class="form-control" id="LocationName"
+          name="LocationName" placeholder="Location Name" type="text" [(ngModel)]="propertyRegister.LocationName"></div>
+    </div> -->
+    
+    <div class="form-group row col-md-6"><label class="col-sm-3 col-form-label" for="Building_No" translate="">Building
+        No</label>
+      <div class="col-sm-9"><input class="form-control" id="Building_No"
+          name="Building_No" placeholder="Building No" type="text" [(ngModel)]="propertyRegister.building_No" ></div>
+    </div>
+    
+    <div class="form-group row col-md-6"><label class="col-sm-3 col-form-label" for="Location_of_Property"
+        translate="">Location of Property</label>
+      <div class="col-sm-9"><input class="form-control" id="Location_of_Property"
+          name="Location_of_Property" placeholder="Location of Property" type="text" [(ngModel)]="propertyRegister.location_of_Property"></div>
+    </div>
+    
+    <div class="form-group row col-md-6"><label class="col-sm-3 col-form-label" for="Floor_No" translate="">Floor No</label>
+      <div class="col-sm-9"><input class="form-control" id="Floor_No" name="Floor_No" [(ngModel)]="propertyRegister.floor_No"
+          placeholder="Floor No" type="number"></div>
+    </div>
+ 
 
 
   </div>
   <button *ngIf="isnew && !disable" type="button" [disabled]="!f.valid" class="btn btn-primary" (click)="save()"
     translate>Save</button>
-  <!-- <button *ngIf="isnew && !disable" type="button" class="btn btn-danger ml-3" (click)="Delete()"
-    translate>Delete</button> -->
+
   <button *ngIf="!isnew && !disable" type="button" [disabled]="!f.valid" class="btn btn-primary" (click)="add()"
     translate>Save</button>
 </form>
+
 
 <ngx-smart-modal #pic identifier="pic">
   <div style="width: 100%">
@@ -385,3 +431,5 @@
     <button type="button" class="btn btn-primary" (click)="closeModal('pic')" translate>Done</button>
   </div>
 </ngx-smart-modal>
+
+

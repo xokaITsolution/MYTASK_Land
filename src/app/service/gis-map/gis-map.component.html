@@ -29,7 +29,7 @@
               <label for="latitude" class="col-sm-4 col-form-label">Datum:</label>
               <div class="col-sm-8">
      
-                <select [(ngModel)]="selectedDatum" (change)="onDatumChange()">
+                <select disabled [(ngModel)]="selectedDatum" (change)="onDatumChange()">
                   <option *ngFor="let datum of datums" [value]="datum"  >{{ datum }}</option>
                 </select>
 
@@ -150,7 +150,7 @@
               <button type="button" class="btn btn-info mb-2" (click)="convertToExcel(utmCoordinates)">
                 Convert to Excel
               </button>&nbsp;
-              <button (click)="mergePolygons()" type="button" class="btn btn-info mb-2">Merge Polygons</button> 
+              <button (click)="mergePolygons()" type="button" class="btn btn-info mb-2">Merge Polygons</button> &nbsp;
                 <button (click)="onClick($event)" type="button" class="btn btn-info mb-2">select Polygons</button>
             </div>
           </div>

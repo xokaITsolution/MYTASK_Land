@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../environments/environment";
+import { TreeNode } from "primeng/api";
 
 @Injectable({
   providedIn: "root",
@@ -75,12 +76,102 @@ export class ServiceService {
   private SaveDataObjURL = environment.rootPath + "BPEL/SaveDataObj"; // URL to web api
   private getAllDocumentURL = environment.rootPath + "BPEL/getAllDocument";
   private MytasksUrl = environment.rootPath + "BPEL/GetlistofTodo"; // URL to web api
+  OrganizationparentUrl =
+    environment.rootPath2 + "Job/procOrganization/Organization";
+  saveCustomerdata = environment.rootPath3 + "Customer/procCustomer/";
+  saveplotlocdata = environment.rootPath3 + "Plot_Location/procPlot_Location/";
+  saveproplocdata =
+    environment.rootPath3 + "Proporty_Location/procProporty_Location/";
+  private EthiopianToGregorian = environment.rootPath3 + "EthiopianToGregorian";
+  private gregorianToEthiopianDate =
+    environment.rootPath3 + "gregorianToEthiopianDate";
+  private propertreg =
+    environment.rootPath3 + "Property_Registration/procProperty_Registration";
+
+  private saveCustomerLookUP = environment.rootPath + "Customer"; // URL to web api
+  userRoleUrl = environment.rootPath + "BPEL/GetUserRole";
+  private CountryLookUP = environment.rootPath + "Country"; // URL to web api
+  public lookupUrl = environment.rootPath + "BPEL/" + "";
+  private CustomerStatusLookUP =
+    environment.rootPath + "Customer_Status_Lookup"; // URL to web api
+  private saveCustomeredit = environment.rootPath + "Customer";
+  private dbstatus = environment.rootPath + "BPEL/";
+  public customerUrl = environment.rootPathApi + "Customer/procCustomer";
+
   ApplicationNo: any;
   todo: any;
   servID: any;
   taskrul: any;
+  isleaseForm: boolean;
+  EmployeeTIN: any;
+  Parent_Customer_ID: any;
+  showcustomerr: boolean;
+  taskid: string;
+  coordinate: any;
+  geometry: any[];
+  files: TreeNode[] = [];
+  disablebutton: boolean = false;
+  latLngs: { lat: number; lng: number }[];
+  check: boolean;
+  shapes: any;
+  hide: boolean;
+  toMes: boolean;
+  toMess: boolean;
   constructor(private http: HttpClient) {}
+  getdbstatus(orgid) {
+    return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
+  }
+  getCustomerLookUP() {
+    return this.http.get(
+      this.CustomerLookUP +
+        "?" +
+        "sortOrder=test&currentFilter&searchString&pageIndex&pageSize"
+    );
+  }
+  getgregorianToEthiopianDate(date) {
+    if (date) {
+      let year = parseInt(date.split("-")[0]);
+      let month = parseInt(date.split("-")[1]);
+      let day = parseInt(date.split("-")[2].split(":")[0].split("T")[0]);
 
+      return this.http.get<any>(
+        this.gregorianToEthiopianDate + "/" + year + "/" + month + "/" + day
+      );
+    }
+  }
+  getEthiopianToGregorian(date) {
+    if (date) {
+      let year = parseInt(date.split("/")[2]);
+      let month = parseInt(date.split("/")[1]);
+      let day = parseInt(date.split("/")[0]);
+
+      return this.http.get<any>(
+        this.EthiopianToGregorian + "/" + year + "/" + month + "/" + day
+      );
+    }
+  }
+  getCountryLookUP() {
+    return this.http.get(
+      this.CountryLookUP +
+        "?" +
+        "sortOrder=test&currentFilter&searchString&pageIndex&pageSize"
+    );
+  }
+
+  getCustomerTypeLookUP() {
+    return this.http.get(
+      this.CustomerTypeLookUP +
+        "?" +
+        "sortOrder=test&currentFilter&searchString&pageIndex&pageSize"
+    );
+  }
+  getCustomerStatusLookUP() {
+    return this.http.get(
+      this.CustomerStatusLookUP +
+        "?" +
+        "sortOrder=test&currentFilter&searchString&pageIndex&pageSize"
+    );
+  }
   getMytasks(orgid) {
     return this.http.get(
       this.MytasksUrl +
@@ -232,7 +323,85 @@ export class ServiceService {
       null
     );
   }
+  getView_CustomerForWhereWhereWork() {
+    return this.http.get(
+      environment.rootPath2 + "view/View_CustomerForWhereWhereWork"
+    );
+  }
+  getorganizationbyparent(orgid) {
+    return this.http.get(this.OrganizationparentUrl + "/" + orgid);
+  }
+  public getUserRole() {
+    return this.http.get(
+      this.userRoleUrl + "?userName=" + environment.username
+    );
+  }
 
+  getWoredaLookUPbyorg(org) {
+    return this.http.get(
+      this.WoredaLookUP +
+        "?" +
+        "sortOrder=test&currentFilter=" +
+        org +
+        "&searchString&pageIndex&pageSize"
+    );
+  }
+  saveCustomer(data) {
+    console.log("saveing", data);
+    return this.http.post(this.saveCustomerdata, data);
+  }
+  savePlotloc(data) {
+    console.log("saveing", data);
+    return this.http.post(this.saveplotlocdata, data);
+  }
+  saveProploc(data) {
+    console.log("saveing", data);
+    return this.http.post(this.saveproplocdata, data);
+  }
+  updatePlotloc(data) {
+    console.log("saveing", data);
+    return this.http.put(this.saveplotlocdata, data);
+  }
+  updateProploc(data) {
+    console.log("saveing", data);
+    return this.http.put(this.saveproplocdata, data);
+  }
+  getPlotloc(data) {
+    console.log("saveing", data);
+    return this.http.get(this.saveplotlocdata + data);
+  }
+  getProploc(data) {
+    console.log("saveing", data);
+    return this.http.get(this.saveproplocdata + data);
+  }
+  UpdateCustomer(data) {
+    return this.http.put(this.saveCustomerdata, data);
+  }
+  getCustomer(custID) {
+    return this.http.get(
+      this.CustomerLookUP +
+        "?" +
+        "sortOrder=test&currentFilter=" +
+        custID +
+        "&searchString&pageIndex&pageSize"
+    );
+  }
+  getcustomer(col) {
+    return this.http.get(this.saveCustomerdata + "Column/" + col);
+  }
+  getcustomerbyid(col) {
+    return this.http.get(this.saveCustomerdata + col);
+  }
+  getLookup(table) {
+    return this.http.get(this.lookupUrl + "?DropGownName=" + table);
+  }
+  getcostemerbyuserid(table) {
+    return this.http.get(
+      environment.rootPath2 +
+        "finance/procCCustomer/api/finance/procCCustomer/" +
+        table
+    );
+  }
   Back(ApplicationNo, todoid) {
     return this.http.post(
       this.BackURL +
@@ -302,12 +471,6 @@ export class ServiceService {
     );
   }
 
-  getcustomer() {
-    return this.http.get(this.customerUrl);
-  }
-  getcustomerbyid(custid) {
-    return this.http.get(this.customerUrl + "/" + custid);
-  }
   getAllDocument(ApplicationCode, DocID) {
     return this.http.get<any[]>(
       this.getAllDocumentURL +
@@ -393,22 +556,6 @@ export class ServiceService {
         "sortOrder=test&currentFilter=" +
         ownerShipid +
         "&searchString&pageIndex&pageSize"
-    );
-  }
-
-  getCustomerLookUP() {
-    return this.http.get(
-      this.CustomerLookUP +
-        "?" +
-        "sortOrder=test&currentFilter&searchString&pageIndex&pageSize"
-    );
-  }
-
-  getCustomerTypeLookUP() {
-    return this.http.get(
-      this.CustomerTypeLookUP +
-        "?" +
-        "sortOrder=test&currentFilter&searchString&pageIndex&pageSize"
     );
   }
 
@@ -566,7 +713,7 @@ export class ServiceService {
         "http://land.xokait.com.et/DB/" + formcode + ".json"
       );
     } else {
-      return this.http.get<any>("/DB/" + formcode + ".json");
+      return this.http.get<any>(environment.formPath + formcode + ".json");
     }
   }
   //Payment
@@ -654,5 +801,8 @@ export class ServiceService {
   postUrl = "http://localhost:3000/posts";
   getPost() {
     return this.http.get(this.postUrl);
+  }
+  getcustomerby() {
+    return this.http.get(this.customerUrl);
   }
 }

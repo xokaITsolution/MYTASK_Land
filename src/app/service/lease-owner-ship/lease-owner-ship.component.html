@@ -14,14 +14,14 @@
 
         <input type="number" class="form-control" [disabled]="disable"  [(ngModel)]="leaseOwnerShip.Free_Hold_M2"
           name="FreeHold" id="FreeHold" [placeholder]="'Free Hold' | translate" #FreeHold="ngModel"
-          [ngClass]="{ 'is-invalid': FreeHold.invalid }" min="0" required>
+          [ngClass]="{ 'is-invalid': FreeHold.invalid }" min="0" [readonly]="isfreehole" required>
       </div>
     </div>
     <div class="form-group row col-md-6">
       <label for="Type" class="col-sm-3 col-form-label" translate>Type</label>
       <div class="col-sm-9">
-        <select class="form-select"  [disabled]="disable" [(ngModel)]="leaseOwnerShip.Type_ID" name="Type" id="Type"
-          #Type="ngModel" [ngClass]="{ 'is-invalid': Type.invalid }" required>
+        <select class="form-select"  [disabled]="disable" #mySelect [(ngModel)]="leaseOwnerShip.Type_ID" name="Type" id="Type"
+          #Type="ngModel" [ngClass]="{ 'is-invalid': Type.invalid }"  (change)='onOptionsSelected(mySelect.value)'  required>
           <option disabled translate>select</option>
           <option *ngFor="let type of serviceComponent.Lease_Type_Lookup;" [value]="type.Lease_Type_ID">
             {{type.Lease_Type}}
@@ -55,9 +55,9 @@
     <div class="form-group row col-md-6">
       <label for="LandHold" class="col-sm-3 col-form-label" translate>Lease Hold</label>
       <div class="col-sm-9">
-        <input type="number" class="form-control" [disabled]="disable" [(ngModel)]="leaseOwnerShip.Lease_Hold_M2"
+        <input  type="number" class="form-control" [disabled]="disable" [(ngModel)]="leaseOwnerShip.Lease_Hold_M2"
           name="LandHold" id="LandHold" [placeholder]="'Lease Hold' | translate" #LandHold="ngModel"
-          [ngClass]="{ 'is-invalid': LandHold.invalid }" min="75" oninput="this.value = Math.abs(this.value)" required>
+          [ngClass]="{ 'is-invalid': LandHold.invalid }" min="75" oninput="this.value = Math.abs(this.value)" [readonly]="islease" required>
       </div>
     </div>
     <div class="form-group row col-md-6">
@@ -199,6 +199,8 @@
     </tr>
   </ng-template>
 </p-table>
+
+
 
 
 <p-dialog [header]="'Customer' | translate" [(visible)]="visible" [responsive]="true" [width]="900" [minY]="70" [maximizable]="true" [positionTop]="1"
