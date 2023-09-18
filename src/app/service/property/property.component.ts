@@ -170,8 +170,8 @@ export class PropertyComponent implements OnChanges {
     this.propertyForm = true;
     this.propertyregForm = false;
     this.SelectedProperty = property;
-    console.log("plotManagment", this.SelectedProperty);
-
+    this.serviceService.Plot_Size_M2 = this.SelectedProperty.Plot_Size_M2;
+    console.log("plotManagment", this.serviceService.Plot_Size_M2);
     this.getPropertyList();
     // this.disable=false;
   }
@@ -304,6 +304,7 @@ export class PropertyComponent implements OnChanges {
       this.propertyregForm = true;
       this.isnew = false;
     }
+    this.selectedprofromtree = this.selectedFile;
     // if (this.selectedFile.property_Type_ID == 1) {
     //   this.selectedprofromtree = false;
     // } else {
@@ -386,7 +387,7 @@ export class PropertyComponent implements OnChanges {
     // this.propertyregForm = false;
     this.selectedFile = Property;
     // this.completed.emit();
-    console.log("next to measurement");
+    console.log("next to measurement", Property.property_ID);
 
     this.selectedprofromtree;
     this.selectedprofromtree = {

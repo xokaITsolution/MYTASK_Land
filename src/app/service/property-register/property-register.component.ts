@@ -154,49 +154,66 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       return datenow.nowTime;
     }
   }
+
   async save() {
-    const prop = Object.assign({}, this.propertyRegister);
-    if (prop.children) {
-      prop.children = null;
-    }
-    if (prop.parent) {
-      if (prop.parent.children) {
-        prop.parent.children = null;
+    let totalsize =
+      parseInt(this.propertyRegister.building_Size_M2) +
+      parseInt(this.propertyRegister.proportional_from_Compound_Size) +
+      parseInt(this.propertyRegister.parking_Area_M2);
+    console.log(parseInt(this.serviceService.Plot_Size_M2));
+
+    if (parseInt(this.serviceService.Plot_Size_M2) < totalsize) {
+      const toast = this.notificationsService.error(
+        "error",
+        "the sum of building_Size_M2 , compound_Size_M2  and parking_Area_M2 must be equle to " +
+          this.serviceService.Plot_Size_M2 +
+          "M2"
+      );
+      return;
+    } else {
+      const prop = Object.assign({}, this.propertyRegister);
+      if (prop.children) {
+        prop.children = null;
       }
-    }
-    if (prop.property_Parent_ID == "No Parent") {
-      prop.property_Parent_ID = "0";
-    }
-    prop.registration_Date = await this.getEthiopianToGregorian(
-      prop.registration_Date
-    );
-    console.log("saveing....", prop);
-    this.propertyRegisterService.save(prop).subscribe(
-      (property) => {
-        console.log("property", property);
-        this.getPropertyList(prop.plot_ID);
-        if (!this.Saved) {
-          this.completed.emit();
-          this.Saved = true;
-        }
-        const toast = this.notificationsService.success("Sucess", property);
-      },
-      (error) => {
-        console.log(error);
-        if (error.status == "400") {
-          const toast = this.notificationsService.error(
-            "Error",
-            error.error.InnerException.Errors[0].message
-          );
-        } else {
-          const toast = this.notificationsService.error(
-            "Error",
-            "SomeThing Went Wrong"
-          );
+      if (prop.parent) {
+        if (prop.parent.children) {
+          prop.parent.children = null;
         }
       }
-    );
-    console.log("saveing....");
+      if (prop.property_Parent_ID == "No Parent") {
+        prop.property_Parent_ID = "0";
+      }
+      prop.registration_Date = await this.getEthiopianToGregorian(
+        prop.registration_Date
+      );
+      console.log("saveing....", prop);
+      this.propertyRegisterService.save(prop).subscribe(
+        (property) => {
+          console.log("property", property);
+          this.getPropertyList(prop.plot_ID);
+          if (!this.Saved) {
+            this.completed.emit();
+            this.Saved = true;
+          }
+          const toast = this.notificationsService.success("Sucess", property);
+        },
+        (error) => {
+          console.log(error);
+          if (error.status == "400") {
+            const toast = this.notificationsService.error(
+              "Error",
+              error.error.InnerException.Errors[0].message
+            );
+          } else {
+            const toast = this.notificationsService.error(
+              "Error",
+              "SomeThing Went Wrong"
+            );
+          }
+        }
+      );
+      console.log("saveing....");
+    }
   }
   modalRef: BsModalRef;
   openModall(template: TemplateRef<any>) {
@@ -323,59 +340,75 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     console.log("this.files", this.serviceService.files);
   }
   async add() {
-    const prop = Object.assign({}, this.propertyRegister);
-    if (prop.children) {
-      prop.children = null;
-    }
-    if (prop.parent) {
-      if (prop.parent.children) {
-        prop.parent.children = null;
+    let totalsize =
+      parseInt(this.propertyRegister.building_Size_M2) +
+      parseInt(this.propertyRegister.proportional_from_Compound_Size) +
+      parseInt(this.propertyRegister.parking_Area_M2);
+    console.log(parseInt(this.serviceService.Plot_Size_M2));
+
+    if (parseInt(this.serviceService.Plot_Size_M2) < totalsize) {
+      const toast = this.notificationsService.error(
+        "error",
+        "the sum of building_Size_M2 , compound_Size_M2  and parking_Area_M2 must be equle to " +
+          this.serviceService.Plot_Size_M2 +
+          "M2"
+      );
+      return;
+    } else {
+      const prop = Object.assign({}, this.propertyRegister);
+      if (prop.children) {
+        prop.children = null;
       }
-    }
-
-    if (prop.property_Parent_ID == "No Parent") {
-      prop.property_Parent_ID = "0";
-    }
-    prop.registration_Date = await this.getEthiopianToGregorian(
-      prop.registration_Date
-    );
-    this.propertyRegisterService.Add(prop).subscribe(
-      (deptSuspension) => {
-        console.log("deptSuspension", deptSuspension);
-
-        this.isnew = true;
-        if (!this.Saved) {
-          this.completed.emit();
-          this.Saved = true;
-        }
-        this.getPropertyList(prop.plot_ID);
-        if (prop.property_Parent_ID != "0") {
-          this.serviceService.hide = false;
-        }
-        const toast = this.notificationsService.success(
-          "Sucess",
-          deptSuspension
-        );
-        // this.serviceService.disablefins = false;
-
-        console.log("added property registration");
-      },
-      (error) => {
-        console.log(error);
-        if (error.status == "400") {
-          const toast = this.notificationsService.error(
-            "Error",
-            error.error.InnerException.Message
-          );
-        } else {
-          const toast = this.notificationsService.error(
-            "Error",
-            "SomeThing Went Wrong"
-          );
+      if (prop.parent) {
+        if (prop.parent.children) {
+          prop.parent.children = null;
         }
       }
-    );
-    console.log("saveing....");
+
+      if (prop.property_Parent_ID == "No Parent") {
+        prop.property_Parent_ID = "0";
+      }
+      prop.registration_Date = await this.getEthiopianToGregorian(
+        prop.registration_Date
+      );
+      this.propertyRegisterService.Add(prop).subscribe(
+        (deptSuspension) => {
+          console.log("deptSuspension", deptSuspension);
+
+          this.isnew = true;
+          if (!this.Saved) {
+            this.completed.emit();
+            this.Saved = true;
+          }
+          this.getPropertyList(prop.plot_ID);
+          if (prop.property_Parent_ID != "0") {
+            this.serviceService.hide = false;
+          }
+          const toast = this.notificationsService.success(
+            "Sucess",
+            deptSuspension
+          );
+          // this.serviceService.disablefins = false;
+
+          console.log("added property registration");
+        },
+        (error) => {
+          console.log(error);
+          if (error.status == "400") {
+            const toast = this.notificationsService.error(
+              "Error",
+              error.error.InnerException.Message
+            );
+          } else {
+            const toast = this.notificationsService.error(
+              "Error",
+              "SomeThing Went Wrong"
+            );
+          }
+        }
+      );
+      console.log("saveing....");
+    }
   }
   getproploc(plotid) {
     this.serviceService.getProploc(plotid).subscribe((response: any) => {

@@ -117,6 +117,7 @@ export class ServiceService {
   hide: boolean;
   toMes: boolean;
   toMess: boolean;
+  Plot_Size_M2: any;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -425,6 +426,7 @@ export class ServiceService {
     DocID
   ) {
     // console.log('File', File);
+    /*return this.http.post(this.saveFileLookUP + '?' + 'TaskType=' + TaskType + '&ApplicationNo=' + ApplicationNo + '&DocData=' + File + '&uid=00000000-0000-0000-0000-000000000000' + '&FileType=' + Type + '&RequrementID=' + ReqId + '&Requrement=' + Requrement, null);*/
 
     return this.http.post(this.saveFileLookUP, {
       TaskType,

@@ -665,7 +665,7 @@ export class ServiceComponent implements OnInit {
 
   EnableFins() {
     console.log("enableningggg....");
-
+    this.validated = true;
     this.isvalidated(
       this.todoID,
       this.tskID,
@@ -928,6 +928,10 @@ export class ServiceComponent implements OnInit {
   }
 
   Uploader(File, RequiredDoc, fild) {
+    let taskType =
+      this.tskTyp === "c800fb16-f961-e111-95d6-00e04c05559b"
+        ? "Decision"
+        : "Complete";
     console.log("RequiredDoc", RequiredDoc);
     console.log("File ", File);
     let base64file;
@@ -954,21 +958,21 @@ export class ServiceComponent implements OnInit {
       console.log("this.DocID", this.DocID);
       this.serviceService
         .saveFile(
-          base64FileData,
-          type,
-          this.licenceData.Licence_Service_ID,
+          base64file,
+          File.type,
+          this.AppNo,
           RequiredDoc.requirement_code,
-          "Start",
+          taskType,
           RequiredDoc.description_en,
           this.DocID
         )
         .subscribe(
           (message: HttpEvent<any>) => {
-            if (message.type === HttpEventType.UploadProgress) {
-              var eventTotal = message.total ? message.total : 0;
-              this.progress = Math.round(
-                (message.loaded / message.total) * 100
-              );
+            if (message) {
+              // var eventTotal = message.total ? message.total : 0;
+              // this.progress = Math.round(
+              //   (message.loaded / message.total) * 100
+              // );
               console.log(`Uploaded! ${this.progress}%`);
 
               fild.clear();
