@@ -19,6 +19,7 @@ import { Subject } from "rxjs";
 import { environment } from "src/environments/environment";
 import { BsModalRef, BsModalService } from "ngx-bootstrap";
 import { ActivatedRoute } from "@angular/router";
+import { PlatformLocation } from "../plot-managment/plot-managment.component";
 
 @Component({
   selector: "app-property-register",
@@ -45,6 +46,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   urlParams: any;
   PropertyTypeLookUP: any;
   CustomerLookUP: any;
+  platformLocation: PlatformLocation;
+  geo: any;
 
   constructor(
     private serviceService: ServiceService,
@@ -64,7 +67,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   changingValue: Subject<boolean> = new Subject();
 
   tellChild(aa) {
-    this.serviceService.check = true;
+    console.log("value is changing", aa);
+    this.geo = aa;
+    this.serviceService.check = false;
     this.changingValue.next(aa);
   }
   async ngOnChanges() {
@@ -81,8 +86,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     if (this.selectedpro !== undefined && this.selectedpro !== null) {
       this.propertyRegister = this.selectedpro;
       this.propertyRegister.plot_ID = this.selectedpro.Plot_ID;
-      console.log("selected :: ", this.propertyRegister);
+      console.log("selected", this.selectedpro.Plot_ID);
       //
+      this.getplotlocbyid(this.propertyRegister.plot_ID);
     }
 
     if (this.LicenceData !== undefined && this.LicenceData !== null) {
@@ -220,6 +226,66 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     this.modalRef = this.modalService.show(
       template,
       Object.assign({}, { class: "gray modal-lg" })
+    );
+  }
+  getplotlocbyid(Plot_ID) {
+    this.serviceService.getPlotloc(Plot_ID).subscribe((response: any) => {
+      this.plotloc = response.procPlot_Locations;
+      if (this.plotloc.length > 0) {
+        this.platformLocation = this.plotloc[0];
+        console.log(this.plotloc[0]);
+
+        this.convertPolygonCoordinates(this.plotloc[0].geowithzone);
+        this.serviceService.fromPropoperty = true;
+        console.log("plotloc:", this.plotloc, this.plotloc[0].geowithzone);
+        //this.isplotllocnew = true;
+      } else {
+        this.platformLocation = new PlatformLocation();
+        //this.isplotllocnew = false;
+      }
+    });
+  }
+  convertPolygonCoordinates(polygonString: string): any[] {
+    const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
+
+    const result = [];
+
+    if (coordinates) {
+      for (const coord of coordinates) {
+        console.log("coordcoordcoord", coord);
+
+        const [easting, northing, hemisphere, zone] = coord.split(" ");
+
+        result.push({
+          northing: northing,
+          easting: easting,
+          hemisphere: hemisphere,
+          zone: zone,
+        });
+      }
+    }
+    console.log("result", result);
+    this.convertCoordinates(result);
+
+    return result;
+  }
+  convertCoordinates(data) {
+    const convertedCoordinates = [];
+    // Convert UTM coordinates to the desired format
+    convertedCoordinates.push(["northing", "easting", "hemisphere", "zone"]);
+
+    for (const coord of data) {
+      convertedCoordinates.push([
+        coord.northing,
+        coord.easting,
+        coord.hemisphere,
+        coord.zone,
+      ]);
+    }
+    this.tellChild(convertedCoordinates);
+    console.log(
+      "convertedCconvertedCoordinatesoordinates",
+      convertedCoordinates
     );
   }
   closeModall() {
@@ -488,49 +554,49 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
 
     return multiPointString;
   }
-  convertPolygonCoordinates(polygonString: string): any[] {
-    const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
+  // convertPolygonCoordinates(polygonString: string): any[] {
+  //   const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
 
-    const result = [];
+  //   const result = [];
 
-    if (coordinates) {
-      for (const coord of coordinates) {
-        console.log("coordcoordcoord", coord);
+  //   if (coordinates) {
+  //     for (const coord of coordinates) {
+  //       console.log("coordcoordcoord", coord);
 
-        const [easting, northing, hemisphere, zone] = coord.split(" ");
+  //       const [easting, northing, hemisphere, zone] = coord.split(" ");
 
-        result.push({
-          northing: northing,
-          easting: easting,
-          hemisphere: hemisphere,
-          zone: zone,
-        });
-      }
-    }
-    console.log("result", result);
-    this.convertCoordinates(result);
+  //       result.push({
+  //         northing: northing,
+  //         easting: easting,
+  //         hemisphere: hemisphere,
+  //         zone: zone,
+  //       });
+  //     }
+  //   }
+  //   console.log("result", result);
+  //   this.convertCoordinates(result);
 
-    return result;
-  }
-  convertCoordinates(data) {
-    const convertedCoordinates = [];
-    // Convert UTM coordinates to the desired format
-    convertedCoordinates.push(["northing", "easting", "hemisphere", "zone"]);
+  //   return result;
+  // }
+  // convertCoordinates(data) {
+  //   const convertedCoordinates = [];
+  //   // Convert UTM coordinates to the desired format
+  //   convertedCoordinates.push(["northing", "easting", "hemisphere", "zone"]);
 
-    for (const coord of data) {
-      convertedCoordinates.push([
-        coord.northing,
-        coord.easting,
-        coord.hemisphere,
-        coord.zone,
-      ]);
-    }
-    this.tellChild(convertedCoordinates);
-    console.log(
-      "convertedCconvertedCoordinatesoordinates",
-      convertedCoordinates
-    );
-  }
+  //   for (const coord of data) {
+  //     convertedCoordinates.push([
+  //       coord.northing,
+  //       coord.easting,
+  //       coord.hemisphere,
+  //       coord.zone,
+  //     ]);
+  //   }
+  //   this.tellChild(convertedCoordinates);
+  //   console.log(
+  //     "convertedCconvertedCoordinatesoordinates",
+  //     convertedCoordinates
+  //   );
+  // }
   updateproploc() {
     console.log("coordinatcoordinat", this.serviceService.coordinate);
     if (this.serviceService.coordinate) {

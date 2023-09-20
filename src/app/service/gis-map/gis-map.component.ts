@@ -33,7 +33,7 @@ export class GisMapComponent implements AfterViewInit {
   utmCoordinates: any;
   alllatlong: any[] = [];
   constructor(
-    private ServiceService: ServiceService,
+    public ServiceService: ServiceService,
     private messageService: MessageService,
     private notificationsService: NotificationsService,
     private modalService: BsModalService,

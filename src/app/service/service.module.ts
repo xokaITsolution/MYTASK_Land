@@ -83,7 +83,7 @@ import { GisMapComponent } from "./gis-map/gis-map.component";
 import { GisMapService } from "./gis-map/gis-map.service";
 import { DatepickerEthiopianDirective } from "./datepicker-ethiopian.directive";
 import { CustomAlertComponent } from "./gis-map/CustomAlertComponent";
-
+import { OverlayPanelModule } from "primeng/overlaypanel";
 @NgModule({
   imports: [
     //BackButtonDisableModule.forRoot({
@@ -137,6 +137,7 @@ import { CustomAlertComponent } from "./gis-map/CustomAlertComponent";
     MatDialogModule,
     MatProgressBarModule,
     //material
+    OverlayPanelModule,
   ],
 
   declarations: [

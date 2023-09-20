@@ -5,19 +5,69 @@
 <div class="m-3" *ngIf="!loading">
 
   <div class="p-3 bg-success text-white">
-    <table class="table">
+    <!-- <table class="table">
       <thead>
         <tr>
           <th scope="col" translate><span translate>Application NO</span>:{{licenceData.Application_No}}</th>
           <th scope="col" translate><span translate>Service Name</span>: {{licenceData.Service_Name}}</th>
-          <!-- <th scope="col" translate><span translate>Plot ID</span>: {{licenceData.Parcel_ID}}</th> -->
+          <th scope="col" translate><span translate>Plot ID</span>: {{licenceData.Parcel_ID}}</th>
           <th scope="col" translate><span translate>Property ID</span>: {{licenceData.Property_ID}}</th>
           <th scope="col" translate><span translate>Certificate ID</span>: {{licenceData.Certificate_Code}}</th>
+        </tr>
+      </thead>
+    </table> -->
+    <table class="table">
+      <thead>
+        <tr *ngIf="licenceData">
+          <th scope="col" translate>
+            <label translate>Application No:</label>
+            {{ licenceData.Application_No }}
+          </th>
+          <th scope="col" translate>
+            <label translate> Plot ID :</label>
+            {{ licenceData.Service_Name }}
+          </th>
+          <th scope="col" translate>
+            <label translate> Plot ID:</label>
+            {{ licenceData.Parcel_ID }}
+          </th>
+    
+          <th>
+            <button type="button" (click)="moreDetailToggle()" class="btn btn-primary" translate>
+              {{ moreDetail.toggle === true ? "Less" : "More"}}
+            </button>
+          </th>
+         
         </tr>
       </thead>
     </table>
 
   </div>
+      <div class="p-3 bg-success text-white" *ngIf="moreDetail.toggle">
+        <table class="table table-bordered table-responsive header-table">
+          <thead>
+            <tr *ngIf="licenceData" >
+              <th translate>Applicant_First_Name_AM</th>
+              <th translate>Applicant_Middle_Name_AM</th>
+              <th translate>Wereda_ID</th>
+              <th translate>Customer phone</th>
+              <th translate>TIN</th>
+              <th translate>Email</th>
+              <th translate>QueueNo</th>
+             
+            </tr>
+            <tr *ngIf="licenceData">
+              <td >{{ licenceData.Applicant_First_Name_AM }}</td>
+              <td >{{ licenceData.Applicant_Middle_Name_AM }}</td>
+              <td >{{ licenceData.Wereda_ID }}</td>
+              <td >{{ licenceData.Cust_Phone_No }}</td>
+              <td >{{ licenceData.Cust_TIN_No }}</td>
+              <td >{{ licenceData.Email }}</td>
+              <td >{{ licenceData.QueueNo }}</td>
+            </tr>
+          </thead>
+        </table>
+      </div>
 
   <div class="m-3 row">
 
@@ -210,7 +260,7 @@
   <!--The content below is only a placeholder and can be replaced.-->
   <div class="p-3 border-secondary border-5 bg-secondary text-white h-100 text-center m-10 mt-10">
     <div class="btn-group">
-      <!-- <button class="btn btn-primary mr-2" *ngIf="!hideit"  type="button" (click)="showdialogs()" translate>Not Complete</button> -->
+      <button class="btn btn-primary mr-2" *ngIf="!hideit"  type="button" (click)="showdialogs()" translate>Not Complete</button>
 
  <!-- <button *ngIf="!hideit" type="button" class="btn btn-primary mr-2" (click)="Back()" translate>Back</button> -->
    <button type="button" class="btn btn-primary mr-2" (click)="openModal(template)" translate>Review</button>

@@ -180,7 +180,20 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
           </select> -->
       </div>
     </div>
-  <div class="form-group row col-md-7">
+    <div class="form-group row col-md-7">
+      <label for="TransferredTo" class="col-sm-3 col-form-label" translate>Transferred To</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" [(ngModel)]="titleDeedRegistration.Transfer_To_Customer"
+          name="TransferredToid" id="customerto" [placeholder]="'select customer' | translate" hidden>
+    
+        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="Transfer_To_CustomerName"
+          name="TransferredTo" id="TransferredTo" [placeholder]="'select customer' | translate"
+          (click)="openModalTo(templateto)" readonly>
+    
+      
+      </div>
+    </div>
+  <!-- <div class="form-group row col-md-7">
     <label for="ParentDeedID" class="col-sm-3 col-form-label" translate>Parent Deed ID</label>
     <div class="col-sm-9">
       <select class="form-control" [disabled]="disable" [(ngModel)]="titleDeedRegistration.Parent_Deed_ID"
@@ -191,7 +204,7 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
         </option>
       </select>
     </div>
-  </div>
+  </div> -->
     <div class="form-group row col-md-7">
       <label for="TransferType" class="col-sm-3 col-form-label" translate>Transfer Type</label>
       <div class="col-sm-9">
@@ -293,3 +306,48 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
 
   </div>
 </ng-template>
+
+<ng-template #templateto>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Transferred To</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+    <p-table #dt [value]="CustomerLookUP" [paginator]="true" [rows]="5"
+      [globalFilterFields]="['tin','FullName_AM','FullName_EN','applicant_Mother_Name_AM','applicant_Mother_Name_EN','mobile_No']">
+      <ng-template pTemplate="caption">
+        <div style="text-align: right">
+          <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+          <input type="text" pInputText size="50" placeholder="Global Filter"
+            (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th>TIN</th>
+          <th>Full Name AM</th>
+          <th>Full Name EN</th>
+          <th>Mother Name AM</th>
+          <th>Mother Name EN</th>
+          <th>mobile Number</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-Customer>
+        <tr (click)="closeModalTo(Customer)">
+          <td>{{Customer.tin}}</td>
+          <td>{{Customer.FullName_AM}}</td>
+          <td>{{Customer.FullName_EN}}</td>
+          <td>{{Customer.applicant_Mother_Name_AM}}</td>
+          <td>{{Customer.applicant_Mother_Name_EN}}</td>
+          <td>{{Customer.mobile_No}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+
+  </div>
+</ng-template>
+

@@ -118,6 +118,7 @@ export class ServiceService {
   toMes: boolean;
   toMess: boolean;
   Plot_Size_M2: any;
+  fromPropoperty: boolean = false;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);

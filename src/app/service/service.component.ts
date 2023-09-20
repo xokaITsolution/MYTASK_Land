@@ -188,6 +188,9 @@ export class ServiceComponent implements OnInit {
     FIELD_ONE: "Plot id",
   };
   okdb;
+  moreDetail = {
+    toggle: false,
+  };
   constructor(
     private modalService: BsModalService,
     private activatedRoute: ActivatedRoute,
@@ -238,7 +241,14 @@ export class ServiceComponent implements OnInit {
         }
       );
   }
-
+  moreDetailToggle() {
+    this.moreDetail.toggle = !this.moreDetail.toggle;
+    // if (this.moreDetail.toggle) {
+    //   this.moreDetail.buttonText = "Less";
+    // } else {
+    //   this.moreDetail.buttonText = "More";
+    // }
+  }
   saveFormm2(formData) {
     console.log("save-form", JSON.stringify(formData));
     this.serviceService
@@ -1718,6 +1728,7 @@ export class ServiceComponent implements OnInit {
           this.Licence_Service_ID = this.licenceData.Licence_Service_ID;
           this.AppCode = this.licenceData.Licence_Service_ID; //
           this.AppNo = this.licenceData.Application_No; //
+          console.log("licenceData", this.licenceData);
 
           if (this.licenceData.Certificate_Code > 0) {
             this.getPriveysLicence(this.licenceData.Certificate_Code);

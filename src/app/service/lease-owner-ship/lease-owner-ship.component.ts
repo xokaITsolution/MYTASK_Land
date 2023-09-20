@@ -249,10 +249,12 @@ export class LeaseOwnerShipComponent implements OnChanges {
       );
       return;
     }
-    this.leaseOwnerShip.Date_of_final_lease_payment =
-      await this.getEthiopianToGregorian(
-        this.leaseOwnerShip.Date_of_final_lease_payment
-      );
+    if (this.language == "amharic") {
+      this.leaseOwnerShip.Date_of_final_lease_payment =
+        await this.getEthiopianToGregorian(
+          this.leaseOwnerShip.Date_of_final_lease_payment
+        );
+    }
     this.leaseOwnerShipService.save(this.leaseOwnerShip).subscribe(
       async (deptSuspension) => {
         console.log("deptSuspension", deptSuspension);
@@ -345,10 +347,12 @@ export class LeaseOwnerShipComponent implements OnChanges {
       );
       return;
     }
-    this.leaseOwnerShip.Date_of_final_lease_payment =
-      await this.getEthiopianToGregorian(
-        this.leaseOwnerShip.Date_of_final_lease_payment
-      );
+    if (this.language == "amharic") {
+      this.leaseOwnerShip.Date_of_final_lease_payment =
+        await this.getEthiopianToGregorian(
+          this.leaseOwnerShip.Date_of_final_lease_payment
+        );
+    }
     this.leaseOwnerShipService.Add(this.leaseOwnerShip).subscribe(
       async (deptSuspension) => {
         console.log("deptSuspension", deptSuspension);

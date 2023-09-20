@@ -25,6 +25,7 @@ import { BsModalRef, BsModalService } from "ngx-bootstrap";
 export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   @Output() completed = new EventEmitter();
   modalRef: BsModalRef;
+  modalRefTo: BsModalRef;
   public titleDeedRegistration: TitleDeedRegistration;
   titleDeedRegistrationList;
   deedform = false;
@@ -43,6 +44,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   customerdata: any;
   CustomerLookUP: any;
   Transfer_From_CustomerName: null;
+  Transfer_To_CustomerName: any;
 
   constructor(
     private modalService: BsModalService,
@@ -175,9 +177,11 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
     }
   }
   async save() {
-    this.titleDeedRegistration.Date = await this.getEthiopianToGregorian(
-      this.titleDeedRegistration.Date
-    );
+    if (this.language === "amharic") {
+      this.titleDeedRegistration.Date = await this.getEthiopianToGregorian(
+        this.titleDeedRegistration.Date
+      );
+    }
     this.titleDeedRegistrationService
       .save(this.titleDeedRegistration)
       .subscribe(
@@ -193,7 +197,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
           //   this.Saved = true;
           // }
           this.adddeed();
-          this.getdeed(this.selectedpro.Property_ID);
+          this.getdeed(this.selectedpro.property_ID);
           this.serviceService.disablefins = false;
         },
         (error) => {
@@ -219,9 +223,11 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   }
 
   async add() {
-    this.titleDeedRegistration.Date = await this.getEthiopianToGregorian(
-      this.titleDeedRegistration.Date
-    );
+    if (this.language === "amharic") {
+      this.titleDeedRegistration.Date = await this.getEthiopianToGregorian(
+        this.titleDeedRegistration.Date
+      );
+    }
     this.titleDeedRegistration.Licence_Service_Id = this.Licence_Service_ID;
     this.titleDeedRegistration.Application_No = this.AppNo;
     this.titleDeedRegistration.Service_ID = this.Service_ID;
@@ -232,7 +238,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
           "Sucess",
           deptSuspension
         );
-        this.getdeed(this.selectedpro.Property_ID);
+        this.getdeed(this.selectedpro.property_ID);
         this.adddeed();
         // if (!this.Saved) {
         //   this.completed.emit();
@@ -359,6 +365,13 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
       Object.assign({}, { class: "gray modal-lg" })
     );
   }
+  openModalTo(template: TemplateRef<any>) {
+    this.modalRefTo = this.modalService.show(
+      template,
+      Object.assign({}, { class: "gray modal-lg" })
+    );
+    this.modalRef.hide();
+  }
   closeModal(customer) {
     console.log(customer);
 
@@ -367,17 +380,26 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
     this.Transfer_From_CustomerName = customer.FullName_AM;
     this.modalRef.hide();
   }
+  closeModalTo(customer) {
+    console.log(customer);
+
+    this.titleDeedRegistration.Transfer_To_Customer = customer.customer_ID;
+    console.log("closeing.....");
+    this.Transfer_To_CustomerName = customer.FullName_AM;
+    this.modalRefTo.hide();
+    //this.ngxSmartModalService.getModal(modal).close();
+  }
   getcustomer(globvar) {
     console.log(globvar);
     this.serviceService.getcustomer(globvar).subscribe((resp: any) => {
       this.customerdata = resp.procCustomers;
     });
   }
-  closeModalTo(customer, modal) {
-    this.titleDeedRegistration.Transfer_To_Customer = customer.Customer_ID;
-    console.log("closeing.....");
-    this.ngxSmartModalService.getModal(modal).close();
-  }
+  // closeModalTo(customer, modal) {
+  //   this.titleDeedRegistration.Transfer_To_Customer = customer.Customer_ID;
+  //   console.log("closeing.....");
+  //   this.ngxSmartModalService.getModal(modal).close();
+  // }
 
   async getFromFromDeed(Ownership_ID) {
     for (let i = 0; i < this.titleDeedRegistrationList.length; i++) {
