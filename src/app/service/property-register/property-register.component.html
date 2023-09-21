@@ -161,7 +161,23 @@
         <input class="form-control" id="RegistrationDate"
           name="RegistrationDate" placeholder="RegistrationDate" [(ngModel)]="propertyRegister.registration_Date"  type="date"></div>
     </div>
-    
+            <div class="form-group row col-md-6" *ngIf="language !== 'amharic'">
+              <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>
+              <div class="col-sm-9">
+                <input type="date" class="form-control" [disabled]="disable" [(ngModel)]="propertyRegister.registration_Date"
+                  name="RegisterationDate" id="RegisterationDate" [placeholder]="'Registeration date' | translate"
+                  #RegisterationDate="ngModel" [ngClass]="{ 'is-invalid': RegisterationDate.invalid }" required>
+              </div>
+            </div>
+            <div class="form-group row col-md-6" *ngIf="language === 'amharic'">
+              <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>
+              <div class="col-sm-9">
+                <input type="text" readonly class="form-control" [disabled]="disable" [(ngModel)]="propertyRegister.registration_Date"
+                  name="RegisterationDate" id="RegisterationDate" [placeholder]="'Registeration date' | translate"
+                  #RegisterationDate="ngModel" [ngClass]="{ 'is-invalid': RegisterationDate.invalid }" required
+                  appDatepickerEthiopian (dateEmitter)="selectedDateTime($event,1)">
+              </div>
+            </div>
     <!-- <div class="form-group row col-md-6"><label class="col-sm-3 col-form-label" for="LocationName" translate="">Location
         Name</label>
       <div class="col-sm-9"><input class="form-control" id="LocationName"
@@ -235,16 +251,16 @@
   <div class="modal-body">
     <div style="height: 500px; overflow: auto;">
 
-      <app-gis-map [geo]="geo" [changing]="changingValue"></app-gis-map>
+      <app-gis-map [geo]="geo" [changingg]="changingValue"></app-gis-map>
     </div>
-  </div>
+  </div> 
 
   <!-- Modal footer -->
   <div class="modal-footer">
-    <!-- <button type="button" class="btn btn-primary" (click)="saveplotloc();closeModall()"
-      *ngIf="!isplotllocnew &&  !disable" translate>Save</button>
-    <button type="button" class="btn btn-primary" (click)="updateplotloc();closeModall()"
-      *ngIf="isplotllocnew &&  !disable" translate>Update</button> -->
+    <button type="button" class="btn btn-primary" (click)="saveproploc();closeModall()"
+      *ngIf="!isproplocnew &&  !disable" translate>Save</button>
+    <button type="button" class="btn btn-primary" (click)="updateproploc();closeModall()"
+      *ngIf="isproplocnew &&  !disable" translate>Update</button>
     <button type="button" class="btn btn-danger" (click)="closeModall()" translate>Close</button>
   </div>
 

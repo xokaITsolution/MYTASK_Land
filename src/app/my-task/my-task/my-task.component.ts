@@ -1,14 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {MyTaskService} from '../my-task.service';
-import {Router} from '@angular/router';
-import {ServiceService} from '../../service/service.service'
-import { environment } from 'src/environments/environment';
-import { NgxSmartModalService } from 'ngx-smart-modal';
-import { NotificationsService } from 'angular2-notifications';
+import { Component, OnInit } from "@angular/core";
+import { MyTaskService } from "../my-task.service";
+import { Router } from "@angular/router";
+import { ServiceService } from "../../service/service.service";
+import { environment } from "src/environments/environment";
+import { NgxSmartModalService } from "ngx-smart-modal";
+import { NotificationsService } from "angular2-notifications";
 @Component({
-  selector: 'app-my-task',
-  templateUrl: './my-task.component.html',
-  styleUrls: ['./my-task.component.css']
+  selector: "app-my-task",
+  templateUrl: "./my-task.component.html",
+  styleUrls: ["./my-task.component.css"],
 })
 export class MyTaskComponent implements OnInit {
   taskwaithing = 120;
@@ -19,181 +19,184 @@ export class MyTaskComponent implements OnInit {
   messageObj = {
     currentMessage: null,
     currentMessageIndex: 0,
-    messages: null
+    messages: null,
   };
   direction = {
-    NEXT: 'd00',
-    PREV: 'd01'
+    NEXT: "d00",
+    PREV: "d01",
   };
   loadingMessage = false;
 
-  constructor(private myTaskService: MyTaskService, private router: Router,private seice:ServiceService, private modal: NgxSmartModalService,
-        private notificationsService: NotificationsService, 
-) {
-    
-  }
+  constructor(
+    private myTaskService: MyTaskService,
+    private router: Router,
+    private seice: ServiceService,
+    private modal: NgxSmartModalService,
+    private notificationsService: NotificationsService
+  ) {}
 
   ngOnInit() {
     this.getMyTask();
-
   }
   canGo(where) {
     if (this.messageObj.messages) {
       if (where == this.direction.NEXT) {
-        return this.messageObj.currentMessageIndex < this.messageObj.messages.length - 1;
-      }
-      else if (where == this.direction.PREV) {
+        return (
+          this.messageObj.currentMessageIndex <
+          this.messageObj.messages.length - 1
+        );
+      } else if (where == this.direction.PREV) {
         return this.messageObj.currentMessageIndex > 0;
       }
       return false;
-    }
-    else {
+    } else {
       return false;
     }
   }
 
   navigateMessage(direction) {
-    if (this.messageObj.messages ? this.messageObj.messages.length > 0 : false) {
+    if (
+      this.messageObj.messages ? this.messageObj.messages.length > 0 : false
+    ) {
       if (
         direction == this.direction.NEXT &&
-        this.messageObj.currentMessageIndex < this.messageObj.messages.length - 1
+        this.messageObj.currentMessageIndex <
+          this.messageObj.messages.length - 1
       ) {
         this.messageObj.currentMessageIndex += 1;
-        this.messageObj.currentMessage = this.messageObj.messages[
-          this.messageObj.currentMessageIndex
-        ]['remarks'];
-      }
-      else if (
+        this.messageObj.currentMessage =
+          this.messageObj.messages[this.messageObj.currentMessageIndex][
+            "remarks"
+          ];
+      } else if (
         direction == this.direction.PREV &&
         this.messageObj.currentMessageIndex > 0
       ) {
         this.messageObj.currentMessageIndex -= 1;
-        this.messageObj.currentMessage = this.messageObj.messages[
-          this.messageObj.currentMessageIndex
-        ]['remarks'];
+        this.messageObj.currentMessage =
+          this.messageObj.messages[this.messageObj.currentMessageIndex][
+            "remarks"
+          ];
       }
     }
   }
   IsLockedBy_OtherUser(task) {
-    this.myTaskService.IsLockedBy_OtherUser(task.id).subscribe(message => {
-      
-      // if(task.tasks_id =="d553ccb8-e40d-4bee-9418-5754805609fd"){
-      //   const warningMessage = "የሊዝ ወይም የነባር ይዞታ መመዝገቡን አረጋግጥ/Check lease or freehold record is active for this plot";
-      //   const toastWarning = this.notificationsService.warn(
-      //     "Warning",
-      //     warningMessage
-      //   );
-      // this.go(task);
-      // }
-      // else{
+    this.myTaskService.IsLockedBy_OtherUser(task.id).subscribe(
+      (message) => {
+        // if(task.tasks_id =="d553ccb8-e40d-4bee-9418-5754805609fd"){
+        //   const warningMessage = "የሊዝ ወይም የነባር ይዞታ መመዝገቡን አረጋግጥ/Check lease or freehold record is active for this plot";
+        //   const toastWarning = this.notificationsService.warn(
+        //     "Warning",
+        //     warningMessage
+        //   );
+        // this.go(task);
+        // }
+        // else{
         this.go(task);
-    //  }
+        //  }
       },
-    error => {
-      console.error(error);
-     
-    });
-    }
-    openModal(id) {
-      this.modal.getModal(id).open();
-    }
-  
-    closeModal(id) {
-      this.modal.getModal(id).close();
-    }
-  
-    showMessage(appNo, task) {
-      if (appNo != this.messageAppNo) {
-        let messageInCache = false;
-        this.loadingMessage = true;
-  
-        this.messageObj.currentMessage = null;
-        this.messageObj.currentMessageIndex = 0;
-        this.messageObj.messages = null;
-  
-        this.messageCache.some(
-          message => {
-            if (message['appNo'] == appNo) {
-              messageInCache = true;
-              this.messageObj.messages = message['messages'];
-              if (this.messageObj.messages) {
-                this.messageObj.currentMessage = this.messageObj.messages[0]['remarks'];
-              }
-              this.loadingMessage = false;
-              return true;
-            }
-            return false;
-          }
-        );
-  
-        if (!messageInCache) {
-          this.seice.GetNote(appNo).subscribe(
-            result => {
-              this.messageObj.messages = result;
-              if (this.messageObj.messages) {
-                this.messageCache.push(
-                  {
-                    appNo: this.messageAppNo,
-                    messages: result
-                  }
-                );
-                this.messageObj.currentMessage = this.messageObj.messages[0]['remarks'];
-              }
-              this.loadingMessage = false;
-            },
-            error => {
-              this.loadingMessage = false;
-              console.error('message error :: ', error);
-            }
-          );
-        }
+      (error) => {
+        console.error(error);
       }
-      this.openModal('messages');
-      this.messageAppNo = appNo;
-    }
-
-   async getMyTask() {
-   
-    //var userInfo = await this.seice.getViewAspNetUsersWorkInfoDetail(environment.username).toPromise();
-    //var orgid= userInfo[0].organization_code;
-   //var orgid="00000000-0000-0000-0000-000000000000"
-    var orgid="24d45c72-8088-4591-810a-bc674f9f0a57"
-    if(window['lang']=='en-us'){
-      var lanid='10D04E8B-3361-E111-95D5-00E04C05559B'
-    }
-    else{
-      var lanid='2C2EBBEA-3361-E111-95D5-00E04C05559B'
-    }
-    
-    this.myTaskService.getMytasks(orgid,lanid).subscribe(taskList => {
-      this.taskList = taskList;
-      this.taskList = (Object.assign([], this.taskList.Table1));
-      
-      console.log('taskList', taskList);
-      console.log('dcument id', this.seice.docId);
-      this.taskList.sort((b, a) => {
-        if (a.start_date > b.start_date) {
-          return -1;
-        } else if (a.start_date < b.start_date) {
-          return 1;
-        } else {
-          return 0;
-        }});
-        for(let i=0;i<this.taskList.length;i++){
-          this.seice.docId=this.taskList[i].service_details_id;
-         }
-         let num = 1;
-         (this.taskList as Array<any>).map(
-           task => task['number'] = num++
-         )
-    }, error => {
-      console.log('error');
-    });
+    );
+  }
+  openModal(id) {
+    this.modal.getModal(id).open();
   }
 
+  closeModal(id) {
+    this.modal.getModal(id).close();
+  }
+
+  showMessage(appNo, task) {
+    if (appNo != this.messageAppNo) {
+      let messageInCache = false;
+      this.loadingMessage = true;
+
+      this.messageObj.currentMessage = null;
+      this.messageObj.currentMessageIndex = 0;
+      this.messageObj.messages = null;
+
+      this.messageCache.some((message) => {
+        if (message["appNo"] == appNo) {
+          messageInCache = true;
+          this.messageObj.messages = message["messages"];
+          if (this.messageObj.messages) {
+            this.messageObj.currentMessage =
+              this.messageObj.messages[0]["remarks"];
+          }
+          this.loadingMessage = false;
+          return true;
+        }
+        return false;
+      });
+
+      if (!messageInCache) {
+        this.seice.GetNote(appNo).subscribe(
+          (result) => {
+            this.messageObj.messages = result;
+            if (this.messageObj.messages) {
+              this.messageCache.push({
+                appNo: this.messageAppNo,
+                messages: result,
+              });
+              this.messageObj.currentMessage =
+                this.messageObj.messages[0]["remarks"];
+            }
+            this.loadingMessage = false;
+          },
+          (error) => {
+            this.loadingMessage = false;
+            console.error("message error :: ", error);
+          }
+        );
+      }
+    }
+    this.openModal("messages");
+    this.messageAppNo = appNo;
+  }
+
+  async getMyTask() {
+    //var userInfo = await this.seice.getViewAspNetUsersWorkInfoDetail(environment.username).toPromise();
+    //var orgid= userInfo[0].organization_code;
+    //var orgid="00000000-0000-0000-0000-000000000000"
+    var orgid = "24d45c72-8088-4591-810a-bc674f9f0a57";
+    if (window["lang"] == "en-us") {
+      var lanid = "10D04E8B-3361-E111-95D5-00E04C05559B";
+    } else {
+      var lanid = "2C2EBBEA-3361-E111-95D5-00E04C05559B";
+    }
+
+    this.myTaskService.getMytaskss().subscribe(
+      (taskList) => {
+        this.taskList = taskList;
+        this.taskList = Object.assign([], this.taskList.Table1);
+
+        console.log("taskList", taskList);
+        console.log("dcument id", this.seice.docId);
+        this.taskList.sort((b, a) => {
+          if (a.start_date > b.start_date) {
+            return -1;
+          } else if (a.start_date < b.start_date) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+        for (let i = 0; i < this.taskList.length; i++) {
+          this.seice.docId = this.taskList[i].service_details_id;
+        }
+        let num = 1;
+        (this.taskList as Array<any>).map((task) => (task["number"] = num++));
+      },
+      (error) => {
+        console.log("error");
+      }
+    );
+  }
 
   go(task) {
-    console.log('task.to_screen', task.to_screen);
+    console.log("task.to_screen", task.to_screen);
 
     // if (task.to_screen == 'a7a1e05e-32c2-4f44-ad58-306572c64593') {
     //   console.log('path if :: ', '/services/2/' + task.todo_comment + '/' + task.task_types_id + '/' + task.tasks_id + '/' + task.service_details_id + '/' + task.id + '/' + task.to_screen);
@@ -208,9 +211,37 @@ export class MyTaskComponent implements OnInit {
     //   // this.router.navigateByUrl('/services/4/' + task.todo_comment + '/' + task.task_types_id + '/' + task.tasks_id + '/' + task.service_details_id + '/' + task.id);
     //   location.replace(window['_app_base'] + '/services/4/' + task.todo_comment + '/' + task.task_types_id + '/' + task.tasks_id + '/' + task.service_details_id + '/' + task.id)
     // } else {
-      console.log('path else :: ', '/services/1/' + task.todo_comment + '/' + task.task_types_id + '/' + task.tasks_id + '/' + task.service_details_id + '/' + task.id + '/' + task.to_screen);
-      // this.router.navigateByUrl('/services/1/' + task.todo_comment + '/' + task.task_types_id + '/' + task.tasks_id + '/' + task.service_details_id + '/' + task.id + '/' + task.to_screen);
-      location.replace(window['_app_base'] + '/services/1/' + task.todo_comment + '/' + task.task_types_id + '/' + task.tasks_id + '/' + task.service_details_id + '/' + task.id + '/' + task.to_screen)
+    console.log(
+      "path else :: ",
+      "/services/1/" +
+        task.todo_comment +
+        "/" +
+        task.task_types_id +
+        "/" +
+        task.tasks_id +
+        "/" +
+        task.service_details_id +
+        "/" +
+        task.id +
+        "/" +
+        task.to_screen
+    );
+    // this.router.navigateByUrl('/services/1/' + task.todo_comment + '/' + task.task_types_id + '/' + task.tasks_id + '/' + task.service_details_id + '/' + task.id + '/' + task.to_screen);
+    location.replace(
+      window["_app_base"] +
+        "/services/1/" +
+        task.todo_comment +
+        "/" +
+        task.task_types_id +
+        "/" +
+        task.tasks_id +
+        "/" +
+        task.service_details_id +
+        "/" +
+        task.id +
+        "/" +
+        task.to_screen
+    );
     // }
     // a7a1e05e-32c2-4f44-ad58-306572c64593 for plot
     // da8c5bd4-ea3d-4f02-b1b2-38cf26d6d1ff for property

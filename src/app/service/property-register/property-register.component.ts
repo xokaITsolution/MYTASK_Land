@@ -48,7 +48,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   CustomerLookUP: any;
   platformLocation: PlatformLocation;
   geo: any;
-
+  combineArray: [];
+  convertedCoordinates: any = [];
   constructor(
     private serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -64,13 +65,26 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     this.propertyRegister = new PropertyRegister();
     this.propformLocation = new PropformLocation();
   }
-  changingValue: Subject<boolean> = new Subject();
+  changingValue: Subject<any> = new Subject();
 
   tellChild(aa) {
-    console.log("value is changing", aa);
-    this.geo = aa;
+    this.convertedCoordinates.push(aa);
+    this.geo = this.convertedCoordinates;
+    console.log("value is changingg", this.geo);
     this.serviceService.check = false;
     this.changingValue.next(aa);
+  }
+  combineDeeplyNestedArray(arr: any[]) {
+    const mappedArray = arr.map((innerArray) => {
+      // Perform your mapping logic here
+      return {
+        northing: innerArray[0],
+        easting: innerArray[1],
+        hemisphere: innerArray[2],
+        zone: innerArray[3],
+      };
+    });
+    return mappedArray;
   }
   async ngOnChanges() {
     this.routerService.params.subscribe((params) => {
@@ -88,7 +102,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       this.propertyRegister.plot_ID = this.selectedpro.Plot_ID;
       console.log("selected", this.selectedpro.Plot_ID);
       //
-      this.getplotlocbyid(this.propertyRegister.plot_ID);
+      //this.getplotlocbyid(this.propertyRegister.plot_ID);
+      this.getproplocbyid(this.propertyRegister.plot_ID);
     }
 
     if (this.LicenceData !== undefined && this.LicenceData !== null) {
@@ -245,49 +260,50 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       }
     });
   }
-  convertPolygonCoordinates(polygonString: string): any[] {
-    const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
+  // convertPolygonCoordinates(polygonString: string): any[] {
+  //   const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
 
-    const result = [];
+  //   const result = [];
 
-    if (coordinates) {
-      for (const coord of coordinates) {
-        console.log("coordcoordcoord", coord);
+  //   if (coordinates) {
+  //     for (const coord of coordinates) {
+  //       console.log("coordcoordcoord", coord);
 
-        const [easting, northing, hemisphere, zone] = coord.split(" ");
+  //       const [easting, northing, hemisphere, zone] = coord.split(" ");
 
-        result.push({
-          northing: northing,
-          easting: easting,
-          hemisphere: hemisphere,
-          zone: zone,
-        });
-      }
-    }
-    console.log("result", result);
-    this.convertCoordinates(result);
+  //       result.push({
+  //         northing: northing,
+  //         easting: easting,
+  //         hemisphere: hemisphere,
+  //         zone: zone,
+  //       });
+  //     }
+  //   }
+  //   console.log("result", result);
+  //   this.convertCoordinates(result);
 
-    return result;
-  }
-  convertCoordinates(data) {
-    const convertedCoordinates = [];
-    // Convert UTM coordinates to the desired format
-    convertedCoordinates.push(["northing", "easting", "hemisphere", "zone"]);
+  //   return result;
+  // }
+  // convertCoordinates(data) {
+  //   const convertedCoordinates = [];
+  //   // Convert UTM coordinates to the desired format
+  //   convertedCoordinates.push(["northing", "easting", "hemisphere", "zone"]);
 
-    for (const coord of data) {
-      convertedCoordinates.push([
-        coord.northing,
-        coord.easting,
-        coord.hemisphere,
-        coord.zone,
-      ]);
-    }
-    this.tellChild(convertedCoordinates);
-    console.log(
-      "convertedCconvertedCoordinatesoordinates",
-      convertedCoordinates
-    );
-  }
+  //   for (const coord of data) {
+  //     convertedCoordinates.push([
+  //       coord.northing,
+  //       coord.easting,
+  //       coord.hemisphere,
+  //       coord.zone,
+  //     ]);
+  //   }
+  //   this.tellChild(convertedCoordinates);
+  //   console.log(
+  //     "convertedCconvertedCoordinatesoordinates",
+  //     convertedCoordinates
+  //   );
+  // }
+
   closeModall() {
     // console.log('closeing.....');
     this.modalRef.hide();
@@ -489,37 +505,35 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       }
     });
   }
-  getproplocbyid() {
-    this.serviceService
-      .getPlotloc(this.selectedpro.plot_ID)
-      .subscribe((response: any) => {
-        this.plotloc = response.procPlot_Locations;
+  getproplocbyid(plotid) {
+    this.serviceService.getPlotloc(plotid).subscribe((response: any) => {
+      this.plotloc = response.procPlot_Locations;
+      console.log("plotlocccc:", this.plotloc, this.plotloc[0].geowithzone);
+      if (this.plotloc.length > 0) {
+        // this.platformLocation=this.plotloc[0]
+        this.convertPolygonCoordinates(this.plotloc[0].geowithzone);
+
         console.log("plotlocccc:", this.plotloc, this.plotloc[0].geowithzone);
-        if (this.plotloc.length > 0) {
-          // this.platformLocation=this.plotloc[0]
-          this.convertPolygonCoordinates(this.plotloc[0].geowithzone);
+        this.serviceService
+          .getProploc(this.selectedpro.property_ID)
+          .subscribe((response: any) => {
+            this.proploc = response.procProporty_Locations;
+            if (this.proploc.length > 0) {
+              this.propformLocation = this.proploc[0];
+              this.convertPolygonCoordinates(this.proploc[0].geowithzone);
 
-          console.log("plotlocccc:", this.plotloc, this.plotloc[0].geowithzone);
-          this.serviceService
-            .getProploc(this.selectedpro.property_ID)
-            .subscribe((response: any) => {
-              this.proploc = response.procProporty_Locations;
-              if (this.proploc.length > 0) {
-                this.propformLocation = this.proploc[0];
-                this.convertPolygonCoordinates(this.proploc[0].geowithzone);
-
-                console.log(
-                  "protlocprotlocprotlocprotloc:",
-                  this.proploc,
-                  this.proploc[0].geowithzone
-                );
-                this.isproplocnew = false;
-              } else {
-                this.isproplocnew = true;
-              }
-            });
-        }
-      });
+              console.log(
+                "protlocprotlocprotlocprotloc:",
+                this.proploc,
+                this.proploc[0].geowithzone
+              );
+              this.isproplocnew = true;
+            } else {
+              this.isproplocnew = false;
+            }
+          });
+      }
+    });
   }
 
   convertToMultiPoint(
@@ -542,6 +556,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
 
     return multiPointString;
   }
+
   convertToMultiPoints(
     points: { easting: number; northing: number }[]
   ): string {
@@ -554,49 +569,52 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
 
     return multiPointString;
   }
-  // convertPolygonCoordinates(polygonString: string): any[] {
-  //   const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
+  convertPolygonCoordinates(polygonString: string): any[] {
+    const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
 
-  //   const result = [];
+    const result = [];
 
-  //   if (coordinates) {
-  //     for (const coord of coordinates) {
-  //       console.log("coordcoordcoord", coord);
+    if (coordinates) {
+      for (const coord of coordinates) {
+        console.log("coordcoordcoord", coord);
 
-  //       const [easting, northing, hemisphere, zone] = coord.split(" ");
+        const [easting, northing, hemisphere, zone] = coord.split(" ");
 
-  //       result.push({
-  //         northing: northing,
-  //         easting: easting,
-  //         hemisphere: hemisphere,
-  //         zone: zone,
-  //       });
-  //     }
-  //   }
-  //   console.log("result", result);
-  //   this.convertCoordinates(result);
+        result.push({
+          northing: northing,
+          easting: easting,
+          hemisphere: hemisphere,
+          zone: zone,
+        });
+      }
+    }
+    console.log("result", result);
+    this.convertCoordinates(result);
 
-  //   return result;
-  // }
-  // convertCoordinates(data) {
-  //   const convertedCoordinates = [];
-  //   // Convert UTM coordinates to the desired format
-  //   convertedCoordinates.push(["northing", "easting", "hemisphere", "zone"]);
+    return result;
+  }
 
-  //   for (const coord of data) {
-  //     convertedCoordinates.push([
-  //       coord.northing,
-  //       coord.easting,
-  //       coord.hemisphere,
-  //       coord.zone,
-  //     ]);
-  //   }
-  //   this.tellChild(convertedCoordinates);
-  //   console.log(
-  //     "convertedCconvertedCoordinatesoordinates",
-  //     convertedCoordinates
-  //   );
-  // }
+  convertCoordinates(data) {
+    const convertedCoordinates = [];
+    // Convert UTM coordinates to the desired format
+    convertedCoordinates.push(["northing", "easting", "hemisphere", "zone"]);
+
+    for (const coord of data) {
+      convertedCoordinates.push([
+        coord.northing,
+        coord.easting,
+        coord.hemisphere,
+        coord.zone,
+      ]);
+    }
+    const arrayOfArrays = [];
+
+    // Push the innerArray into arrayOfArrays
+    arrayOfArrays.push(convertedCoordinates);
+    console.log("convertedCconvertedCoordinatesoordinates", arrayOfArrays);
+    this.tellChild(arrayOfArrays);
+  }
+
   updateproploc() {
     console.log("coordinatcoordinat", this.serviceService.coordinate);
     if (this.serviceService.coordinate) {

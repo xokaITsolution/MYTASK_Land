@@ -297,22 +297,23 @@ export class PropertyComponent implements OnChanges {
       //     );
 
       //   });
-      this.serviceComponent.PropertyTypeLookUP =
-        this.serviceComponent.PropertyTypeLookUP.filter(
-          (x) => x.Property_Type_ID != 1
-        );
+      // this.serviceComponent.PropertyTypeLookUP =
+      //   this.serviceComponent.PropertyTypeLookUP.filter(
+      //     (x) => x.Property_Type_ID != 1
+      //   );
+
       this.propertyregForm = true;
       this.isnew = false;
       this.selectedFile.Plot_ID = this.SelectedProperty.Plot_ID;
       this.selectedprofromtree = this.selectedFile;
 
       console.log("any", this.selectedprofromtree, this.SelectedProperty);
+      this.selectedprofromtree = this.selectedFile;
+      if (this.selectedFile.property_Type_ID == 1) {
+        this.newplot = true;
+      } else {
+      }
     }
-    //   this.selectedprofromtree = this.selectedFile;
-    // if (this.selectedFile.property_Type_ID == 1) {
-    //   this.selectedprofromtree = false;
-    // } else {
-    // }
   }
 
   SelectPropertyPLot(ProprtyPlot) {

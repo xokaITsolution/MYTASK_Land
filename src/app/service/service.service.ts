@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { TreeNode } from "primeng/api";
+import { Observable } from "rxjs";
+import { catchError } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
@@ -97,7 +99,10 @@ export class ServiceService {
   private saveCustomeredit = environment.rootPath + "Customer";
   private dbstatus = environment.rootPath + "BPEL/";
   public customerUrl = environment.rootPathApi + "Customer/procCustomer";
-
+  httpOptions = {
+    headers: new HttpHeaders({ "Content-Type": "application/json" }),
+    params: {},
+  };
   ApplicationNo: any;
   todo: any;
   servID: any;
@@ -123,12 +128,30 @@ export class ServiceService {
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
   }
+
   getCustomerLookUP() {
     return this.http.get(
       this.CustomerLookUP +
         "?" +
         "sortOrder=test&currentFilter&searchString&pageIndex&pageSize"
     );
+  }
+  getAppointmentByApp(params): Observable<any> {
+    const url = environment.rootPath + "GetAppointementByApp";
+    this.httpOptions.params = params;
+    return this.http
+      .get<AppointmentByAppResult[]>(url, this.httpOptions)
+      .pipe(catchError(this.handleError("GetAppointementByApp", [])));
+  }
+
+  handleError(
+    arg0: string,
+    arg1: undefined[]
+  ): (
+    err: any,
+    caught: Observable<any>
+  ) => import("rxjs").ObservableInput<any> {
+    throw new Error("Method not implemented.");
   }
   getgregorianToEthiopianDate(date) {
     if (date) {
@@ -808,4 +831,28 @@ export class ServiceService {
   getcustomerby() {
     return this.http.get(this.customerUrl);
   }
+}
+
+export class UserRole {
+  UserId: string;
+  RoleId: string;
+}
+
+export class Application {
+  ApplicationId: string;
+  ApplicationNumber: string;
+  CitizenId: string;
+  UserName: string;
+  Service_Name: string;
+  to_do_lists_to_do_code: string;
+  status: string;
+  looked: boolean;
+  Licence_Service_ID: string;
+  isConfirmed: boolean;
+  isselect: boolean;
+  queueNumber: null;
+}
+export class AppointmentByAppResult {
+  aspnet_UsersInRoles: UserRole[];
+  View_AppointementByApp: Application[];
 }

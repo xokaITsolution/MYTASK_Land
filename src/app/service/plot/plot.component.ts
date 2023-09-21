@@ -77,6 +77,7 @@ export class PlotComponent implements OnChanges {
   }
   modalRef: BsModalRef;
   openModall(template: TemplateRef<any>) {
+    this.serviceService.check = true;
     this.modalRef = this.modalService.show(
       template,
       Object.assign({}, { class: "gray modal-lg" })
@@ -85,7 +86,7 @@ export class PlotComponent implements OnChanges {
   tellChild(aa) {
     console.log("value is changing", aa);
     this.geo = aa;
-    this.serviceService.check = false;
+    this.serviceService.check = true;
     this.changingValue.next(aa);
   }
   getplotloc(plotid) {
