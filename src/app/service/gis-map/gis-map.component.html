@@ -6,7 +6,7 @@
           <h3>Layers</h3>
           <div *ngFor="let layer of layers">
             <label>
-              <input type="checkbox" [value]="layer.name"[checked]="layer.name == 'Oromiya_woredas'" (change)="toggleLayer($event.target.checked, layer.name)" />
+              <input type="checkbox" [value]="layer.name"[checked]="ServiceService.check!=true ? '':layer.name == 'Oromiya_woredas'" (change)="toggleLayer($event.target.checked, layer.name)" />
               {{ layer.name }}
             </label>
           </div>
@@ -19,8 +19,15 @@
         
         <div id="coordinateInfo"
           style=" bottom: 10px;  background-color: rgba(255, 255, 255, 0.8);  border-radius: 5px;">
+          
         </div>
-      </div></div>
+        <div *ngFor="let arrayof of arrayFoPolygonarea">
+            
+          <li>{{ arrayof[0].Name}} :&nbsp;{{arrayof[0].area}} &nbsp;{{arrayof[0].mesurment}}</li>
+        </div>
+
+      </div>
+    </div>
       <div class="col-md-10" *ngIf="!ServiceService.fromPropoperty">
         <h3>Enter Coordinates</h3>
         <div class="form-row">

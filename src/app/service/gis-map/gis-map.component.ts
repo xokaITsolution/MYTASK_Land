@@ -32,6 +32,7 @@ export class GisMapComponent implements AfterViewInit {
   rectangleOverlay: any;
   utmCoordinates: any;
   alllatlong: any[] = [];
+  arrayFoPolygonarea: any[] = [];
   constructor(
     public ServiceService: ServiceService,
     private messageService: MessageService,
@@ -80,12 +81,11 @@ export class GisMapComponent implements AfterViewInit {
   //     // Add more layers as needed
   //   ];
   layers: Layer[] = [];
-  @Input() changing: Subject<boolean>;
+  @Input() changingg: Subject<any>;
   @Input() geo;
   ngOnInit() {
     console.log("value is changing", this.geo);
-
-    // this.changing.subscribe((v: any) => {
+    // this.changingg.subscribe((v: any) => {
     //   console.log("value is changing", v);
     //   this.processImportedShapes(v);
     // });
@@ -107,8 +107,25 @@ export class GisMapComponent implements AfterViewInit {
     L.Marker.prototype.options.icon = iconDefault;
 
     this.initMap();
+    // this.changingg.subscribe((v: any) => {
+    //   console.log("value is changing", v);
+    //   this.processImportedShapes(v);
+    // });
     if (this.geo) {
-      this.processImportedShapes(this.geo);
+      console.log("value is changing", this.geo);
+      if (this.ServiceService.check) {
+        this.processImportedShapes(this.geo);
+      } else {
+        for (let index = 0; index < this.geo.length; index++) {
+          // const element = this.geo[index];
+
+          this.processcoordinates(this.geo[index][0]);
+
+          if (index == this.geo.length - 1) {
+            this.drawnshapeAfterProcess();
+          }
+        }
+      }
     }
   }
 
@@ -143,7 +160,7 @@ export class GisMapComponent implements AfterViewInit {
     }
     this.map = L.map("mapp", {
       crs: this.EPSG20137, // Set the map CRS to EPSG:20137
-    }).setView([9.145, 40.489], 4); // Set an appropriate initial view for Ethiopia
+    }).setView([9.145, 40.489], 8); // Set an appropriate initial view for Ethiopia
     this.markerLayer = L.layerGroup().addTo(this.map);
     // Create a map event listener to track mouse movements
     this.map.on("mousemove", (event) => {
@@ -355,7 +372,10 @@ export class GisMapComponent implements AfterViewInit {
               // Store the vector layer reference in the newLayer object
               newLayer.vectorLayer = vectorLayer;
               console.log(vectorLayer);
-              if (layerName === "Oromiya_woredas") {
+              if (
+                layerName === "Oromiya_woredas" &&
+                this.ServiceService.check
+              ) {
                 this.toggleLayer(true, "Oromiya_woredas");
               }
 
@@ -825,6 +845,169 @@ export class GisMapComponent implements AfterViewInit {
     };
     fileReader.readAsArrayBuffer(file);
   }
+  public processcoordinates(data: any[]): void {
+    console.log("dataaaa", data);
+
+    // Remove the header row from the data
+    const coordinates = data.slice(1);
+    console.log("coordinates", coordinates);
+
+    // Map the data to LatLng objects
+    const latLngs = coordinates.map((row) =>
+      this.conveUTMToLatLng(row[0], row[1], row[3], row[2])
+    );
+
+    console.log("latLngs", latLngs);
+    this.alllatlong.push(latLngs);
+  }
+  public drawnshapeAfterProcess() {
+    // this.alllatlong.sort((a, b) => {
+    //   const areaA = this.calculatePolygonArea(L.polygon(a));
+    //   const areaB = this.calculatePolygonArea(L.polygon(b));
+    //   return areaB - areaA;
+    // });
+    console.log("this.alllatlong", this.alllatlong);
+
+    this.alllatlong.forEach((shape) => {
+      const randomColor =
+        "#" + Math.floor(Math.random() * 16777215).toString(16);
+      const polygonOptions = {
+        color: randomColor,
+      };
+
+      this.drawnShape = L.polygon(shape).addTo(this.map);
+      this.arrayFoPolygonarea.push(this.calculatePolygonArea(L.polygon(shape)));
+      console.log("this.alllatlong", this.arrayFoPolygonarea);
+    });
+    if (this.drawnShape instanceof L.Marker) {
+      //this.map.setView(this.drawnShape.getLatLng(), this.map.getZoom());
+    } else if (
+      this.drawnShape instanceof L.Circle ||
+      this.drawnShape instanceof L.Polygon
+    ) {
+      // this.map.fitBounds(this.drawnShape.getBounds(),{ maxZoom:15 });
+      const drawnShapeBounds = this.drawnShape.getBounds();
+      console.log("center", drawnShapeBounds);
+
+      const customIcon = new L.Icon({
+        iconUrl: environment.iconpath, // Replace with the actual path to your icon image
+        iconSize: [50, 50], // Adjust the size as needed
+        iconAnchor: [25, 50], // Adjust the anchor point if necessary
+        popupAnchor: [0, -50], // Adjust the popup anchor if needed
+        className: "custom-icon-class", // You can also add a custom CSS class
+      });
+      // Calculate the center of the bounds
+      const center = drawnShapeBounds.getCenter();
+      console.log("center", center);
+
+      var marker = new L.Marker(center, {
+        icon: customIcon,
+      });
+      this.addCenterMarker(center);
+      marker.addTo(this.map);
+
+      // Fit the map bounds to the drawn shape with a specific maxZoom level
+      this.map.fitBounds(this.drawnShape.getBounds());
+      this.onDatumChange();
+      this.map.setView(center, 8);
+      //  if (this.ServiceService.check == true) {
+      this.map.on(L.Draw.Event.CREATED, (e: any) => {
+        const layer = e.layer;
+        console.log("alllatlong", this.alllatlong[0]);
+
+        // Assuming limited area bounds as a polygon
+        const limitedAreaBounds = L.polygon(this.alllatlong[0]).addTo(this.map);
+
+        // Check if the drawn shape intersects with the limited area bounds
+        if (limitedAreaBounds.getBounds().contains(layer.getBounds())) {
+          this.map.addLayer(layer);
+          this.ServiceService.disablebutton = true;
+        } else {
+          const toast = this.messageService.add({
+            severity: "warn",
+            summary: "Warn",
+            detail:
+              "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡",
+          });
+          this.map.removeLayer(layer);
+          this.removeShape();
+          this.ServiceService.disablebutton = false;
+        }
+      });
+      //}
+      // Set the map view to the calculated center and zoom level
+      // Fit the bounds with the new maxZoom level
+
+      this.aaa.push(this.drawnShape);
+      // this.onDatumChange()
+      this.ServiceService.shapes = this.aaa;
+      this.sample = this.drawnShape;
+    }
+  }
+  // calculatePolygonArea(polygon) {
+  //   const result = [];
+  //   // Assuming 'polygon' is an L.Polygon instance
+  //   const latLngs = polygon.getLatLngs()[0]; // Get the coordinates of the polygon
+  //   let area = 0;
+
+  //   for (let i = 0; i < latLngs.length - 1; i++) {
+  //     const lat1 = latLngs[i].lat;
+  //     const lon1 = latLngs[i].lng;
+  //     const lat2 = latLngs[i + 1].lat;
+  //     const lon2 = latLngs[i + 1].lng;
+
+  //     area += lon1 * lat2 - lon2 * lat1;
+  //   }
+  //   let final = parseInt(area.toFixed(3));
+  //   result.push({
+  //     Name: "shape",
+  //     area: Math.abs(final) * 0.5,
+  //     mesurment: "M2",
+  //   });
+  //   return result; // Take the absolute value and divide by 2 to get the area in square meters
+  // }
+
+  calculatePolygonArea(vertices) {
+    const EarthRadiusMeters = 6371000; // Radius of the Earth in meters
+    let area = 0;
+    const result = [];
+    // Convert degrees to radians
+    function degreesToRadians(degrees) {
+      return (degrees * Math.PI) / 180;
+    }
+
+    // Calculate the area using the formula
+    for (let i = 0; i < vertices.length; i++) {
+      const p1 = vertices[i];
+      const p2 = vertices[(i + 1) % vertices.length]; // Wrap around for the last point
+
+      const lat1 = degreesToRadians(p1.lat);
+      const lat2 = degreesToRadians(p2.lat);
+      const lon1 = degreesToRadians(p1.lng);
+      const lon2 = degreesToRadians(p2.lng);
+
+      const dLat = lat2 - lat1;
+      const dLon = lon2 - lon1;
+
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1) *
+          Math.cos(lat2) *
+          Math.sin(dLon / 2) *
+          Math.sin(dLon / 2);
+
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+      area += EarthRadiusMeters * EarthRadiusMeters * c;
+    }
+    result.push({
+      Name: "shape",
+      area: Math.abs(area / 2),
+      mesurment: "M2",
+    });
+    return result;
+  }
+
   public processImportedShapes(data: any[]): void {
     console.log("dataaaa", data);
 
@@ -848,22 +1031,14 @@ export class GisMapComponent implements AfterViewInit {
     console.log("alllatlong", this.alllatlong);
     // Create a polygon shape with the mapped LatLng objects
     //this.drawnShape = L.polygon(this.alllatlong[0]).addTo(this.map);
-    let randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
 
     this.alllatlong.forEach((shape, index) => {
-      if (Array.isArray(shape) && shape.length > 2) {
-        // Check if shape is a valid array of coordinates
-        this.drawnShape = L.polygon(shape, { color: randomColor });
-
-        if (this.map) {
-          // Ensure that this.map is defined
-          this.drawnShape.addTo(this.map);
-        } else {
-          console.error("Map is undefined.");
-        }
-      } else {
-        console.error(`Invalid shape at index ${index}`);
-      }
+      let randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+      // if (Array.isArray(shape) && shape.length > 2) {
+      //   // Check if shape is a valid array of coordinates
+      this.drawnShape = L.polygon(shape, { color: randomColor }).addTo(
+        this.map
+      );
     });
 
     //this.ServiceService.coordinate.push(latLngs[0])
@@ -899,9 +1074,11 @@ export class GisMapComponent implements AfterViewInit {
       });
       this.addCenterMarker(center);
       marker.addTo(this.map);
-      this.map.setView(center, 6);
-      // Fit the map bounds to the drawn shape with a specific maxZoom level
-      this.map.fitBounds(drawnShapeBounds);
+
+      this.map.fitBounds(this.drawnShape.getBounds());
+      this.onDatumChange();
+      this.map.setView(center, 8);
+
       if (this.ServiceService.check == true) {
         this.map.on(L.Draw.Event.CREATED, (e: any) => {
           const layer = e.layer;
@@ -1199,7 +1376,7 @@ export class GisMapComponent implements AfterViewInit {
     // }
     // Update the map view to the center coordinates of Ethiopia and adjust the zoom level
     const center = L.latLng(9.145, 40.4897); // Update with Ethiopia center coordinates
-    const zoom = 5; // Update with the desired zoom level for the selected projection
+    const zoom = 8; // Update with the desired zoom level for the selected projection
     this.map.setView(center, zoom);
   }
 

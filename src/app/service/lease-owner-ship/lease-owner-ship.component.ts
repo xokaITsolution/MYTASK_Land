@@ -267,7 +267,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
           await this.getgregorianToEthiopianDate(
             this.leaseOwnerShip.Date_of_final_lease_payment
           );
-        this.getleaseOwnerShip(this.SelectedPlot.Plot_ID);
+        this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
 
         if (!this.Saved) {
           this.completed.emit();
@@ -316,7 +316,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
         this.addnew = false;
 
         if (this.SelectedPlot) {
-          this.getleaseOwnerShip(this.SelectedPlot.Plot_ID);
+          this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
         }
         //this.completeddel.emit(this.plotManagment);
       },
@@ -365,7 +365,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
             this.leaseOwnerShip.Date_of_final_lease_payment
           );
         this.serviceService.disablefins = false;
-        this.getleaseOwnerShip(this.SelectedPlot.Plot_ID);
+        this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
         this.leaseForm = false;
         this.serviceService.isleaseForm = false;
         if (!this.Saved) {

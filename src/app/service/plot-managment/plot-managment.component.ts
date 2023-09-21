@@ -692,6 +692,12 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
           "Success",
           deptSuspension
         );
+        const warningMessage =
+          "የሊዝ ወይም የነባር ይዞታ መመዝገቡን አረጋግጥ/Check lease or freehold record is active for this plot";
+        const toastWarning = this.notificationsService.warn(
+          "Warning",
+          warningMessage
+        );
         if (this.language === "amharic") {
           this.plotManagment.Registration_Date =
             await this.getgregorianToEthiopianDate(

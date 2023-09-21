@@ -17,7 +17,7 @@ import { EventEmitter } from "events";
 import { NgxSmartModalService } from "ngx-smart-modal";
 import { environment } from "src/environments/environment";
 import { NgxDocViewerModule } from "ngx-doc-viewer";
-import { HttpEvent, HttpEventType } from "@angular/common/http";
+import { HttpEvent, HttpEventType, HttpParams } from "@angular/common/http";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
 //import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -325,11 +325,19 @@ export class ServiceComponent implements OnInit {
         });
     }, 1000);
     this.serviceService.getUserRole().subscribe((response: any) => {
-      console.log("responseresponseresponse", response, response[0].RoleId);
-      if (response[0].RoleId == "8e759c69-1ed6-445b-b7f8-32c3fd44e8be") {
-        this.hideit = true;
-      } else {
-        this.hideit = false;
+      for (let index = 0; index < response.length; index++) {
+        const element = response[index];
+
+        if (
+          element.RoleId == "8e759c69-1ed6-445b-b7f8-32c3fd44e8be" ||
+          element.RoleId == "3ba734c5-d75a-44c7-8c47-5233431372ba"
+        ) {
+          this.hideit = true;
+          break;
+        } else {
+          console.log("responseresponseresponse", element);
+          this.hideit = false;
+        }
       }
     });
     // this.preback();
@@ -585,6 +593,16 @@ export class ServiceComponent implements OnInit {
       }
     );
   }
+  // getUserRoles(): void {
+  //   const params = new HttpParams().set("UserName", environment.username);
+
+  //   this.appService.getAppointmentByApp(params).subscribe((result) => {
+  //     this.userRoles =
+  //       result.aspnet_UsersInRoles == null ? [] : result.aspnet_UsersInRoles;
+
+  //     console.log("this.userRoles", this.userRoles);
+  //   });
+  // }
 
   Back() {
     this.serviceService.Back(this.AppNo, this.todoID).subscribe(
@@ -1736,6 +1754,7 @@ export class ServiceComponent implements OnInit {
             this.getPriveysLicence(this.licenceData.Application_No);
           }
         }
+
         // if (this.ID == 2) {
         //   this.disablefins = false;
         //   this.getPlotManagement();
@@ -1746,7 +1765,6 @@ export class ServiceComponent implements OnInit {
         //   this.disablefins = false;
         //   this.getDeed();
         // }
-
         // console.log('Licence data2', this.licenceData);
         // this.taskType = this.licenceData.TaskType;
         this.loading = false;

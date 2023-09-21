@@ -153,7 +153,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
     );
   }
   selectedDateTime(dates: any, selecter) {
-    if (selecter == 2) {
+    if (selecter == 1) {
       this.titleDeedRegistration.Date =
         dates[0]._day + "/" + dates[0]._month + "/" + dates[0]._year;
     }
