@@ -311,6 +311,7 @@ export class PlotComponent implements OnChanges {
     }
     this.displayGIS = false;
   }
+
   getPloat() {
     this.PlotManagementList = [];
     if (this.Parcel_ID) {
@@ -406,7 +407,6 @@ export class PlotComponent implements OnChanges {
 
     return uniqueArray;
   }
-
   SelectPLot(plot) {
     this.SelectedPlot = plot;
     console.log("dfghgfd", plot);
