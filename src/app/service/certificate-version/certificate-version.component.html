@@ -10,152 +10,155 @@
 
     <tabset #staticTabs>
       <tab [heading]="'Property And Parcel' | translate">
-        <div class="form-row">
-          <div class="col-md-6">
-       <div class="form-group row col-12">
-            <label for="Ownership_ID" class="col-sm-4 col-form-label" translate>Transfer ID</label>
-            <div class="col-sm-8">
+        <div class="mt-3">
 
-              <input type="text" class="form-control" [(ngModel)]="certificateVersion.Ownership_ID" #Ownership_ID="ngModel"
-                name="Ownership_ID" id="Ownership_ID" [placeholder]="'Transfer ID' | translate" [ngClass]="{ 'is-invalid': Ownership_ID.invalid }"
-                disabled>
+          <div class="form-row">
+            <div class="col-md-6">
+         <div class="form-group row col-12">
+              <label for="Ownership_ID" class="col-sm-4 col-form-label" translate>Transfer ID</label>
+              <div class="col-sm-8">
+  
+                <input type="text" class="form-control" [(ngModel)]="certificateVersion.Ownership_ID" #Ownership_ID="ngModel"
+                  name="Ownership_ID" id="Ownership_ID" [placeholder]="'Transfer ID' | translate" [ngClass]="{ 'is-invalid': Ownership_ID.invalid }"
+                  disabled>
+              </div>
             </div>
-          </div>
-       <div class="form-group row col-12">
-            <label for="VersionID" class="col-sm-4 col-form-label" translate>Version ID</label>
-            <div class="col-sm-8">
-              <input type="text" [disabled]="disable" disabled class="form-control" [(ngModel)]="certificateVersion.Version_ID"
-                name="VersionID" id="VersionID" >
+         <div class="form-group row col-12">
+              <label for="VersionID" class="col-sm-4 col-form-label" translate>Version ID</label>
+              <div class="col-sm-8">
+                <input type="text" [disabled]="disable" disabled class="form-control" [(ngModel)]="certificateVersion.Version_ID"
+                  name="VersionID" id="VersionID" >
+              </div>
             </div>
-          </div>
-       <div class="form-group row col-12">
-            <label for="TitleDeedID" class="col-sm-4 col-form-label" translate>Title Deed No</label>
-            <div class="col-sm-8">
-
-              <input type="text" class="form-control" [(ngModel)]="certificateVersion.Title_Deed_No" #TitleDeedID="ngModel"
-                name="TitleDeedID" id="TitleDeedID" [placeholder]="'Title Deed ID' | translate " [ngClass]="{ 'is-invalid': TitleDeedID.invalid }"
-                disabled>
+         <div class="form-group row col-12">
+              <label for="TitleDeedID" class="col-sm-4 col-form-label" translate>Title Deed No</label>
+              <div class="col-sm-8">
+  
+                <input type="text" class="form-control" [(ngModel)]="certificateVersion.Title_Deed_No" #TitleDeedID="ngModel"
+                  name="TitleDeedID" id="TitleDeedID" [placeholder]="'Title Deed ID' | translate " [ngClass]="{ 'is-invalid': TitleDeedID.invalid }"
+                  disabled>
+              </div>
             </div>
-          </div>
-       <div class="form-group row col-12">
-            <label for="Color" class="col-sm-4 col-form-label" translate>Color</label>
-            <div class="col-sm-8">
-              <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Color" name="Color" id="Color"
-                [placeholder]="'Color' | translate">
+         <div class="form-group row col-12">
+              <label for="Color" class="col-sm-4 col-form-label" translate>Color</label>
+              <div class="col-sm-8">
+                <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Color" name="Color" id="Color"
+                  [placeholder]="'Color' | translate">
+              </div>
             </div>
-          </div>
-       <div class="form-group row col-12">
-            <label for="IssuedBy" class="col-sm-4 col-form-label" translate>Issued By</label>
-            <div class="col-sm-6">
-              <select disabled class="form-control" [(ngModel)]="certificateVersion.Issued_By" name="IssuedBy" id="IssuedBy">
-                <option disabled translate>select</option>
-                <option *ngFor="let organizations of serviceComponent.orginizationlookup;" [value]="organizations.organization_code">
-                  {{organizations.Registration_code}}
-                </option>
-              </select>
-              <div class="col-sm-2">
-                <button type="button" *ngIf="!disable" class="btn btn-secondary" (click)="openModal('organizations')" translate>Select Customer</button>
+         <div class="form-group row col-12">
+              <label for="IssuedBy" class="col-sm-4 col-form-label" translate>Issued By</label>
+              <div class="col-sm-6">
+                <select disabled class="form-control" [(ngModel)]="certificateVersion.Issued_By" name="IssuedBy" id="IssuedBy">
+                  <option disabled translate>select</option>
+                  <option *ngFor="let organizations of serviceComponent.orginizationlookup;" [value]="organizations.organization_code">
+                    {{organizations.Registration_code}}
+                  </option>
+                </select>
+                <div class="col-sm-2">
+                  <button type="button" *ngIf="!disable" class="btn btn-secondary" (click)="openModal('organizations')" translate>Select Customer</button>
+                </div>
+              </div>
+            </div>
+         <div class="form-group row col-12">
+              <label for="VersionNo" class="col-sm-4 col-form-label" translate>VersionNo</label>
+              <div class="col-sm-8">
+                <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Version_No" name="VersionNo"
+                  id="VersionNo" [placeholder]="'VersionNo' | translate">
+              </div>
+            </div>
+         <div class="form-group row col-12">
+              <label for="VersionNo" class="col-sm-4 col-form-label" translate>Compound Size M2</label>
+              <div class="col-sm-8">
+                <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Compound_Size_M2" name="Compound_Size_M2"
+                  id="Compound_Size_M2" [placeholder]="'Licence Area/Permit area' | translate">
+              </div>
+            </div>
+         <div class="form-group row col-12">
+              <label for="VersionNo" class="col-sm-4 col-form-label" translate>Property Status</label>
+              <div class="col-sm-8">
+                <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Property_Status" name="Property_Status"
+                  id="Property_Status" [placeholder]="'Property Status' | translate">
               </div>
             </div>
           </div>
-       <div class="form-group row col-12">
-            <label for="VersionNo" class="col-sm-4 col-form-label" translate>VersionNo</label>
-            <div class="col-sm-8">
-              <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Version_No" name="VersionNo"
-                id="VersionNo" [placeholder]="'VersionNo' | translate">
+          <div class="col-md-6">
+         <div class="form-group row col-12">
+              <label for="VersionNo" class="col-sm-4 col-form-label" translate>Property Type</label>
+              <div class="col-sm-8">
+                <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Property_Type" name="Property_Type"
+                  id="Property_Type" [placeholder]="'Property Type' | translate">
+              </div>
             </div>
+            <div class="form-group row col-12">
+              <label for="Size_In_Proportional" class="col-sm-4 col-form-label" translate>Size In Proportional</label>
+              <div class="col-sm-8">
+                <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Size_In_Proportional"
+                  name="Size_In_Proportional" id="Size_In_Proportional" [placeholder]="'Size In Proportional' | translate">
+              </div>
+            </div> 
+            <div class="form-group row col-12">
+              <label for="Proportional_from_Compound_Size" class="col-sm-4 col-form-label" translate>Proportional from Compound Size</label>
+              <div class="col-sm-8">
+                <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Proportional_from_Compound_Size"
+                  name="Proportional_from_Compound_Size" id="Proportional_from_Compound_Size" [placeholder]="'Proportional from Compound Size' | translate">
+              </div>
+            </div> 
+         <div class="form-group row col-12">
+              <label for="ExpiredDate" class="col-sm-4 col-form-label" translate>Expired Date</label>
+              <div class="col-sm-8">
+                <input type="Date" disabled class="form-control" [(ngModel)]="certificateVersion.Expired_Date" name="ExpiredDate"
+                  id="ExpiredDate" [placeholder]="'Expired Date' | translate">
+              </div>
+            </div>
+            <div class="form-group row col-12">
+              <label for="BuiltUpArea" class="col-sm-4 col-form-label" translate>Built Up Area</label>
+              <div class="col-sm-8">
+                <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Built_Up_Area" name="BuiltUpArea"
+                  id="BuiltUpArea" [placeholder]="'Built Up Area' | translate">
+              </div>
+            </div> 
+         <div class="form-group row col-12">
+              <label for="SerialNo" class="col-sm-4 col-form-label" translate>Serial No</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="certificateVersion.Serial_No"
+                  name="SerialNo" id="SerialNo" [placeholder]="'Serial No' | translate">
+              </div>
+            </div>
+            <!--<div class="form-group row col-md-8">
+              <label for="isPrinted" class="col-sm-4 col-form-label" translate>Is Printed</label>
+              <div class="col-sm-8">
+                <p-checkbox [(ngModel)]="certificateVersion.Is_Printed" [disabled]="disable" name="isPrinted"
+                            id="isPrinted"
+                            binary="true"></p-checkbox>
+              </div>
+            </div>-->
+            <!--<div class="form-group row col-md-8">
+              <label for="IsIssued" class="col-sm-4 col-form-label" translate>Is Issued</label>
+  
+              <div class="col-sm-8">
+                <p-checkbox [(ngModel)]="certificateVersion.IsIssued" [disabled]="disable" name="IsIssued" id="IsIssued"
+                            binary="true"></p-checkbox>
+              </div>
+            </div>-->
+  
+         <div class="form-group row col-12">
+              <label for="Remark" class="col-sm-4 col-form-label" translate>Remark</label>
+              <div class="col-sm-8">
+                <input type="text" [disabled]="disable" class="form-control" [(ngModel)]="certificateVersion.Remark" name="Remark"
+                  id="Remark" [placeholder]="'Remark' | translate">
+              </div>
+            </div>
+  
+         <div class="form-group row col-12">
+              <label for="isActive" class="col-sm-4 col-form-label" translate>Is Active</label>
+  
+              <div class="col-sm-8">
+                <p-checkbox [(ngModel)]="certificateVersion.Is_Active" [disabled]="disable" name="isActive" id="isActive"
+                  binary="true"></p-checkbox>
+              </div>
+            </div></div>
           </div>
-       <div class="form-group row col-12">
-            <label for="VersionNo" class="col-sm-4 col-form-label" translate>Licence Area/Permit area</label>
-            <div class="col-sm-8">
-              <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Compound_Size_M2" name="Compound_Size_M2"
-                id="Compound_Size_M2" [placeholder]="'Licence Area/Permit area' | translate">
-            </div>
-          </div>
-       <div class="form-group row col-12">
-            <label for="VersionNo" class="col-sm-4 col-form-label" translate>Property Status</label>
-            <div class="col-sm-8">
-              <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Property_Status" name="Property_Status"
-                id="Property_Status" [placeholder]="'Property_Status' | translate">
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-       <div class="form-group row col-12">
-            <label for="VersionNo" class="col-sm-4 col-form-label" translate>Property Type</label>
-            <div class="col-sm-8">
-              <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Property_Type" name="Property_Type"
-                id="Property_Type" [placeholder]="'Property Type' | translate">
-            </div>
-          </div>
-          <!-- <div class="form-group row col-md-8">
-            <label for="Size_In_Proportional" class="col-sm-4 col-form-label" translate>Size In Proportional</label>
-            <div class="col-sm-8">
-              <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Size_In_Proportional"
-                name="Size_In_Proportional" id="Size_In_Proportional" [placeholder]="'Size In Proportional' | translate">
-            </div>
-          </div> -->
-          <!-- <div class="form-group row col-md-8">
-            <label for="Proportional_from_Compound_Size" class="col-sm-4 col-form-label" translate>Size In Proportional</label>
-            <div class="col-sm-8">
-              <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Proportional_from_Compound_Size"
-                name="Proportional_from_Compound_Size" id="Proportional_from_Compound_Size" [placeholder]="'Proportional from Compound Size' | translate">
-            </div>
-          </div> -->
-       <div class="form-group row col-12">
-            <label for="ExpiredDate" class="col-sm-4 col-form-label" translate>Expired Date</label>
-            <div class="col-sm-8">
-              <input type="Date" disabled class="form-control" [(ngModel)]="certificateVersion.Expired_Date" name="ExpiredDate"
-                id="ExpiredDate" [placeholder]="'Expired Date' | translate">
-            </div>
-          </div>
-          <!-- <div class="form-group row col-md-8">
-            <label for="BuiltUpArea" class="col-sm-4 col-form-label" translate>Built Up Area</label>
-            <div class="col-sm-8">
-              <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Built_Up_Area" name="BuiltUpArea"
-                id="BuiltUpArea" [placeholder]="'Built Up Area' | translate">
-            </div>
-          </div> -->
-       <div class="form-group row col-12">
-            <label for="SerialNo" class="col-sm-4 col-form-label" translate>Serial No</label>
-            <div class="col-sm-8">
-              <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="certificateVersion.Serial_No"
-                name="SerialNo" id="SerialNo" [placeholder]="'Serial No' | translate">
-            </div>
-          </div>
-          <!--<div class="form-group row col-md-8">
-            <label for="isPrinted" class="col-sm-4 col-form-label" translate>Is Printed</label>
-            <div class="col-sm-8">
-              <p-checkbox [(ngModel)]="certificateVersion.Is_Printed" [disabled]="disable" name="isPrinted"
-                          id="isPrinted"
-                          binary="true"></p-checkbox>
-            </div>
-          </div>-->
-          <!--<div class="form-group row col-md-8">
-            <label for="IsIssued" class="col-sm-4 col-form-label" translate>Is Issued</label>
-
-            <div class="col-sm-8">
-              <p-checkbox [(ngModel)]="certificateVersion.IsIssued" [disabled]="disable" name="IsIssued" id="IsIssued"
-                          binary="true"></p-checkbox>
-            </div>
-          </div>-->
-
-       <div class="form-group row col-12">
-            <label for="Remark" class="col-sm-4 col-form-label" translate>Remark</label>
-            <div class="col-sm-8">
-              <input type="text" [disabled]="disable" class="form-control" [(ngModel)]="certificateVersion.Remark" name="Remark"
-                id="Remark" [placeholder]="'Remark' | translate">
-            </div>
-          </div>
-
-       <div class="form-group row col-12">
-            <label for="isActive" class="col-sm-4 col-form-label" translate>Is Active</label>
-
-            <div class="col-sm-8">
-              <p-checkbox [(ngModel)]="certificateVersion.Is_Active" [disabled]="disable" name="isActive" id="isActive"
-                binary="true"></p-checkbox>
-            </div>
-          </div></div>
         </div>
       </tab>
       <tab [heading]="'Basic information' | translate">
@@ -169,14 +172,14 @@
                   id="Full_Name" [placeholder]="'Full Name' | translate">
               </div>
             </div>
-            <div class="form-group row col-md-8" [hidden]="true">
+            <div class="form-group row col-md-8" >
               <label for="Parnter_Full_Name" class="col-sm-4 col-form-label" translate>Parnter Full Name</label>
               <div class="col-sm-8">
                 <input disabled type="text" [disabled]="disable" class="form-control" [(ngModel)]="certificateVersion.Parnter_Full_Name"
                   name="Parnter_Full_Name" id="Parnter_Full_Name" [placeholder]="'Parnter Full Name' | translate">
               </div>
             </div>
-            <div class="form-group row col-md-8" [hidden]="true">
+            <div class="form-group row col-md-8" >
               <label for="CustomerType" class="col-sm-4 col-form-label" translate>Customer Type</label>
 
               <div class="col-sm-8">
@@ -201,6 +204,7 @@
       </tab>
       <tab [heading]="'Address' | translate">
         <div class="mt-3">
+          
           <div class="form-group row col-md-8">
             <label for="Color" class="col-sm-4 col-form-label" translate>Location Name</label>
             <div class="col-sm-8">
@@ -223,21 +227,21 @@
                 id="Block_No" [placeholder]="'Block No' | translate">
             </div>
           </div>
-          <div class="form-group row col-md-8" [hidden]="true">
+          <div class="form-group row col-md-8" >
             <label for="Parcel_No" class="col-sm-4 col-form-label" translate >Parcel No</label>
             <div class="col-sm-8">
               <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Parcel_No" name="Parcel_No"
                 id="Parcel_No" [placeholder]="'Parcel No' | translate">
             </div>
           </div>
-          <div class="form-group row col-md-8" [hidden]="true">
+          <div class="form-group row col-md-8" >
             <label for="Street_No" class="col-sm-4 col-form-label" translate >Street No</label>
             <div class="col-sm-8">
               <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Street_No" name="Street_No"
                 id="Street_No" [placeholder]="'Street No' | translate">
             </div>
           </div>
-          <div class="form-group row col-md-8" [hidden]="true">
+          <div class="form-group row col-md-8" >
             <label for="Land_Grade" class="col-sm-4 col-form-label" translate >Land Grade</label>
             <div class="col-sm-8">
               <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Land_Grade" name="Land_Grade"
@@ -279,28 +283,28 @@
                 id="W_Plot_ID" [placeholder]="'W Plot ID' | translate">
             </div>
           </div>
-          <div class="form-group row col-md-8" [hidden]="true"> 
+          <div class="form-group row col-md-8" > 
             <label for="TypeOfUser" class="col-sm-4 col-form-label" translate >Type Of User</label>
             <div class="col-sm-8">
               <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.TypeOfUser" name="TypeOfUser"
                 id="TypeOfUser" [placeholder]="'Type Of User' | translate">
             </div>
           </div>
-          <div class="form-group row col-md-8" [hidden]="true">
+          <div class="form-group row col-md-8" >
             <label for="HouseNo" class="col-sm-4 col-form-label" translate>House No</label>
             <div class="col-sm-8">
               <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.HouseNo" name="HouseNo"
                 id="HouseNo" [placeholder]="'House No' | translate">
             </div>
           </div>
-          <div class="form-group row col-md-8" [hidden]="true">
+          <div class="form-group row col-md-8" >
             <label for="Floor_No" class="col-sm-4 col-form-label" translate >Floor No</label>
             <div class="col-sm-8">
               <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Floor_No" name="Floor_No"
                 id="Floor_No" [placeholder]="'Floor No' | translate">
             </div>
           </div>
-          <div class="form-group row col-md-8" [hidden]="true">
+          <div class="form-group row col-md-8" >
             <label for="Building_No" class="col-sm-4 col-form-label" translate >Building No</label>
             <div class="col-sm-8">
               <input type="text" disabled class="form-control" [(ngModel)]="certificateVersion.Building_No" name="Building_No"
