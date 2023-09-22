@@ -297,10 +297,6 @@ export class PropertyComponent implements OnChanges {
       //     );
 
       //   });
-      // this.serviceComponent.PropertyTypeLookUP =
-      //   this.serviceComponent.PropertyTypeLookUP.filter(
-      //     (x) => x.Property_Type_ID != 1
-      //   );
 
       this.propertyregForm = true;
       this.isnew = false;
@@ -312,6 +308,10 @@ export class PropertyComponent implements OnChanges {
       if (this.selectedFile.property_Type_ID == 1) {
         this.newplot = true;
       } else {
+        this.serviceComponent.PropertyTypeLookUP =
+          this.serviceComponent.PropertyTypeLookUP.filter(
+            (x) => x.Property_Type_ID != 1
+          );
       }
     }
   }
