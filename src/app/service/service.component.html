@@ -376,7 +376,7 @@
         <p-table *ngIf="TaskN" [value]="PreTaskData" [paginator]="true" [rows]="5">
           <ng-template pTemplate="header">
             <tr>
-              <th scope="col" translate>Status</th>
+              <th scope="col" translate>Statusss</th>
               <th scope="col" translate>Start Date</th>
               <th scope="col" translate>End Date</th>
               <th scope="col" translate>Level</th>
@@ -533,6 +533,7 @@
                 <ng-template pTemplate="header">
                   <tr>
                     <th>#</th>
+                    <th>User Name</th>
                     <th scope="col" translate>note</th>
 
                   </tr>
@@ -541,6 +542,7 @@
 
                   <tr>
                     <td>{{note.number}}</td>
+                    <td>{{note.userName}}</td>
                     <td style=" white-space: nowrap; 
                     width: 100px; 
                     overflow: hidden;

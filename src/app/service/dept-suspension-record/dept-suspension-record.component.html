@@ -84,7 +84,7 @@
       <label for="LetterRefNo" class="col-sm-3 col-form-label" translate>Letter Ref No</label>
       <div class="col-sm-9">
         <input type="text" class="form-control"  [disabled]="disable" [(ngModel)]="deptSuspensionRecord.Letter_Ref_No" name="LetterRefNo"
-               id="LetterRefNo" placeholder="Letter Ref No">
+               id="LetterRefNo"  [placeholder]="'Letter Ref No' | translate">
       </div>
     </div>
     <div class="form-group row col-md-7">
@@ -99,7 +99,7 @@
       <label for="Remark" class="col-sm-3 col-form-label" translate>Remark</label>
       <div class="col-sm-9">
         <textarea class="form-control"  [disabled]="disable" [(ngModel)]="deptSuspensionRecord.Remark" name="Remark" id="Remark"
-                  placeholder="Remark">
+        [placeholder]="'Remark' | translate">
 
         </textarea>
       </div>

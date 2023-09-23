@@ -33,7 +33,7 @@
       <div class="col-sm-9">
         <textarea class="form-control" [disabled]="disable" [(ngModel)]="themCertificateVersion.Remark" name="Remark"
                   id="Remark"
-                  placeholder="Remark"></textarea>
+                  [placeholder]="'Remark' | translate"></textarea>
       </div>
     </div>
     <div class="form-group row col-md-7">

@@ -44,6 +44,7 @@ export class CertletterComponent implements OnChanges {
   Saved = false;
   urlParams: any;
   language: string;
+  disable_new: boolean;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -130,6 +131,7 @@ export class CertletterComponent implements OnChanges {
     }
   }
   Selectversion(certver) {
+    
     this.Selectedcert = certver;
     this.certltrview = true;
     this.certReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
@@ -178,6 +180,7 @@ export class CertletterComponent implements OnChanges {
       .getDocmentArcive(this.SelectedBase.Title_Deed_No)
       .subscribe(
         async (cerltter) => {
+      
           a = cerltter;
           if (this.language == "amharic") {
             a.list[0].Regstration_Date = await this.getgregorianToEthiopianDate(
@@ -185,6 +188,12 @@ export class CertletterComponent implements OnChanges {
             );
           }
           this.cerlettrformList = Object.assign([], a.list);
+          if(this.cerlettrformList.length>0){
+            this.disable_new=true;
+          }
+          else{
+            this.disable_new=false
+          }
           console.log("cerltter", cerltter);
           console.log("this.cerltter", this.cerltter);
           /* if (a.list.length) {
@@ -193,6 +202,7 @@ export class CertletterComponent implements OnChanges {
          this.isnew = true;
          this.cerltter.Title_Deed_No = this.certCode;
        }*/
+      
         },
         (error) => {
           console.log("error");

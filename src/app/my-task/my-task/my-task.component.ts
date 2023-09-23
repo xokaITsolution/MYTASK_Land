@@ -17,6 +17,7 @@ export class MyTaskComponent implements OnInit {
   messageAppNo;
   messageCache = [];
   messageObj = {
+    userName: null,
     currentMessage: null,
     currentMessageIndex: 0,
     messages: null,
@@ -26,6 +27,8 @@ export class MyTaskComponent implements OnInit {
     PREV: "d01",
   };
   loadingMessage = false;
+  user: any;
+  user_name: "Message from:";
 
   constructor(
     private myTaskService: MyTaskService,
@@ -134,14 +137,29 @@ export class MyTaskComponent implements OnInit {
       if (!messageInCache) {
         this.seice.GetNote(appNo).subscribe(
           (result) => {
+            console.log('messagesss',result);
+            
             this.messageObj.messages = result;
+
             if (this.messageObj.messages) {
+              console.log('this.messageObj.messages',this.messageObj.messages[0].remarks);
+             
               this.messageCache.push({
                 appNo: this.messageAppNo,
                 messages: result,
               });
-              this.messageObj.currentMessage =
+              this.myTaskService.getViewAspNetUsersWorkInfoDetail().subscribe(
+                (res)=>{
+                  this.user=res.filter((value)=>value.remarks == this.messageObj.messages[0]["remarks"])
+                  // this.user_name= this.user_name+this.user[0].firstName_en
+                  this.messageObj.userName= this.user[0].firstName_en
+                  console.log('userrrr',this.messageObj.userName);
+              this.messageObj.currentMessage = 
                 this.messageObj.messages[0]["remarks"];
+
+}
+)
+
             }
             this.loadingMessage = false;
           },

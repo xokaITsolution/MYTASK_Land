@@ -8,7 +8,8 @@ import { environment } from "../../environments/environment";
 export class MyTaskService {
   private MytasksUrl = environment.rootPath + "BPEL/GetlistofTodo"; // URL to web api
   private SupervisertasksUrl = environment.rootPath + "BPEL/GetlistofTodo"; // URL to web api
-
+  private ViewAspNetUsersWorkInfoDetail =
+  environment.rootPathApi + "view/View_postit_note_user";
   private IsLockedBy_OtherUserUrl =
     environment.rootPath + "BPEL/IsLockedBy_OtherUser";
 
@@ -35,6 +36,11 @@ export class MyTaskService {
         "&orgid=00000000-0000-0000-0000-000000000000&lanid=2C2EBBEA-3361-E111-95D5-00E04C05559B&userroll" +
         "=00000000-0000-0000-0000-000000000000"
     );
+  }
+  getViewAspNetUsersWorkInfoDetail() {
+    // User_ID = this.removeSlash(User_ID);
+    return this.http.get<any>(
+      this.ViewAspNetUsersWorkInfoDetail);
   }
   getSupervisertasks(orgid) {
     return this.http.get(

@@ -110,9 +110,9 @@ export class CertComponent implements OnChanges {
   }
   async getEthiopianToGregorian(date){
 
+    console.log("checkingdate",date);
     if(date){
     var datenow=  await this.serviceService.getEthiopianToGregorian(date).toPromise()
-       console.log(datenow);
        return datenow.nowTime
  
     }
@@ -191,8 +191,9 @@ export class CertComponent implements OnChanges {
     this.modalRef.hide();
   }
   async SaveBase(modal) {
-    console.log("saveing.....");
+    
     this.Base.Registration_Date=await this.getEthiopianToGregorian(this.Base.Registration_Date)
+    console.log("saveing.....", this.Base.Registration_Date);
     this.serviceService.SaveBase(this.Base).subscribe(
       (certafcateCode) => {
         console.log("certafcateCode", certafcateCode);

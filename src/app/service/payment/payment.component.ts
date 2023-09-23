@@ -77,7 +77,7 @@ export class PaymentComponent implements OnChanges {
         this.PaymentList = PaymentList;
         this.PaymentList = Object.assign([], this.PaymentList.list);
         this.Amount = this.PaymentList[0].Amount;
-        console.log("PaymentList", this.Amount);
+        console.log("PaymentList", PaymentList);
       },
       (error) => {
         console.log("error");

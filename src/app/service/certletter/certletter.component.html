@@ -73,7 +73,7 @@
             <th scope="col" translate>Title deed no</th>
             <th scope="col" translate>Registration Date</th>
             <th scope="col">
-              <button type="button" class="btn btn-primary" (click)="addcerltter()"  *ngIf="!disable" translate>Add New</button>
+              <button type="button" class="btn btn-primary" (click)="addcerltter()"   [disabled]="disable_new" translate>Add New</button>
             </th>
           </tr>
         </ng-template>

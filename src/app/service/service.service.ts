@@ -27,7 +27,8 @@ export class ServiceService {
   private DeedUrl = environment.rootPath + "Deed_Registration"; // URL to web api
   private License_ServiceURL = environment.rootPath + "License_Service"; // URL to web api
   private saveFileLookUP = environment.rootPath + "BPEL/SaveDocumentMaster"; // URL to web api
-
+  private Postit_user =
+  environment.rootPathApi + "view/View_postit_note_user";
   private CustomerTypeLookUP = environment.rootPath + "Customer_Type_Lookup"; // URL to web api
   private CustomerLookUP = environment.rootPath + "Customer"; // URL to web api
   private SuspendedReasonLookUP =
@@ -166,10 +167,12 @@ export class ServiceService {
   }
   getEthiopianToGregorian(date) {
     if (date) {
-      let year = parseInt(date.split("/")[2]);
-      let month = parseInt(date.split("/")[1]);
-      let day = parseInt(date.split("/")[0]);
-
+const dateStr = date;
+const dateParts = dateStr.split("-");
+const year = +dateParts[0]; // Convert to a number using the '+' operator
+const month = +dateParts[1];
+const day = +dateParts[2];
+console.log("datedatedate",year,month,day);
       return this.http.get<any>(
         this.EthiopianToGregorian + "/" + year + "/" + month + "/" + day
       );
@@ -211,7 +214,11 @@ export class ServiceService {
   getCurrencies() {
     return this.http.get<any>(this.currencies);
   }
-
+  getPostit_user() {
+    // User_ID = this.removeSlash(User_ID);
+    return this.http.get<any>(
+      this.Postit_user);
+  }
   getUnits() {
     return this.http.get<any>(this.units);
   }
