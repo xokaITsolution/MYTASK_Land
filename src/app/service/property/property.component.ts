@@ -297,10 +297,6 @@ export class PropertyComponent implements OnChanges {
       //     );
 
       //   });
-      // this.serviceComponent.PropertyTypeLookUP =
-      //   this.serviceComponent.PropertyTypeLookUP.filter(
-      //     (x) => x.Property_Type_ID != 1
-      //   );
 
       this.propertyregForm = true;
       this.isnew = false;
@@ -312,6 +308,10 @@ export class PropertyComponent implements OnChanges {
       if (this.selectedFile.property_Type_ID == 1) {
         this.newplot = true;
       } else {
+        this.serviceComponent.PropertyTypeLookUP =
+          this.serviceComponent.PropertyTypeLookUP.filter(
+            (x) => x.Property_Type_ID != 1
+          );
       }
     }
   }
@@ -328,8 +328,8 @@ export class PropertyComponent implements OnChanges {
           this.isisvalidated(
             this.todoid,
             this.tskID,
-            this.PropertyList[i].plot_ID,
-            this.PropertyList[i].property_ID,
+            "00000000-0000-0000-0000-000000000000",
+            "00000000-0000-0000-0000-000000000000",
             this.DocID
           );
         }

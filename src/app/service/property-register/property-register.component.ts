@@ -431,7 +431,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     if (parseInt(this.serviceService.Plot_Size_M2) < totalsize) {
       const toast = this.notificationsService.error(
         "error",
-        "the sum of building_Size_M2 , compound_Size_M2  and parking_Area_M2 must be equle to " +
+        "the sum of building_Size_M2 , proportional_from_Compound_Size  and parking_Area_M2 must be equle to " +
           this.serviceService.Plot_Size_M2 +
           "M2"
       );
@@ -471,7 +471,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             deptSuspension
           );
           // this.serviceService.disablefins = false;
-
+          this.serviceService.hide = false;
           console.log("added property registration");
         },
         (error) => {
