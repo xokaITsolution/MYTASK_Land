@@ -101,6 +101,11 @@
                            [maxFileSize]="RequiredDoc.size">
                           </p-fileUpload>
                           </div>
+                          <div *ngIf="uploadedDocumnet" [hidden]="disDocument" >
+                            <div>
+                            <iframe width="100%" [src]="documentupload" alt="FileUPloaded"  class="pdf-ifram"></iframe>
+                            
+                               </div></div> 
                           <div *ngIf="RequiredDoc.File">
                             <button type="button" class="btn btn-primary" (click)="removeUpload(RequiredDoc)"
                               translate>Remove</button>

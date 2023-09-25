@@ -13,8 +13,8 @@ export const environment = {
   iconpath: window["iconpath"],
   formPath: window["formPath"],
 
-  username: "BL_Data_Encoder",
-  // username: "BL_Doc_Verifier",
+  // username: "BL_Data_Encoder",
+  username: "BL_Doc_Verifier",
   //username: "BL_Cashier",
   phisicalPath: "./assets/i18n/",
   Lang_code: window["lang"],

@@ -44,6 +44,8 @@ export class ServiceComponent implements OnInit {
   public ID = 0;
   loading = true;
   licenceService;
+  documentupload: any;
+  uploadedDocumnet: boolean;
   licenceData: any = {};
   AppNo;
   tskTyp;
@@ -191,6 +193,10 @@ export class ServiceComponent implements OnInit {
   moreDetail = {
     toggle: false,
   };
+  disDocument: boolean;
+  mimeType: any;
+  fileupload: string;
+  uploadcontract: boolean;
   constructor(
     private modalService: BsModalService,
     private activatedRoute: ActivatedRoute,
@@ -1003,6 +1009,8 @@ console.log('userrrr',this.user);
           data: base64file,
         })
       );
+      this.documentupload = base64FileData
+       this.previewdocumnet(base64FileData)
       console.log("this.DocID", base64file);
       this.serviceService
         .saveFile(
@@ -1088,7 +1096,31 @@ console.log('userrrr',this.user);
       }
     );
   }
-
+  previewdocumnet(file){
+    if(file==''||file==null){
+      this.disDocument=true
+    }
+    else{
+      this.disDocument=false
+    }
+    try {
+     
+     let fileData = JSON.parse(window.atob(file));
+      let { type, data } = fileData;
+      this.mimeType=type
+      this.fileupload= "data:" + type + ";base64, " + data;
+      this.uploadedDocumnet=true
+      this.uploadcontract=false
+     
+      this.documentupload= this.sanitizer.bypassSecurityTrustResourceUrl(
+               this.fileupload
+             );
+      console.log(this.documentupload);
+ }
+           catch (e) {
+             console.error(e);
+           }
+}
   pendclose(appNO) {
     this.getAppData(appNO);
   }
