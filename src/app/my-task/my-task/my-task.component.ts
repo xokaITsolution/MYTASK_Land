@@ -12,7 +12,7 @@ import { NotificationsService } from "angular2-notifications";
 })
 export class MyTaskComponent implements OnInit {
   taskwaithing = 120;
-
+  isAccountVisible:boolean
   taskList;
   messageAppNo;
   messageCache = [];
@@ -107,15 +107,16 @@ export class MyTaskComponent implements OnInit {
     this.modal.getModal(id).open();
   }
 
-  closeModal(id) {
-    this.modal.getModal(id).close();
+  closeModal() {
+    // this.modal.getModal(id).close();
+    this.isAccountVisible = false
   }
 
   showMessage(appNo, task) {
     if (appNo != this.messageAppNo) {
       let messageInCache = false;
       this.loadingMessage = true;
-
+      this.isAccountVisible = true
       this.messageObj.currentMessage = null;
       this.messageObj.currentMessageIndex = 0;
       this.messageObj.messages = null;

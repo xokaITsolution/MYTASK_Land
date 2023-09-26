@@ -507,6 +507,8 @@ console.log("datedatedate",year,month,day);
   }
 
   getAllDocument(ApplicationCode, DocID) {
+    console.log('ApplicationCode, DocID',ApplicationCode, DocID);
+    
     return this.http.get<any[]>(
       this.getAllDocumentURL +
         "?" +

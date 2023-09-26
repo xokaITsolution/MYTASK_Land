@@ -50,7 +50,45 @@
     </p-table>
   </div>
 </div>
-<ngx-smart-modal identifier="messages">
+<p-dialog
+header="{{user_name}}"
+[(visible)]="isAccountVisible"
+ [style]="{ width: '30vw' }" [draggable]="false" [resizable]="false"
+ [modal]="true"
+[maximizable]="true"
+[baseZIndex]="10000"
+>
+<div *ngIf="!loadingMessage">
+<div *ngIf="!messageObj.messages" class="alert alert-info message-not-available" role="alert" translate>
+  No message available!
+</div>
+<div class="messages-container" *ngIf="messageObj.messages">
+  <div class="message-box">
+    <textarea rows="8" class="form-control"
+      disabled>{{ messageObj.messages ? messageObj.currentMessage : null }}</textarea>
+  </div>
+  <div class="message-next-prev">
+    <button type="button" class="btn btn-light" [disabled]="!canGo(direction.PREV)" (click)="navigateMessage(direction.PREV)" translate>
+      <span class="pi pi-angle-left"></span>
+      Previous
+    </button>
+    <button type="button" class="btn btn-light" [disabled]="!canGo(direction.NEXT)" (click)="navigateMessage(direction.NEXT)" translate>
+      Next
+      <span class="pi pi-angle-right"></span>
+    </button>
+  </div>
+</div>
+</div>
+
+<div *ngIf="loadingMessage" class="loading-spinner-container">
+<span class="loading-spinner" translate>
+  <span class="pi pi-spin pi-spinner"></span>
+  Loading...
+</span>
+</div>
+<button type="button" class="btn btn-primary" (click)="closeModal()" translate>Done</button>
+</p-dialog>
+<!-- <ngx-smart-modal identifier="messages">
   <div class="modal-header">
     <h4 class="modal-title pull-left" translate>{{user_name}}</h4>
   </div>
@@ -89,6 +127,6 @@
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="closeModal('messages')" translate>Done</button>
   </div>
-</ngx-smart-modal>
+</ngx-smart-modal> -->
 <simple-notifications></simple-notifications>
 

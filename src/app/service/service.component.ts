@@ -521,6 +521,8 @@ export class ServiceComponent implements OnInit {
   getRequiredDocspre(tskID) {
     this.serviceService.getRequerdDocs(tskID).subscribe(
       (RequerdDocs) => {
+        console.log('getRequiredDocspre',RequerdDocs);
+        
         this.RequerdDocspre = RequerdDocs;
         if (this.RequerdDocs != null) this.showProgressBar = false;
 
@@ -950,6 +952,8 @@ console.log('userrrr',this.user);
   }
 
   openModal(template: TemplateRef<any>) {
+    console.log('template',template);
+    
     this.modalRef = this.modalService.show(
       template,
       Object.assign({}, { class: "gray modal-lg" })
@@ -1236,6 +1240,8 @@ console.log('userrrr',this.user);
   }
 
   getTaskData(task) {
+    console.log('task',task);
+    
     this.preAppID = 0;
     this.PreTaskData = [];
     for (let i = 0; i < this.PreAppData.length; i++) {
@@ -1244,11 +1250,11 @@ console.log('userrrr',this.user);
         this.PreTaskData.push(this.PreAppData[i]);
       }
     }
-    // console.log('PreTaskData', this.PreTaskData);
+    console.log('PreTaskData', this.PreTaskData);
   }
 
   SelectTask(task) {
-    // console.log('task', task);
+    console.log('tasksssss', task);
     this.showProgressBar = true;
     this.selectedpreTask = task;
     this.selectedTask = task;
@@ -1257,7 +1263,7 @@ console.log('userrrr',this.user);
     this.getRequiredDocspre(task.tasks_task_code);
     this.getAllDocumentpre(this.SelectedpreApp.Licence_Service_ID, task.docId);
 
-    this.getAllDocumentpre(this.SelectedpreApp.Licence_Service_ID, task.docId);
+    // this.getAllDocumentpre(this.SelectedpreApp.Licence_Service_ID, task.docId);
     if (task.form_code == "a7a1e05e-32c2-4f44-ad58-306572c64593") {
       this.preAppID = 2;
     } else if (

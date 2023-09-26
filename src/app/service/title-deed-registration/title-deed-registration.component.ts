@@ -46,7 +46,8 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   Transfer_From_CustomerName: null;
   Transfer_To_CustomerName: any;
   customerdataTo: any;
-
+  TransferredFrom: boolean;
+  TransferredTo: boolean;
   constructor(
     private modalService: BsModalService,
     private ngxSmartModalService: NgxSmartModalService,
