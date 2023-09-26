@@ -57,7 +57,8 @@ export class CertletterComponent implements OnChanges {
   ) {
     this.cerltter = new Cerltter();
   }
-
+  isCertifcatePrintforConfirmation: boolean
+  isLetterPrintingConfirmation:boolean
   ngOnChanges() {
     if (environment.Lang_code === "am-et") {
       this.language = "amharic";
@@ -142,7 +143,7 @@ export class CertletterComponent implements OnChanges {
     );
 
     console.log("certver", certver);
-    console.log("certver", this.certReportPath);
+    console.log("certReportPath", this.certReportPath);
     console.log("certver", this.LetterReportPath);
   }
 

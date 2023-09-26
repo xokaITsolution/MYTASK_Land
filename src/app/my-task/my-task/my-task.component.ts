@@ -28,7 +28,7 @@ export class MyTaskComponent implements OnInit {
   };
   loadingMessage = false;
   user: any;
-  user_name: "Message from:";
+  user_name: any;
 
   constructor(
     private myTaskService: MyTaskService,
@@ -151,7 +151,7 @@ export class MyTaskComponent implements OnInit {
               this.myTaskService.getViewAspNetUsersWorkInfoDetail().subscribe(
                 (res)=>{
                   this.user=res.filter((value)=>value.remarks == this.messageObj.messages[0]["remarks"])
-                  // this.user_name= this.user_name+this.user[0].firstName_en
+                  this.user_name= "Massage From: "+this.user[0].firstName_en
                   this.messageObj.userName= this.user[0].firstName_en
                   console.log('userrrr',this.messageObj.userName);
               this.messageObj.currentMessage = 
