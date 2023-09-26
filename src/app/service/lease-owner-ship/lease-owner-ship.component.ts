@@ -219,6 +219,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
   // }
 
   getleaseOwnerShip(plotID) {
+    console.log("plotIDplotID", plotID);
+
     this.leaseOwnerShipService.getAll(plotID).subscribe(
       (CertificateVersion) => {
         this.tasks = CertificateVersion;
@@ -268,12 +270,14 @@ export class LeaseOwnerShipComponent implements OnChanges {
           deptSuspension
         );
         this.serviceService.disablefins = false;
-        this.leaseOwnerShip.Date_of_final_lease_payment =
-          await this.getgregorianToEthiopianDate(
-            this.leaseOwnerShip.Date_of_final_lease_payment
-          );
         this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
 
+        if (this.language == "amharic") {
+          this.leaseOwnerShip.Date_of_final_lease_payment =
+            await this.getgregorianToEthiopianDate(
+              this.leaseOwnerShip.Date_of_final_lease_payment
+            );
+        }
         if (!this.Saved) {
           this.completed.emit();
           this.Saved = true;
@@ -286,19 +290,23 @@ export class LeaseOwnerShipComponent implements OnChanges {
             "Error",
             error.error.InnerException.Errors[0].message
           );
-          this.leaseOwnerShip.Date_of_final_lease_payment =
-            await this.getgregorianToEthiopianDate(
-              this.leaseOwnerShip.Date_of_final_lease_payment
-            );
+          if (this.language == "amharic") {
+            this.leaseOwnerShip.Date_of_final_lease_payment =
+              await this.getgregorianToEthiopianDate(
+                this.leaseOwnerShip.Date_of_final_lease_payment
+              );
+          }
         } else {
           const toast = this.notificationsService.error(
             "Error",
             "SomeThing Went Wrong"
           );
-          this.leaseOwnerShip.Date_of_final_lease_payment =
-            await this.getgregorianToEthiopianDate(
-              this.leaseOwnerShip.Date_of_final_lease_payment
-            );
+          if (this.language == "amharic") {
+            this.leaseOwnerShip.Date_of_final_lease_payment =
+              await this.getgregorianToEthiopianDate(
+                this.leaseOwnerShip.Date_of_final_lease_payment
+              );
+          }
         }
       }
     );
@@ -365,13 +373,18 @@ export class LeaseOwnerShipComponent implements OnChanges {
           "Sucess",
           deptSuspension
         );
-        this.leaseOwnerShip.Date_of_final_lease_payment =
-          await this.getgregorianToEthiopianDate(
-            this.leaseOwnerShip.Date_of_final_lease_payment
-          );
-        this.serviceService.disablefins = false;
 
         this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
+
+        if (this.language == "amharic") {
+          this.leaseOwnerShip.Date_of_final_lease_payment =
+            await this.getgregorianToEthiopianDate(
+              this.leaseOwnerShip.Date_of_final_lease_payment
+            );
+        }
+
+        this.serviceService.disablefins = false;
+
         this.leaseForm = false;
         this.serviceService.isleaseForm = false;
         if (!this.Saved) {

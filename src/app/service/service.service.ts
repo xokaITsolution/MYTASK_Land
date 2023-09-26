@@ -170,9 +170,9 @@ export class ServiceService {
     if (date) {
       const dateStr = date;
       const dateParts = dateStr.split("/");
-      const year = +dateParts[0]; // Convert to a number using the '+' operator
+      const year = +dateParts[2]; // Convert to a number using the '+' operator
       const month = +dateParts[1];
-      const day = +dateParts[2];
+      const day = +dateParts[0];
       console.log("datedatedate", year, month, day);
       return this.http.get<any>(
         this.EthiopianToGregorian + "/" + year + "/" + month + "/" + day
@@ -505,8 +505,8 @@ export class ServiceService {
   }
 
   getAllDocument(ApplicationCode, DocID) {
-    console.log('ApplicationCode, DocID',ApplicationCode, DocID);
-    
+    console.log("ApplicationCode, DocID", ApplicationCode, DocID);
+
     return this.http.get<any[]>(
       this.getAllDocumentURL +
         "?" +

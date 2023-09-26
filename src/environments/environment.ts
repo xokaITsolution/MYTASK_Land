@@ -16,7 +16,7 @@ export const environment = {
   username: "0945845912",
   // username: "BL_Doc_Verifier",
   //username: "BL_Tech_Leader",
-  //username: "BL_Cashier",
+  //username: "BL_Data_Encoder",
   phisicalPath: "./assets/i18n/",
   Lang_code: window["lang"],
   localGisServer: window["local_GIS_server"],
