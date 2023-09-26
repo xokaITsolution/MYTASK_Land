@@ -195,11 +195,11 @@
               </div>
             </div>
             <div class="form-group row col-md-6" *ngIf="language === 'amharic'">
-              <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>
+              <label for="RegisterationDateto" class="col-sm-3 col-form-label" translate>Registration Date</label>
               <div class="col-sm-9">
                 <input type="text" readonly class="form-control" [disabled]="disable" [(ngModel)]="propertyRegister.registration_Date"
-                  name="RegisterationDateTo" id="RegisterationDateTo" [placeholder]="'Registeration date' | translate"
-                  #RegisterationDateTo="ngModel" [ngClass]="{ 'is-invalid': RegisterationDate.invalid }" required
+                  name="RegisterationDateto" id="RegisterationDatetto" [placeholder]="'Registeration date' | translate"
+                  #RegisterationDateto="ngModel" [ngClass]="{ 'is-invalid': RegisterationDateto.invalid }" required
                   appDatepickerEthiopian (dateEmitter)="selectedDateTime($event,1)">
               </div>
             </div>
