@@ -704,7 +704,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
               this.plotManagment.Registration_Date
             );
         }
-        // this.serviceService.disablefins = false;
+        this.serviceService.toEnablenext = false;
         this.plotcomponent.toMes = true;
         this.plotcomponent.CanDone = true;
         this.isnew = false;

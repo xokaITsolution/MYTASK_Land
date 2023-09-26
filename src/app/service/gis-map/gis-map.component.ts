@@ -44,6 +44,7 @@ export class GisMapComponent implements AfterViewInit {
   }
   @Input() geometry;
   map: L.Map;
+  editableLayers = new L.FeatureGroup();
   private EPSG20137: L.Proj.CRS;
   // Define the EPSG:20137 CRS
   private markerLayer: L.LayerGroup;
@@ -160,7 +161,7 @@ export class GisMapComponent implements AfterViewInit {
     }
     this.map = L.map("mapp", {
       crs: this.EPSG20137, // Set the map CRS to EPSG:20137
-    }).setView([9.145, 40.489], 8); // Set an appropriate initial view for Ethiopia
+    }).setView([9.145, 40.489], 4); // Set an appropriate initial view for Ethiopia
     this.markerLayer = L.layerGroup().addTo(this.map);
     // Create a map event listener to track mouse movements
     this.map.on("mousemove", (event) => {
@@ -188,80 +189,328 @@ export class GisMapComponent implements AfterViewInit {
     //   attribution: 'OpenStreetMap'
     // }).addTo(this.map);
     // Configure drawing controls
-    this.drawControl = new L.Control.Draw({
+    // this.drawControl = new L.Control.Draw({
+    //   draw: {
+    //     marker: false, // Disable marker drawing
+    //     polyline: false, // Disable polyline drawing
+    //     circle: false, // Disable circle drawing
+    //     circlemarker: false, // Disable circlemarker drawing
+    //     polygon: {
+    //       allowIntersection: false, // Prevents intersecting polygons
+    //       drawError: {
+    //         color: "#de3214", // Error color
+    //         timeout: 1000, // Error message display duration in milliseconds
+    //       },
+    //       shapeOptions: {
+    //         color: "#de3214", // Outline color
+    //         fillColor: "#ff0000", // Fill color of the polygon (change this to the desired color)
+    //         fillOpacity: 0.6, // Opacity of the fill color (0 to 1)
+    //       },
+    //       showArea: true, // Display polygon area while drawing
+    //     },
+    //   },
+    //   edit: {
+    //     featureGroup: L.featureGroup(), // Create a feature group for drawn items
+    //   },
+    // });
+
+    // this.map.addControl(this.drawControl);
+
+    this.map.addLayer(this.editableLayers);
+    const options = {
+      position: "topleft" as L.ControlPosition, // Correctly specify the ControlPosition type
       draw: {
-        marker: false, // Disable marker drawing
-        polyline: false, // Disable polyline drawing
-        circle: false, // Disable circle drawing
-        circlemarker: false, // Disable circlemarker drawing
         polygon: {
-          allowIntersection: false, // Prevents intersecting polygons
+          allowIntersection: false, // Prevent shapes from intersecting
           drawError: {
-            color: "#de3214", // Error color
-            timeout: 1000, // Error message display duration in milliseconds
+            color: "#e1e100", // Error color
+            message: "<strong>Oh snap!<strong> you can't do that", // Error message
           },
-          shapeOptions: {
-            color: "#de3214", // Outline color
-            fillColor: "#ff0000", // Fill color of the polygon (change this to the desired color)
-            fillOpacity: 0.6, // Opacity of the fill color (0 to 1)
-          },
-          showArea: true, // Display polygon area while drawing
         },
+        polyline: {
+          metric: true, // Use metric measurement system
+        },
+        // Add other shape options here
       },
       edit: {
-        featureGroup: L.featureGroup(), // Create a feature group for drawn items
+        featureGroup: this.editableLayers, // Specify the feature group to edit
+        remove: true, // Enable the remove/edit tool
       },
+    };
+    const drawControl = new L.Control.Draw(options);
+    this.map.addControl(drawControl);
+
+    this.map.on("draw:created", (e) => {
+      console.log("Shape created:", e, this.ServiceService.check);
+      const layer = e.layer;
+
+      if (!this.ServiceService.check) {
+        console.log("Shape created:alllatlong", this.alllatlong[0]);
+
+        // Assuming limited area bounds as a polygon
+        const limitedAreaBounds = L.polygon(this.alllatlong[0]).addTo(this.map);
+
+        // Check if the drawn shape intersects with the limited area bounds
+        if (limitedAreaBounds.getBounds().contains(layer.getBounds())) {
+          this.map.addLayer(layer);
+
+          console.log(layer);
+          if (layer instanceof L.Polygon) {
+            this.coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the polygon
+            // Convert the drawn polygon to GeoJSON
+            // Convert the drawn polygon to GeoJSON
+            // Assuming this.coordinates is an array of L.LatLng objects
+
+            console.log(this.coordinates);
+            // Convert each L.LatLng object to [x, y] point
+            //this.convertLatLngToUTM(this.coordinates)
+
+            // Assuming you already have the 'points' array from the previous code
+            const utmCoordinates = this.convertCoordinatesToUTM(
+              this.coordinates
+            );
+            this.utmCoordinates = utmCoordinates;
+            console.log(utmCoordinates);
+            // Convert each L.LatLng object to [x, y] point
+            // Assuming this.coordinates is an array of L.LatLng objects
+            // Convert each L.LatLng object to [x, y] point
+
+            const geojson = layer.toGeoJSON();
+
+            // Create a layer with the transformed GeoJSON
+            this.drawnShape = L.Proj.geoJson(geojson);
+            console.log(this.drawnShape);
+
+            // Add the transformed GeoJSON layer to the map
+
+            this.drawnShape.addTo(this.map);
+            utmCoordinates.push(utmCoordinates[0]);
+            //points.push(points[0])
+            this.sample = this.drawnShape;
+            console.log("utmCoordinates", utmCoordinates);
+            // Add the coordinates to the array
+            //this.drawnShapes.push(this.coordinates);
+
+            // Do something with the coordinates, such as displaying or processing them
+
+            this.ServiceService.coordinate = utmCoordinates;
+            //  this.ServiceService.shapes = this.aaa.push(this.drawnShape);
+            // Transform GeoJSON to EPSG:20137 CRS
+          } else if (layer instanceof L.Circle) {
+            // Get the center LatLng of the circle
+            const centerLatLng = layer.getLatLng();
+
+            // Get the radius of the circle in meters
+            const radiusMeters = layer.getRadius();
+
+            // Calculate the LatLng coordinates of the circle
+            const circleLatLngs = this.calculateCircleCoordinates(
+              centerLatLng,
+              radiusMeters
+            );
+
+            console.log("Circle LatLngs:", circleLatLngs);
+            const utmCoordinates = this.convertCoordinatesToUTM(circleLatLngs);
+            this.utmCoordinates = utmCoordinates;
+            console.log(utmCoordinates);
+            // Convert each L.LatLng object to [x, y] point
+            // Assuming this.coordinates is an array of L.LatLng objects
+            // Convert each L.LatLng object to [x, y] point
+
+            this.drawnShape = L.polygon(circleLatLngs, {
+              color: "blue",
+            });
+
+            console.log(this.drawnShape);
+
+            // Add the transformed GeoJSON layer to the map
+
+            this.drawnShape.addTo(this.map);
+            utmCoordinates.push(utmCoordinates[0]);
+            //points.push(points[0])
+            this.sample = this.drawnShape;
+            console.log("utmCoordinates", utmCoordinates);
+            // Add the coordinates to the array
+            //this.drawnShapes.push(this.coordinates);
+
+            // Do something with the coordinates, such as displaying or processing them
+
+            this.ServiceService.coordinate = utmCoordinates;
+            // Now you can use circleLatLngs as needed
+          }
+
+          this.editableLayers.addLayer(layer);
+        } else {
+          const toast = this.messageService.add({
+            severity: "warn",
+            summary: "Warn",
+            detail:
+              "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡",
+          });
+          this.map.removeLayer(layer);
+          this.editableLayers.removeLayer(layer);
+          this.removeShape();
+          this.ServiceService.disablebutton = false;
+        }
+      } else {
+        if (layer instanceof L.Polygon) {
+          this.coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the polygon
+
+          console.log(this.coordinates);
+
+          // Assuming you already have the 'points' array from the previous code
+          const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
+          this.utmCoordinates = utmCoordinates;
+          console.log(utmCoordinates);
+          // Convert each L.LatLng object to [x, y] point
+          // Assuming this.coordinates is an array of L.LatLng objects
+          // Convert each L.LatLng object to [x, y] point
+
+          const geojson = layer.toGeoJSON();
+
+          // Create a layer with the transformed GeoJSON
+          this.drawnShape = L.Proj.geoJson(geojson);
+          console.log(this.drawnShape);
+
+          // Add the transformed GeoJSON layer to the map
+
+          this.drawnShape.addTo(this.map);
+          utmCoordinates.push(utmCoordinates[0]);
+          //points.push(points[0])
+          this.sample = this.drawnShape;
+          console.log("utmCoordinates", utmCoordinates);
+          // Add the coordinates to the array
+          //this.drawnShapes.push(this.coordinates);
+
+          // Do something with the coordinates, such as displaying or processing them
+
+          this.ServiceService.coordinate = utmCoordinates;
+          //  this.ServiceService.shapes = this.aaa.push(this.drawnShape);
+          // Transform GeoJSON to EPSG:20137 CRS
+        } else if (layer instanceof L.Circle) {
+          // Get the center LatLng of the circle
+          const centerLatLng = layer.getLatLng();
+
+          // Get the radius of the circle in meters
+          const radiusMeters = layer.getRadius();
+
+          // Calculate the LatLng coordinates of the circle
+          const circleLatLngs = this.calculateCircleCoordinates(
+            centerLatLng,
+            radiusMeters
+          );
+
+          console.log("Circle LatLngs:", circleLatLngs);
+          const utmCoordinates = this.convertCoordinatesToUTM(circleLatLngs);
+          this.utmCoordinates = utmCoordinates;
+          console.log(utmCoordinates);
+          // Convert each L.LatLng object to [x, y] point
+          // Assuming this.coordinates is an array of L.LatLng objects
+          // Convert each L.LatLng object to [x, y] point
+
+          this.drawnShape = L.polygon(circleLatLngs, {
+            color: "blue",
+          });
+
+          console.log(this.drawnShape);
+
+          // Add the transformed GeoJSON layer to the map
+
+          this.drawnShape.addTo(this.map);
+          utmCoordinates.push(utmCoordinates[0]);
+          //points.push(points[0])
+          this.sample = this.drawnShape;
+          console.log("utmCoordinates", utmCoordinates);
+          // Add the coordinates to the array
+          //this.drawnShapes.push(this.coordinates);
+
+          // Do something with the coordinates, such as displaying or processing them
+
+          this.ServiceService.coordinate = utmCoordinates;
+          // Now you can use circleLatLngs as needed
+        }
+      }
     });
 
-    this.map.addControl(this.drawControl);
+    // Event handler for when a shape is edited
+    this.map.on("draw:edited", (e) => {
+      console.log("Shape editmoveend:", e);
+      const editedLayers: any = e.layers;
+
+      editedLayers.eachLayer((layer) => {
+        if (layer instanceof L.Polygon) {
+          const coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the edited polygon
+
+          // Assuming you have a function to convert coordinates to UTM
+          const utmCoordinates = this.convertCoordinatesToUTM(coordinates);
+          console.log("UTM Coordinates:", utmCoordinates);
+          utmCoordinates.push(utmCoordinates[0]);
+          // Convert the edited polygon to GeoJSON
+          const geojson = layer.toGeoJSON();
+
+          // Create a layer with the transformed GeoJSON
+          const drawnShape = L.Proj.geoJson(geojson);
+
+          // Add the transformed GeoJSON layer to the map
+          drawnShape.addTo(this.map);
+          // this.editableLayers.addLayer(this.drawnShape);
+          // Do something with the coordinates, such as displaying or processing them
+          // For example, you can set them in a service or perform other actions
+          this.ServiceService.coordinate = utmCoordinates;
+          // this.ServiceService.shapes.push(drawnShape);
+
+          // Transform GeoJSON to EPSG:20137 CRS if needed
+        }
+      });
+    });
 
     // Handle draw events
-    this.map.on(L.Draw.Event.CREATED, (event: L.DrawEvents.Created) => {
-      const layer: L.Layer = event.layer;
-      console.log(layer);
-      if (layer instanceof L.Polygon) {
-        this.coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the polygon
-        // Convert the drawn polygon to GeoJSON
-        // Convert the drawn polygon to GeoJSON
-        // Assuming this.coordinates is an array of L.LatLng objects
+    // this.map.on(L.Draw.Event.CREATED, (event: L.DrawEvents.Created) => {
+    //   const layer: L.Layer = event.layer;
+    //   console.log(layer);
+    //   if (layer instanceof L.Polygon) {
+    //     this.coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the polygon
+    //     // Convert the drawn polygon to GeoJSON
+    //     // Convert the drawn polygon to GeoJSON
+    //     // Assuming this.coordinates is an array of L.LatLng objects
 
-        console.log(this.coordinates);
-        // Convert each L.LatLng object to [x, y] point
-        //this.convertLatLngToUTM(this.coordinates)
+    //     console.log(this.coordinates);
+    //     // Convert each L.LatLng object to [x, y] point
+    //     //this.convertLatLngToUTM(this.coordinates)
 
-        // Assuming you already have the 'points' array from the previous code
-        const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
-        this.utmCoordinates = utmCoordinates;
-        console.log(utmCoordinates);
-        // Convert each L.LatLng object to [x, y] point
-        // Assuming this.coordinates is an array of L.LatLng objects
-        // Convert each L.LatLng object to [x, y] point
+    //     // Assuming you already have the 'points' array from the previous code
+    //     const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
+    //     this.utmCoordinates = utmCoordinates;
+    //     console.log(utmCoordinates);
+    //     // Convert each L.LatLng object to [x, y] point
+    //     // Assuming this.coordinates is an array of L.LatLng objects
+    //     // Convert each L.LatLng object to [x, y] point
 
-        const geojson = layer.toGeoJSON();
+    //     const geojson = layer.toGeoJSON();
 
-        // Create a layer with the transformed GeoJSON
-        this.drawnShape = L.Proj.geoJson(geojson);
-        console.log(this.drawnShape);
+    //     // Create a layer with the transformed GeoJSON
+    //     this.drawnShape = L.Proj.geoJson(geojson);
+    //     console.log(this.drawnShape);
 
-        // Add the transformed GeoJSON layer to the map
+    //     // Add the transformed GeoJSON layer to the map
 
-        this.drawnShape.addTo(this.map);
-        utmCoordinates.push(utmCoordinates[0]);
-        //points.push(points[0])
-        this.sample = this.drawnShape;
-        console.log("utmCoordinates", utmCoordinates);
-        // Add the coordinates to the array
-        //this.drawnShapes.push(this.coordinates);
+    //     this.drawnShape.addTo(this.map);
+    //     utmCoordinates.push(utmCoordinates[0]);
+    //     //points.push(points[0])
+    //     this.sample = this.drawnShape;
+    //     console.log("utmCoordinates", utmCoordinates);
+    //     // Add the coordinates to the array
+    //     //this.drawnShapes.push(this.coordinates);
 
-        // Do something with the coordinates, such as displaying or processing them
+    //     // Do something with the coordinates, such as displaying or processing them
 
-        this.ServiceService.coordinate = utmCoordinates;
-        this.ServiceService.shapes = this.aaa.push(this.drawnShape);
-        // Transform GeoJSON to EPSG:20137 CRS
-      }
+    //     this.ServiceService.coordinate = utmCoordinates;
+    //     this.ServiceService.shapes = this.aaa.push(this.drawnShape);
+    //     // Transform GeoJSON to EPSG:20137 CRS
+    //   }
 
-      // Add the layer to the map
-    });
+    //   // Add the layer to the map
+    // });
 
     // Geoserver information
     const geoserverUrl = environment.geoserverUrl;
@@ -391,6 +640,30 @@ export class GisMapComponent implements AfterViewInit {
       .catch((error) => {
         console.error("Error fetching GetCapabilities:", error);
       });
+  }
+  calculateCircleCoordinates(center, radius) {
+    const points = [];
+    const radiusKilometers = radius / 1000; // Convert meters to kilometers
+    const segments = 64; // You can adjust this for the number of points
+
+    for (let i = 0; i < segments; i++) {
+      const angle = (i / segments) * 2 * Math.PI;
+      const x =
+        center.lat +
+        (radiusKilometers * Math.cos(angle)) /
+          (111.32 * Math.cos(center.lat * (Math.PI / 180)));
+      const y =
+        center.lng +
+        (radiusKilometers * Math.sin(angle)) /
+          (111.32 * Math.cos(center.lat * (Math.PI / 180)));
+
+      points.push(L.latLng(x, y));
+    }
+
+    // Close the circle by adding the first point at the end
+    points.push(points[0]);
+
+    return points;
   }
 
   addMarkerToMap(lat: number, lng: number): void {
@@ -861,11 +1134,6 @@ export class GisMapComponent implements AfterViewInit {
     this.alllatlong.push(latLngs);
   }
   public drawnshapeAfterProcess() {
-    // this.alllatlong.sort((a, b) => {
-    //   const areaA = this.calculatePolygonArea(L.polygon(a));
-    //   const areaB = this.calculatePolygonArea(L.polygon(b));
-    //   return areaB - areaA;
-    // });
     console.log("this.alllatlong", this.alllatlong);
 
     this.alllatlong.forEach((shape) => {
@@ -878,6 +1146,7 @@ export class GisMapComponent implements AfterViewInit {
       this.drawnShape = L.polygon(shape).addTo(this.map);
       this.arrayFoPolygonarea.push(this.calculatePolygonArea(L.polygon(shape)));
       console.log("this.alllatlong", this.arrayFoPolygonarea);
+      this.editableLayers.addLayer(this.drawnShape);
     });
     if (this.drawnShape instanceof L.Marker) {
       //this.map.setView(this.drawnShape.getLatLng(), this.map.getZoom());
@@ -911,29 +1180,29 @@ export class GisMapComponent implements AfterViewInit {
       this.onDatumChange();
       this.map.setView(center, 8);
       //  if (this.ServiceService.check == true) {
-      this.map.on(L.Draw.Event.CREATED, (e: any) => {
-        const layer = e.layer;
-        console.log("alllatlong", this.alllatlong[0]);
+      // this.map.on(L.Draw.Event.CREATED, (e: any) => {
+      //   const layer = e.layer;
+      //   console.log("alllatlong", this.alllatlong[0]);
 
-        // Assuming limited area bounds as a polygon
-        const limitedAreaBounds = L.polygon(this.alllatlong[0]).addTo(this.map);
+      //   // Assuming limited area bounds as a polygon
+      //   const limitedAreaBounds = L.polygon(this.alllatlong[0]).addTo(this.map);
 
-        // Check if the drawn shape intersects with the limited area bounds
-        if (limitedAreaBounds.getBounds().contains(layer.getBounds())) {
-          this.map.addLayer(layer);
-          this.ServiceService.disablebutton = true;
-        } else {
-          const toast = this.messageService.add({
-            severity: "warn",
-            summary: "Warn",
-            detail:
-              "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡",
-          });
-          this.map.removeLayer(layer);
-          this.removeShape();
-          this.ServiceService.disablebutton = false;
-        }
-      });
+      //   // Check if the drawn shape intersects with the limited area bounds
+      //   if (limitedAreaBounds.getBounds().contains(layer.getBounds())) {
+      //     this.map.addLayer(layer);
+      //     this.ServiceService.disablebutton = true;
+      //   } else {
+      //     const toast = this.messageService.add({
+      //       severity: "warn",
+      //       summary: "Warn",
+      //       detail:
+      //         "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡",
+      //     });
+      //     this.map.removeLayer(layer);
+      //     this.removeShape();
+      //     this.ServiceService.disablebutton = false;
+      //   }
+      // });
       //}
       // Set the map view to the calculated center and zoom level
       // Fit the bounds with the new maxZoom level
@@ -1009,6 +1278,8 @@ export class GisMapComponent implements AfterViewInit {
   }
 
   public processImportedShapes(data: any[]): void {
+    // Event handler for when a shape is drawn
+
     console.log("dataaaa", data);
 
     // Remove the header row from the data
@@ -1039,6 +1310,7 @@ export class GisMapComponent implements AfterViewInit {
       this.drawnShape = L.polygon(shape, { color: randomColor }).addTo(
         this.map
       );
+      this.editableLayers.addLayer(this.drawnShape);
     });
 
     //this.ServiceService.coordinate.push(latLngs[0])
@@ -1079,7 +1351,7 @@ export class GisMapComponent implements AfterViewInit {
       this.onDatumChange();
       this.map.setView(center, 8);
 
-      if (this.ServiceService.check == true) {
+      if (this.ServiceService.check != true) {
         this.map.on(L.Draw.Event.CREATED, (e: any) => {
           const layer = e.layer;
           console.log("alllatlong", this.alllatlong[0]);

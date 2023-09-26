@@ -179,7 +179,7 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
 
         <input type="text" class="form-control" [disabled]="disable"  [(ngModel)]="Transfer_From_CustomerName"
           name="TransferredFrom" id="TransferredFrom" [placeholder]="'select customer' | translate"
-        (click)="openModal(template)" readonly >
+        (click)="TransferredFrom=true;TransferredTo=false" readonly >
 
           <!-- <select disabled class="form-control" name="TransferredFrom" id="TransferredFrom"
             [(ngModel)]="titleDeedRegistration.Transfer_From_Customer">
@@ -197,7 +197,7 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
     
         <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="Transfer_To_CustomerName"
           name="TransferredTo" id="TransferredTo" [placeholder]="'select customer' | translate"
-          (click)="openModalTo(templateto)" readonly>
+          (click)="TransferredTo=true;TransferredTo=false" readonly>
     
       
       </div>
@@ -272,6 +272,122 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
 
 
 
+
+
+<p-dialog [header]="'Transferred From' | translate" [(visible)]="TransferredFrom" [responsive]="true" [width]="900" [minY]="70"
+  [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                         'max-height': '80vh','min-height':'250px'}">
+
+  <div class="modal-body">
+    <p-table #dt [value]="customerdata" [paginator]="true" [rows]="5"
+      [globalFilterFields]="['TIN','FullName_AM','FullName_EN','Applicant_Mother_Name_AM','Applicant_Mother_Name_EN','Mobile_No']">
+
+      <ng-template pTemplate="caption">
+        <div class="table-header">
+          <span class="p-input-icon-left">
+            <div class="input-group mb-3">
+              <input type="text" style="border-color: #007bff;" [(ngModel)]="globvar" name="globvar" id="globvar">
+              <!-- <input type="text" pInputText [(ngModel)]="phoneNumber" placeholder="Enter phone number...">
+           <input type="text" pInputText [(ngModel)]="firstName" placeholder="Enter first name...">
+           <input type="text" pInputText [(ngModel)]="lastName" placeholder="Enter last name...">  -->
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="button" translate (click)="getcustomer(globvar)">Search</button>
+              </div>
+            </div>
+            <!-- <button type="button" class="btn btn-primary" (click)="add()" style="float: right;" translate>Add New</button> -->
+          </span>
+
+        </div>
+        <!-- <input class="form-control border-end-0 border"   type="text" [placeholder]="'Search'|translate" (input)="cust.filterGlobal($event.target.value, 'contains')"  id="form1" class="form-control"> -->
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th translate>TIN</th>
+          <th translate>Full Name</th>
+          <th translate>Mother Name</th>
+          <th translate>mobile Number</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-Customer let-rowData>
+        <tr (click)='highlighted = rowData;closeModal(Customer)' class="some-class" tabindex="1"
+          [class.ui-state-highlight]="rowData === highlighted">
+
+          <td>{{Customer.tin}}</td>
+          <td>{{ language === 'amharic' ? Customer.applicant_First_Name_AM + ' '+ Customer.applicant_Middle_Name_AM + '
+            '+ Customer.applicant_Last_Name_AM : Customer.applicant_First_Name_EN + ' '+
+            Customer.applicant_Middle_Name_En + ' '+ Customer.applicant_Last_Name_EN}}</td>
+
+          <td>{{ language === 'amharic' ? Customer.applicant_Mother_Name_AM:Customer.applicant_Mother_Name_EN }}</td>
+          <td>{{Customer.mobile_No}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <div *ngIf="serviceComponent.lode">
+      <p-progressBar mode="indeterminate"></p-progressBar>
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary" (click)="TransferredFrom=false" style="float: right;" translate>Done</button>
+</p-dialog>
+
+<p-dialog [header]="'Transferred To' | translate" [(visible)]="TransferredTo" [responsive]="true" [width]="900" [minY]="70"
+  [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                         'max-height': '80vh','min-height':'250px'}">
+
+  <div class="modal-body">
+    <p-table #dt [value]="customerdataTo" [paginator]="true" [rows]="5"
+      [globalFilterFields]="['TIN','FullName_AM','FullName_EN','Applicant_Mother_Name_AM','Applicant_Mother_Name_EN','Mobile_No']">
+
+      <ng-template pTemplate="caption">
+        <div class="table-header">
+          <span class="p-input-icon-left">
+            <div class="input-group mb-3">
+              <input type="text" style="border-color: #007bff;" [(ngModel)]="globvar" name="globvar" id="globvar">
+              <!-- <input type="text" pInputText [(ngModel)]="phoneNumber" placeholder="Enter phone number...">
+           <input type="text" pInputText [(ngModel)]="firstName" placeholder="Enter first name...">
+           <input type="text" pInputText [(ngModel)]="lastName" placeholder="Enter last name...">  -->
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="button" translate (click)="getcustomerTO(globvar)">Search</button>
+              </div>
+            </div>
+            <!-- <button type="button" class="btn btn-primary" (click)="add()" style="float: right;" translate>Add New</button> -->
+          </span>
+
+        </div>
+        <!-- <input class="form-control border-end-0 border"   type="text" [placeholder]="'Search'|translate" (input)="cust.filterGlobal($event.target.value, 'contains')"  id="form1" class="form-control"> -->
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th translate>TIN</th>
+          <th translate>Full Name</th>
+          <th translate>Mother Name</th>
+          <th translate>mobile Number</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-Customer let-rowData>
+        <tr (click)='highlighted = rowData;closeModalTo(Customer)' class="some-class" tabindex="1"
+          [class.ui-state-highlight]="rowData === highlighted">
+
+          <td>{{Customer.tin}}</td>
+          <td>{{ language === 'amharic' ? Customer.applicant_First_Name_AM + ' '+ Customer.applicant_Middle_Name_AM + '
+            '+ Customer.applicant_Last_Name_AM : Customer.applicant_First_Name_EN + ' '+
+            Customer.applicant_Middle_Name_En + ' '+ Customer.applicant_Last_Name_EN}}</td>
+
+          <td>{{ language === 'amharic' ? Customer.applicant_Mother_Name_AM:Customer.applicant_Mother_Name_EN }}</td>
+          <td>{{Customer.mobile_No}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <div *ngIf="serviceComponent.lode">
+      <p-progressBar mode="indeterminate"></p-progressBar>
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary" (click)="TransferredTo=false" style="float: right;" translate>Done</button>
+</p-dialog>
+
+
+
+
+<!-- 
 <ng-template #template>
   <div class="modal-header">
     <h4 class="modal-title pull-left">Transferred From</h4>
@@ -359,4 +475,4 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
 
   </div>
 </ng-template>
-
+ -->

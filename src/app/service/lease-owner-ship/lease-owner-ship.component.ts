@@ -106,7 +106,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
       this.leaseOwnerShip.Lease_Hold_M2 = 0;
     } else if (value == 1) {
       this.islease = false;
-      this.isfreehole = true;
+      this.isfreehole = false;
       this.leaseOwnerShip.Lease_Hold_M2 = null;
       this.leaseOwnerShip.Free_Hold_M2 = 0;
     } else {
@@ -223,7 +223,12 @@ export class LeaseOwnerShipComponent implements OnChanges {
       (CertificateVersion) => {
         this.tasks = CertificateVersion;
         this.tasks = Object.assign([], this.tasks.list);
-        console.log("tasks", this.tasks);
+        if (this.tasks.length > 0) {
+          this.serviceService.toMess = false;
+        } else {
+          this.serviceService.toMess = true;
+          console.log("tasks", this.tasks, this.serviceService.toMess);
+        }
       },
       (error) => {
         console.log(error);

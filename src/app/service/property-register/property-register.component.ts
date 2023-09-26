@@ -39,7 +39,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   isnew = true;
   Saved = false;
   PropertyList: any;
-  isproplocnew: boolean;
+  isproplocnew: boolean = false;
   proploc: any;
   language: string;
   plotloc: any;
@@ -50,6 +50,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   geo: any;
   combineArray: [];
   convertedCoordinates: any = [];
+  havedata: boolean;
   constructor(
     private serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -135,7 +136,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       this.isnew = false;
     } else {
       this.isnew = true;
-      this.getproploc(this.propertyRegister.property_ID);
+      //this.getproploc(this.propertyRegister.property_ID);
     }
   }
 
@@ -177,6 +178,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   }
 
   async save() {
+    this.havedata = true;
     let totalsize =
       parseInt(this.propertyRegister.building_Size_M2) +
       parseInt(this.propertyRegister.proportional_from_Compound_Size) +
@@ -190,6 +192,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
           this.serviceService.Plot_Size_M2 +
           "M2"
       );
+      this.havedata = false;
       return;
     } else {
       const prop = Object.assign({}, this.propertyRegister);
@@ -204,9 +207,11 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       if (prop.property_Parent_ID == "No Parent") {
         prop.property_Parent_ID = "0";
       }
-      prop.registration_Date = await this.getEthiopianToGregorian(
-        prop.registration_Date
-      );
+      if (this.language == "amharic") {
+        prop.registration_Date = await this.getEthiopianToGregorian(
+          prop.registration_Date
+        );
+      }
       console.log("saveing....", prop);
       this.propertyRegisterService.save(prop).subscribe(
         (property) => {
@@ -216,6 +221,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             this.completed.emit();
             this.Saved = true;
           }
+          this.havedata = false;
           const toast = this.notificationsService.success("Sucess", property);
         },
         (error) => {
@@ -225,11 +231,13 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
               "Error",
               error.error.InnerException.Errors[0].message
             );
+            this.havedata = false;
           } else {
             const toast = this.notificationsService.error(
               "Error",
               "SomeThing Went Wrong"
             );
+            this.havedata = false;
           }
         }
       );
@@ -422,6 +430,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     console.log("this.files", this.serviceService.files);
   }
   async add() {
+    this.havedata = true;
     let totalsize =
       parseInt(this.propertyRegister.building_Size_M2) +
       parseInt(this.propertyRegister.proportional_from_Compound_Size) +
@@ -435,6 +444,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
           this.serviceService.Plot_Size_M2 +
           "M2"
       );
+      this.havedata = false;
       return;
     } else {
       const prop = Object.assign({}, this.propertyRegister);
@@ -450,9 +460,11 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       if (prop.property_Parent_ID == "No Parent") {
         prop.property_Parent_ID = "0";
       }
-      prop.registration_Date = await this.getEthiopianToGregorian(
-        prop.registration_Date
-      );
+      if (this.language === "amharic") {
+        prop.registration_Date = await this.getEthiopianToGregorian(
+          prop.registration_Date
+        );
+      }
       this.propertyRegisterService.Add(prop).subscribe(
         (deptSuspension) => {
           console.log("deptSuspension", deptSuspension);
@@ -470,8 +482,10 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             "Sucess",
             deptSuspension
           );
+          this.havedata = false;
           // this.serviceService.disablefins = false;
-          this.serviceService.hide = false;
+          this.serviceService.propertyISEnable = false;
+
           console.log("added property registration");
         },
         (error) => {
@@ -481,11 +495,13 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
               "Error",
               error.error.InnerException.Message
             );
+            this.havedata = false;
           } else {
             const toast = this.notificationsService.error(
               "Error",
               "SomeThing Went Wrong"
             );
+            this.havedata = false;
           }
         }
       );
@@ -499,13 +515,14 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       console.log("protlocprotloc:", this.proploc);
       if (this.proploc.length > 0) {
         this.propformLocation = this.proploc[0];
-        this.isproplocnew = false;
-      } else {
         this.isproplocnew = true;
+      } else {
+        this.isproplocnew = false;
       }
     });
   }
   getproplocbyid(plotid) {
+    this.convertedCoordinates = [];
     this.serviceService.getPlotloc(plotid).subscribe((response: any) => {
       this.plotloc = response.procPlot_Locations;
       console.log("plotlocccc:", this.plotloc, this.plotloc[0].geowithzone);
@@ -616,7 +633,11 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   }
 
   updateproploc() {
-    console.log("coordinatcoordinat", this.serviceService.coordinate);
+    console.log(
+      "coordinatcoordinat",
+      this.serviceService.coordinate,
+      this.selectedpro.property_ID
+    );
     if (this.serviceService.coordinate) {
       let coordinate = this.convertToMultiPoint(this.serviceService.coordinate);
       let coordinate2 = this.convertToMultiPoints(
@@ -624,6 +645,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       );
       this.propformLocation.geo = coordinate2;
       this.propformLocation.geowithzone = coordinate;
+      this.propformLocation.proporty_Id = this.selectedpro.property_ID;
       this.serviceService.getUserRole().subscribe((response: any) => {
         console.log("responseresponseresponse", response, response[0].RoleId);
         this.propformLocation.updated_By = response[0].UserId;
@@ -631,6 +653,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         if (response[0].RoleId == "f8dda85e-f967-4ac5-bf79-4d989ecfb863") {
           this.propformLocation.team_Leader_Approved_By = response[0].UserId;
           this.propformLocation.team_Leader_Approved = true;
+
           console.log(
             this.propformLocation.team_Leader_Approved_By,
             this.propformLocation.team_Leader_Approved
@@ -647,7 +670,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         }
         this.serviceService.updateProploc(this.propformLocation).subscribe(
           (CustID) => {
-            this.getproploc(this.propformLocation.proporty_Id);
+            this.getproplocbyid(this.propertyRegister.plot_ID);
             const toast = this.notificationsService.success(
               "Sucess",
               "Succesfully Upadted"
@@ -691,6 +714,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         this.propformLocation.proporty_Id = this.propertyRegister.property_ID;
         this.propformLocation.created_By = response[0].RoleId;
         this.propformLocation.created_Date = new Date();
+
         this.serviceService.saveProploc(this.propformLocation).subscribe(
           (CustID) => {
             this.getproploc(this.propformLocation.proporty_Id);
@@ -698,7 +722,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
               "Sucess",
               "Succesfully saved"
             );
-            this.serviceService.hide = false;
+            this.getproplocbyid(this.propertyRegister.plot_ID);
+            // this.serviceService.hide = false;
           },
           (error) => {
             console.log("error");

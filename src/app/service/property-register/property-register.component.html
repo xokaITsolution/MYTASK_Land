@@ -1,6 +1,36 @@
 
 
 <form #f="ngForm" novalidate name="proform">
+  <div *ngIf="havedata" class="d-flex justify-content-center" style="position: absolute;
+                  top: 50%;
+                  left: 40%;
+                  margin-top: -50px;
+                  margin-left: -60px;
+                  width: 300px;
+                  height: 100px;
+                  z-index: 10000;">
+    <div class="spinner-grow text-success" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-success" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-success" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-success" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-success" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-success" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-success" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    </div>
   <div class="form-row">
     <div class="form-group row col-md-6">
       <label for="PlotID" class="col-sm-3 col-form-label" translate>PlotID</label>
@@ -101,7 +131,7 @@
         <!--<input type="text" class="form-control"   name="PropertyParent"  id="PropertyParent" placeholder="Property Parent">-->
 
 
-        <select class="form-control" [(ngModel)]="propertyRegister.property_Parent_ID" name="PropertyParent"
+        <select disabled class="form-control" [(ngModel)]="propertyRegister.property_Parent_ID" name="PropertyParent"
           id="PropertyParent">
           <option disabled>select</option>
           <option *ngFor="let Property of propertyComponent.PropertyList;" [value]="Property.property_ID">
@@ -155,12 +185,7 @@
           id="EstimatedPrice" placeholder="Estimated Price">
       </div>
     </div>
-    <div class="form-group row col-md-6"><label class="col-sm-3 col-form-label" for="RegistrationDate"
-        translate="">Registration Date</label>
-      <div class="col-sm-9">
-        <input class="form-control" id="RegistrationDate"
-          name="RegistrationDate" placeholder="RegistrationDate" [(ngModel)]="propertyRegister.registration_Date"  type="date"></div>
-    </div>
+  
             <div class="form-group row col-md-6" *ngIf="language !== 'amharic'">
               <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>
               <div class="col-sm-9">

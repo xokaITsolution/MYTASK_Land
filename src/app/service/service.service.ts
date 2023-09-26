@@ -119,9 +119,11 @@ export class ServiceService {
   latLngs: { lat: number; lng: number }[];
   check: boolean;
   shapes: any;
-  hide: boolean;
+  hide: boolean = false;
   toMes: boolean;
-  toMess: boolean;
+  toEnablenext: boolean = true;
+  propertyISEnable: boolean = true;
+  toMess: boolean = false;
   Plot_Size_M2: any;
   fromPropoperty: boolean = false;
   constructor(private http: HttpClient) {}

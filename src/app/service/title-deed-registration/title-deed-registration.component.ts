@@ -45,6 +45,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   CustomerLookUP: any;
   Transfer_From_CustomerName: null;
   Transfer_To_CustomerName: any;
+  customerdataTo: any;
 
   constructor(
     private modalService: BsModalService,
@@ -378,7 +379,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
     this.titleDeedRegistration.Transfer_From_Customer = customer.customer_ID;
     console.log("closeing.....");
     this.Transfer_From_CustomerName = customer.FullName_AM;
-    this.modalRef.hide();
+    // this.modalRef.hide();
   }
   closeModalTo(customer) {
     console.log(customer);
@@ -386,13 +387,19 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
     this.titleDeedRegistration.Transfer_To_Customer = customer.customer_ID;
     console.log("closeing.....");
     this.Transfer_To_CustomerName = customer.FullName_AM;
-    this.modalRefTo.hide();
+    // this.modalRefTo.hide();
     //this.ngxSmartModalService.getModal(modal).close();
   }
   getcustomer(globvar) {
     console.log(globvar);
     this.serviceService.getcustomer(globvar).subscribe((resp: any) => {
       this.customerdata = resp.procCustomers;
+    });
+  }
+  getcustomerTO(globvar) {
+    console.log(globvar);
+    this.serviceService.getcustomer(globvar).subscribe((resp: any) => {
+      this.customerdataTo = resp.procCustomers;
     });
   }
   // closeModalTo(customer, modal) {

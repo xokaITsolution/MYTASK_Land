@@ -89,19 +89,19 @@ export class PlotComponent implements OnChanges {
     this.serviceService.check = true;
     this.changingValue.next(aa);
   }
-  getplotloc(plotid) {
-    this.serviceService.getPlotloc(plotid).subscribe((response: any) => {
-      this.plotloc = response.procPlot_Locations;
+  // getplotloc(plotid) {
+  //   this.serviceService.getPlotloc(plotid).subscribe((response: any) => {
+  //     this.plotloc = response.procPlot_Locations;
 
-      console.log("plotloc:", this.plotloc);
-      if (this.plotloc.length > 0) {
-        this.platformLocation = this.plotloc[0];
-        this.isplotllocnew = false;
-      } else {
-        this.isplotllocnew = true;
-      }
-    });
-  }
+  //     console.log("plotloc:", this.plotloc);
+  //     if (this.plotloc.length > 0) {
+  //       this.platformLocation = this.plotloc[0];
+  //       this.isplotllocnew = false;
+  //     } else {
+  //       this.isplotllocnew = true;
+  //     }
+  //   });
+  // }
   getplotlocbyid(Plot_ID) {
     this.serviceService.getPlotloc(Plot_ID).subscribe((response: any) => {
       this.plotloc = response.procPlot_Locations;
@@ -116,6 +116,7 @@ export class PlotComponent implements OnChanges {
       } else {
         this.platformLocation = new PlatformLocation();
         this.isplotllocnew = false;
+        //this.serviceService.toMess=true
       }
     });
   }
@@ -175,6 +176,7 @@ export class PlotComponent implements OnChanges {
       );
       this.platformLocation.geo = coordinate2;
       this.platformLocation.geowithzone = coordinate;
+      this.platformLocation.ploteId = this.Plot_ID;
       this.serviceService.getUserRole().subscribe((response: any) => {
         console.log("responseresponseresponse", response, response[0].RoleId);
         this.platformLocation.updated_By = response[0].UserId;
@@ -199,11 +201,12 @@ export class PlotComponent implements OnChanges {
         this.serviceService.updatePlotloc(this.platformLocation).subscribe(
           (CustID) => {
             this.serviceService.toMes = false;
-            this.getplotloc(this.platformLocation.ploteId);
+            //this.getplotloc(this.platformLocation.ploteId);
             const toast = this.notificationsService.success(
               "Sucess",
               "Succesfully Upadted"
             );
+            this.getplotlocbyid(this.platformLocation.ploteId);
           },
           (error) => {
             console.log("error");
@@ -245,9 +248,10 @@ export class PlotComponent implements OnChanges {
         this.platformLocation.created_Date = new Date();
         this.serviceService.savePlotloc(this.platformLocation).subscribe(
           (CustID) => {
-            this.getplotloc(this.platformLocation.ploteId);
-            this.serviceService.toMes = false;
-            this.serviceService.toMess = false;
+            //this.getplotloc(this.platformLocation.ploteId);
+            this.getplotlocbyid(this.Plot_ID);
+            // this.serviceService.toMes = false;
+            // this.serviceService.toMess = false;
             const toast = this.notificationsService.success(
               "Sucess",
               "Succesfully saved"
