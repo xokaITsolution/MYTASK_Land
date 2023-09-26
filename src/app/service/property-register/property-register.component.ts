@@ -156,6 +156,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     if (selecter == 1) {
       this.propertyRegister.registration_Date =
         dates[0]._day + "/" + dates[0]._month + "/" + dates[0]._year;
+
+      console.log(this.propertyRegister.registration_Date);
     }
   }
   async getEthiopianToGregorian(date) {

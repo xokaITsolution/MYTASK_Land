@@ -370,6 +370,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
             this.leaseOwnerShip.Date_of_final_lease_payment
           );
         this.serviceService.disablefins = false;
+
         this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
         this.leaseForm = false;
         this.serviceService.isleaseForm = false;

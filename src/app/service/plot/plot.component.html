@@ -56,7 +56,7 @@
           <span *ngIf="serviceService.toMess" style="color:red;font-weight: bolder;font-size: large;"   translate>you need to save Plote Location first</span>
      
       
-      <button *ngIf="CanDone" type="button" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
+      <button *ngIf="!serviceService.toMess" type="button" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
         (click)="getplotlocbyid();openModall(templattte)">Spatial</button> &nbsp;
       
         <button  type="button" class="btn btn-primary mr-1" [disabled]="!CanDone" (click)="DoneNew()"
@@ -93,7 +93,7 @@
         <app-lease-owner-ship (completed)="completed"  [disable]="disable"  [SelectedPlot]='SelectedPlot' (todoid)="(todoid)" (applicationo)="AppNo" (LicenceData)="(LicenceData)" (plotId)="plotId"></app-lease-owner-ship> 
       </div>
       <div class="pull-right">
-          <button  type="button" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
+          <button *ngIf="serviceService.toMess" type="button" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
             (click)="getplotlocbyid();openModall(templattte)">Spatial</button>&nbsp;
         
             <button *ngIf="CanDone" type="button" class="btn btn-primary mr-1" [disabled]="!CanDone" (click)="DoneNew()"
@@ -126,9 +126,9 @@
   <!-- Modal footer -->
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="saveplotloc();closeModall()"
-      *ngIf="!isplotllocnew &&  !disable" translate>Save</button>
+      *ngIf="isplotllocnew &&  !disable" translate>Save</button>
     <button type="button" class="btn btn-primary" (click)="updateplotloc();closeModall()"
-      *ngIf="isplotllocnew &&  !disable" translate>Update</button>
+      *ngIf="!isplotllocnew &&  !disable" translate>Update</button>
     <button type="button" class="btn btn-danger" (click)="closeModall()" translate>Close</button>
   </div>
 

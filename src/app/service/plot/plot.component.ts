@@ -62,6 +62,7 @@ export class PlotComponent implements OnChanges {
   ) {}
   changingValue: Subject<boolean> = new Subject();
   ngOnChanges() {
+    this.serviceService.disablefins = true;
     this.serviceService.toMes = true;
     if (environment.Lang_code === "am-et") {
       this.language = "amharic";
@@ -686,7 +687,7 @@ export class PlotComponent implements OnChanges {
   DoneNew() {
     this.plotForm = false;
     this.isvalidated();
-
+    this.serviceService.disablefins = false;
     this.toLease = false;
     this.CanDone = false;
   }
