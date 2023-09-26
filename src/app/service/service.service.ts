@@ -27,8 +27,7 @@ export class ServiceService {
   private DeedUrl = environment.rootPath + "Deed_Registration"; // URL to web api
   private License_ServiceURL = environment.rootPath + "License_Service"; // URL to web api
   private saveFileLookUP = environment.rootPath + "BPEL/SaveDocumentMaster"; // URL to web api
-  private Postit_user =
-  environment.rootPathApi + "view/View_postit_note_user";
+  private Postit_user = environment.rootPathApi + "view/View_postit_note_user";
   private CustomerTypeLookUP = environment.rootPath + "Customer_Type_Lookup"; // URL to web api
   private CustomerLookUP = environment.rootPath + "Customer"; // URL to web api
   private SuspendedReasonLookUP =
@@ -169,12 +168,12 @@ export class ServiceService {
   }
   getEthiopianToGregorian(date) {
     if (date) {
-const dateStr = date;
-const dateParts = dateStr.split("-");
-const year = +dateParts[0]; // Convert to a number using the '+' operator
-const month = +dateParts[1];
-const day = +dateParts[2];
-console.log("datedatedate",year,month,day);
+      const dateStr = date;
+      const dateParts = dateStr.split("/");
+      const year = +dateParts[0]; // Convert to a number using the '+' operator
+      const month = +dateParts[1];
+      const day = +dateParts[2];
+      console.log("datedatedate", year, month, day);
       return this.http.get<any>(
         this.EthiopianToGregorian + "/" + year + "/" + month + "/" + day
       );
@@ -218,8 +217,7 @@ console.log("datedatedate",year,month,day);
   }
   getPostit_user() {
     // User_ID = this.removeSlash(User_ID);
-    return this.http.get<any>(
-      this.Postit_user);
+    return this.http.get<any>(this.Postit_user);
   }
   getUnits() {
     return this.http.get<any>(this.units);

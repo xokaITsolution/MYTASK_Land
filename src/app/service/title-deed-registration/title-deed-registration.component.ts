@@ -46,7 +46,9 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   Transfer_From_CustomerName: null;
   Transfer_To_CustomerName: any;
   customerdataTo: any;
-
+  TransferredTo: boolean = false;
+  TransferredFrom: boolean = false;
+  globvarto;
   constructor(
     private modalService: BsModalService,
     private ngxSmartModalService: NgxSmartModalService,
@@ -378,7 +380,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
 
     this.titleDeedRegistration.Transfer_From_Customer = customer.customer_ID;
     console.log("closeing.....");
-    this.Transfer_From_CustomerName = customer.FullName_AM;
+    this.Transfer_From_CustomerName = customer.applicant_First_Name_AM;
     // this.modalRef.hide();
   }
   closeModalTo(customer) {
@@ -386,7 +388,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
 
     this.titleDeedRegistration.Transfer_To_Customer = customer.customer_ID;
     console.log("closeing.....");
-    this.Transfer_To_CustomerName = customer.FullName_AM;
+    this.Transfer_To_CustomerName = customer.applicant_First_Name_AM;
     // this.modalRefTo.hide();
     //this.ngxSmartModalService.getModal(modal).close();
   }

@@ -166,6 +166,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     if (selecter == 1) {
       this.plotManagment.Registration_Date =
         dates[0]._day + "/" + dates[0]._month + "/" + dates[0]._year;
+      console.log(this.plotManagment.Registration_Date);
     }
   }
   ngOnInit() {
@@ -402,9 +403,14 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   async save() {
     this.plotManagment.Plot_ID = JSON.stringify(this.plotManagment.Plot_ID);
     this.platformLocation.ploteId = this.plotManagment.Plot_ID;
-    // this.plotManagment.Registration_Date = await this.getEthiopianToGregorian(
-    //   this.plotManagment.Registration_Date
-    // );
+    if (this.language === "amharic") {
+      this.plotManagment.Registration_Date = await this.getEthiopianToGregorian(
+        this.plotManagment.Registration_Date
+      );
+    }
+    this.plotManagment.Registration_Date = await this.getEthiopianToGregorian(
+      this.plotManagment.Registration_Date
+    );
 
     this.ploatManagmentService.save(this.plotManagment).subscribe(
       (deptSuspension) => {
@@ -616,6 +622,8 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     // this.confirmationService.confirm({
     //   message: 'Are you sure u want to delete this Plot?',
     //   accept: () => {
+    console.log("this.plotManagment", this.plotManagment);
+
     if (this.language === "amharic") {
       this.plotManagment.Registration_Date = await this.getEthiopianToGregorian(
         this.plotManagment.Registration_Date
@@ -706,7 +714,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         }
         this.serviceService.toEnablenext = false;
         this.plotcomponent.toMes = true;
-        this.plotcomponent.CanDone = true;
+        // this.plotcomponent.CanDone = true;
         this.isnew = false;
         this.isploatDisabled = true;
         console.log("FinalPLoat before send", this.plotManagment);
@@ -750,6 +758,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         }
       }
     );
+
     console.log("saving....");
   }
 }
