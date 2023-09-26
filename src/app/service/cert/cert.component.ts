@@ -34,6 +34,7 @@ export class CertComponent implements OnChanges {
   BaseTable;
   // SelectedDeed;
   displayGIS
+  disableTab=false
   toLease;
   SelectedBase;
   certForm;
@@ -263,6 +264,7 @@ export class CertComponent implements OnChanges {
   }
 
   addversion() {
+    this.disableTab=false
     this.Selectedcert = {
       Title_Deed_No: this.SelectedBase.Title_Deed_No,
       Ownership_ID: this.SelectedBase.Ownership_ID,

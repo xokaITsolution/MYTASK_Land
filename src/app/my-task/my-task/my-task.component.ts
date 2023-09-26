@@ -107,7 +107,7 @@ export class MyTaskComponent implements OnInit {
     this.modal.getModal(id).open();
   }
 
-  closeModal() {
+  closeModal(id) {
     // this.modal.getModal(id).close();
     this.isAccountVisible = false
   }
@@ -115,7 +115,7 @@ export class MyTaskComponent implements OnInit {
   showMessage(appNo, task) {
     if (appNo != this.messageAppNo) {
       let messageInCache = false;
-      this.loadingMessage = true;
+      // this.loadingMessage = true;
       this.isAccountVisible = true
       this.messageObj.currentMessage = null;
       this.messageObj.currentMessageIndex = 0;

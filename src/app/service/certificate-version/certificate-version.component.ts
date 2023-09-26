@@ -6,7 +6,7 @@ import {NotificationsService} from 'angular2-notifications';
 import {NgxSmartModalService} from 'ngx-smart-modal';
 import {DomSanitizer} from '@angular/platform-browser';
 import { ServiceService } from '../service.service';
-
+import {CertComponent} from '../cert/cert.component';
 @Component({
   selector: 'app-certificate-version',
   templateUrl: './certificate-version.component.html',
@@ -35,6 +35,7 @@ export class CertificateVersionComponent implements OnChanges {
 
   constructor(private ngxSmartModalService: NgxSmartModalService,
               private messageService: MessageService,
+              public CertComponent: CertComponent,
               public serviceService: ServiceService,
               private certificateVersionService: CertificateVersionService,
               private sanitizer: DomSanitizer,
@@ -110,6 +111,7 @@ export class CertificateVersionComponent implements OnChanges {
   add() {
     this.certificateVersionService.AddCertificate(this.certificateVersion).subscribe(message => {
       console.log('message', message);
+this.CertComponent.disableTab=true
       const toast = this.notificationsService.success('Sucess', message);
       this.serviceService.disablefins = false;
       if(!this.Saved){

@@ -54,7 +54,7 @@
 header="{{user_name}}"
 [(visible)]="isAccountVisible"
  [style]="{ width: '30vw' }" [draggable]="false" [resizable]="false"
- [modal]="true"
+
 [maximizable]="true"
 [baseZIndex]="10000"
 >
@@ -86,9 +86,10 @@ header="{{user_name}}"
   Loading...
 </span>
 </div>
-<button type="button" class="btn btn-primary" (click)="closeModal()" translate>Done</button>
+<button type="button" class="btn btn-primary" (click)="closeModal('messages')" translate>Done</button>
+ 
 </p-dialog>
-<!-- <ngx-smart-modal identifier="messages">
+<!-- <ngx-smart-modal identifier="messages" >
   <div class="modal-header">
     <h4 class="modal-title pull-left" translate>{{user_name}}</h4>
   </div>
