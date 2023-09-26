@@ -44,6 +44,8 @@ export class ServiceComponent implements OnInit {
   public ID = 0;
   loading = true;
   licenceService;
+  documentupload: any;
+  uploadedDocumnet: boolean;
   licenceData: any = {};
   AppNo;
   tskTyp;
@@ -91,7 +93,7 @@ export class ServiceComponent implements OnInit {
   aa = null;
   intervalId: any;
   showProgressBar = false;
-
+  user:any;
   public CustomerTypeLookUP;
   public CustomerLookUP;
   public CustomerBankLookUP;
@@ -191,6 +193,10 @@ export class ServiceComponent implements OnInit {
   moreDetail = {
     toggle: false,
   };
+  disDocument: boolean;
+  mimeType: any;
+  fileupload: string;
+  uploadcontract: boolean;
   constructor(
     private modalService: BsModalService,
     private activatedRoute: ActivatedRoute,
@@ -630,10 +636,14 @@ export class ServiceComponent implements OnInit {
   }
 
   getPost(appno) {
-    this.serviceService.GetNote(appno).subscribe(
-      (note) => {
-        if (note) {
-          this.notes = note as Array<any>;
+    this.serviceService.getPostit_user().subscribe(
+      (note)=>{
+        this.user=note.filter((value)=>value.application_number == appno)
+console.log('userrrr',this.user);
+ if (note) {
+          this.notes = this.user as Array<any>;
+          console.log('notesss',appno);
+          
         }
         let num = 1;
         (this.notes as Array<any>).map((task) => (task["number"] = num++));
@@ -641,6 +651,23 @@ export class ServiceComponent implements OnInit {
       },
       (error) => {
         console.error("unable to get note");
+      }
+
+      
+    )
+    this.serviceService.GetNote(appno).subscribe(
+      (note) => {
+      //   if (note) {
+      //     this.notes = note as Array<any>;
+      //     console.log('notesss',appno);
+          
+      //   }
+      //   let num = 1;
+      //   (this.notes as Array<any>).map((task) => (task["number"] = num++));
+      //   console.log("my note = ", note);
+      // },
+      // (error) => {
+      //   console.error("unable to get note");
       }
     );
   }
@@ -939,7 +966,7 @@ export class ServiceComponent implements OnInit {
       (RequerdDocs) => {
         this.RequerdDocs = RequerdDocs;
 
-        // console.log('RequerdDocs', this.RequerdDocs);
+        console.log('RequerdDocs', this.RequerdDocs);
       },
       (error) => {
         console.log("error");
@@ -982,7 +1009,9 @@ export class ServiceComponent implements OnInit {
           data: base64file,
         })
       );
-      console.log("this.DocID", this.DocID);
+      this.documentupload = base64FileData
+       this.previewdocumnet(base64FileData)
+      console.log("this.DocID", base64file);
       this.serviceService
         .saveFile(
           base64file,
@@ -1067,7 +1096,31 @@ export class ServiceComponent implements OnInit {
       }
     );
   }
-
+  previewdocumnet(file){
+    if(file==''||file==null){
+      this.disDocument=true
+    }
+    else{
+      this.disDocument=false
+    }
+    try {
+     
+     let fileData = JSON.parse(window.atob(file));
+      let { type, data } = fileData;
+      this.mimeType=type
+      this.fileupload= "data:" + type + ";base64, " + data;
+      this.uploadedDocumnet=true
+      this.uploadcontract=false
+     
+      this.documentupload= this.sanitizer.bypassSecurityTrustResourceUrl(
+               this.fileupload
+             );
+      console.log(this.documentupload);
+ }
+           catch (e) {
+             console.error(e);
+           }
+}
   pendclose(appNO) {
     this.getAppData(appNO);
   }
