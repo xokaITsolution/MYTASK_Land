@@ -283,17 +283,17 @@ export class CertComponent implements OnChanges {
   }
 
   getCertificateVersion(Base) {
-    this.serviceService.getCertificateVersion(Base.Title_Deed_No).subscribe(
-      (CertificateVersion) => {
-        this.CertificateVersion = CertificateVersion;
-        this.CertificateVersion = Object.assign(
-          [],
-          this.CertificateVersion.list
-        );
+    this.serviceService.getCertificateVersion1(Base.Title_Deed_No).subscribe(
+      (CertificateVersion:any) => {
+        this.CertificateVersion = CertificateVersion.procCertificate_Versions;
+        console.log("CertificateVersion", this.CertificateVersion);
+        // this.CertificateVersion = Object.assign(
+        //   [],
+        //   this.CertificateVersion.list
+        // );
         /*if (this.CertificateVersion.length > 1) {
         this.SelectcertVer(this.CertificateVersion[0]);
       }*/
-        console.log("CertificateVersion", CertificateVersion);
       },
       (error) => {
         console.log("error");

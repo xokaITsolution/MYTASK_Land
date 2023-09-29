@@ -48,6 +48,8 @@ export class CertificateVersionComponent implements OnChanges {
     console.log('hahaha2', this.Selectedcert);
     console.log('hahaha1', this.SelectedBase);
     this.certificateVersion = this.Selectedcert;
+    console.log('hahaha3', this.certificateVersion);
+    
     if (this.certificateVersion.Photo) {
       this.pictoShow = 'data:image/jpg;base64, ' + this.certificateVersion.Photo;
       this.pictoShow = this.sanitizer.bypassSecurityTrustResourceUrl(this.pictoShow);
@@ -57,7 +59,7 @@ export class CertificateVersionComponent implements OnChanges {
       this.pictoShow1 = this.sanitizer.bypassSecurityTrustResourceUrl(this.pictoShow);
     }
     this.getDeed();
-    if (!this.certificateVersion.Version_ID) {
+    if (!this.certificateVersion.version_ID) {
       this.isnew = true;
     } else {
       this.isnew = false;
@@ -134,9 +136,9 @@ this.CertComponent.disableTab=true
 
   AddNew() {
     this.certificateVersion = new CertificateVersion();
-    // this.certificateVersion.Version_ID = this.Selectedcert.Version_ID;
-    this.certificateVersion.Ownership_ID = this.Selectedcert.Ownership_ID;
-    this.certificateVersion.Title_Deed_No = this.SelectedBase.Title_Deed_No;
+    // this.certificateVersion.Version_ID = this.Selectedcert.building_No;
+    this.certificateVersion.ownership_ID = this.Selectedcert.ownership_ID;
+    this.certificateVersion.title_Deed_No = this.SelectedBase.title_Deed_No;
     this.isnew = true;
   }
 
@@ -146,7 +148,7 @@ this.CertComponent.disableTab=true
   }
 
   closeModal(organization, modal) {
-    this.certificateVersion.Issued_By = organization.organization_code;
+    this.certificateVersion.issued_By = organization.organization_code;
     console.log('closeing.....');
     console.log('closeing.....', organization.organization_code);
     this.ngxSmartModalService.getModal(modal).close();
@@ -194,44 +196,44 @@ this.CertComponent.disableTab=true
 class CertificateVersion {
   public Application_No: string;
   public Certificate_ID: number;
-  public Version_ID: number;
+  public version_ID: number;
   public Deed_ID: number;
-  public Color: string;
+  public color: string;
   public Photo: string;
-  public Serial_No: string;
-  public Customer_Type_ID: string;
-  public Remark: string;
-  public Issued_By: string;
+  public serial_No: string;
+  public customerType: string;
+  public remark: string;
+  public issued_By: string;
   public Expired_Date: string;
   public Is_Printed: boolean;
   public IsIssued: boolean;
-  public Is_Active: boolean;
-  public Version_No: string;
-  public Built_Up_Area: string;
-  public Ownership_ID;
-  public Full_Name;
-  public Title_Deed_No;
-  public Parnter_Full_Name;
-  public LocationName;
-  public Compound_Size_M2;
-  public Property_Status;
-  public Property_Type;
-  public TypeOfUser;
-  public HouseNo;
-  public Floor_No;
-  public Building_No;
-  public Size_In_Proportional;
-  public Proportional_from_Compound_Size;
-  public Woreda;
-  public Block_No;
-  public Parcel_No;
-  public Street_No;
-  public Land_Grade;
-  public Nortech_No;
-  public N_Plot_ID;
-  public S_Plot_ID;
-  public E_Plot_ID;
-  public W_Plot_ID;
+  public is_Active: boolean;
+  public version_No: string;
+  public built_Up_Area: string;
+  public ownership_ID;
+  public full_Name;
+  public title_Deed_No;
+  public parnter_Full_Name;
+  public locationName;
+  public compound_Size_M2;
+  public property_Status;
+  public property_Type;
+  public typeOfuse;
+  public houseNo;
+  public floor_No;
+  public building_No;
+  public size_In_Proportional;
+  public proportional_from_Compound_Size;
+  public woreda;
+  public block_No;
+  public parcel_No;
+  public street_No;
+  public land_Grade;
+  public nortech_No;
+  public n_Plot_ID;
+  public s_Plot_ID;
+  public e_Plot_ID;
+  public w_Plot_ID;
   public Partner_Photo;
 
 }

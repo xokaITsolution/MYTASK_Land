@@ -24,6 +24,8 @@ export class ServiceService {
   private PlotManagementUrl = environment.rootPath + "Plot_Registration"; // URL to web api
   private PropertyListUrl = environment.rootPath + "Property_Registration"; // URL to web api
   private CertificateVersionUrl = environment.rootPath + "Certificate_Version"; // URL to web api
+  private CertificateVersionUrl1 =
+    environment.rootPath3 + "Certificate_Version/procCertificate_Version";
   private DeedUrl = environment.rootPath + "Deed_Registration"; // URL to web api
   private License_ServiceURL = environment.rootPath + "License_Service"; // URL to web api
   private saveFileLookUP = environment.rootPath + "BPEL/SaveDocumentMaster"; // URL to web api
@@ -591,6 +593,12 @@ export class ServiceService {
         "sortOrder=test&currentFilter=" +
         ownerShipid +
         "&searchString&pageIndex&pageSize"
+    );
+  }
+  getCertificateVersion1(ownerShipid) {
+    return this.http.get(
+      this.CertificateVersionUrl1 +
+        "/"+ownerShipid
     );
   }
 

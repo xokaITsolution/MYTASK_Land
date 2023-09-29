@@ -579,6 +579,8 @@ export class ServiceComponent implements OnInit {
                 this.RequerdDocspre[i].mimeType = type;
                 this.RequerdDocspre[i].File =
                   "data:" + type + ";base64, " + data;
+                  console.log('this.RequerdDocspre[i].File',SavedFiles[j]);
+                  
                 this.RequerdDocspre[i].File =
                   this.sanitizer.bypassSecurityTrustResourceUrl(
                     this.RequerdDocspre[i].File
@@ -593,7 +595,7 @@ export class ServiceComponent implements OnInit {
           }
         }
         console.log("SavedFiles", this.SavedFiles);
-        console.log("SavedFilesPre", this.RequerdDocspre);
+        console.log("RequerdDocspre", this.RequerdDocspre);
       },
       (error) => {
         this.loadingPreDoc = false;

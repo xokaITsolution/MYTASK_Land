@@ -59,18 +59,18 @@
         </ng-template>
         <ng-template pTemplate="body" let-version>
           <tr [class.active]="version == Selectedcert">
-            <td>{{version.Ownership_ID}}</td>
-            <td>{{version.Version_No}}</td>
+            <td>{{version.ownership_ID}}</td>
+            <td>{{version.version_No}}</td>
             <td>
-              <p-checkbox [disabled]="true" [(ngModel)]="version.Is_Active" name="IsActive1" id="IsActive1"
+              <p-checkbox [disabled]="true" [(ngModel)]="version.is_Active" name="IsActive1" id="IsActive1"
                 binary="true"></p-checkbox>
             </td>
             <td>
-              <p-checkbox [disabled]="true" [(ngModel)]="version.Is_Printed" name="IsActive1" id="IsActive1"
+              <p-checkbox [disabled]="true" [(ngModel)]="version.is_Printed" name="IsActive1" id="IsActive1"
                 binary="true"></p-checkbox>
             </td>
             <td>
-              <p-checkbox [disabled]="true" [(ngModel)]="version.IsIssued" name="IsActive1" id="IsActive1"
+              <p-checkbox [disabled]="true" [(ngModel)]="version.is_Issued" name="IsActive1" id="IsActive1"
                 binary="true"></p-checkbox>
             </td>
             <td>

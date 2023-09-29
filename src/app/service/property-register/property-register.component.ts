@@ -694,6 +694,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     }
   }
   saveproploc() {
+    console.log('propformLocation',this.propformLocation);
     console.log("coordinatcoordinat", this.serviceService.coordinate);
     if (this.serviceService.coordinate) {
       // let coordinate= this.convertToMultiPoint(this.serviceService.coordinate)
@@ -716,6 +717,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         this.propformLocation.proporty_Id = this.propertyRegister.property_ID;
         this.propformLocation.created_By = response[0].RoleId;
         this.propformLocation.created_Date = new Date();
+
 
         this.serviceService.saveProploc(this.propformLocation).subscribe(
           (CustID) => {
@@ -757,6 +759,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       this.propertyRegister.imageType = base64file.split(";")[0].split(":")[1];
       base64file = base64file.split(";")[1];
       this.propertyRegister.map_Floor_Plan = base64file;
+      console.log('this.propertyRegister.map_Floor_Plan', this.propertyRegister.map_Floor_Plan);
+      
     });
   }
 
@@ -764,7 +768,111 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     this.Uploader(event.files[0]);
     form.clear();
   }
-
+  planDocument(event, form) {
+    this.planDocumentU(event.files[0]);
+    form.clear();
+  }
+  planDocumentU(File) {
+    let base64file;
+    const reader = new FileReader();
+    reader.readAsDataURL(File);
+    reader.addEventListener("loadend", (e) => {
+      base64file = reader.result;
+      this.pictoShow = base64file;
+      this.pictoShow = this.sanitizer.bypassSecurityTrustResourceUrl(
+        this.pictoShow
+      );
+      const re = /base64,/gi;
+      base64file = base64file.replace(re, "");
+      this.propformLocation.imageType = base64file.split(";")[0].split(":")[1];
+      base64file = base64file.split(";")[1];
+      this.propformLocation.plan_Document = base64file;
+    });
+  }
+  pictureNorth(event, form) {
+    this.pictureNorthU(event.files[0]);
+    form.clear();
+  }
+  pictureNorthU(File) {
+    let base64file;
+    const reader = new FileReader();
+    reader.readAsDataURL(File);
+    reader.addEventListener("loadend", (e) => {
+      base64file = reader.result;
+      this.pictoShow = base64file;
+      this.pictoShow = this.sanitizer.bypassSecurityTrustResourceUrl(
+        this.pictoShow
+      );
+      const re = /base64,/gi;
+      base64file = base64file.replace(re, "");
+      this.propformLocation.imageType = base64file.split(";")[0].split(":")[1];
+      base64file = base64file.split(";")[1];
+      this.propformLocation.picture_North = base64file;
+    });
+  }
+  pictureEast(event, form) {
+    this.pictureEastU(event.files[0]);
+    form.clear();
+  }
+  pictureEastU(File) {
+    let base64file;
+    const reader = new FileReader();
+    reader.readAsDataURL(File);
+    reader.addEventListener("loadend", (e) => {
+      base64file = reader.result;
+      this.pictoShow = base64file;
+      this.pictoShow = this.sanitizer.bypassSecurityTrustResourceUrl(
+        this.pictoShow
+      );
+      const re = /base64,/gi;
+      base64file = base64file.replace(re, "");
+      this.propformLocation.imageType = base64file.split(";")[0].split(":")[1];
+      base64file = base64file.split(";")[1];
+      this.propformLocation.picture_East = base64file;
+    });
+  }
+  pictureSouth(event, form) {
+    this.pictureSouthU(event.files[0]);
+    form.clear();
+  }
+  pictureSouthU(File) {
+    let base64file;
+    const reader = new FileReader();
+    reader.readAsDataURL(File);
+    reader.addEventListener("loadend", (e) => {
+      base64file = reader.result;
+      this.pictoShow = base64file;
+      this.pictoShow = this.sanitizer.bypassSecurityTrustResourceUrl(
+        this.pictoShow
+      );
+      const re = /base64,/gi;
+      base64file = base64file.replace(re, "");
+      this.propformLocation.imageType = base64file.split(";")[0].split(":")[1];
+      base64file = base64file.split(";")[1];
+      this.propformLocation.picture_South = base64file;
+    });
+  }
+  pictureWest(event, form) {
+    this.pictureWestU(event.files[0]);
+    form.clear();
+  }
+  pictureWestU(File) {
+    let base64file;
+    const reader = new FileReader();
+    reader.readAsDataURL(File);
+    reader.addEventListener("loadend", (e) => {
+      base64file = reader.result;
+      this.pictoShow = base64file;
+      this.pictoShow = this.sanitizer.bypassSecurityTrustResourceUrl(
+        this.pictoShow
+      );
+      const re = /base64,/gi;
+      base64file = base64file.replace(re, "");
+      this.propformLocation.imageType = base64file.split(";")[0].split(":")[1];
+      base64file = base64file.split(";")[1];
+      this.propformLocation.picture_West = base64file;
+    });
+  }
   openModal(modal) {
     this.ngxSmartModalService.getModal(modal).open();
   }
@@ -831,4 +939,5 @@ export class PropformLocation {
   public team_Leader_Approved: any;
   public team_Leader_Approved_By: any;
   public geowithzone: any;
+  public imageType: any;
 }
