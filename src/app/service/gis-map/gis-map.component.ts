@@ -174,8 +174,6 @@ export class GisMapComponent implements AfterViewInit {
     this.map = L.map("mapp", {
       center: [9.145, 40.489],
       zoom: 13, // Set an initial zoom level (1 corresponds to a 1:1 scale)
-      minZoom: 1, // Prevent zooming out beyond a 1:1 scale
-      maxZoom: 15, // Set the maximum zoom level
     });
 
     // Add a scale control to display the current scale
