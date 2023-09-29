@@ -13,12 +13,12 @@ export const environment = {
   iconpath: window["iconpath"],
   formPath: window["formPath"],
 
-  username: "0945845912",
-  //username: "BL_Data_Encoder",
+  //username: "0945845912",
+  //username: "BL_Tech_Officer",
 
   // username: "BL_Doc_Verifier",
   //username: "BL_Tech_Leader",
-  //username: "BL_Data_Encoder",
+  username: "BL_Data_Encoder",
   phisicalPath: "./assets/i18n/",
   Lang_code: window["lang"],
   localGisServer: window["local_GIS_server"],

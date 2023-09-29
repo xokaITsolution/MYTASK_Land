@@ -134,8 +134,8 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
           );
       }
     }
-    this.plotManagment.SDP_ID =
-      this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
+    // this.plotManagment.SDP_ID =
+    //   this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
     if (
       this.plotManagment.SDP_ID != null ||
       this.plotManagment.SDP_ID != undefined

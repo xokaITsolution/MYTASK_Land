@@ -238,7 +238,9 @@
                 <app-property (completed)="EnableFins()" (getpro)="getPropertyTypeLookUP()" [LicenceData]="licenceData"
                         [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="false" [AppNo]="AppNo"
                         [Service_ID]="licenceData.Service_ID" [todoid]="todoID" [tskID]="tskID" [DocID]="DocID" >
-                      </app-property>   </div>
+                      </app-property> 
+                    
+                </div>
               <div *ngIf="ID==404;" translate>
                 Form not found
               </div>
@@ -447,7 +449,10 @@
           <app-property (completed)="EnableFins();saveForm('{}')" [LicenceData]="licenceData"
                   [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="true" [AppNo]="AppNo"
                   [Service_ID]="licenceData.Service_ID" [todoid]="todoID" [tskID]="tskID" [DocID]="DocID" >
-                </app-property>   </div>
+          
+           </app-property>  
+              
+              </div>
              
             
        

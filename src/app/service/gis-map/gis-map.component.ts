@@ -74,6 +74,13 @@ export class GisMapComponent implements AfterViewInit {
     "WGS 1984 UTM Zone 37",
     "WGS 1984 UTM Zone 38",
   ];
+  customZoomLevels: Record<number, number> = {
+    1: 2, // 1 meter on the map is 1 meter in the real world
+    2: 4, // 1 meter on the map is 2 meters in the real world
+    4: 8, // 1 meter on the map is 4 meters in the real world
+
+    // Add more levels as needed
+  };
 
   //  layers: Layer[] = [
   //     { name: 'Oromia_district', tileLayer: null },
@@ -159,11 +166,28 @@ export class GisMapComponent implements AfterViewInit {
     if (!mapContainer) {
       return;
     }
+    // this.map = L.map("mapp", {
+    //   crs: this.EPSG20137, // Set the map CRS to EPSG:20137
+    // }).setView([9.145, 40.489], 15); // Set an appropriate initial view for Ethiopia
+    // Define custom zoom levels
+
     this.map = L.map("mapp", {
-      crs: this.EPSG20137, // Set the map CRS to EPSG:20137
-    }).setView([9.145, 40.489], 4); // Set an appropriate initial view for Ethiopia
-    this.markerLayer = L.layerGroup().addTo(this.map);
+      center: [9.145, 40.489],
+      zoom: 13, // Set an initial zoom level (1 corresponds to a 1:1 scale)
+      minZoom: 1, // Prevent zooming out beyond a 1:1 scale
+      maxZoom: 15, // Set the maximum zoom level
+    });
+
+    // Add a scale control to display the current scale
+    L.control
+      .scale({
+        position: "bottomright",
+        imperial: false, // Use metric scale (meters)
+      })
+      .addTo(this.map);
+
     // Create a map event listener to track mouse movements
+    this.markerLayer = L.layerGroup().addTo(this.map);
     this.map.on("mousemove", (event) => {
       const latLng = event.latlng;
       const lat = latLng.lat;
@@ -215,7 +239,7 @@ export class GisMapComponent implements AfterViewInit {
     // });
 
     // this.map.addControl(this.drawControl);
-
+    L.control.scale().addTo(this.map);
     this.map.addLayer(this.editableLayers);
     const options = {
       position: "topleft" as L.ControlPosition, // Correctly specify the ControlPosition type
@@ -330,6 +354,30 @@ export class GisMapComponent implements AfterViewInit {
             //points.push(points[0])
             this.sample = this.drawnShape;
             console.log("utmCoordinates", utmCoordinates);
+            const area = this.calculateUTMPolygonArea(utmCoordinates);
+            // Show the area in a popup
+            const popupContent = `Area: ${area.toFixed(2)} square meters`;
+            layer.bindPopup(popupContent).openPopup();
+            console.log("Totalarea", area, utmCoordinates);
+            if (this.ServiceService.Totalarea <= area) {
+              const warningMessage =
+                "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
+              const toastWarning = this.notificationsService.warn(
+                "Warning",
+                warningMessage + popupContent
+              );
+              this.ServiceService.areaVerified = false;
+            } else if (area <= 75) {
+              const warningMessage =
+                "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
+              const toastWarning = this.notificationsService.warn(
+                "Warning",
+                warningMessage + popupContent
+              );
+              this.ServiceService.areaVerified = false;
+            } else {
+              this.ServiceService.areaVerified = true;
+            }
             // Add the coordinates to the array
             //this.drawnShapes.push(this.coordinates);
 
@@ -355,12 +403,43 @@ export class GisMapComponent implements AfterViewInit {
       } else {
         if (layer instanceof L.Polygon) {
           this.coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the polygon
-
-          console.log(this.coordinates);
+          let tempcord = this.coordinates;
+          // tempcord.push(tempcord[0]);
 
           // Assuming you already have the 'points' array from the previous code
           const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
           this.utmCoordinates = utmCoordinates;
+          if (this.drawnShape) {
+            this.map.removeLayer(this.drawnShape);
+            this.map.removeLayer(layer);
+            this.editableLayers.removeLayer(layer);
+            this.removeShape();
+          }
+          const area = this.calculateUTMPolygonArea(utmCoordinates);
+          // Show the area in a popup
+          const popupContent = `Area: ${area.toFixed(2)} square meters`;
+          layer.bindPopup(popupContent).openPopup();
+          console.log("Totalarea", area, utmCoordinates);
+          if (this.ServiceService.Totalarea <= area) {
+            const warningMessage =
+              "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
+            const toastWarning = this.notificationsService.warn(
+              "Warning",
+              warningMessage + popupContent
+            );
+            this.ServiceService.areaVerified = false;
+          } else if (area <= 75) {
+            const warningMessage =
+              "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
+            const toastWarning = this.notificationsService.warn(
+              "Warning",
+              warningMessage + popupContent
+            );
+            this.ServiceService.areaVerified = false;
+          } else {
+            this.ServiceService.areaVerified = true;
+          }
+          //this.onDatumChange();
           console.log(utmCoordinates);
           // Convert each L.LatLng object to [x, y] point
           // Assuming this.coordinates is an array of L.LatLng objects
@@ -387,6 +466,7 @@ export class GisMapComponent implements AfterViewInit {
           this.ServiceService.coordinate = utmCoordinates;
           //  this.ServiceService.shapes = this.aaa.push(this.drawnShape);
           // Transform GeoJSON to EPSG:20137 CRS
+          this.editableLayers.addLayer(layer);
         } else if (layer instanceof L.Circle) {
           // Get the center LatLng of the circle
           const centerLatLng = layer.getLatLng();
@@ -425,7 +505,7 @@ export class GisMapComponent implements AfterViewInit {
           //this.drawnShapes.push(this.coordinates);
 
           // Do something with the coordinates, such as displaying or processing them
-
+          this.editableLayers.addLayer(layer);
           this.ServiceService.coordinate = utmCoordinates;
           // Now you can use circleLatLngs as needed
         }
@@ -444,6 +524,30 @@ export class GisMapComponent implements AfterViewInit {
           // Assuming you have a function to convert coordinates to UTM
           const utmCoordinates = this.convertCoordinatesToUTM(coordinates);
           console.log("UTM Coordinates:", utmCoordinates);
+          const area = this.calculateUTMPolygonArea(utmCoordinates);
+          // Show the area in a popup
+          const popupContent = `Area: ${area.toFixed(2)} square meters`;
+          layer.bindPopup(popupContent).openPopup();
+          console.log("Totalarea", area, utmCoordinates);
+          if (this.ServiceService.Totalarea <= area) {
+            const warningMessage =
+              "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
+            const toastWarning = this.notificationsService.warn(
+              "Warning",
+              warningMessage + popupContent
+            );
+            this.ServiceService.areaVerified = false;
+          } else if (area <= 75) {
+            const warningMessage =
+              "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
+            const toastWarning = this.notificationsService.warn(
+              "Warning",
+              warningMessage + popupContent
+            );
+            this.ServiceService.areaVerified = false;
+          } else {
+            this.ServiceService.areaVerified = true;
+          }
           utmCoordinates.push(utmCoordinates[0]);
           // Convert the edited polygon to GeoJSON
           const geojson = layer.toGeoJSON();
@@ -1071,6 +1175,7 @@ export class GisMapComponent implements AfterViewInit {
     this.coordinates = this.pinpointedPoints;
     this.coordinates.push(this.coordinates[0]);
     this.drawnShape = L.polygon(this.pinpointedPoints).addTo(this.map);
+
     const utmCoordinates = this.convertCoordinatesToUTM(this.pinpointedPoints);
     this.utmCoordinates = utmCoordinates;
     utmCoordinates.push(utmCoordinates[0]);
@@ -1172,13 +1277,14 @@ export class GisMapComponent implements AfterViewInit {
       var marker = new L.Marker(center, {
         icon: customIcon,
       });
-      this.addCenterMarker(center);
-      marker.addTo(this.map);
+      // this.addCenterMarker(center);
+      // marker.addTo(this.map);
 
       // Fit the map bounds to the drawn shape with a specific maxZoom level
       this.map.fitBounds(this.drawnShape.getBounds());
-      this.onDatumChange();
-      this.map.setView(center, 8);
+      //this.onDatumChange();
+      // this.map.setView(center, 15);
+
       //  if (this.ServiceService.check == true) {
       // this.map.on(L.Draw.Event.CREATED, (e: any) => {
       //   const layer = e.layer;
@@ -1236,6 +1342,26 @@ export class GisMapComponent implements AfterViewInit {
   //   return result; // Take the absolute value and divide by 2 to get the area in square meters
   // }
 
+  calculateUTMPolygonArea(
+    utmPoints: { northing: number; easting: number }[]
+  ): number {
+    const numPoints = utmPoints.length;
+    let area = 0;
+
+    if (numPoints < 3) {
+      return area; // Not a polygon, return zero area
+    }
+
+    for (let i = 0; i < numPoints; i++) {
+      const p1 = utmPoints[i];
+      const p2 = utmPoints[(i + 1) % numPoints]; // Wrap around for the last point
+
+      area += ((p2.easting - p1.easting) * (p2.northing + p1.northing)) / 2;
+    }
+
+    return Math.abs(area); // Take the absolute value to ensure a positive area
+  }
+
   calculatePolygonArea(vertices) {
     const EarthRadiusMeters = 6371000; // Radius of the Earth in meters
     let area = 0;
@@ -1268,7 +1394,10 @@ export class GisMapComponent implements AfterViewInit {
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
       area += EarthRadiusMeters * EarthRadiusMeters * c;
+      console.log("Totalarea", c, a);
     }
+    console.log("Totalarea", area);
+
     result.push({
       Name: "shape",
       area: Math.abs(area / 2),
@@ -1344,12 +1473,12 @@ export class GisMapComponent implements AfterViewInit {
       var marker = new L.Marker(center, {
         icon: customIcon,
       });
-      this.addCenterMarker(center);
-      marker.addTo(this.map);
+      //this.addCenterMarker(center);
+      // marker.addTo(this.map);
 
       this.map.fitBounds(this.drawnShape.getBounds());
       this.onDatumChange();
-      this.map.setView(center, 8);
+      this.map.setView(center, 15);
 
       if (this.ServiceService.check != true) {
         this.map.on(L.Draw.Event.CREATED, (e: any) => {
@@ -1508,11 +1637,22 @@ export class GisMapComponent implements AfterViewInit {
         origin: [-180, 90],
         resolutions: [
           132291.9312505292, 66145.9656252646, 33072.9828126323,
-          16536.49140631615, 8268.245703158075, 4134.122851579038,
-          2067.061425789519, 1033.5307128947597, 516.7653564473798,
-          258.3826782236899, 129.19133911184494, 64.59566955592247,
-          32.29783477796124, 16.14891738898062, 8.07445869449031,
-          4.037229347245155,
+          16536.49140631615, 1033.5307128947595, 8268.245703158075,
+          4134.122851579038, 2067.061425789519, 1033.5307128947597,
+          516.7653564473798, 258.3826782236899, 129.19133911184494,
+          64.59566955592247, 32.29783477796124, 16.14891738898062,
+          8.07445869449031, 4.037229347245155, 2.0186146736225775,
+          1.0093073368112888, 1.0093073368112888, 1.0093073368165999,
+          1.009307336818619, 1.0093073368193081, 1.0093073368193542,
+          1.0093073368193683, 1.0093073368193714, 1.009307336819372,
+          1.0093073368193723, 1.0093073368193724,
+
+          0.5046536684056444, 0.5046536684056445, 0.5046536684056446,
+          0.5046536684056447, 0.5046536684056448, 0.5046536684056449,
+          0.504653668405645, 0.5046536684056451, 0.5046536684056452,
+          0.5046536684056453,
+
+          0.5046536684056444,
         ],
         bounds: L.bounds(
           [-36909.130089988816, 376321.5212803309],
@@ -1648,7 +1788,8 @@ export class GisMapComponent implements AfterViewInit {
     // }
     // Update the map view to the center coordinates of Ethiopia and adjust the zoom level
     const center = L.latLng(9.145, 40.4897); // Update with Ethiopia center coordinates
-    const zoom = 8; // Update with the desired zoom level for the selected projection
+    const zoom = 15; // Update with the desired zoom level for the selected projection
+
     this.map.setView(center, zoom);
   }
 
@@ -1720,6 +1861,7 @@ export class GisMapComponent implements AfterViewInit {
     return { lat: latLngCoords.latitude, lng: latLngCoords.longitude };
   }
 }
+
 // Define the Layer interface
 interface Layer {
   name: string; // Name of the layer
