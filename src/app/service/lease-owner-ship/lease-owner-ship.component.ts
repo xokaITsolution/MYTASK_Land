@@ -73,8 +73,10 @@ export class LeaseOwnerShipComponent implements OnChanges {
         console.log("lease select", this.SelectedPlot);
         console.log("lease plot id", this.leaseOwnerShip.Plot_ID);
 
-        this.leaseOwnerShip.SDP_ID =
-          this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
+        this.leaseOwnerShip.SDP_ID = this.SelectedPlot.SDP_ID;
+        this.serviceService.Totalarea = this.SelectedPlot.Plot_Size_M2;
+
+        // this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
         // if( this.leaseOwnerShip.SDP_ID!=null || this.leaseOwnerShip.SDP_ID!=undefined ){
         //   this.addLease()
         // }
@@ -262,6 +264,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
           this.leaseOwnerShip.Date_of_final_lease_payment
         );
     }
+    this.serviceService.Totalarea =
+      this.leaseOwnerShip.Lease_Hold_M2 + this.leaseOwnerShip.Free_Hold_M2;
     this.leaseOwnerShipService.save(this.leaseOwnerShip).subscribe(
       async (deptSuspension) => {
         console.log("deptSuspension", deptSuspension);
@@ -373,7 +377,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
           "Sucess",
           deptSuspension
         );
-
+        this.serviceService.Totalarea =
+          this.leaseOwnerShip.Lease_Hold_M2 + this.leaseOwnerShip.Free_Hold_M2;
         this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
 
         if (this.language == "amharic") {

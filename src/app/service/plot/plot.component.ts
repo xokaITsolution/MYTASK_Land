@@ -49,7 +49,7 @@ export class PlotComponent implements OnChanges {
   language: string;
   plotloc: any;
   public platformLocation: PlatformLocation;
-  isplotllocnew: boolean;
+  isplotllocnew: boolean = false;
   Plot_ID: any;
   displayGIS: boolean;
   geo: any;
@@ -112,11 +112,11 @@ export class PlotComponent implements OnChanges {
 
         this.convertPolygonCoordinates(this.plotloc[0].geowithzone);
 
-        console.log("plotloc:", this.plotloc, this.plotloc[0].geowithzone);
-        this.isplotllocnew = false;
+        console.log("plotloc:", this.plotloc);
+        this.isplotllocnew = true;
       } else {
         this.platformLocation = new PlatformLocation();
-        this.isplotllocnew = true;
+        this.isplotllocnew = false;
         //this.serviceService.toMess=true
       }
     });
@@ -454,9 +454,10 @@ export class PlotComponent implements OnChanges {
     this.isnew = true;
     this.plotForm = true;
     const plot = new PlotManagment();
-    // plot.SDP_ID = this.LicenceData.SDP_ID;
+    plot.SDP_ID = this.LicenceData.SDP_ID;
     console.log(this.Parcel_ID);
     plot.Licence_Service_ID = this.LicenceData.Licence_Service_ID;
+
     plot.Application_No = this.AppNo;
     if (this.Parcel_ID) {
       if (this.PlotManagementList.length == 0) {
