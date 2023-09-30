@@ -70,9 +70,9 @@
     <div class="form-group row col-md-7">
       <label for="SuspendedReason" class="col-sm-3 col-form-label" translate>Suspended Reason</label>
       <div class="col-sm-9">
-        <select class="form-control"   [disabled]="disable" [(ngModel)]="deptSuspensionRecord.Suspend_Reason" name="SuspendedReason"
+        <select class="form-control" required   [disabled]="disable" [(ngModel)]="deptSuspensionRecord.Suspend_Reason" name="SuspendedReason"
                 id="SuspendedReason">
-          <option disabled translate>select</option>
+          <option  translate>select</option>
           <option *ngFor="let SuspendedReason of serviceComponent.SuspendedReasonLookUP;" [value]="SuspendedReason.ID">
             {{SuspendedReason.Suspension_Reason}}
           </option>

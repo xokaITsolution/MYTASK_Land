@@ -1795,11 +1795,12 @@ console.log('userrrr',this.user);
   }
 
   public getAll(AppNo) {
+
+    console.log('appppppp', AppNo);
     this.serviceService.getAll(AppNo).subscribe(
       (licenceService) => {
         this.licenceService = licenceService;
-        // console.log('Licence Service', this.licenceService);
-        // console.log('Licence data1', this.licenceData);
+        console.log('Licence Service', this.licenceService);
         if (this.licenceService.list.length > 0) {
           this.licenceData = this.licenceService.list[0];
           this.SDP_ID = this.licenceData.SDP_ID;
