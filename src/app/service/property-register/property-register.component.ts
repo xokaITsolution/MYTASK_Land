@@ -694,7 +694,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     }
   }
   saveproploc() {
-    console.log('propformLocation',this.propformLocation);
+    console.log("propformLocation", this.propformLocation);
     console.log("coordinatcoordinat", this.serviceService.coordinate);
     if (this.serviceService.coordinate) {
       // let coordinate= this.convertToMultiPoint(this.serviceService.coordinate)
@@ -717,7 +717,6 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         this.propformLocation.proporty_Id = this.propertyRegister.property_ID;
         this.propformLocation.created_By = response[0].RoleId;
         this.propformLocation.created_Date = new Date();
-
 
         this.serviceService.saveProploc(this.propformLocation).subscribe(
           (CustID) => {
@@ -759,8 +758,10 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       this.propertyRegister.imageType = base64file.split(";")[0].split(":")[1];
       base64file = base64file.split(";")[1];
       this.propertyRegister.map_Floor_Plan = base64file;
-      console.log('this.propertyRegister.map_Floor_Plan', this.propertyRegister.map_Floor_Plan);
-      
+      console.log(
+        "this.propertyRegister.map_Floor_Plan",
+        this.propertyRegister.map_Floor_Plan
+      );
     });
   }
 

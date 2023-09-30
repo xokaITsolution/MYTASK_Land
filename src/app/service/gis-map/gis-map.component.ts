@@ -176,14 +176,6 @@ export class GisMapComponent implements AfterViewInit {
       zoom: 13, // Set an initial zoom level (1 corresponds to a 1:1 scale)
     });
 
-    // Add a scale control to display the current scale
-    L.control
-      .scale({
-        position: "bottomright",
-        imperial: false, // Use metric scale (meters)
-      })
-      .addTo(this.map);
-
     // Create a map event listener to track mouse movements
     this.markerLayer = L.layerGroup().addTo(this.map);
     this.map.on("mousemove", (event) => {
