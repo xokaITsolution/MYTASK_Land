@@ -151,6 +151,7 @@ export class PaymentComponent implements OnChanges {
         this.SaveePaymentDetail(PaymentDetail);
         if (!this.Saved) {
           this.completed.emit();
+          this.serviceService.disablefins=false
           this.Saved = true;
         }
       },
@@ -192,6 +193,7 @@ export class PaymentComponent implements OnChanges {
         this.getPaymentManagement();
         if (!this.Saved) {
           this.completed.emit();
+          this.serviceService.disablefins=false
           this.Saved = true;
         }
       },

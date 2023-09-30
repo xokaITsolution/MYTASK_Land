@@ -729,7 +729,7 @@ export class ServiceComponent implements OnInit {
       this.DocID
     );
 
-    // this.disablefins = false;
+    this.disablefins = false;
   }
 
   changeForm(event) {
