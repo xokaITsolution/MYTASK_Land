@@ -101,6 +101,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     if (this.selectedpro !== undefined && this.selectedpro !== null) {
       this.propertyRegister = this.selectedpro;
       this.propertyRegister.plot_ID = this.selectedpro.Plot_ID;
+
       console.log("selected", this.selectedpro.Plot_ID);
       //
       //this.getplotlocbyid(this.propertyRegister.plot_ID);
@@ -110,6 +111,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     if (this.LicenceData !== undefined && this.LicenceData !== null) {
       if (!this.propertyRegister.property_ID) {
         this.propertyRegister.property_ID = this.LicenceData.Property_ID;
+        this.propertyRegister.property_Type_ID = 1;
       }
     }
     if (this.propertyRegister.registration_Date) {
@@ -941,5 +943,5 @@ export class PropformLocation {
   public team_Leader_Approved_By: any;
   public geowithzone: any;
   public imageType: any;
-  public hight_Meter: any
+  public hight_Meter: any;
 }

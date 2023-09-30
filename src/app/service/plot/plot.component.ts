@@ -113,10 +113,10 @@ export class PlotComponent implements OnChanges {
         this.convertPolygonCoordinates(this.plotloc[0].geowithzone);
 
         console.log("plotloc:", this.plotloc);
-        this.isplotllocnew = true;
+        this.isplotllocnew = false;
       } else {
         this.platformLocation = new PlatformLocation();
-        this.isplotllocnew = false;
+        this.isplotllocnew = true;
         //this.serviceService.toMess=true
       }
     });

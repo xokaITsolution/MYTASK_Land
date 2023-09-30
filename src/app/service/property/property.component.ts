@@ -170,6 +170,7 @@ export class PropertyComponent implements OnChanges {
     this.propertyForm = true;
     this.propertyregForm = false;
     this.SelectedProperty = property;
+
     this.serviceService.Plot_Size_M2 = this.SelectedProperty.Plot_Size_M2;
     console.log("plotManagment", this.SelectedProperty);
     this.getPropertyList();
@@ -246,6 +247,7 @@ export class PropertyComponent implements OnChanges {
     console.log("plotManagment", this.SelectedProperty.Plot_ID);
 
     this.selectedprofromtree.Plot_ID = this.SelectedProperty.Plot_ID;
+    this.selectedprofromtree.Property_Type_ID = 1;
     this.selectedprofromtree.licence_Service_ID = this.Licence_Service_ID;
   }
   selectedTab = 0;

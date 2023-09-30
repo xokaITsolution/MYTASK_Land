@@ -83,8 +83,9 @@
     <div class="form-group row col-md-6">
       <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Property Status</label>
       <div class="col-sm-9">
-        <select class="form-control" [(ngModel)]="propertyRegister.property_Status_ID" name="PropertyStatus"
-          id="PropertyStatus">
+        <select  class="form-control" [(ngModel)]="propertyRegister.property_Status_ID" name="PropertyStatus"
+          id="PropertyStatus"
+           #PropertyStatus="ngModel" [ngClass]="{ 'is-invalid': PropertyStatus.invalid }" required>
           <option disabled>select</option>
           <option *ngFor="let PropertyStatus of serviceComponent.PropertyStatusLookUP;"
             [value]="PropertyStatus.P_Status_ID">{{PropertyStatus.Property_Status}}</option>
@@ -95,7 +96,8 @@
       <label for="PropertyType" class="col-sm-3 col-form-label" translate>Property Type</label>
       <div class="col-sm-9">
         <select class="form-control" [(ngModel)]="propertyRegister.property_Type_ID" name="PropertyType"
-          id="PropertyType">
+          id="PropertyType"
+            #PropertyType="ngModel" [ngClass]="{ 'is-invalid': PropertyType.invalid }" required>
           <option disabled>select</option>
           <option *ngFor="let PropertyType of serviceComponent.PropertyTypeLookUP;"
             [value]="PropertyType.Property_Type_ID">{{PropertyType.Property_Type}}</option>

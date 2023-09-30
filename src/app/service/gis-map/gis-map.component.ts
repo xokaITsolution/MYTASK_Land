@@ -519,24 +519,26 @@ export class GisMapComponent implements AfterViewInit {
           const popupContent = `Area: ${area.toFixed(2)} square meters`;
           layer.bindPopup(popupContent).openPopup();
           console.log("Totalarea", area, utmCoordinates);
-          if (this.ServiceService.Totalarea <= area) {
-            const warningMessage =
-              "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
-            const toastWarning = this.notificationsService.warn(
-              "Warning",
-              warningMessage + popupContent
-            );
-            this.ServiceService.areaVerified = false;
-          } else if (area <= 75) {
-            const warningMessage =
-              "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
-            const toastWarning = this.notificationsService.warn(
-              "Warning",
-              warningMessage + popupContent
-            );
-            this.ServiceService.areaVerified = false;
-          } else {
-            this.ServiceService.areaVerified = true;
+          if (this.ServiceService.check) {
+            if (this.ServiceService.Totalarea <= area) {
+              const warningMessage =
+                "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
+              const toastWarning = this.notificationsService.warn(
+                "Warning",
+                warningMessage + popupContent
+              );
+              this.ServiceService.areaVerified = false;
+            } else if (area <= 75) {
+              const warningMessage =
+                "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
+              const toastWarning = this.notificationsService.warn(
+                "Warning",
+                warningMessage + popupContent
+              );
+              this.ServiceService.areaVerified = false;
+            } else {
+              this.ServiceService.areaVerified = true;
+            }
           }
           utmCoordinates.push(utmCoordinates[0]);
           // Convert the edited polygon to GeoJSON
