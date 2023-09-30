@@ -273,16 +273,58 @@
       <div style="height: 500px; overflow: auto;">
   
         <app-gis-map [geo]="geo" [changingg]="changingValue"></app-gis-map>
-      </div>
-    </div> 
-    <form #l="ngForm" novalidate name="locationForm">
-      <div class="form-row">
-        <div class="form-group row col-md-6">
-          <label class="col-sm-3 col-form-label" translate>plan Document</label>
+        <form #l="ngForm" novalidate name="locationForm">
+          <div class="form-row">
+            <div class="form-group row col-md-6">
+              <label class="col-sm-3 col-form-label" translate>plan Document</label>
+              <div class="col-sm-9">
+                <p-fileUpload #form1 customUpload="true" (uploadHandler)="planDocument($event,form1)"
+                  maxFileSize="25000000" accept="image/*"></p-fileUpload>
+        
+                <div *ngIf="MapFloorPlan.invalid">
+                  <span translate class="text-danger">Requierd</span>
+                </div>
+                <!-- <div *ngIf="pictoShow">
+                  <button type="button" class="btn btn-primary" (click)="openModal('pic')" translate>Show</button>
+                </div> -->
+              </div>
+            </div>
+            <div class="form-group row col-md-6">
+            <label class="col-sm-3 col-form-label" translate>picture North</label>
+            <div class="col-sm-9">
+              <p-fileUpload #form2 customUpload="true" (uploadHandler)="pictureNorth($event,form2)"
+                maxFileSize="25000000" accept="image/*"></p-fileUpload>
+      
+              
+              <div *ngIf="MapFloorPlan.invalid">
+                <span translate class="text-danger">Requierd</span>
+              </div>
+              <!-- <div *ngIf="pictoShow">
+                <button type="button" class="btn btn-primary" (click)="openModal('pic')" translate>Show</button>
+              </div> -->
+            </div>
+          </div>
+          <div class="form-group row col-md-6">
+            <label class="col-sm-3 col-form-label" translate>picture East</label>
+            <div class="col-sm-9">
+              <p-fileUpload #form3 customUpload="true" (uploadHandler)="pictureEast($event,form3)"
+                maxFileSize="25000000" accept="image/*"></p-fileUpload>
+      
+              <div *ngIf="MapFloorPlan.invalid">
+                <span translate class="text-danger">Requierd</span>
+              </div>
+              <!-- <div *ngIf="pictoShow">
+                <button type="button" class="btn btn-primary" (click)="openModal('pic')" translate>Show</button>
+              </div> -->
+            </div>
+          </div>
+          <div class="form-group row col-md-6">
+          <label class="col-sm-3 col-form-label" translate>picture South</label>
           <div class="col-sm-9">
-            <p-fileUpload #form1 customUpload="true" (uploadHandler)="planDocument($event,form1)"
+            <p-fileUpload #form4 customUpload="true" (uploadHandler)="pictureSouth($event,form4)"
               maxFileSize="25000000" accept="image/*"></p-fileUpload>
-    
+      
+            
             <div *ngIf="MapFloorPlan.invalid">
               <span translate class="text-danger">Requierd</span>
             </div>
@@ -292,72 +334,36 @@
           </div>
         </div>
         <div class="form-group row col-md-6">
-        <label class="col-sm-3 col-form-label" translate>picture North</label>
-        <div class="col-sm-9">
-          <p-fileUpload #form2 customUpload="true" (uploadHandler)="pictureNorth($event,form2)"
-            maxFileSize="25000000" accept="image/*"></p-fileUpload>
-  
-          
-          <div *ngIf="MapFloorPlan.invalid">
-            <span translate class="text-danger">Requierd</span>
+          <label class="col-sm-3 col-form-label" translate>picture West</label>
+          <div class="col-sm-9">
+            <p-fileUpload #form5 customUpload="true" (uploadHandler)="pictureWest($event,form5)"
+              maxFileSize="25000000" accept="image/*"></p-fileUpload>
+      
+            <div *ngIf="MapFloorPlan.invalid">
+              <span translate class="text-danger">Requierd</span>
+            </div>
+            <!-- <div *ngIf="pictoShow">
+              <button type="button" class="btn btn-primary" (click)="openModal('pic')" translate>Show</button>
+            </div> -->
           </div>
-          <!-- <div *ngIf="pictoShow">
-            <button type="button" class="btn btn-primary" (click)="openModal('pic')" translate>Show</button>
-          </div> -->
         </div>
-      </div>
-      <div class="form-group row col-md-6">
-        <label class="col-sm-3 col-form-label" translate>picture East</label>
-        <div class="col-sm-9">
-          <p-fileUpload #form3 customUpload="true" (uploadHandler)="pictureEast($event,form3)"
-            maxFileSize="25000000" accept="image/*"></p-fileUpload>
-  
-          <div *ngIf="MapFloorPlan.invalid">
-            <span translate class="text-danger">Requierd</span>
+        <div class="form-group row col-md-6">
+          <label class="col-sm-3 col-form-label" for="Hight_Meter" translate="">Hight Meter</label>
+          <div class="col-sm-9">
+            <input class="form-control" id="Hight_Meter" name="Hight_Meter" [(ngModel)]="propformLocation.hight_Meter"
+              placeholder="Hight Meter" type="number"></div>
+        </div>
           </div>
-          <!-- <div *ngIf="pictoShow">
-            <button type="button" class="btn btn-primary" (click)="openModal('pic')" translate>Show</button>
-          </div> -->
-        </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="saveproploc();closeModall()"
+              *ngIf="!isproplocnew &&  !disable" translate>Save</button>
+            <button type="button" class="btn btn-primary" (click)="updateproploc();closeModall()"
+              *ngIf="isproplocnew &&  !disable" translate>Update</button>
+            <button type="button" class="btn btn-danger" (click)="closeModall()" translate>Close</button>
+          </div>
+        </form>
       </div>
-      <div class="form-group row col-md-6">
-      <label class="col-sm-3 col-form-label" translate>picture South</label>
-      <div class="col-sm-9">
-        <p-fileUpload #form4 customUpload="true" (uploadHandler)="pictureSouth($event,form4)"
-          maxFileSize="25000000" accept="image/*"></p-fileUpload>
-  
-        
-        <div *ngIf="MapFloorPlan.invalid">
-          <span translate class="text-danger">Requierd</span>
-        </div>
-        <!-- <div *ngIf="pictoShow">
-          <button type="button" class="btn btn-primary" (click)="openModal('pic')" translate>Show</button>
-        </div> -->
-      </div>
-    </div>
-    <div class="form-group row col-md-6">
-      <label class="col-sm-3 col-form-label" translate>picture West</label>
-      <div class="col-sm-9">
-        <p-fileUpload #form5 customUpload="true" (uploadHandler)="pictureWest($event,form5)"
-          maxFileSize="25000000" accept="image/*"></p-fileUpload>
-  
-        <div *ngIf="MapFloorPlan.invalid">
-          <span translate class="text-danger">Requierd</span>
-        </div>
-        <!-- <div *ngIf="pictoShow">
-          <button type="button" class="btn btn-primary" (click)="openModal('pic')" translate>Show</button>
-        </div> -->
-      </div>
-    </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="saveproploc();closeModall()"
-          *ngIf="!isproplocnew &&  !disable" translate>Save</button>
-        <button type="button" class="btn btn-primary" (click)="updateproploc();closeModall()"
-          *ngIf="isproplocnew &&  !disable" translate>Update</button>
-        <button type="button" class="btn btn-danger" (click)="closeModall()" translate>Close</button>
-      </div>
-    </form>
+    </div> 
   
     <!-- Modal footer -->
     

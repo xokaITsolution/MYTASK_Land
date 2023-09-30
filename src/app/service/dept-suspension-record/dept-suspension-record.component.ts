@@ -84,7 +84,7 @@ export class DeptSuspensionRecordComponent implements OnChanges {
   adddeed() {
     this.deptForm = true;
     this.deptSuspensionRecord = new DeptSuspensionRecord();
-    this.deptSuspensionRecord.Certificate_Version_No = this.Selectedcert.Version_ID;
+    this.deptSuspensionRecord.Certificate_Version_No = this.Selectedcert.version_ID;
 
     this.deptSuspensionRecord.SDP_ID = this.LicenceData.SDP_ID;
     this.deptSuspensionRecord.Suspend_Start_Date = (new Date()).toDateString();

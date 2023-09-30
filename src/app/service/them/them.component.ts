@@ -33,7 +33,7 @@ export class ThemComponent implements OnChanges {
   ngOnChanges() {
     this.themform = false;
     this.getThem();
-    console.log('hahaha2', this.Selectedcert);
+    console.log('hahaha22', this.Selectedcert);
   }
 
   getThem() {
@@ -146,7 +146,7 @@ export class ThemComponent implements OnChanges {
     this.themform = true;
     this.isnew = true;
     this.themCertificateVersion = new ThemCertificateVersion();
-    this.themCertificateVersion.Certificate_Version_ID = this.Selectedcert.Version_ID;
+    this.themCertificateVersion.Certificate_Version_ID = this.Selectedcert.version_ID;
 
   }
 

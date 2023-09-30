@@ -74,6 +74,8 @@ export class CertComponent implements OnChanges {
     else {
       this.language = 'english';
     }
+    console.log('this.licenceData',this.licenceData);
+    
     this.BaseTable = [];
     this.noadds = 0;
     this.plotList = [];

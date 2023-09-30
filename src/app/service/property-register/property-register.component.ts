@@ -941,4 +941,5 @@ export class PropformLocation {
   public team_Leader_Approved_By: any;
   public geowithzone: any;
   public imageType: any;
+  public hight_Meter: any
 }
