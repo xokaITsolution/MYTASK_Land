@@ -45,7 +45,7 @@ export class CertletterComponent implements OnChanges {
   urlParams: any;
   language: string;
   disable_new: boolean;
-
+  loadingPreDoc = false;
   constructor(
     private sanitizer: DomSanitizer,
     public serviceService: ServiceService,
@@ -157,18 +157,23 @@ export class CertletterComponent implements OnChanges {
   }
 
   getCertificateVersion(Base) {
-    this.serviceService.getCertificateVersion(Base.Title_Deed_No).subscribe(
-      (CertificateVersion) => {
-        this.CertificateVersion = CertificateVersion;
-        this.CertificateVersion = Object.assign(
-          [],
-          this.CertificateVersion.list
-        );
+    this.loadingPreDoc=true
+    this.serviceService.getCertificateVersion1(Base.Title_Deed_No).subscribe(
+      (CertificateVersion:any) => {
+        if(CertificateVersion){
+          this.loadingPreDoc = false;
+        this.CertificateVersion = CertificateVersion.procCertificate_Versions;
+        console.log('CertificateVersion1',this.CertificateVersion);
+        
+        // this.CertificateVersion = Object.assign(
+        //   [],
+        //   this.CertificateVersion.list
+        // );
         /*if (this.CertificateVersion.length > 1) {
         this.SelectcertVer(this.CertificateVersion[0]);
       }*/
         console.log("CertificateVersion", CertificateVersion);
-      },
+      }},
       (error) => {
         console.log("error");
       }

@@ -33,9 +33,14 @@
       </ng-template>
     </p-table>
   </div>
+ 
 
-  <div class="col-md-6" *ngIf="CertificateVersion">
-
+  <div class="col-md-6">
+    <div *ngIf="loadingPreDoc">
+      <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="4">
+      </p-progressSpinner>
+    </div>
+  <div  *ngIf="CertificateVersion">
     <div>
 
       <p-table [value]="CertificateVersion" [paginator]="true" [rows]="3">
@@ -49,15 +54,16 @@
         <ng-template pTemplate="body" let-version let-rowData>
           <tr (click)='highlighted = rowData;Selectversion(version)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
          
-            <td>{{version.Ownership_ID}}</td>
-            <td>{{version.Version_ID}}</td>
-            <td>{{version.Title_Deed_No}}</td>
+            <td>{{version.ownership_ID}}</td>
+            <td>{{version.version_ID}}</td>
+            <td>{{version.title_Deed_No}}</td>
             <td>
               <button type="button" class="btn btn-primary" (click)="Selectversion(version)" translate>select</button>
             </td>
           </tr>
         </ng-template>
       </p-table>
+    </div>
     </div>
   </div>
 
