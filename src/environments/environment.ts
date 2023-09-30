@@ -17,7 +17,7 @@ export const environment = {
   //username: "BL_Tech_Officer",
 
   // username: "BL_Doc_Verifier",
-  // username: "BL_Tech_Leader",
+  username: "BL_Tech_Leader",
   // username: "BL_Cashier",
   phisicalPath: "./assets/i18n/",
   Lang_code: window["lang"],

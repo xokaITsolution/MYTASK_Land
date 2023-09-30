@@ -93,7 +93,7 @@ export class ServiceComponent implements OnInit {
   aa = null;
   intervalId: any;
   showProgressBar = false;
-  user:any;
+  user: any;
   public CustomerTypeLookUP;
   public CustomerLookUP;
   public CustomerBankLookUP;
@@ -521,8 +521,8 @@ export class ServiceComponent implements OnInit {
   getRequiredDocspre(tskID) {
     this.serviceService.getRequerdDocs(tskID).subscribe(
       (RequerdDocs) => {
-        console.log('getRequiredDocspre',RequerdDocs);
-        
+        console.log("getRequiredDocspre", RequerdDocs);
+
         this.RequerdDocspre = RequerdDocs;
         if (this.RequerdDocs != null) this.showProgressBar = false;
 
@@ -579,8 +579,8 @@ export class ServiceComponent implements OnInit {
                 this.RequerdDocspre[i].mimeType = type;
                 this.RequerdDocspre[i].File =
                   "data:" + type + ";base64, " + data;
-                  console.log('this.RequerdDocspre[i].File',SavedFiles[j]);
-                  
+                console.log("this.RequerdDocspre[i].File", SavedFiles[j]);
+
                 this.RequerdDocspre[i].File =
                   this.sanitizer.bypassSecurityTrustResourceUrl(
                     this.RequerdDocspre[i].File
@@ -641,13 +641,12 @@ export class ServiceComponent implements OnInit {
 
   getPost(appno) {
     this.serviceService.getPostit_user().subscribe(
-      (note)=>{
-        this.user=note.filter((value)=>value.application_number == appno)
-console.log('userrrr',this.user);
- if (note) {
+      (note) => {
+        this.user = note.filter((value) => value.application_number == appno);
+        console.log("userrrr", this.user);
+        if (note) {
           this.notes = this.user as Array<any>;
-          console.log('notesss',appno);
-          
+          console.log("notesss", appno);
         }
         let num = 1;
         (this.notes as Array<any>).map((task) => (task["number"] = num++));
@@ -656,15 +655,11 @@ console.log('userrrr',this.user);
       (error) => {
         console.error("unable to get note");
       }
-
-      
-    )
-    this.serviceService.GetNote(appno).subscribe(
-      (note) => {
+    );
+    this.serviceService.GetNote(appno).subscribe((note) => {
       //   if (note) {
       //     this.notes = note as Array<any>;
       //     console.log('notesss',appno);
-          
       //   }
       //   let num = 1;
       //   (this.notes as Array<any>).map((task) => (task["number"] = num++));
@@ -672,8 +667,7 @@ console.log('userrrr',this.user);
       // },
       // (error) => {
       //   console.error("unable to get note");
-      }
-    );
+    });
   }
   plot() {
     if (!this.Saved) {
@@ -954,8 +948,8 @@ console.log('userrrr',this.user);
   }
 
   openModal(template: TemplateRef<any>) {
-    console.log('template',template);
-    
+    console.log("template", template);
+
     this.modalRef = this.modalService.show(
       template,
       Object.assign({}, { class: "gray modal-lg" })
@@ -972,7 +966,7 @@ console.log('userrrr',this.user);
       (RequerdDocs) => {
         this.RequerdDocs = RequerdDocs;
 
-        console.log('RequerdDocs', this.RequerdDocs);
+        console.log("RequerdDocs", this.RequerdDocs);
       },
       (error) => {
         console.log("error");
@@ -1015,8 +1009,8 @@ console.log('userrrr',this.user);
           data: base64file,
         })
       );
-      this.documentupload = base64FileData
-       this.previewdocumnet(base64FileData)
+      this.documentupload = base64FileData;
+      this.previewdocumnet(base64FileData);
       console.log("this.DocID", base64file);
       this.serviceService
         .saveFile(
@@ -1102,31 +1096,28 @@ console.log('userrrr',this.user);
       }
     );
   }
-  previewdocumnet(file){
-    if(file==''||file==null){
-      this.disDocument=true
-    }
-    else{
-      this.disDocument=false
+  previewdocumnet(file) {
+    if (file == "" || file == null) {
+      this.disDocument = true;
+    } else {
+      this.disDocument = false;
     }
     try {
-     
-     let fileData = JSON.parse(window.atob(file));
+      let fileData = JSON.parse(window.atob(file));
       let { type, data } = fileData;
-      this.mimeType=type
-      this.fileupload= "data:" + type + ";base64, " + data;
-      this.uploadedDocumnet=true
-      this.uploadcontract=false
-     
-      this.documentupload= this.sanitizer.bypassSecurityTrustResourceUrl(
-               this.fileupload
-             );
+      this.mimeType = type;
+      this.fileupload = "data:" + type + ";base64, " + data;
+      this.uploadedDocumnet = true;
+      this.uploadcontract = false;
+
+      this.documentupload = this.sanitizer.bypassSecurityTrustResourceUrl(
+        this.fileupload
+      );
       console.log(this.documentupload);
- }
-           catch (e) {
-             console.error(e);
-           }
-}
+    } catch (e) {
+      console.error(e);
+    }
+  }
   pendclose(appNO) {
     this.getAppData(appNO);
   }
@@ -1242,8 +1233,8 @@ console.log('userrrr',this.user);
   }
 
   getTaskData(task) {
-    console.log('task',task);
-    
+    console.log("task", task);
+
     this.preAppID = 0;
     this.PreTaskData = [];
     for (let i = 0; i < this.PreAppData.length; i++) {
@@ -1252,11 +1243,11 @@ console.log('userrrr',this.user);
         this.PreTaskData.push(this.PreAppData[i]);
       }
     }
-    console.log('PreTaskData', this.PreTaskData);
+    console.log("PreTaskData", this.PreTaskData);
   }
 
   SelectTask(task) {
-    console.log('tasksssss', task);
+    console.log("tasksssss", task);
     this.showProgressBar = true;
     this.selectedpreTask = task;
     this.selectedTask = task;
