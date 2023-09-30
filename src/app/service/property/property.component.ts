@@ -389,6 +389,7 @@ export class PropertyComponent implements OnChanges {
   }
 
   EnableFinspronew(Property) {
+    this.getPropertyList();
     // this.propertyregForm = false;
     this.selectedFile = Property;
     // this.completed.emit();
@@ -398,7 +399,6 @@ export class PropertyComponent implements OnChanges {
     this.selectedprofromtree = {
       property_ID: Property.property_ID,
     };
-    this.getPropertyList();
   }
 
   EnabledelFinspro() {

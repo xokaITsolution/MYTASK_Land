@@ -1469,8 +1469,8 @@ export class GisMapComponent implements AfterViewInit {
       // marker.addTo(this.map);
 
       this.map.fitBounds(this.drawnShape.getBounds());
-      this.onDatumChange();
-      this.map.setView(center, 15);
+      // this.onDatumChange();
+      // this.map.setView(center, 15);
 
       if (this.ServiceService.check != true) {
         this.map.on(L.Draw.Event.CREATED, (e: any) => {

@@ -53,6 +53,7 @@ export class PlotComponent implements OnChanges {
   Plot_ID: any;
   displayGIS: boolean;
   geo: any;
+  multipleplotcanbeadd: boolean = false;
 
   constructor(
     private serviceService: ServiceService,
@@ -69,11 +70,16 @@ export class PlotComponent implements OnChanges {
     } else {
       this.language = "english";
     }
-    console.log("emptying list", this.PlotManagementList);
+    console.log(
+      "emptying list",
+      this.PlotManagementList,
+      this.serviceService.Service_ID
+    );
     this.PlotManagementList = [];
     this.noinvalidplot = 0;
     console.log("emptedlist", this.PlotManagementList);
     this.getPloat();
+
     // this.isvalidated();
   }
   modalRef: BsModalRef;
@@ -112,11 +118,26 @@ export class PlotComponent implements OnChanges {
 
         this.convertPolygonCoordinates(this.plotloc[0].geowithzone);
 
-        console.log("plotloc:", this.plotloc);
+        console.log(
+          "plotloc:",
+          this.plotloc,
+          this.serviceService.multipleplotcanbeadd
+        );
         this.isplotllocnew = false;
+        if (this.serviceService.multipleplotcanbeadd) {
+          let filterservice = this.serviceService.multipleplotcanbeadd.filter(
+            (x) => x.id === this.serviceService.Service_ID
+          );
+          if (filterservice.length > 0) {
+            this.multipleplotcanbeadd = true;
+          } else {
+            this.multipleplotcanbeadd = false;
+          }
+        }
       } else {
         this.platformLocation = new PlatformLocation();
         this.isplotllocnew = true;
+        this.multipleplotcanbeadd = true;
         //this.serviceService.toMess=true
       }
     });

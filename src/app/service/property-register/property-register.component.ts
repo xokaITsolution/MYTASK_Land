@@ -371,7 +371,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         this.PropertyList = Object.assign([], this.PropertyList);
         console.log("PropertyList", PropertyList);
         this.PropertyList.push({ property_ID: "No Parent" });
-        this.getTree(Object.assign([], this.PropertyList));
+        //this.getTree(Object.assign([], this.PropertyList));
         // this.novalidprops = this.PropertyList.length;
         // this.isvalidated();
       },
@@ -409,7 +409,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         const l1 = Object.assign([], this.PropertyList);
         for (let j = 0; j < l1.length; j++) {
           let b;
-          if (l1[j].Property_Parent_ID == a.property_ID) {
+          if (l1[j].property_Parent_ID == a.property_ID) {
             b = Object.assign({}, l1[j]);
             b.label = Object.assign(l1[j].property_ID);
             b.children = [];
@@ -419,7 +419,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             const l2 = Object.assign([], this.PropertyList);
             for (let k = 0; k < l2.length; k++) {
               let c;
-              if (l2[k].property_Parent_ID == b.property_ID) {
+              if (l2[k].Property_Parent_ID == b.property_ID) {
                 c = Object.assign({}, l2[k]);
                 c.label = Object.assign(l2[k].property_ID);
                 c.children = [];
@@ -472,10 +472,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       this.propertyRegisterService.Add(prop).subscribe(
         (deptSuspension) => {
           console.log("deptSuspension", deptSuspension);
-
+          this.completed.emit();
           this.isnew = true;
           if (!this.Saved) {
-            this.completed.emit();
             this.Saved = true;
           }
           this.getPropertyList(prop.plot_ID);

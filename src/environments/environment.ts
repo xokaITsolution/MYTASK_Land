@@ -38,6 +38,7 @@ export const environment = {
   geoserverUrl: window["geoserverUrl"],
   geoserverUrlwfs: window["geoserverUrlwfs"],
   groupName: window["groupName"],
+  multipleplotcanbeadd: window["multipleplotcanbeadd"],
 };
 
 /*

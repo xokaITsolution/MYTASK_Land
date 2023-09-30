@@ -8,7 +8,7 @@
         <th scope="col" translate>Registration Date</th>
         <th scope="col">
           <button type="button" class="btn btn-primary" (click)="AddPLot()"
-            *ngIf="!disable && PlotManagementList.length < 5" translate>Add New</button>
+            *ngIf="!disable && PlotManagementList.length < 5 && multipleplotcanbeadd" translate>Add New</button>
         </th>
       </tr>
     </ng-template>

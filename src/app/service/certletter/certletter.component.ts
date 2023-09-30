@@ -57,8 +57,8 @@ export class CertletterComponent implements OnChanges {
   ) {
     this.cerltter = new Cerltter();
   }
-  isCertifcatePrintforConfirmation: boolean
-  isLetterPrintingConfirmation:boolean
+  isCertifcatePrintforConfirmation: boolean;
+  isLetterPrintingConfirmation: boolean;
   ngOnChanges() {
     if (environment.Lang_code === "am-et") {
       this.language = "amharic";
@@ -132,7 +132,6 @@ export class CertletterComponent implements OnChanges {
     }
   }
   Selectversion(certver) {
-    
     this.Selectedcert = certver;
     this.certltrview = true;
     this.certReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
@@ -157,23 +156,24 @@ export class CertletterComponent implements OnChanges {
   }
 
   getCertificateVersion(Base) {
-    this.loadingPreDoc=true
+    this.loadingPreDoc = true;
     this.serviceService.getCertificateVersion1(Base.Title_Deed_No).subscribe(
-      (CertificateVersion:any) => {
-        if(CertificateVersion){
+      (CertificateVersion: any) => {
+        if (CertificateVersion) {
           this.loadingPreDoc = false;
-        this.CertificateVersion = CertificateVersion.procCertificate_Versions;
-        console.log('CertificateVersion1',this.CertificateVersion);
-        
-        // this.CertificateVersion = Object.assign(
-        //   [],
-        //   this.CertificateVersion.list
-        // );
-        /*if (this.CertificateVersion.length > 1) {
+          this.CertificateVersion = CertificateVersion.procCertificate_Versions;
+          console.log("CertificateVersion1", this.CertificateVersion);
+
+          // this.CertificateVersion = Object.assign(
+          //   [],
+          //   this.CertificateVersion.list
+          // );
+          /*if (this.CertificateVersion.length > 1) {
         this.SelectcertVer(this.CertificateVersion[0]);
       }*/
-        console.log("CertificateVersion", CertificateVersion);
-      }},
+          console.log("CertificateVersion", CertificateVersion);
+        }
+      },
       (error) => {
         console.log("error");
       }
@@ -186,7 +186,6 @@ export class CertletterComponent implements OnChanges {
       .getDocmentArcive(this.SelectedBase.Title_Deed_No)
       .subscribe(
         async (cerltter) => {
-      
           a = cerltter;
           if (this.language == "amharic") {
             a.list[0].Regstration_Date = await this.getgregorianToEthiopianDate(
@@ -194,11 +193,10 @@ export class CertletterComponent implements OnChanges {
             );
           }
           this.cerlettrformList = Object.assign([], a.list);
-          if(this.cerlettrformList.length>0){
-            this.disable_new=true;
-          }
-          else{
-            this.disable_new=false
+          if (this.cerlettrformList.length > 0) {
+            this.disable_new = true;
+          } else {
+            this.disable_new = false;
           }
           console.log("cerltter", cerltter);
           console.log("this.cerltter", this.cerltter);
@@ -208,7 +206,6 @@ export class CertletterComponent implements OnChanges {
          this.isnew = true;
          this.cerltter.Title_Deed_No = this.certCode;
        }*/
-      
         },
         (error) => {
           console.log("error");
@@ -218,10 +215,11 @@ export class CertletterComponent implements OnChanges {
 
   async save() {
     this.cerltter.Application_No = this.AppNo;
-    this.cerltter.Regstration_Date = await this.getEthiopianToGregorian(
-      this.cerltter.Regstration_Date
-    );
-
+    if (this.language == "amharic") {
+      this.cerltter.Regstration_Date = await this.getEthiopianToGregorian(
+        this.cerltter.Regstration_Date
+      );
+    }
     this.serviceService.UpdateDocmentArcive(this.cerltter).subscribe(
       async (message) => {
         console.log("message", message);
@@ -230,9 +228,12 @@ export class CertletterComponent implements OnChanges {
           this.completed.emit();
           this.Saved = true;
         }
-        this.cerltter.Regstration_Date = await this.getgregorianToEthiopianDate(
-          this.cerltter.Regstration_Date
-        );
+        if (this.language == "amharic") {
+          this.cerltter.Regstration_Date =
+            await this.getgregorianToEthiopianDate(
+              this.cerltter.Regstration_Date
+            );
+        }
         const toast = this.notificationsService.success("Sucess", message);
       },
       async (error) => {
@@ -242,19 +243,23 @@ export class CertletterComponent implements OnChanges {
             "Error",
             error.error.InnerException.Errors[0].message
           );
-          this.cerltter.Regstration_Date =
-            await this.getgregorianToEthiopianDate(
-              this.cerltter.Regstration_Date
-            );
+          if (this.language == "amharic") {
+            this.cerltter.Regstration_Date =
+              await this.getgregorianToEthiopianDate(
+                this.cerltter.Regstration_Date
+              );
+          }
         } else {
           const toast = this.notificationsService.error(
             "Error",
             "SomeThing Went Wrong"
           );
-          this.cerltter.Regstration_Date =
-            await this.getgregorianToEthiopianDate(
-              this.cerltter.Regstration_Date
-            );
+          if (this.language == "amharic") {
+            this.cerltter.Regstration_Date =
+              await this.getgregorianToEthiopianDate(
+                this.cerltter.Regstration_Date
+              );
+          }
         }
       }
     );
@@ -262,9 +267,11 @@ export class CertletterComponent implements OnChanges {
   }
 
   async add() {
-    this.cerltter.Regstration_Date = await this.getEthiopianToGregorian(
-      this.cerltter.Regstration_Date
-    );
+    if (this.language == "amharic") {
+      this.cerltter.Regstration_Date = await this.getEthiopianToGregorian(
+        this.cerltter.Regstration_Date
+      );
+    }
     this.serviceService.CreateDocmentArcive(this.cerltter).subscribe(
       async (message) => {
         console.log("message", message);
@@ -280,10 +287,12 @@ export class CertletterComponent implements OnChanges {
       async (error) => {
         console.log(error);
         if (error.status == "400") {
-          this.cerltter.Regstration_Date =
-            await this.getgregorianToEthiopianDate(
-              this.cerltter.Regstration_Date
-            );
+          if (this.language == "amharic") {
+            this.cerltter.Regstration_Date =
+              await this.getgregorianToEthiopianDate(
+                this.cerltter.Regstration_Date
+              );
+          }
           const toast = this.notificationsService.error(
             "Error",
             error.error.InnerException.Errors[0].message
@@ -293,10 +302,12 @@ export class CertletterComponent implements OnChanges {
             "Error",
             "SomeThing Went Wrong"
           );
-          this.cerltter.Regstration_Date =
-            await this.getgregorianToEthiopianDate(
-              this.cerltter.Regstration_Date
-            );
+          if (this.language == "amharic") {
+            this.cerltter.Regstration_Date =
+              await this.getgregorianToEthiopianDate(
+                this.cerltter.Regstration_Date
+              );
+          }
         }
       }
     );

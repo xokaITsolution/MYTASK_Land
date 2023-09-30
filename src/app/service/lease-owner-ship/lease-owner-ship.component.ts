@@ -394,7 +394,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
         this.serviceService.isleaseForm = false;
         if (!this.Saved) {
           this.addnew = false;
-          this.completed.emit();
+          //this.completed.emit();
           this.Saved = true;
           this.serviceService.isleaseForm = false;
         }
