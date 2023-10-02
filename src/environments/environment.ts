@@ -14,8 +14,6 @@ export const environment = {
   formPath: window["formPath"],
 
   //username: "0945845912",
-  //username: "BL_Tech_Officer",
-
   // username: "BL_Doc_Verifier",
   //username: "BL_Data_Encoder",
   username: "0911153139",
