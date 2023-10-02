@@ -347,7 +347,6 @@ export class PropertyComponent implements OnChanges {
           if (Validated == "Validated") {
             this.novalidprops = this.novalidprops - 1;
             console.log("novalidprops", this.novalidprops);
-            this.completed.emit();
             if (this.novalidprops == 0) {
               if (!this.Saved) {
                 this.Saved = true;
@@ -390,9 +389,9 @@ export class PropertyComponent implements OnChanges {
 
   EnableFinspronew(Property) {
     this.getPropertyList();
+    this.completed.emit();
     // this.propertyregForm = false;
     this.selectedFile = Property;
-    // this.completed.emit();
     console.log("next to measurement", Property.property_ID);
 
     this.selectedprofromtree;

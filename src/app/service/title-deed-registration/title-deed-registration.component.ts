@@ -24,6 +24,7 @@ import { BsModalRef, BsModalService } from "ngx-bootstrap";
 })
 export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   @Output() completed = new EventEmitter();
+
   modalRef: BsModalRef;
   modalRefTo: BsModalRef;
   public titleDeedRegistration: TitleDeedRegistration;
@@ -194,6 +195,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
             "Sucess",
             deptSuspension
           );
+
           this.completed.emit();
           // if (!this.Saved) {
           //   this.completed.emit();

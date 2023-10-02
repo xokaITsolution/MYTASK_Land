@@ -33,6 +33,7 @@ type AOA = any[][];
 })
 export class ServiceComponent implements OnInit {
   [x: string]: any;
+  jsonempty = {};
   ApplicationNumberlist;
   useNamelist;
   data: AOA = [
@@ -678,6 +679,14 @@ export class ServiceComponent implements OnInit {
     }
     this.serviceService.disablefins = true;
   }
+  property() {
+    console.log("this.Saved", this.Saved);
+
+    this.saveForm2("{}");
+    this.Saved = true;
+
+    this.serviceService.disablefins = true;
+  }
   payment() {
     if (
       this.Submitt("00000000-0000-0000-0000-000000000000") ===
@@ -698,6 +707,7 @@ export class ServiceComponent implements OnInit {
         (Validated) => {
           // const toast = this.notificationsService.success("success", "successfull");
           console.log("validateing.... => " + Validated);
+
           if (Validated == "Validated") {
             this.validated = true;
           } else {
@@ -720,6 +730,8 @@ export class ServiceComponent implements OnInit {
 
   EnableFins() {
     console.log("enableningggg....", this.validated);
+
+    // this.saveForm(this.jsonempty);
     this.validated = true;
     this.isvalidated(
       this.todoID,
