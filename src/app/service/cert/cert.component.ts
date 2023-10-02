@@ -144,13 +144,15 @@ export class CertComponent implements OnChanges {
             "  //  DeedTable" +
             this.DeedTable
         );
-
-        for (let i = 0; i < this.DeedTable.length; i++) {
-          for (let j = 0; j < this.BaseTable.length; j++) {
-            if (
-              this.DeedTable[i].Title_Deed_No == this.BaseTable[j].Title_Deed_No
-            ) {
-              this.DeedTable.splice(i, 1);
+        if (this.DeedTable != undefined || this.DeedTable != null) {
+          for (let i = 0; i < this.DeedTable.length; i++) {
+            for (let j = 0; j < this.BaseTable.length; j++) {
+              if (
+                this.DeedTable[i].Title_Deed_No ==
+                this.BaseTable[j].Title_Deed_No
+              ) {
+                this.DeedTable.splice(i, 1);
+              }
             }
           }
         }
@@ -213,17 +215,23 @@ export class CertComponent implements OnChanges {
       async (error) => {
         console.log(error);
         if (error.status == "400") {
-          this.Base.Registration_Date = await this.getgregorianToEthiopianDate(
-            this.Base.Registration_Date
-          );
+          if (this.language == "amharic") {
+            this.Base.Registration_Date =
+              await this.getgregorianToEthiopianDate(
+                this.Base.Registration_Date
+              );
+          }
           const toast = this.notificationsService.error(
             "Error",
             error.error.InnerException.Errors[0].message
           );
         } else {
-          this.Base.Registration_Date = await this.getgregorianToEthiopianDate(
-            this.Base.Registration_Date
-          );
+          if (this.language == "amharic") {
+            this.Base.Registration_Date =
+              await this.getgregorianToEthiopianDate(
+                this.Base.Registration_Date
+              );
+          }
           const toast = this.notificationsService.error(
             "Error",
             "SomeThing Went Wrong"
@@ -248,14 +256,26 @@ export class CertComponent implements OnChanges {
         // this.closeModall();
         this.getBase(this.Base.Plot_ID);
       },
-      (error) => {
+      async (error) => {
         console.log(error);
         if (error.status == "400") {
+          if (this.language == "amharic") {
+            this.Base.Registration_Date =
+              await this.getgregorianToEthiopianDate(
+                this.Base.Registration_Date
+              );
+          }
           const toast = this.notificationsService.error(
             "Error",
             error.error.InnerException.Errors[0].message
           );
         } else {
+          if (this.language == "amharic") {
+            this.Base.Registration_Date =
+              await this.getgregorianToEthiopianDate(
+                this.Base.Registration_Date
+              );
+          }
           const toast = this.notificationsService.error(
             "Error",
             "you have not permission to edit"

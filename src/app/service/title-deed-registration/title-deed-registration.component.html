@@ -144,10 +144,10 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
   <div class="form-row">
 
     <div class="form-group row col-md-7">
-      <label for="Ownership_ID" class="col-sm-3 col-form-label" translate>Licenses id</label>
+      <label for="Ownership_ID" class="col-sm-3 col-form-label" translate>Transfer id</label>
       <div class="col-sm-9">
     
-        <input type="text" class="form-control" [(ngModel)]="titleDeedRegistration.Ownership_ID" name="Ownership_ID"
+        <input type="text" [disabled]="disable" class="form-control" [(ngModel)]="titleDeedRegistration.Ownership_ID" name="Ownership_ID"
           id="Ownership_ID" [placeholder]="'Transfer ID' | translate" #Ownership_ID="ngModel"
           [ngClass]="{ 'is-invalid': Ownership_ID.invalid }" required>
       </div>
@@ -217,7 +217,7 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
     <div class="form-group row col-md-7">
       <label for="TransferType" class="col-sm-3 col-form-label" translate>Transfer Type</label>
       <div class="col-sm-9">
-        <select class="form-control" [(ngModel)]="titleDeedRegistration.Transfer_Type" name="TransferType"
+        <select [disabled]="disable" class="form-control" [(ngModel)]="titleDeedRegistration.Transfer_Type" name="TransferType"
           id="TransferType">
           <option disabled translate>select</option>
           <option *ngFor="let TransferType of serviceComponent.TransferTypeLookUP;" [value]="TransferType.Transfer_ID">

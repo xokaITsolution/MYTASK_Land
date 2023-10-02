@@ -283,7 +283,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
             );
         }
         if (!this.Saved) {
-          this.completed.emit();
+          //this.completed.emit();
           this.Saved = true;
         }
       },

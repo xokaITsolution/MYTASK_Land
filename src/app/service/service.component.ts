@@ -523,7 +523,7 @@ export class ServiceComponent implements OnInit {
 
   getRequiredDocspre(tskID) {
     this.serviceService.getRequerdDocs(tskID).subscribe(
-      (RequerdDocs) => {
+      (RequerdDocs: any) => {
         console.log("getRequiredDocspre", RequerdDocs);
 
         this.RequerdDocspre = RequerdDocs;
@@ -565,10 +565,12 @@ export class ServiceComponent implements OnInit {
     this.serviceService.getAllDocument(Licence_Service_ID, DocID).subscribe(
       (SavedFiles) => {
         this.loadingPreDoc = false;
-        console.log("pdf file", SavedFiles);
+        console.log("pdf file", SavedFiles, this.RequerdDocspre);
         this.SavedFilespre = SavedFiles;
-        if (this.RequerdDocspre != null) this.showProgressBar = false;
+        if (this.RequerdDocspre != null || this.RequerdDocspre != undefined)
+          this.showProgressBar = false;
         for (let i = 0; i < this.RequerdDocspre.length; i++) {
+          console.log("pdf file", this.RequerdDocspre[i]);
           for (let j = 0; j < SavedFiles.length; j++) {
             if (
               this.RequerdDocspre[i].requirement_code ==
@@ -1023,12 +1025,13 @@ export class ServiceComponent implements OnInit {
           data: base64file,
         })
       );
+
       this.documentupload = base64FileData;
       this.previewdocumnet(base64FileData);
       console.log("this.DocID", base64file);
       this.serviceService
         .saveFile(
-          base64file,
+          base64FileData,
           File.type,
           this.AppNo,
           RequiredDoc.requirement_code,

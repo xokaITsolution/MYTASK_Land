@@ -448,7 +448,7 @@
         <div *ngIf="preAppID==9">
           <app-property  (completed)="saveForm('{}');EnableFins();" [LicenceData]="licenceData"
                   [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="true" [AppNo]="AppNo"
-                  [Service_ID]="licenceData.Service_ID" [todoid]="todoID" [tskID]="tskID" [DocID]="DocID" >
+                  [Service_ID]="licenceData.Service_ID" [todoid]="todoID" [tskID]="tskID" [DocID]="DocID" [disable]="true" >
           
            </app-property>  
               
@@ -590,7 +590,7 @@
 </ng-template>
  
 <p-dialog  [(visible)]="showdialoge"  header="Post It Note"  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
-[positionTop]="1" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+ [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                          'max-height': '80vh','min-height':'250px'}">
                           <div class="modal-body">
 
