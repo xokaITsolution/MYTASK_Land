@@ -21,6 +21,9 @@ export class ServiceService {
     "Payment_Details?sortOrder=test&currentFilter&searchString&pageIndex&pageSize";
   private getPaymentDetailByID =
     environment.rootPath + "Payment_Details?sortOrder=test&currentFilter=";
+  private getusernameUrl =
+    environment.rootPathApi +
+    "view/View_getUserNameForReviewByApplication/application_number?application_number=";
   private PlotManagementUrl = environment.rootPath + "Plot_Registration"; // URL to web api
   private PropertyListUrl = environment.rootPath + "Property_Registration"; // URL to web api
   private CertificateVersionUrl = environment.rootPath + "Certificate_Version"; // URL to web api
@@ -101,6 +104,8 @@ export class ServiceService {
   private saveCustomeredit = environment.rootPath + "Customer";
   private dbstatus = environment.rootPath + "BPEL/";
   public customerUrl = environment.rootPathApi + "Customer/procCustomer";
+  private GetApplicationNumberByUserURL =
+    environment.rootPath + "BPEL/GetApplicationNumberByUser"; // URL to web api
   httpOptions = {
     headers: new HttpHeaders({ "Content-Type": "application/json" }),
     params: {},
@@ -130,16 +135,26 @@ export class ServiceService {
   fromPropoperty: boolean = false;
   Totalarea: number = 0;
   areaVerified: boolean = false;
+  Service_ID: any;
+
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
   }
-
+  multipleplotcanbeadd = environment.multipleplotcanbeadd;
   getCustomerLookUP() {
     return this.http.get(
       this.CustomerLookUP +
         "?" +
         "sortOrder=test&currentFilter&searchString&pageIndex&pageSize"
+    );
+  }
+  getuserName(Appno) {
+    return this.http.get(this.getusernameUrl + Appno);
+  }
+  GetApplicationNumberByUser(username) {
+    return this.http.get(
+      this.GetApplicationNumberByUserURL + "?UserName=" + username
     );
   }
   getAppointmentByApp(params): Observable<any> {
@@ -598,10 +613,7 @@ export class ServiceService {
     );
   }
   getCertificateVersion1(ownerShipid) {
-    return this.http.get(
-      this.CertificateVersionUrl1 +
-        "/"+ownerShipid
-    );
+    return this.http.get(this.CertificateVersionUrl1 + "/" + ownerShipid);
   }
 
   getSuspendedReasonLookUP() {

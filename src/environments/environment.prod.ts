@@ -23,4 +23,5 @@ export const environment = {
   geoserverUrlwfs: window["geoserverUrlwfs"],
   groupName: window["groupName"],
   imagepath: window["_imagepath"],
+  multipleplotcanbeadd: window["multipleplotcanbeadd"],
 };

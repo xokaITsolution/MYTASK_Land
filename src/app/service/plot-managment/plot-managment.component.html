@@ -88,7 +88,7 @@
     <div class="form-group row col-md-6">
       <label for="Woreda" class="col-sm-3 col-form-label" translate>Woreda</label>
       <div class="col-sm-9">
-        <select class="form-select"  [(ngModel)]="plotManagment.Wereda_ID" name="Woreda" id="Woreda" #Woreda="ngModel"
+        <select [disabled]="disable" class="form-select"  [(ngModel)]="plotManagment.Wereda_ID" name="Woreda" id="Woreda" #Woreda="ngModel"
           [ngClass]="{ 'is-invalid': Woreda.invalid }" required><option disabled>select</option>
           <option *ngFor="let zoneOption of zoneOptions;" [value]="zoneOption['value']">
             {{zoneOption['text']}}

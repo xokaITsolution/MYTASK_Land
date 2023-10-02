@@ -33,6 +33,8 @@ type AOA = any[][];
 })
 export class ServiceComponent implements OnInit {
   [x: string]: any;
+  ApplicationNumberlist;
+  useNamelist;
   data: AOA = [
     [1, 2],
     [3, 4],
@@ -1548,6 +1550,16 @@ export class ServiceComponent implements OnInit {
       }
     );
   }
+  GetApplicationNumberByUser(username) {
+    this.serviceService
+      .GetApplicationNumberByUser(username)
+      .subscribe((ApplicationNumber: any) => {
+        this.ApplicationNumberlist = ApplicationNumber;
+        this.AppNoList;
+
+        console.log("finalystatuslist", this.ApplicationNumberlist);
+      });
+  }
 
   getSuspendedReasonLookUP() {
     this.serviceService.getSuspendedReasonLookUP().subscribe(
@@ -1786,16 +1798,17 @@ export class ServiceComponent implements OnInit {
   }
 
   public getAll(AppNo) {
-
-    console.log('appppppp', AppNo);
+    this.getuserName(this.AppNo);
+    console.log("appppppp", AppNo);
     this.serviceService.getAll(AppNo).subscribe(
       (licenceService) => {
         this.licenceService = licenceService;
-        console.log('Licence Service', this.licenceService);
+        console.log("Licence Service", this.licenceService);
         if (this.licenceService.list.length > 0) {
           this.licenceData = this.licenceService.list[0];
           this.SDP_ID = this.licenceData.SDP_ID;
           this.Service_ID = this.licenceData.Service_ID;
+          this.serviceService.Service_ID = this.licenceData.Service_ID;
           this.Licence_Service_ID = this.licenceData.Licence_Service_ID;
           this.AppCode = this.licenceData.Licence_Service_ID; //
           this.AppNo = this.licenceData.Application_No; //
@@ -1827,6 +1840,14 @@ export class ServiceComponent implements OnInit {
         this.se.emit(this.eventTypes.JSONFOUND);
       }
     );
+  }
+  getuserName(AppNo) {
+    this.serviceService.getuserName(AppNo).subscribe((res: any) => {
+      this.useNamelist = res;
+      if (this.useNamelist.length > 0) {
+        this.GetApplicationNumberByUser(this.useNamelist[0].userName);
+      }
+    });
   }
   onFileChange(evt: any) {
     /* wire up file reader */

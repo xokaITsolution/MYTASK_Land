@@ -360,7 +360,7 @@
         <select *ngIf="ifAppNo" class="form-control" [(ngModel)]="AppN" (change)="getAppData(AppN)"
           name="CustomerType" id="ApplicationLIst">
           <option disabled>select</option>
-          <option *ngFor="let AppNo of AppNoList" [value]="AppNo.Application_No">{{AppNo.Application_No}}</option>
+          <option *ngFor="let AppNo of ApplicationNumberlist" [value]="AppNo.application_number">{{AppNo.application_number}}</option>
         </select>
       </div>
     </div>
