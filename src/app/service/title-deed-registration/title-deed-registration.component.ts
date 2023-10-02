@@ -194,7 +194,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
             "Sucess",
             deptSuspension
           );
-
+          this.completed.emit();
           // if (!this.Saved) {
           //   this.completed.emit();
           //   this.Saved = true;
@@ -243,8 +243,9 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
         );
         this.getdeed(this.selectedpro.property_ID);
         this.adddeed();
+        this.completed.emit();
         // if (!this.Saved) {
-        //   this.completed.emit();
+        //
         //   this.Saved = true;
         // }
         this.serviceService.disablefins = false;

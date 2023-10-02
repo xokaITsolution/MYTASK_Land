@@ -719,7 +719,7 @@ export class ServiceComponent implements OnInit {
   }
 
   EnableFins() {
-    console.log("enableningggg....");
+    console.log("enableningggg....", this.validated);
     this.validated = true;
     this.isvalidated(
       this.todoID,
@@ -1287,6 +1287,8 @@ export class ServiceComponent implements OnInit {
   }
 
   saveForm(formData) {
+    console.log("formDataformData", this.Licence_Service_ID);
+
     if (this.Licence_Service_ID == undefined) {
       this.Licence_Service_ID = "00000000-0000-0000-0000-000000000000";
       this.DocID = "00000000-0000-0000-0000-000000000000";

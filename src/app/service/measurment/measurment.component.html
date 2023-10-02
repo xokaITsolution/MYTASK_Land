@@ -102,21 +102,21 @@
      </div>-->
 
 
+     
+         <div class="form-group row col-md-12">
+           <label for="Measurment" class="col-sm-3 col-form-label" translate>Measurement</label>
+     
+           <div class="col-sm-9">
+             <input type="number" class="form-control" [disabled]="disable" [(ngModel)]="measurment.Measurement"
+               name="Measurment" id="Measurment" [placeholder]="'Measurement' | translate" />
+           </div>
+         </div>
     <div class="form-group row col-md-12">
       <label for="comments" class="col-sm-3 col-form-label" translate>Measurement type</label>
 
       <div class="col-sm-9">
         <input class="form-control" [disabled]="disable" [(ngModel)]="measurment.Comment" name="comments"
           id="comments" [placeholder]="'Measurement type' | translate">
-      </div>
-    </div>
-
-    <div class="form-group row col-md-12">
-      <label for="Measurment" class="col-sm-3 col-form-label" translate>Measurement</label>
-
-      <div class="col-sm-9">
-        <input type="number" class="form-control" [disabled]="disable" [(ngModel)]="measurment.Measurement"
-          name="Measurment" id="Measurment" [placeholder]="'Measurement' | translate" />
       </div>
     </div>
 
@@ -132,8 +132,8 @@
 <p-table [value]="measurmentList" [paginator]="true" [rows]="5">
   <ng-template pTemplate="header">
     <tr>
-      <th scope="col" translate>Measurement type</th>
       <th scope="col" translate>Measurement</th>
+      <th scope="col" translate>Measurement type</th>
       <th scope="col">
         <button type="button" class="btn btn-primary" *ngIf="!disable" (click)=" addmeasurment()" translate>Add New</button>
       </th>
@@ -142,8 +142,8 @@
   <ng-template pTemplate="body" let-measurment2 let-rowData>
     <tr (click)='highlighted = rowData;selectmeasurment(measurment2)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
    
-      <td>{{measurment2.Comment}}</td>
       <td>{{measurment2.Measurement}}</td>
+      <td>{{measurment2.Comment}}</td>
       <td>
         <button type="button" class="btn btn-primary" (click)="selectmeasurment(measurment2)" translate
           *ngIf="!disable">Edit</button>

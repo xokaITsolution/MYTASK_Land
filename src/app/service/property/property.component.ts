@@ -347,9 +347,9 @@ export class PropertyComponent implements OnChanges {
           if (Validated == "Validated") {
             this.novalidprops = this.novalidprops - 1;
             console.log("novalidprops", this.novalidprops);
+            this.completed.emit();
             if (this.novalidprops == 0) {
               if (!this.Saved) {
-                this.completed.emit();
                 this.Saved = true;
               }
               // this.CanDone = true;
