@@ -188,7 +188,7 @@ export class PropertyComponent implements OnChanges {
           this.PropertyList.push({ property_ID: "No Parent" });
           this.getTree(Object.assign([], this.PropertyList));
           this.novalidprops = this.PropertyList.length;
-          this.isvalidated();
+          //this.isvalidated();
         },
         (error) => {
           console.log("error");
@@ -349,7 +349,6 @@ export class PropertyComponent implements OnChanges {
             console.log("novalidprops", this.novalidprops);
             if (this.novalidprops == 0) {
               if (!this.Saved) {
-                this.completed.emit();
                 this.Saved = true;
               }
               // this.CanDone = true;
@@ -390,9 +389,9 @@ export class PropertyComponent implements OnChanges {
 
   EnableFinspronew(Property) {
     this.getPropertyList();
+    //this.completed.emit();
     // this.propertyregForm = false;
     this.selectedFile = Property;
-    // this.completed.emit();
     console.log("next to measurement", Property.property_ID);
 
     this.selectedprofromtree;

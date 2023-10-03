@@ -235,7 +235,7 @@
                   [certCode]="licenceData.Certificate_Code" [licenceData]="licenceData"></app-certletter>
               </div>
               <div *ngIf="ID==9">
-                <app-property (completed)="EnableFins()" (getpro)="getPropertyTypeLookUP()" [LicenceData]="licenceData"
+                <app-property (completed)="EnableFins();saveFormm('{}');" (getpro)="getPropertyTypeLookUP()" [LicenceData]="licenceData"
                         [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="false" [AppNo]="AppNo"
                         [Service_ID]="licenceData.Service_ID" [todoid]="todoID" [tskID]="tskID" [DocID]="DocID" >
                       </app-property> 
@@ -442,13 +442,13 @@
             [tskID]="tskID" [AppNo]="AppNo" [todoid]="todoID"></app-payment>
         </div>
         <div *ngIf="preAppID==7">
-          <app-certletter [disable]="true" (completed)="EnableFins();saveForm('{}');" [AppNo]="AppNo"
+          <app-certletter [disable]="true" (completed)="EnableFins();saveForm(jsonempty);" [AppNo]="AppNo"
             [certCode]="licenceData.Certificate_Code" [licenceData]="licenceData"></app-certletter>
         </div>
         <div *ngIf="preAppID==9">
-          <app-property (completed)="EnableFins();saveForm('{}')" [LicenceData]="licenceData"
+          <app-property  (completed)="saveForm('{}');EnableFins();" [LicenceData]="licenceData"
                   [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="true" [AppNo]="AppNo"
-                  [Service_ID]="licenceData.Service_ID" [todoid]="todoID" [tskID]="tskID" [DocID]="DocID" >
+                  [Service_ID]="licenceData.Service_ID" [todoid]="todoID" [tskID]="tskID" [DocID]="DocID" [disable]="true" >
           
            </app-property>  
               
@@ -590,7 +590,7 @@
 </ng-template>
  
 <p-dialog  [(visible)]="showdialoge"  header="Post It Note"  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
-[positionTop]="1" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+ [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                          'max-height': '80vh','min-height':'250px'}">
                           <div class="modal-body">
 

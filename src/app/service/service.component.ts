@@ -33,6 +33,7 @@ type AOA = any[][];
 })
 export class ServiceComponent implements OnInit {
   [x: string]: any;
+  jsonempty = {};
   ApplicationNumberlist;
   useNamelist;
   data: AOA = [
@@ -522,7 +523,7 @@ export class ServiceComponent implements OnInit {
 
   getRequiredDocspre(tskID) {
     this.serviceService.getRequerdDocs(tskID).subscribe(
-      (RequerdDocs) => {
+      (RequerdDocs: any) => {
         console.log("getRequiredDocspre", RequerdDocs);
 
         this.RequerdDocspre = RequerdDocs;
@@ -564,10 +565,12 @@ export class ServiceComponent implements OnInit {
     this.serviceService.getAllDocument(Licence_Service_ID, DocID).subscribe(
       (SavedFiles) => {
         this.loadingPreDoc = false;
-        console.log("pdf file", SavedFiles);
+        console.log("pdf file", SavedFiles, this.RequerdDocspre);
         this.SavedFilespre = SavedFiles;
-        if (this.RequerdDocspre != null) this.showProgressBar = false;
+        if (this.RequerdDocspre != null || this.RequerdDocspre != undefined)
+          this.showProgressBar = false;
         for (let i = 0; i < this.RequerdDocspre.length; i++) {
+          console.log("pdf file", this.RequerdDocspre[i]);
           for (let j = 0; j < SavedFiles.length; j++) {
             if (
               this.RequerdDocspre[i].requirement_code ==
@@ -678,6 +681,14 @@ export class ServiceComponent implements OnInit {
     }
     this.serviceService.disablefins = true;
   }
+  property() {
+    console.log("this.Saved", this.Saved);
+
+    this.saveForm2("{}");
+    this.Saved = true;
+
+    this.serviceService.disablefins = true;
+  }
   payment() {
     if (
       this.Submitt("00000000-0000-0000-0000-000000000000") ===
@@ -698,6 +709,7 @@ export class ServiceComponent implements OnInit {
         (Validated) => {
           // const toast = this.notificationsService.success("success", "successfull");
           console.log("validateing.... => " + Validated);
+
           if (Validated == "Validated") {
             this.validated = true;
           } else {
@@ -719,7 +731,9 @@ export class ServiceComponent implements OnInit {
   }
 
   EnableFins() {
-    console.log("enableningggg....");
+    console.log("enableningggg....", this.validated);
+
+    // this.saveForm(this.jsonempty);
     this.validated = true;
     this.isvalidated(
       this.todoID,
@@ -1011,12 +1025,13 @@ export class ServiceComponent implements OnInit {
           data: base64file,
         })
       );
+
       this.documentupload = base64FileData;
       this.previewdocumnet(base64FileData);
       console.log("this.DocID", base64file);
       this.serviceService
         .saveFile(
-          base64file,
+          base64FileData,
           File.type,
           this.AppNo,
           RequiredDoc.requirement_code,
@@ -1287,6 +1302,8 @@ export class ServiceComponent implements OnInit {
   }
 
   saveForm(formData) {
+    console.log("formDataformData", this.Licence_Service_ID);
+
     if (this.Licence_Service_ID == undefined) {
       this.Licence_Service_ID = "00000000-0000-0000-0000-000000000000";
       this.DocID = "00000000-0000-0000-0000-000000000000";

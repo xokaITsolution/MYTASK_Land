@@ -43,7 +43,7 @@
       <label for="NumberOfLift" class="col-sm-3 col-form-label" translate>Number of Lift</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [(ngModel)]="propertyRegister.number_of_Lift" name="NumberOfLift"
-          id="NumberOfLift" placeholder="Number of Lift">
+          id="NumberOfLift" placeholder="Number of Lift" [disabled]="disable">
       </div>
     </div>
     <div class="form-group row col-md-6">
@@ -51,7 +51,7 @@
       <div class="col-sm-9">
         <input type="text" class="form-control" [(ngModel)]="propertyRegister.property_ID" name="PropertyID"
           id="PropertyID" placeholder="Property ID"
-          #PropertyID="ngModel" [ngClass]="{ 'is-invalid': PropertyID.invalid }" required>
+          #PropertyID="ngModel" [ngClass]="{ 'is-invalid': PropertyID.invalid }" [disabled]="disable" required>
       </div>
     </div>
     <div class="form-group row col-md-6">
@@ -59,14 +59,14 @@
       <div class="col-sm-9">
         <input type="text" class="form-control" [(ngModel)]="propertyRegister.building_Size_M2" name="BuildingSize"
           id="BuildingSize" placeholder="Building Size (M2)" 
-           #BuildingSize="ngModel" [ngClass]="{ 'is-invalid': BuildingSize.invalid }"  required >
+           #BuildingSize="ngModel" [ngClass]="{ 'is-invalid': BuildingSize.invalid }" [disabled]="disable"  required >
       </div>
     </div>
     <div class="form-group row col-md-6">
       <label for="Description" class="col-sm-3 col-form-label" translate>Description</label>
       <div class="col-sm-9">
         <textarea class="form-control" [(ngModel)]="propertyRegister.description" name="Description" id="Description"
-          placeholder="Description">
+          placeholder="Description" [disabled]="disable">
 
         </textarea>
       </div>
@@ -77,13 +77,13 @@
           <div class="col-sm-9">
             <input class="form-control" id="Proportional_from_Compound_Size"  #Proportional_from_Compound_Size="ngModel" 
               name="Proportional_from_Compound_Size" [(ngModel)]="propertyRegister.proportional_from_Compound_Size" placeholder="'Proportional from Compound Size'|translate"
-               required type="number" [ngClass]="{ 'is-invalid': Proportional_from_Compound_Size.invalid }" >
+               required type="number" [ngClass]="{ 'is-invalid': Proportional_from_Compound_Size.invalid }" [disabled]="disable">
           </div>
         </div>
     <div class="form-group row col-md-6">
       <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Property Status</label>
       <div class="col-sm-9">
-        <select  class="form-control" [(ngModel)]="propertyRegister.property_Status_ID" name="PropertyStatus"
+        <select [disabled]="disable"  class="form-control" [(ngModel)]="propertyRegister.property_Status_ID" name="PropertyStatus"
           id="PropertyStatus"
            #PropertyStatus="ngModel" [ngClass]="{ 'is-invalid': PropertyStatus.invalid }" required>
           <option disabled>select</option>
@@ -95,7 +95,7 @@
     <div class="form-group row col-md-6">
       <label for="PropertyType" class="col-sm-3 col-form-label" translate>Property Type</label>
       <div class="col-sm-9">
-        <select class="form-control" [(ngModel)]="propertyRegister.property_Type_ID" name="PropertyType"
+        <select [disabled]="disable" class="form-control" [(ngModel)]="propertyRegister.property_Type_ID" name="PropertyType"
           id="PropertyType"
             #PropertyType="ngModel" [ngClass]="{ 'is-invalid': PropertyType.invalid }" required>
           <option disabled>select</option>
@@ -107,7 +107,7 @@
     <div class="form-group row col-md-6">
       <label for="TotalCompoundSize" class="col-sm-3 col-form-label" translate>Total Compound Size</label>
       <div class="col-sm-9">
-        <input type="number" class="form-control" [(ngModel)]="propertyRegister.compound_Size_M2"
+        <input type="number" class="form-control" [(ngModel)]="propertyRegister.compound_Size_M2" [disabled]="disable"
           name="TotalCompoundSize" id="TotalCompoundSize" placeholder="Total Compound Size"
            #TotalCompoundSize="ngModel" [ngClass]="{ 'is-invalid': TotalCompoundSize.invalid }" required>
       </div>
@@ -115,7 +115,7 @@
       <div class="form-group row col-md-6"><label class="col-sm-3 col-form-label" for="Size_In_Proportional" translate="">Size
           In Proportional</label>
         <div class="col-sm-9">
-          <input class="form-control" id="Size_In_Proportional" name="Size_In_Proportional"
+          <input class="form-control" id="Size_In_Proportional" name="Size_In_Proportional" [disabled]="disable"
             [(ngModel)]="propertyRegister.size_In_Proportional" placeholder="Size In Proportional" type="number"
             #Size_In_Proportional="ngModel" [ngClass]="{ 'is-invalid': Size_In_Proportional.invalid }" required>
         </div>
@@ -124,7 +124,7 @@
       <label for="BasementFloor" class="col-sm-3 col-form-label" translate>Basement Floor</label>
       <div class="col-sm-9">
         <input type="text" class="form-control" [(ngModel)]="propertyRegister.basement_Floor_No" name="BasementFloor"
-          id="BasementFloor" placeholder="Basement Floor">
+          id="BasementFloor" placeholder="Basement Floor" [disabled]="disable">
       </div>
     </div>
     <div class="form-group row col-md-6">
@@ -146,7 +146,7 @@
       <label for="UpperFloor" class="col-sm-3 col-form-label" translate>Upper Floor</label>
       <div class="col-sm-9">
         <input type="text" class="form-control" [(ngModel)]="propertyRegister.upper_Floor_No" name="UpperFloor"
-          id="UpperFloor" placeholder="Upper Floor">
+          id="UpperFloor" placeholder="Upper Floor" [disabled]="disable">
       </div>
     </div>
    <div class="form-group row col-md-6">
@@ -170,21 +170,21 @@
       <div class="col-sm-9">
         <input type="number" class="form-control" [(ngModel)]="propertyRegister.parking_Area_M2" name="ParkingSize"
           id="ParkingSize" placeholder="Parking size"
-          #ParkingSize="ngModel" [ngClass]="{ 'is-invalid': ParkingSize.invalid }" required>
+          #ParkingSize="ngModel" [ngClass]="{ 'is-invalid': ParkingSize.invalid }" [disabled]="disable" required>
       </div>
     </div>
     <div class="form-group row col-md-6">
       <label for="HouseNo" class="col-sm-3 col-form-label" translate>House No</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [(ngModel)]="propertyRegister.houseNo" name="HouseNo" id="HouseNo"
-          placeholder="House No">
+          placeholder="House No" [disabled]="disable">
       </div>
     </div>
     <div class="form-group row col-md-6">
       <label for="EstimatedPrice" class="col-sm-3 col-form-label" translate>Estimated Price</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [(ngModel)]="propertyRegister.estimated_Price" name="EstimatedPrice"
-          id="EstimatedPrice" placeholder="Estimated Price">
+          id="EstimatedPrice" placeholder="Estimated Price" [disabled]="disable">
       </div>
     </div>
   
@@ -193,7 +193,7 @@
               <div class="col-sm-9">
                 <input type="date" class="form-control" [disabled]="disable" [(ngModel)]="propertyRegister.registration_Date"
                   name="RegisterationDate" id="RegisterationDate" [placeholder]="'Registeration date' | translate"
-                  #RegisterationDate="ngModel" [ngClass]="{ 'is-invalid': RegisterationDate.invalid }" required>
+                  #RegisterationDate="ngModel" [ngClass]="{ 'is-invalid': RegisterationDate.invalid }" [disabled]="disable" required>
               </div>
             </div>
             <div class="form-group row col-md-6" *ngIf="language === 'amharic'">
@@ -201,7 +201,7 @@
               <div class="col-sm-9">
                 <input type="text" readonly class="form-control" [disabled]="disable" [(ngModel)]="propertyRegister.registration_Date"
                   name="RegisterationDateto" id="RegisterationDatetto" [placeholder]="'Registeration date' | translate"
-                  #RegisterationDateto="ngModel" [ngClass]="{ 'is-invalid': RegisterationDateto.invalid }" required
+                  #RegisterationDateto="ngModel" [ngClass]="{ 'is-invalid': RegisterationDateto.invalid }" [disabled]="disable" required
                   appDatepickerEthiopian (dateEmitter)="selectedDateTime($event,1)">
               </div>
             </div>
@@ -215,20 +215,20 @@
         No</label>
       <div class="col-sm-9">
         <input class="form-control" id="Building_No"
-          name="Building_No" placeholder="Building No" type="text" [(ngModel)]="propertyRegister.building_No" ></div>
+          name="Building_No" placeholder="Building No" type="text" [(ngModel)]="propertyRegister.building_No" [disabled]="disable" ></div>
     </div>
     
     <div class="form-group row col-md-6"><label class="col-sm-3 col-form-label" for="Location_of_Property"
         translate="">Location of Property</label>
       <div class="col-sm-9">
         <input class="form-control" id="Location_of_Property"
-          name="Location_of_Property" placeholder="Location of Property" type="text" [(ngModel)]="propertyRegister.location_of_Property"></div>
+          name="Location_of_Property" placeholder="Location of Property" type="text" [(ngModel)]="propertyRegister.location_of_Property" [disabled]="disable"></div>
     </div>
     
-    <div class="form-group row col-md-6"><label class="col-sm-3 col-form-label" for="Floor_No" translate="">Floor No</label>
+    <div class="form-group row col-md-6"><label class="col-sm-3 col-form-label" for="Floor_No" translate="" >Floor No</label>
       <div class="col-sm-9">
         <input class="form-control" id="Floor_No" name="Floor_No" [(ngModel)]="propertyRegister.floor_No"
-          placeholder="Floor No" type="number"></div>
+          placeholder="Floor No" type="number" [disabled]="disable"></div>
     </div>
  
 

@@ -24,6 +24,7 @@ import { BsModalRef, BsModalService } from "ngx-bootstrap";
 })
 export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   @Output() completed = new EventEmitter();
+
   modalRef: BsModalRef;
   modalRefTo: BsModalRef;
   public titleDeedRegistration: TitleDeedRegistration;
@@ -195,6 +196,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
             deptSuspension
           );
 
+          this.completed.emit();
           // if (!this.Saved) {
           //   this.completed.emit();
           //   this.Saved = true;
@@ -243,8 +245,9 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
         );
         this.getdeed(this.selectedpro.property_ID);
         this.adddeed();
+        this.completed.emit();
         // if (!this.Saved) {
-        //   this.completed.emit();
+        //
         //   this.Saved = true;
         // }
         this.serviceService.disablefins = false;

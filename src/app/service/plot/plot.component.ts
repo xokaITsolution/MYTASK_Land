@@ -53,7 +53,7 @@ export class PlotComponent implements OnChanges {
   Plot_ID: any;
   displayGIS: boolean;
   geo: any;
-  multipleplotcanbeadd: boolean = false;
+  multipleplotcanbeadd: boolean = true;
 
   constructor(
     private serviceService: ServiceService,

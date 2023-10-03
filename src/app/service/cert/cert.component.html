@@ -202,10 +202,9 @@
           <label for="Ownership_ID" class="col-sm-3 col-form-label" translate>Transfer ID</label>
           <div class="col-sm-7">
 
-            <input type="text" class="form-control" disabled [(ngModel)]="Base.Ownership_ID" #Ownership_ID="ngModel"
-              name="Ownership_ID" id="Ownership_ID" [placeholder]="'Title Deed ID' | translate"
-              [ngClass]="{ 'is-invalid': Ownership_ID.invalid }" #Ownership_ID="ngModel"
-              [ngClass]="{ 'is-invalid': Ownership_ID.invalid }" required>
+            <input type="text" class="form-control"  [(ngModel)]="Base.Ownership_ID" 
+              name="Ownership_ID" id="Ownership_ID" #OwnershipID="ngModel" [placeholder]="'Title Deed ID' | translate" 
+               [ngClass]="{ 'is-invalid': OwnershipID.invalid }" required >
           </div>
           <div class="col-sm-2">
             <button type="button" *ngIf="!disable" class="btn btn-secondary" (click)="displayDeed=true"
