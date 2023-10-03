@@ -16,10 +16,10 @@ export const environment = {
   //username: "0945845912",
   // username: "BL_Doc_Verifier",
 
-  username: "BL_Tech_Leader",
+  // username: "BL_Tech_Leader",
   // username: "BL_Info_Mgr",
 
-  // username: "BL_Data_Encoder",
+  username: "BL_Data_Encoder",
   //username: "0912079837",
 
   // username: "BL_Cashier",
