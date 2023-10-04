@@ -1,19 +1,24 @@
-import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
-import {MessageService} from 'primeng/api';
-import {CertificateVersionService} from './certificate-version.service';
-import {ServiceComponent} from '../service.component';
-import {NotificationsService} from 'angular2-notifications';
-import {NgxSmartModalService} from 'ngx-smart-modal';
-import {DomSanitizer} from '@angular/platform-browser';
-import { ServiceService } from '../service.service';
-import {CertComponent} from '../cert/cert.component';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+} from "@angular/core";
+import { MessageService } from "primeng/api";
+import { CertificateVersionService } from "./certificate-version.service";
+import { ServiceComponent } from "../service.component";
+import { NotificationsService } from "angular2-notifications";
+import { NgxSmartModalService } from "ngx-smart-modal";
+import { DomSanitizer } from "@angular/platform-browser";
+import { ServiceService } from "../service.service";
+import { CertComponent } from "../cert/cert.component";
 @Component({
-  selector: 'app-certificate-version',
-  templateUrl: './certificate-version.component.html',
-  styleUrls: ['./certificate-version.component.css'],
-  providers: [MessageService]
+  selector: "app-certificate-version",
+  templateUrl: "./certificate-version.component.html",
+  styleUrls: ["./certificate-version.component.css"],
+  providers: [MessageService],
 })
-
 export class CertificateVersionComponent implements OnChanges {
   @Output() completed = new EventEmitter();
   public certificateVersion: CertificateVersion;
@@ -22,47 +27,63 @@ export class CertificateVersionComponent implements OnChanges {
   pictoShow;
   pictoShow1;
   DeedTable;
-  
+
   @Input() licenceData;
   @Input() Selectedcert;
   @Input() SelectedBase;
   @Input() disable;
-  Saved = false ;
+  Saved = false;
   @Input() Plot_Registration;
   organization: any;
   data: any;
   aa: boolean;
 
-  constructor(private ngxSmartModalService: NgxSmartModalService,
-              private messageService: MessageService,
-              public CertComponent: CertComponent,
-              public serviceService: ServiceService,
-              private certificateVersionService: CertificateVersionService,
-              private sanitizer: DomSanitizer,
-              public serviceComponent: ServiceComponent, private notificationsService: NotificationsService) {
+  constructor(
+    private ngxSmartModalService: NgxSmartModalService,
+    private messageService: MessageService,
+    public CertComponent: CertComponent,
+    public serviceService: ServiceService,
+    private certificateVersionService: CertificateVersionService,
+    private sanitizer: DomSanitizer,
+    public serviceComponent: ServiceComponent,
+    private notificationsService: NotificationsService
+  ) {
     this.certificateVersion = new CertificateVersion();
   }
 
   ngOnChanges() {
-   
-    console.log('hahaha2', this.Selectedcert);
-    console.log('hahaha1', this.SelectedBase);
+    console.log("hahaha2", this.Selectedcert);
+    console.log("hahaha1", this.SelectedBase);
     this.certificateVersion = this.Selectedcert;
-    console.log('hahaha3', this.certificateVersion);
-    
+    console.log("hahaha3", this.certificateVersion, this.licenceData);
+
     if (this.certificateVersion.Photo) {
-      this.pictoShow = 'data:image/jpg;base64, ' + this.certificateVersion.Photo;
-      this.pictoShow = this.sanitizer.bypassSecurityTrustResourceUrl(this.pictoShow);
+      this.pictoShow =
+        "data:image/jpg;base64, " + this.certificateVersion.Photo;
+      this.pictoShow = this.sanitizer.bypassSecurityTrustResourceUrl(
+        this.pictoShow
+      );
     }
     if (this.certificateVersion.Partner_Photo) {
-      this.pictoShow1 = 'data:image/jpg;base64, ' + this.certificateVersion.Partner_Photo;
-      this.pictoShow1 = this.sanitizer.bypassSecurityTrustResourceUrl(this.pictoShow);
+      this.pictoShow1 =
+        "data:image/jpg;base64, " + this.certificateVersion.Partner_Photo;
+      this.pictoShow1 = this.sanitizer.bypassSecurityTrustResourceUrl(
+        this.pictoShow
+      );
     }
     this.getDeed();
     if (!this.certificateVersion.version_ID) {
       this.isnew = true;
     } else {
       this.isnew = false;
+    }
+    if (this.certificateVersion) {
+      console.log(
+        " this.serviceService.Service_ID",
+        this.serviceService.Service_ID
+      );
+
+      this.certificateVersion.issued_By = this.serviceService.serviceDP;
     }
   }
   // getorglokup(){
@@ -74,36 +95,54 @@ export class CertificateVersionComponent implements OnChanges {
   // }
 
   getDeed() {
-    this.certificateVersionService.getDeedTable(this.SelectedBase.Plot_ID).subscribe(DeedTable => {
-      this.DeedTable = DeedTable;
-      // this.DeedTable = (Object.assign([], this.DeedTable));
-      console.log('DeedTable', DeedTable);
-    }, error => {
-      console.log('error');
-    });
+    this.certificateVersionService
+      .getDeedTable(this.SelectedBase.Plot_ID)
+      .subscribe(
+        (DeedTable) => {
+          this.DeedTable = DeedTable;
+          // this.DeedTable = (Object.assign([], this.DeedTable));
+          console.log("DeedTable", DeedTable);
+        },
+        (error) => {
+          console.log("error");
+        }
+      );
   }
 
   Save() {
-    this.certificateVersionService.SaveCertificate(this.certificateVersion).subscribe(certificateVersion => {
-      console.log('certificateVersion', certificateVersion);
-      const toast = this.notificationsService.success('Sucess', certificateVersion);
-      this.serviceService.disablefins = false;
-      if(!this.Saved){
-        this.completed.emit();
-        this.Saved = true;
-      }
-  
-   
-    }, error => {
-      console.log(error);
-      if (error.status == '400') {
-        const toast = this.notificationsService.error('Error', error.error.InnerException.Errors[0].message);
+    console.log("certificateVersion", this.certificateVersion);
 
-      } else {
-        const toast = this.notificationsService.error('Error', 'SomeThing Went Wrong');
-      }
-    });
-    console.log('saveing....');
+    this.certificateVersionService
+      .SaveCertificate(this.certificateVersion)
+      .subscribe(
+        (certificateVersion) => {
+          console.log("certificateVersion", certificateVersion);
+          const toast = this.notificationsService.success(
+            "Sucess",
+            certificateVersion
+          );
+          this.serviceService.disablefins = false;
+          if (!this.Saved) {
+            this.completed.emit();
+            this.Saved = true;
+          }
+        },
+        (error) => {
+          console.log(error);
+          if (error.status == "400") {
+            const toast = this.notificationsService.error(
+              "Error",
+              error.error.InnerException.Errors[0].message
+            );
+          } else {
+            const toast = this.notificationsService.error(
+              "Error",
+              "SomeThing Went Wrong"
+            );
+          }
+        }
+      );
+    console.log("saveing....");
     /*console.log(this.certificateVersion);
     this.messageService.add({severity: 'error', sticky: true, summary: 'Error Message', detail: 'Validation failed'});
     this.messageService.add({severity: 'success', sticky: true, summary: 'Error Message', detail: 'Validation failed'});
@@ -111,27 +150,35 @@ export class CertificateVersionComponent implements OnChanges {
   }
 
   add() {
-    this.certificateVersionService.AddCertificate(this.certificateVersion).subscribe(message => {
-      console.log('message', message);
-this.CertComponent.disableTab=true
-      const toast = this.notificationsService.success('Sucess', message);
-      this.serviceService.disablefins = false;
-      if(!this.Saved){
-        this.completed.emit();
-        this.Saved = true;
-      }
-    
-  
-    }, error => {
-      console.log(error);
-      if (error.status == '400') {
-        const toast = this.notificationsService.error('Error', error.error.InnerException.Errors[0].message);
-
-      } else {
-        const toast = this.notificationsService.error('Error', 'SomeThing Went Wrong');
-      }
-    });
-    console.log('saveing....');
+    this.certificateVersionService
+      .AddCertificate(this.certificateVersion)
+      .subscribe(
+        (message) => {
+          console.log("message", message);
+          this.CertComponent.disableTab = true;
+          const toast = this.notificationsService.success("Sucess", message);
+          this.serviceService.disablefins = false;
+          if (!this.Saved) {
+            this.completed.emit();
+            this.Saved = true;
+          }
+        },
+        (error) => {
+          console.log(error);
+          if (error.status == "400") {
+            const toast = this.notificationsService.error(
+              "Error",
+              error.error.InnerException.Errors[0].message
+            );
+          } else {
+            const toast = this.notificationsService.error(
+              "Error",
+              "SomeThing Went Wrong"
+            );
+          }
+        }
+      );
+    console.log("saveing....");
   }
 
   AddNew() {
@@ -142,32 +189,29 @@ this.CertComponent.disableTab=true
     this.isnew = true;
   }
 
-
   openModal(modal) {
     this.ngxSmartModalService.getModal(modal).open();
   }
 
   closeModal(organization, modal) {
     this.certificateVersion.issued_By = organization.organization_code;
-    console.log('closeing.....');
-    console.log('closeing.....', organization.organization_code);
+    console.log("closeing.....");
+    console.log("closeing.....", organization.organization_code);
     this.ngxSmartModalService.getModal(modal).close();
   }
-  
+
   Uploader(File) {
     let base64file;
     const reader = new FileReader();
     reader.readAsDataURL(File);
-    reader.addEventListener('loadend', (e) => {
-
+    reader.addEventListener("loadend", (e) => {
       base64file = reader.result;
       const re = /base64,/gi;
-      base64file = base64file.replace(re, '');
-      base64file = base64file.split(';')[1];
+      base64file = base64file.replace(re, "");
+      base64file = base64file.split(";")[1];
       this.certificateVersion.Photo = base64file;
     });
   }
-
 
   upload(event) {
     this.Uploader(event.files[0]);
@@ -177,16 +221,14 @@ this.CertComponent.disableTab=true
     let base64file;
     const reader = new FileReader();
     reader.readAsDataURL(File);
-    reader.addEventListener('loadend', (e) => {
-
+    reader.addEventListener("loadend", (e) => {
       base64file = reader.result;
       const re = /base64,/gi;
-      base64file = base64file.replace(re, '');
-      base64file = base64file.split(';')[1];
+      base64file = base64file.replace(re, "");
+      base64file = base64file.split(";")[1];
       this.certificateVersion.Partner_Photo = base64file;
     });
   }
-
 
   uploadPartner(event) {
     this.Uploader(event.files[0]);
@@ -235,6 +277,4 @@ class CertificateVersion {
   public e_Plot_ID;
   public w_Plot_ID;
   public Partner_Photo;
-
 }
-

@@ -136,7 +136,8 @@ export class ServiceService {
   Totalarea: number = 0;
   areaVerified: boolean = false;
   Service_ID: any;
-
+  PlotStutusLook: any;
+  serviceDP: any;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);

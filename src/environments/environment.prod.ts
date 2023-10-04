@@ -19,9 +19,11 @@ export const environment = {
   formPath: window["formPath"],
   rootPath3: window["rootPath3"],
   groupLayerName: window["groupLayerName"],
+  parentGroupName: window["parentGroupName"],
+  SubcityName: window["SubcityName"],
   geoserverUrl: window["geoserverUrl"],
   geoserverUrlwfs: window["geoserverUrlwfs"],
-  groupName: window["groupName"],
+  geoser: window["geoser"],
   imagepath: window["_imagepath"],
   multipleplotcanbeadd: window["multipleplotcanbeadd"],
 };

@@ -84,11 +84,14 @@ import { GisMapService } from "./gis-map/gis-map.service";
 import { DatepickerEthiopianDirective } from "./datepicker-ethiopian.directive";
 import { CustomAlertComponent } from "./gis-map/CustomAlertComponent";
 import { OverlayPanelModule } from "primeng/overlaypanel";
+import { TestgismapComponent } from "./testgismap/testgismap.component";
+import { TreeComponentComponent } from "./tree-component/tree-component.component";
 @NgModule({
   imports: [
     //BackButtonDisableModule.forRoot({
     //  preserveScrollPosition: true
     // }),
+    TreeModule,
     NgxDocViewerModule,
     TabViewModule,
     ArchwizardModule,
@@ -170,6 +173,8 @@ import { OverlayPanelModule } from "primeng/overlaypanel";
     NgxSimplePrintDirective,
     DatepickerEthiopianDirective,
     CustomAlertComponent,
+    TestgismapComponent,
+    TreeComponentComponent,
   ],
   entryComponents: [GisMapComponent, CustomAlertComponent],
   providers: [

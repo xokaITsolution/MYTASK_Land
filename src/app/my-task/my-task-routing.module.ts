@@ -8,6 +8,8 @@ import { GisComponent } from "../service/gis/gis.component";
 import { GeojsondeskComponent } from "../components/geojsondesk/geojsondesk.component";
 import { PersonComponent } from "./person/person.component";
 import { ArchiveComponent } from "./archive/archive.component";
+import { TestgismapComponent } from "../service/testgismap/testgismap.component";
+import { GisMapComponent } from "../service/gis-map/gis-map.component";
 
 const routes: Routes = [
   {
@@ -34,17 +36,18 @@ const routes: Routes = [
         path: "SupervisorTask",
         component: SupervisorTaskComponent,
         pathMatch: "prefix",
-      }, 
-         {
+      },
+      {
         path: "Customer",
         component: PersonComponent,
         pathMatch: "prefix",
       },
       {
-        path: "Gis",
-        component: GisComponent,
+        path: "Gis/Arada_AddisLand",
+        component: GisMapComponent,
         pathMatch: "prefix",
-      },{
+      },
+      {
         path: "Archive",
         component: ArchiveComponent,
         pathMatch: "prefix",

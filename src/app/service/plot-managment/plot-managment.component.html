@@ -168,7 +168,7 @@
         <select class="form-select"  [disabled]="disable" [(ngModel)]="plotManagment.Plot_Status" name="Status"
           id="Status" #Status="ngModel" [ngClass]="{ 'is-invalid': Status.invalid }" required>
           <option disabled translate>select</option>
-          <option *ngFor="let Status of serviceComponent.PlotStutusLookUP;" [value]="Status.Plot_Status_ID">
+          <option *ngFor="let Status of serviceService.PlotStutusLook" [value]="Status.Plot_Status_ID">
             {{Status.Name}}
           </option>
         </select>

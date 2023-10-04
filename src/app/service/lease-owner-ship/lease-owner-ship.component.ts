@@ -273,7 +273,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
           "Sucess",
           deptSuspension
         );
-        this.serviceService.disablefins = false;
+        //this.serviceService.disablefins = false;
         this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
 
         if (this.language == "amharic") {
@@ -388,7 +388,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
             );
         }
 
-        this.serviceService.disablefins = false;
+        //this.serviceService.disablefins = false;
 
         this.leaseForm = false;
         this.serviceService.isleaseForm = false;

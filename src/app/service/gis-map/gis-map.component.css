@@ -27,6 +27,16 @@
     background-color: #f0f0f0;
     
   }
+    ul {
+      list-style-type: none;
+      padding-left: 50px;
+    }
+  
+    ul li {
+      list-style-type: none;
+    }
+  
+/*  */
 /* .sidebar {
     height: 100vh;
     background-color: #aff0af;
@@ -64,6 +74,51 @@
     height: 100vh;
     padding: 0;
 } */
+
+/* Style the container div */
+.activeSite {
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+  background-color: #f4f4f4;
+  /* Set background color */
+  padding: 10px;
+  /* Add some padding */
+  border: 1px solid #ccc;
+  /* Add a border */
+  border-radius: 5px;
+  /* Add rounded corners */
+  /* Add a subtle shadow */
+  max-width: 300px;
+  /* Set a maximum width */
+}
+
+/* Style the subheadings */
+.sub {
+  font-size: 1.2em;
+  /* Increase font size */
+  margin-top: 10px;
+  /* Add some space above the subheading */
+}
+
+/* Style the list items */
+.container {
+  list-style: none;
+  /* Remove list bullets */
+  margin: 5px 0;
+  /* Add space around each list item */
+}
+
+/* Style the checkboxes and labels */
+input[type="checkbox"] {
+  margin-right: 10px;
+  /* Add space to the right of checkboxes */
+}
+
+label {
+  display: inline-block;
+  /* Make labels appear inline */
+}
+
+
 .zoomcontainer {
     width: 100%;
     height: 100%;
