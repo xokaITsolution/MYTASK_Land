@@ -187,19 +187,27 @@ export class GisMapComponent implements AfterViewInit {
   }
 
   fetchTileLayer(layerName, newLayer) {
-    //Add your raster layer to the map
-    // L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    //   attribution: "© OpenStreetMap contributors",
-    // }).addTo(this.map);
+    // Conversion factor from meters to feet
+    const metersToFeet = 3.28084;
 
-    // 'http://GEOSERVER_URL/gwc/service/wms?SERVICE=WMS&VERSION=1.1.1&TILED=true&...'
+    // Desired resolution in meters per pixel
+    const desiredResolutionMeters = 10 / 512;
+
+    // Calculate the desired resolution in feet per pixel
+    const desiredResolutionFeet = desiredResolutionMeters * metersToFeet;
+
+    // Set the tileSize based on the desired resolution in feet per pixel
+    const tileSize = Math.round(20 / desiredResolutionFeet); // 20 feet is the desired resolution in feet
+
+    console.log("tileSize", tileSize);
+
+    // Create the WMS tile layer with the updated tileSize
     const TileLayer = L.tileLayer.wms(`${this.geoserverUrlwfs}`, {
       layers: layerName,
       format: "image/png",
       transparent: true,
-      // styles: ['styleName'],
-      maxZoom: 18,
-      tileSize: 512,
+      maxZoom: 22,
+      tileSize: tileSize,
       zoomOffset: -1,
     });
 
@@ -539,11 +547,34 @@ export class GisMapComponent implements AfterViewInit {
     });
   }
   initMap(): void {
+    // Conversion factor from meters to feet
+    const metersToFeet = 3.28084;
+
+    // Define the base resolution in meters per pixel
+    const baseResolutionMeters = 10; // 10 meters
+
+    // Calculate the equivalent resolution in feet per pixel
+    const baseResolutionFeet = baseResolutionMeters * metersToFeet; // 32.8084 feet
+
+    // Create an array of resolutions that match your desired scales
+    const resolutions = [
+      baseResolutionMeters,
+      baseResolutionMeters / 2,
+      baseResolutionMeters / 4,
+      baseResolutionMeters / 8,
+      baseResolutionMeters / 16,
+      baseResolutionMeters / 32,
+      baseResolutionMeters / 64,
+      baseResolutionMeters / 128,
+      // ... Add more resolutions for finer zoom levels
+    ];
+
+    // Define your Leaflet CRS with the updated resolutions
     this.EPSG20137 = new L.Proj.CRS(
       "EPSG:20137",
       "+proj=utm +zone=37 +a=6378249.145 +rf=293.465 +towgs84=-165,-11,206,0,0,0,0 +units=m +no_defs +type=crs",
       {
-        resolutions: [8192, 4096, 2048, 1024, 512, 256, 128],
+        resolutions: resolutions,
         origin: [166600.5155002516, 375771.9736823894],
       }
     );
@@ -552,15 +583,39 @@ export class GisMapComponent implements AfterViewInit {
     if (!mapContainer) {
       return;
     }
-    // this.map = L.map("mapp", {
-    //   crs: this.EPSG20137, // Set the map CRS to EPSG:20137
-    // }).setView([9.145, 40.489], 15); // Set an appropriate initial view for Ethiopia
+    this.map = L.map("mapp", {
+      crs: this.EPSG20137,
+      center: [9.032457, 38.759775],
+      zoom: 0, // Set the map CRS to EPSG:20137
+    }); // Set an appropriate initial view for Ethiopia
     // Define custom zoom levels
 
-    this.map = L.map("mapp", {
-      center: [9.032457, 38.759775],
-      zoom: 13, // Set an initial zoom level (1 corresponds to a 1:1 scale)
-    });
+    // this.map = L.map("mapp", {
+    //   center: [9.032457, 38.759775],
+    //   zoom: 15, // Set an initial zoom level (1 corresponds to a 1:1 scale)
+    // });
+
+    // const googleSatelliteLayer = L.gridLayer.googleSatelliteLayer({
+    //   type: "satellite", // You can change this to 'terrain' or 'hybrid' for different views
+    // });
+    // // Define the tile layers
+    // console.log(googleSatelliteLayer);
+
+    const osmLayer = L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        attribution: "© OpenStreetMap contributors",
+      }
+    );
+    const noneLayer = L.tileLayer("", { attribution: "" });
+    // Create an object to hold the tile layers
+    const baseLayers = {
+      "Google Maps": osmLayer,
+      None: noneLayer,
+    };
+    // Create a layers control with checkboxes
+    const layersControl = L.control.layers(baseLayers).addTo(this.map);
+    // Add an event listener to handle the removal of all layers when "None" is selected
 
     // Create a map event listener to track mouse movements
     this.markerLayer = L.layerGroup().addTo(this.map);

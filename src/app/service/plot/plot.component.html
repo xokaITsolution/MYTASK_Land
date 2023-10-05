@@ -6,9 +6,10 @@
         <th scope="col" translate>Status</th>
         <th scope="col" translate>Area_M2</th>
         <th scope="col" translate>Registration Date</th>
-        <th scope="col">
+        <th scope="col" *ngIf="multipleplotcanbeadd">
+
           <button type="button" class="btn btn-primary" (click)="AddPLot()"
-            *ngIf="!disable && PlotManagementList.length < 5 && multipleplotcanbeadd" translate>Add New</button>
+            *ngIf="!disable && PlotManagementList.length < 5" translate>Add New</button>
         </th>
       </tr>
     </ng-template>

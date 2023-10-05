@@ -27,7 +27,7 @@
       window['groupLayerName'] = "Arada_AddisLand:W1.Arada.Layers";
       window['parentGroupName'] = "AddisLand"
       window['groupName'] = "W1.Arada.Layers";
-        window['SubcityName'] = "Arada_AddisLand"   //window.location.pathname.split("/")[3];
+        window['SubcityName'] =  window.location.pathname.split("/")[1]+ "_AddisLand"
     window['geoserverUrl'] = "http://land.xokait.com.et:8080/geoserver/Arada_AddisLand/wms";
       window['geoserverUrlwfs'] = "http://land.xokait.com.et:8080/geoserver/Arada_AddisLand/ows";
       window['geoser'] = "http://land.xokait.com.et:8080/geoserver";
@@ -121,7 +121,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" />
   <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-editable/1.2.0/Leaflet.Editable.css" /> -->
 
-
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
           rel="stylesheet" >
@@ -132,6 +131,8 @@
 </head>
 
 <body>
+  
+  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" ></script>
   
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>

@@ -70,7 +70,8 @@
               <app-measurment (completed)="EnableFins()" [selectedpro]='selectedFile'  [disable]="disable"
                 [Licence_Service_ID]="Licence_Service_ID"></app-measurment>
                 <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 2" translate>Next</button></div>
-     
+              <div style="float: left;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 0"
+                  translate>previous</button></div>
             </div>
           </p-tabPanel>
           <p-tabPanel [header]="'Title Deed Registration' | translate">
@@ -78,6 +79,8 @@
               <app-title-deed-registration (completed)="EnableFins()" [selectedpro]='selectedFile'
                 [disable]="disable" [Licence_Service_ID]="Licence_Service_ID" [AppNo]="AppNo" [Service_ID]="Service_ID">
               </app-title-deed-registration>
+                <div style="float: left;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1"
+                    translate>previous</button></div>
             </div>
           </p-tabPanel>
         </p-tabView>

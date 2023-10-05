@@ -54,9 +54,9 @@ export class PlotComponent implements OnChanges {
   displayGIS: boolean;
   geo: any;
   multipleplotcanbeadd: boolean = true;
-
+  display: boolean = false;
   constructor(
-    private serviceService: ServiceService,
+    public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService,
     private modalService: BsModalService
@@ -127,7 +127,7 @@ export class PlotComponent implements OnChanges {
       } else {
         this.platformLocation = new PlatformLocation();
         this.isplotllocnew = true;
-        this.multipleplotcanbeadd = true;
+        // this.multipleplotcanbeadd = true;
         //this.serviceService.toMess=true
       }
     });
@@ -448,6 +448,16 @@ export class PlotComponent implements OnChanges {
     if (plot.Registration_Date) {
       plot.Registration_Date = plot.Registration_Date.split("T")[0];
     }
+    if (this.serviceService.multipleplotcanbeadd) {
+      let filterservice = this.serviceService.multipleplotcanbeadd.filter(
+        (x) => x.id === this.serviceService.Service_ID
+      );
+      if (filterservice.length > 0) {
+        this.multipleplotcanbeadd = true;
+      } else {
+        this.multipleplotcanbeadd = false;
+      }
+    }
     // this.plotForm = true;
   }
   highlighted;
@@ -696,6 +706,7 @@ export class PlotComponent implements OnChanges {
       this.Parcel_ID = Parcel.Plot_ID;
       this.LicenceData.Parcel_ID = Parcel.Plot_ID;
     }
+
     this.serviceService.UpdateLicence(this.LicenceData).subscribe(
       (Licence) => {
         console.log("Licence", Licence);

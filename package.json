@@ -50,6 +50,7 @@
     "leaflet-draw": "^1.0.4",
     "leaflet-editable": "^1.2.0",
     "leaflet-geosearch": "^3.6.1",
+    "leaflet-google": "^1.0.1",
     "leaflet-illustrate": "^0.0.3",
     "leaflet-mouse-position": "^1.2.0",
     "leaflet.utm": "^1.0.0",

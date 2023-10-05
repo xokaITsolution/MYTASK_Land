@@ -12,7 +12,7 @@ import { NotificationsService } from "angular2-notifications";
 })
 export class MyTaskComponent implements OnInit {
   taskwaithing = 120;
-  isAccountVisible:boolean
+  isAccountVisible: boolean;
   taskList;
   messageAppNo;
   messageCache = [];
@@ -29,6 +29,7 @@ export class MyTaskComponent implements OnInit {
   loadingMessage = false;
   user: any;
   user_name: any;
+  lanid: string;
 
   constructor(
     private myTaskService: MyTaskService,
@@ -39,6 +40,11 @@ export class MyTaskComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    if (environment.Lang_code == "en-us") {
+      this.lanid = "10D04E8B-3361-E111-95D5-00E04C05559B";
+    } else {
+      this.lanid = "2C2EBBEA-3361-E111-95D5-00E04C05559B";
+    }
     this.getMyTask();
   }
   canGo(where) {
@@ -109,14 +115,14 @@ export class MyTaskComponent implements OnInit {
 
   closeModal(id) {
     // this.modal.getModal(id).close();
-    this.isAccountVisible = false
+    this.isAccountVisible = false;
   }
 
   showMessage(appNo, task) {
     if (appNo != this.messageAppNo) {
       let messageInCache = false;
       // this.loadingMessage = true;
-      this.isAccountVisible = true
+      this.isAccountVisible = true;
       this.messageObj.currentMessage = null;
       this.messageObj.currentMessageIndex = 0;
       this.messageObj.messages = null;
@@ -138,29 +144,33 @@ export class MyTaskComponent implements OnInit {
       if (!messageInCache) {
         this.seice.GetNote(appNo).subscribe(
           (result) => {
-            console.log('messagesss',result);
-            
+            console.log("messagesss", result);
+
             this.messageObj.messages = result;
 
             if (this.messageObj.messages) {
-              console.log('this.messageObj.messages',this.messageObj.messages[0].remarks);
-             
+              console.log(
+                "this.messageObj.messages",
+                this.messageObj.messages[0].remarks
+              );
+
               this.messageCache.push({
                 appNo: this.messageAppNo,
                 messages: result,
               });
-              this.myTaskService.getViewAspNetUsersWorkInfoDetail().subscribe(
-                (res)=>{
-                  this.user=res.filter((value)=>value.remarks == this.messageObj.messages[0]["remarks"])
-                  this.user_name= "Massage From: "+this.user[0].firstName_en
-                  this.messageObj.userName= this.user[0].firstName_en
-                  console.log('userrrr',this.messageObj.userName);
-              this.messageObj.currentMessage = 
-                this.messageObj.messages[0]["remarks"];
-
-}
-)
-
+              this.myTaskService
+                .getViewAspNetUsersWorkInfoDetail()
+                .subscribe((res) => {
+                  this.user = res.filter(
+                    (value) =>
+                      value.remarks == this.messageObj.messages[0]["remarks"]
+                  );
+                  this.user_name = "Massage From: " + this.user[0].firstName_en;
+                  this.messageObj.userName = this.user[0].firstName_en;
+                  console.log("userrrr", this.messageObj.userName);
+                  this.messageObj.currentMessage =
+                    this.messageObj.messages[0]["remarks"];
+                });
             }
             this.loadingMessage = false;
           },
@@ -178,15 +188,10 @@ export class MyTaskComponent implements OnInit {
   async getMyTask() {
     //var userInfo = await this.seice.getViewAspNetUsersWorkInfoDetail(environment.username).toPromise();
     //var orgid= userInfo[0].organization_code;
-    //var orgid="00000000-0000-0000-0000-000000000000"
-    var orgid = "24d45c72-8088-4591-810a-bc674f9f0a57";
-    if (window["lang"] == "en-us") {
-      var lanid = "10D04E8B-3361-E111-95D5-00E04C05559B";
-    } else {
-      var lanid = "2C2EBBEA-3361-E111-95D5-00E04C05559B";
-    }
+    var orgid = "00000000-0000-0000-0000-000000000000";
+    //var orgid = "24d45c72-8088-4591-810a-bc674f9f0a57";
 
-    this.myTaskService.getMytaskss().subscribe(
+    this.myTaskService.getMytaskss(orgid, this.lanid).subscribe(
       (taskList) => {
         this.taskList = taskList;
         this.taskList = Object.assign([], this.taskList.Table1);
