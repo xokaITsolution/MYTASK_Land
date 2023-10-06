@@ -1,10 +1,12 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
   OnInit,
   Output,
+  Renderer2,
   TemplateRef,
 } from "@angular/core";
 import { ServiceComponent } from "../service.component";
@@ -61,7 +63,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     private sanitizer: DomSanitizer,
     private modalService: BsModalService,
     private ngxSmartModalService: NgxSmartModalService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private renderer: Renderer2,
+    private elementRef: ElementRef
   ) {
     this.propertyRegister = new PropertyRegister();
     this.propformLocation = new PropformLocation();
@@ -764,6 +768,25 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         this.propertyRegister.map_Floor_Plan
       );
     });
+  }
+  openModalll() {
+    // Open the modal with the ng-template
+    this.ngxSmartModalService.setModalData(null, "myModal");
+    this.ngxSmartModalService.open("myModal");
+  }
+  setModalSize(size: "mini" | "full", modal: string) {
+    const myModal = this.ngxSmartModalService.getModal(modal);
+    console.log(myModal);
+
+    // if (size === "mini") {
+    //   // Add the 'mini-size' class to adjust the modal's size
+    //   myModal.size.add("mini-size");
+    // } else if (size === "full") {
+    //   // Add the 'full-size' class to adjust the modal's size
+    //   myModal.cl.add("full-size");
+    // }
+
+    // Close and reopen the modal to apply the size changes
   }
 
   upload(event, form) {

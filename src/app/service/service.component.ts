@@ -1560,7 +1560,7 @@ export class ServiceComponent implements OnInit {
           [],
           this.CustomerTypeLookUP.list
         );
-        //  console.log('CustomerTypeLookUP', CustomerTypeLookUP);
+        console.log("CustomerTypeLookUP", this.CustomerTypeLookUP);
       },
       (error) => {
         console.log("error");
@@ -1778,8 +1778,11 @@ export class ServiceComponent implements OnInit {
   getPlotStutusLookUP() {
     this.serviceService.getPlotStutusLookUP().subscribe(
       (PlotStutusLookUP) => {
-        this.PlotStutusLookUP = PlotStutusLookUP;
-        this.PlotStutusLookUP = Object.assign([], this.PlotStutusLookUP.list);
+        this.serviceService.PlotStutusLook = PlotStutusLookUP;
+        this.serviceService.PlotStutusLook = Object.assign(
+          [],
+          this.serviceService.PlotStutusLook.list
+        );
         // console.log('PlotStutusLookUP', PlotStutusLookUP);
       },
       (error) => {
@@ -1826,6 +1829,7 @@ export class ServiceComponent implements OnInit {
           this.SDP_ID = this.licenceData.SDP_ID;
           this.Service_ID = this.licenceData.Service_ID;
           this.serviceService.Service_ID = this.licenceData.Service_ID;
+          this.serviceService.serviceDP = this.SDP_ID;
           this.Licence_Service_ID = this.licenceData.Licence_Service_ID;
           this.AppCode = this.licenceData.Licence_Service_ID; //
           this.AppNo = this.licenceData.Application_No; //

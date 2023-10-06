@@ -156,6 +156,15 @@ export class CertComponent implements OnChanges {
             }
           }
         }
+        const uniqueJobMatchIDs = {};
+        const uniqueData = this.DeedTable.filter((item) => {
+          if (!uniqueJobMatchIDs[item.Plot_ID]) {
+            uniqueJobMatchIDs[item.Plot_ID] = true;
+            return true;
+          }
+          return false;
+        });
+        this.DeedTable = uniqueData;
         this.showFullForm = false;
         // this.DeedTable = (Object.assign([], this.DeedTable));
         console.log("DeedTable", DeedTable);
@@ -179,6 +188,15 @@ export class CertComponent implements OnChanges {
           this.BaseTable.push(BaseTable[0]);
         }
         // this.BaseTable = (Object.assign([], this.BaseTable));
+        const uniqueJobMatchIDs = {};
+        const uniqueData = this.BaseTable.filter((item) => {
+          if (!uniqueJobMatchIDs[item.Title_Deed_No]) {
+            uniqueJobMatchIDs[item.Title_Deed_No] = true;
+            return true;
+          }
+          return false;
+        });
+        this.DeedTable = uniqueData;
         console.log("BaseTable", BaseTable);
       },
       (error) => {
@@ -295,6 +313,8 @@ export class CertComponent implements OnChanges {
   Selectversion(certver) {
     this.Selectedcert = certver;
     this.certverForm = true;
+    this.disableTab = false;
+    this.displayGIS = false;
     console.log("certver", certver);
   }
 

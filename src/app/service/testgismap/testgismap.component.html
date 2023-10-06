@@ -1,0 +1,76 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="sidebar">
+                <div class="sidebar-content">
+                    <div class="sideTitle">
+                        <h1>Layers</h1>
+                    </div>
+                    <ul>
+                        <div class="activeSite">
+                            <h5 class="sub">Addis Ababa</h5>
+                            <li class="container" *ngFor="let parentgroupLayer of groupLayer">
+                                <label>
+                                    <input type="checkbox"
+                                        (change)="ParentGroupLayerSelected($event.target.checked,$event.target.value)"
+                                        [value]="parentgroupLayer.href">{{parentgroupLayer.name}}
+                                </label>
+                            </li>
+                            <!-- toggleLayer($event.target.checked, parentgroupLayer.name) -->
+                            <ul>
+                                <h5 class="sub">Choose Subcity</h5>
+                                <li class="container" *ngFor="let subcity of subcities">
+                                    <label>
+                                        <input type="checkbox"
+                                            (change)="SubcitiesSelected($event.target.checked,$event.target.value);toggleLayer($event.target.checked, subcity.names)"
+                                            [value]="subcity.href">{{subcity.names}}
+                                    </label>
+                                </li>
+                                <ul>
+                                    <li class="container" *ngFor="let woreda of woredas">
+                                        <label>
+                                            <input type="checkbox"
+                                                (change)="WoredasSelected($event.target.checked,$event.target.value);toggleLayer($event.target.checked, woreda.names)"
+                                                [value]="woreda.href">{{woreda.names}}
+                                        </label>
+                                    </li>
+                                    <ul>
+                                        <li class="container" *ngFor="let woredalayer of woredaLayers">
+                                            <label>
+                                                <input type="checkbox"
+                                                    (change)="WoredaLayersSelected($event.target.checked, $event.target.value);toggleLayer($event.target.checked, woredalayer.names)"
+                                                    [value]="woredalayer.href">{{woredalayer.names}}
+                                            </label>
+                                        </li>
+                                        <ul>
+                                            <li class="container"
+                                                *ngFor="let woredalayersofall of woredaLayersOneByOne">
+                                                <label>
+                                                    <input type="checkbox"
+                                                        (change)="toggleLayer($event.target.checked, woredalayersofall.names)"
+                                                        [value]="woredalayersofall.names">{{woredalayersofall.names}}
+                                                </label>
+                                            </li>
+                                        </ul>
+                                    </ul>
+                                </ul>
+                            </ul>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+
+            <div id="mapp" style="width: 100%; height: 700px;"></div>
+
+
+            <div id="coordinateInfo"
+                style=" bottom: 10px;  background-color: rgba(255, 255, 255, 0.8);  border-radius: 5px;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <button (click)="clickto()">testUTM</button> -->

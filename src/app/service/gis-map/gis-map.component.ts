@@ -7,7 +7,7 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
-import * as L from "leaflet";
+import * as L from "../../../../node_modules/leaflet";
 import "leaflet-draw";
 import * as XLSX from "xlsx";
 import "proj4leaflet";
@@ -19,6 +19,8 @@ import { BsModalService } from "ngx-bootstrap";
 import { CustomAlertComponent } from "./CustomAlertComponent";
 import { NotificationsService } from "angular2-notifications";
 import { MessageService } from "primeng/api";
+import { ApiService } from "../testgismap/api.service";
+
 @Component({
   selector: "app-gis-map",
   templateUrl: "./gis-map.component.html",
@@ -33,12 +35,20 @@ export class GisMapComponent implements AfterViewInit {
   utmCoordinates: any;
   alllatlong: any[] = [];
   arrayFoPolygonarea: any[] = [];
+  groupLayers: any;
+  groupLayer: any;
+  styleHref: any;
+  subcities: any;
+  woredas: any;
+  woredaLayers: any;
+  woredaLayersOneByOne: any;
   constructor(
     public ServiceService: ServiceService,
     private messageService: MessageService,
     private notificationsService: NotificationsService,
     private modalService: BsModalService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private geoser: ApiService
   ) {
     this.defaultLayer = this.layers[0];
   }
@@ -74,6 +84,14 @@ export class GisMapComponent implements AfterViewInit {
     "WGS 1984 UTM Zone 37",
     "WGS 1984 UTM Zone 38",
   ];
+  targetArray: TreeNode[] = [];
+
+  // Add your event handlers and other component logic here
+
+  vectorLayer: L.Proj.GeoJSON;
+  private geoserverUrl = environment.geoserverUrl;
+  private parentGroupName = environment.parentGroupName;
+  private geoserverUrlwfs = environment.geoserverUrlwfs;
   customZoomLevels: Record<number, number> = {
     1: 2, // 1 meter on the map is 1 meter in the real world
     2: 4, // 1 meter on the map is 2 meters in the real world
@@ -115,6 +133,8 @@ export class GisMapComponent implements AfterViewInit {
     L.Marker.prototype.options.icon = iconDefault;
 
     this.initMap();
+    this.getcapablities();
+    this.getGroupLayers();
     // this.changingg.subscribe((v: any) => {
     //   console.log("value is changing", v);
     //   this.processImportedShapes(v);
@@ -137,6 +157,320 @@ export class GisMapComponent implements AfterViewInit {
     }
   }
 
+  getGroupLayers(): void {
+    this.geoser.fetchGroupLayers().subscribe((data: any) => {
+      // debugger
+      this.groupLayers = data.layerGroups.layerGroup;
+      console.log("Agroup", this.groupLayers);
+      for (let index = 0; index < this.groupLayers.length; index++) {
+        const element = this.groupLayers[index].name;
+        // this.subcities[index].name = element[1];
+        if (element === this.parentGroupName) {
+          if (typeof this.groupLayers[index] === "object") {
+            if (Array.isArray(this.groupLayers[index])) {
+              console.log("Variable is an array");
+            } else {
+              this.groupLayer = this.json2array(this.groupLayers[index]);
+              console.log("parent", this.groupLayer);
+            }
+          }
+          console.log("AddisLand", this.groupLayers[index]);
+        }
+      }
+    });
+  }
+  json2array(json) {
+    var result = [];
+    result.push(json);
+
+    return result;
+  }
+
+  fetchTileLayer(layerName, newLayer) {
+    // Conversion factor from meters to feet
+    const metersToFeet = 3.28084;
+
+    // Desired resolution in meters per pixel
+    const desiredResolutionMeters = 10 / 512;
+
+    // Calculate the desired resolution in feet per pixel
+    const desiredResolutionFeet = desiredResolutionMeters * metersToFeet;
+
+    // Set the tileSize based on the desired resolution in feet per pixel
+    const tileSize = Math.round(20 / desiredResolutionFeet); // 20 feet is the desired resolution in feet
+
+    console.log("tileSize", tileSize);
+
+    // Create the WMS tile layer with the updated tileSize
+    const TileLayer = L.tileLayer.wms(`${this.geoserverUrlwfs}`, {
+      layers: layerName,
+      format: "image/png",
+      transparent: true,
+      maxZoom: 22,
+      tileSize: tileSize,
+      zoomOffset: -1,
+    });
+
+    newLayer.tileLayer = TileLayer;
+
+    // const llsnm = tileLayer
+    //   .wms("http://land.xokait.com.et:8080/geoserver/gwc/service/wmts", {
+    //     layers: "arada_addisland:points",
+    //     format: "image/png",
+    //     transparent: true,
+    //   })
+    //   .addTo(this.map);
+
+    // L.tileLayer.wms('http://localhost:8080/geoserver/wms', {
+    //   layers: 'workspace:layername',
+    //   format: 'image/png',
+    //   transparent: true,
+    //   version: '1.1.0',
+    //   attribution: '© GeoServer'
+    // }).addTo(this.map);
+    // var layer = L.tileLayer.wmts('http://land.xokait.com.et:8080/geoserver/gwc/service/wmts', {
+    //   layer: 'workspace:layer_name', // replace with your layer name
+    //   format: 'application/vnd.mapbox-vector-tile',
+    //   style: 'default',
+    //   tilematrixSet: 'EPSG:3857',
+    //   maxZoom: 18,
+    //   accessToken: 'your_access_token' // optional, required if your server is secured
+    // }).addTo(this.map);
+  }
+
+  getcapablities() {
+    // GetCapabilities request to retrieve layer names within the group
+    const capabilitiesUrl = `${this.geoserverUrl}?service=wms&request=getcapabilities&version=1.1.0&tiled=true`;
+
+    fetch(capabilitiesUrl)
+      .then((response) => response.text())
+      .then((data) => {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(data, "application/xml");
+        const layers = xmlDoc.getElementsByTagName("Layer");
+
+        for (let i = 0; i < layers.length; i++) {
+          const layer = layers[i];
+          let layerName = layer.getElementsByTagName("Name")[0].textContent;
+
+          const newLayer: Layer = {
+            name: layerName,
+            vectorLayer: null,
+            tileLayer: null,
+          };
+          // call getfeature capablities method
+          this.GetFeatureCapablities(layerName, newLayer);
+
+          // push all changes on layers
+          this.layers.push(newLayer);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching GetCapabilities:", error);
+      });
+  }
+
+  GetFeatureCapablities(layerName: string, newLayer: Layer) {
+    // Add each layer to the map as a vector layer
+    // const getFeatureUrl = `${this.geoserverUrlwfs}?service=WFS&version=1.0.0&request=GetFeature&tiled=true&typeName=${layerName}&outputFormat=application/json`;
+    // fetch(getFeatureUrl)
+    //   .then(response => response.json())
+    //   .then(geojson => {
+    //     // Simulate loading the GeoJSON data asynchronously
+    //     // call a create vectorLayer method
+    //     // Create a new vector layer using the fetched GeoJSON data
+    this.geoser.fetchStyleLayers(layerName).subscribe((data: any) => {
+      //console.log("stryle", data);
+      // debugger
+      this.styleHref = data.layer.defaultStyle;
+      if (typeof this.styleHref === "object") {
+        if (Array.isArray(this.styleHref)) {
+          // console.log('Variable is an array');
+        } else {
+          this.styleHref = this.json2array(data.layer.defaultStyle);
+          //console.log("stylehref", this.styleHref);
+        }
+      }
+      for (let index = 0; index < this.styleHref.length; index++) {
+        const element = this.styleHref[index].href;
+
+        //calls fetch style method
+        this.fetchstylefile(element, (style: any) => {
+          //console.log("tile", style);
+          // Create a new L.Style object passing the SLD content
+          // const sttyle = new L.Style(style.toString());
+          const getFeatureUrl = `${this.geoserverUrlwfs}?service=WFS&version=1.0.0&request=GetFeature&tiled=true&typeName=${layerName}&outputFormat=application/json`;
+          fetch(getFeatureUrl)
+            .then((response) => response.json())
+            .then((geojson) => {
+              console.log("geojson", geojson);
+
+              // Modify the options color to empty for each feature in the geojson data
+
+              // const vectorLayer = L.geoJSON(geojson).addTo(this.map);
+              this.Bind_Features(geojson, layerName);
+
+              // Apply the style to the vector layer
+              this.vectorLayer.setStyle(style);
+
+              console.log("vectorlayer", this.vectorLayer);
+
+              this.vectorLayerOnClick();
+              //debugger;
+              // Store the vector layer reference in the newLayer object
+              // geojson.features.forEach(feature => {
+              //   feature.options = {
+              //     color: ''  // Set color to empty
+              //   };
+              // });
+              const options = {
+                style: function (feature) {
+                  return {
+                    color: "#4388ff",
+                  };
+                },
+              };
+              //   const lproj = L.Proj.geoJson(geojson,options);
+              // //  const lproj= L.Proj.geoJson(geojson, {
+
+              // //  }
+              // //   )
+              //   console.log("lproj",lproj);
+              newLayer.vectorLayer = this.vectorLayer;
+              this.fetchTileLayer(layerName, newLayer);
+
+              //console.error('Error fetching GeoJSON:', error);
+              // A layer which is not a vector layer can not be fetched as a geojson
+              // So here it is fetched as a tileLiyer
+            })
+            .catch((error) => {
+              //console.error('Error fetching GeoJSON:', error);
+              // A layer which is not a vector layer can not be fetched as a geojson
+              // So here it is fetched as a tileLiyer
+              this.fetchTileLayer(layerName, newLayer);
+              //  if (layerName === 'AddisLand') {
+              //   debugger
+              //    this.toggleLayer(true, 'AddisLand');
+              //  }
+            });
+        });
+      }
+    });
+
+    // })
+  }
+
+  ParentGroupLayerSelected(checked: boolean, event: any): void {
+    if (checked) {
+      //Call Geoserver API to fetch layers for the selected group layer
+      this.geoser.getLayersFromGeoserver(event).subscribe((data: any) => {
+        this.subcities = data.layerGroup.publishables.published;
+        // Handle the fetched layers here
+        if (typeof this.subcities === "object") {
+          if (Array.isArray(this.subcities)) {
+            console.log("Variable is an array");
+          } else {
+            this.subcities = this.json2array(
+              data.layerGroup.publishables.published
+            );
+            console.log("subcities", this.subcities);
+          }
+        }
+
+        for (let index = 0; index <= this.subcities.length; index++) {
+          const element = this.subcities[index].name.split(":");
+
+          this.subcities[index].names = element[1];
+        }
+      });
+    } else {
+      this.subcities = null;
+      this.woredas = null;
+      this.woredaLayers = null;
+      this.woredaLayersOneByOne = null;
+    }
+  }
+  SubcitiesSelected(checked: boolean, event: any) {
+    if (checked) {
+      //debugger
+      //Call Geoserver API to fetch layers for the selected group layer
+      this.geoser.getLayersFromGeoserver(event).subscribe((data: any) => {
+        // Handle the fetched layers here
+        this.woredas = data.layerGroup.publishables.published;
+        if (typeof this.woredas === "object") {
+          if (Array.isArray(this.woredas)) {
+            console.log("Variable is an array");
+          } else {
+            this.woredas = this.json2array(
+              data.layerGroup.publishables.published
+            );
+            console.log("woredas", this.woredas);
+          }
+        }
+
+        for (let index = 0; index < this.woredas.length; index++) {
+          const element = this.woredas[index].name.split(":");
+          this.woredas[index].names = element[1];
+        }
+      });
+    } else {
+      this.woredas = null;
+      this.woredaLayers = null;
+      this.woredaLayersOneByOne = null;
+    }
+  }
+  WoredasSelected(checked: boolean, event: any) {
+    if (checked) {
+      //Call Geoserver API to fetch layers for the selected group layer
+      this.geoser.getLayersFromGeoserver(event).subscribe((data: any) => {
+        // Handle the fetched layers here
+        this.woredaLayers = data.layerGroup.publishables.published;
+        console.log("woredaslayers", this.woredaLayers);
+        if (typeof this.woredaLayers === "object") {
+          if (Array.isArray(this.woredaLayers)) {
+            console.log("Variable is an array");
+          } else {
+            this.woredaLayers = this.json2array(
+              data.layerGroup.publishables.published
+            );
+            console.log("woredaLayers", this.woredaLayers);
+          }
+        }
+        for (let index = 0; index < this.woredaLayers.length; index++) {
+          const element = this.woredaLayers[index].name.split(":");
+          this.woredaLayers[index].names = element[1];
+        }
+      });
+    } else {
+      this.woredaLayers = null;
+      this.woredaLayersOneByOne = null;
+    }
+  }
+  WoredaLayersSelected(checked: boolean, event: any) {
+    if (checked) {
+      //Call Geoserver API to fetch layers for the selected group layer
+      this.geoser.getLayersFromGeoserver(event).subscribe((data: any) => {
+        // Handle the fetched layers here
+        this.woredaLayersOneByOne = data.layerGroup.publishables.published;
+        if (typeof this.woredaLayersOneByOne === "object") {
+          if (Array.isArray(this.woredaLayersOneByOne)) {
+          } else {
+            this.woredaLayersOneByOne = this.json2array(
+              data.layerGroup.publishables.published
+            );
+          }
+        }
+        for (let index = 0; index < this.woredaLayersOneByOne.length; index++) {
+          const element = this.woredaLayersOneByOne[index].name.split(":");
+          this.woredaLayersOneByOne[index].names = element[1];
+          this.woredaLayersOneByOne[index].visibility = false;
+          console.log("visiblity check", this.woredaLayersOneByOne[index]);
+        }
+      });
+    } else {
+      this.woredaLayersOneByOne = null;
+    }
+  }
   mergePolygons() {
     if (this.drawnShapes.length >= 2) {
       const selectedPolygons = this.drawnShapes.filter((polygon) => polygon); // Filter selected polygons
@@ -151,13 +485,96 @@ export class GisMapComponent implements AfterViewInit {
       console.log("You need to draw at least two polygons to merge.");
     }
   }
+  Bind_Features(geojson, layerName) {
+    // debugger
+    const options = {
+      style: function (feature) {
+        return {
+          color: null,
+        };
+      },
+    };
+    (this.vectorLayer = L.Proj.geoJson(geojson, options)),
+      {
+        onEachFeature: (feature, layer) => {
+          const properties = feature.properties; // Access the properties of the feature
+          let popupContent = `Layer: ${layerName}<br>Feature ID: ${feature.id}<br>`;
 
+          // Dynamically add the properties to the popup content
+          for (const propertyName in properties) {
+            if (properties.hasOwnProperty(propertyName)) {
+              popupContent += `${propertyName}: ${properties[propertyName]}<br>`;
+            }
+          }
+          // Bind the customized popup content to the layer
+          layer.bindPopup(popupContent);
+        },
+        coordsToLatLng: (
+          coords: [number, number] | [number, number, number]
+        ) => {
+          if (coords.length >= 2) {
+            // Ignore the z-coordinate and use only the x and y coordinates for LatLng
+            return L.CRS.EPSG4326.unproject(L.point(coords[0], coords[1]));
+          }
+          throw new Error("Invalid coordinate format");
+        },
+        attribution: layerName,
+      };
+  }
+  fetchstylefile(href: string, callback: (style: any) => void) {
+    this.geoser.fetchStyleFile(href).subscribe((style: any) => {
+      callback(style);
+    });
+  }
+
+  vectorLayerOnClick() {
+    this.vectorLayer.on("click", (event: L.LeafletEvent) => {
+      const clickedLayer = event.layer;
+      const clickedFeature = clickedLayer.feature;
+
+      if (clickedFeature && clickedFeature.properties) {
+        let popupContent = "<div>";
+        for (const key in clickedFeature.properties) {
+          if (clickedFeature.properties.hasOwnProperty(key)) {
+            popupContent += `<div><strong>${key}:</strong> ${clickedFeature.properties[key]}</div>`;
+          }
+        }
+        popupContent += "</div>";
+
+        // Bind the customized popup content to the layer
+        clickedLayer.bindPopup(popupContent).openPopup();
+      }
+    });
+  }
   initMap(): void {
+    // Conversion factor from meters to feet
+    const metersToFeet = 3.28084;
+
+    // Define the base resolution in meters per pixel
+    const baseResolutionMeters = 10; // 10 meters
+
+    // Calculate the equivalent resolution in feet per pixel
+    const baseResolutionFeet = baseResolutionMeters * metersToFeet; // 32.8084 feet
+
+    // Create an array of resolutions that match your desired scales
+    const resolutions = [
+      baseResolutionMeters,
+      baseResolutionMeters / 2,
+      baseResolutionMeters / 4,
+      baseResolutionMeters / 8,
+      baseResolutionMeters / 16,
+      baseResolutionMeters / 32,
+      baseResolutionMeters / 64,
+      baseResolutionMeters / 128,
+      // ... Add more resolutions for finer zoom levels
+    ];
+
+    // Define your Leaflet CRS with the updated resolutions
     this.EPSG20137 = new L.Proj.CRS(
       "EPSG:20137",
       "+proj=utm +zone=37 +a=6378249.145 +rf=293.465 +towgs84=-165,-11,206,0,0,0,0 +units=m +no_defs +type=crs",
       {
-        resolutions: [8192, 4096, 2048, 1024, 512, 256, 128],
+        resolutions: resolutions,
         origin: [166600.5155002516, 375771.9736823894],
       }
     );
@@ -166,15 +583,39 @@ export class GisMapComponent implements AfterViewInit {
     if (!mapContainer) {
       return;
     }
-    // this.map = L.map("mapp", {
-    //   crs: this.EPSG20137, // Set the map CRS to EPSG:20137
-    // }).setView([9.145, 40.489], 15); // Set an appropriate initial view for Ethiopia
+    this.map = L.map("mapp", {
+      crs: this.EPSG20137,
+      center: [9.032457, 38.759775],
+      zoom: 13, // Set the map CRS to EPSG:20137
+    }); // Set an appropriate initial view for Ethiopia
     // Define custom zoom levels
 
-    this.map = L.map("mapp", {
-      center: [9.145, 40.489],
-      zoom: 13, // Set an initial zoom level (1 corresponds to a 1:1 scale)
-    });
+    // this.map = L.map("mapp", {
+    //   center: [9.032457, 38.759775],
+    //   zoom: 15, // Set an initial zoom level (1 corresponds to a 1:1 scale)
+    // });
+
+    // const googleSatelliteLayer = L.gridLayer.googleSatelliteLayer({
+    //   type: "satellite", // You can change this to 'terrain' or 'hybrid' for different views
+    // });
+    // // Define the tile layers
+    // console.log(googleSatelliteLayer);
+
+    const osmLayer = L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        attribution: "© OpenStreetMap contributors",
+      }
+    );
+    const noneLayer = L.tileLayer("", { attribution: "" });
+    // Create an object to hold the tile layers
+    const baseLayers = {
+      "Google Maps": osmLayer,
+      None: noneLayer,
+    };
+    // Create a layers control with checkboxes
+    const layersControl = L.control.layers(baseLayers).addTo(this.map);
+    // Add an event listener to handle the removal of all layers when "None" is selected
 
     // Create a map event listener to track mouse movements
     this.markerLayer = L.layerGroup().addTo(this.map);
@@ -428,35 +869,36 @@ export class GisMapComponent implements AfterViewInit {
             this.ServiceService.areaVerified = false;
           } else {
             this.ServiceService.areaVerified = true;
+
+            //this.onDatumChange();
+            console.log(utmCoordinates);
+            // Convert each L.LatLng object to [x, y] point
+            // Assuming this.coordinates is an array of L.LatLng objects
+            // Convert each L.LatLng object to [x, y] point
+
+            const geojson = layer.toGeoJSON();
+
+            // Create a layer with the transformed GeoJSON
+            this.drawnShape = L.Proj.geoJson(geojson);
+            console.log(this.drawnShape);
+
+            // Add the transformed GeoJSON layer to the map
+
+            this.drawnShape.addTo(this.map);
+            utmCoordinates.push(utmCoordinates[0]);
+            //points.push(points[0])
+            this.sample = this.drawnShape;
+            console.log("utmCoordinates", utmCoordinates);
+            // Add the coordinates to the array
+            //this.drawnShapes.push(this.coordinates);
+
+            // Do something with the coordinates, such as displaying or processing them
+
+            this.ServiceService.coordinate = utmCoordinates;
+            //  this.ServiceService.shapes = this.aaa.push(this.drawnShape);
+            // Transform GeoJSON to EPSG:20137 CRS
+            this.editableLayers.addLayer(layer);
           }
-          //this.onDatumChange();
-          console.log(utmCoordinates);
-          // Convert each L.LatLng object to [x, y] point
-          // Assuming this.coordinates is an array of L.LatLng objects
-          // Convert each L.LatLng object to [x, y] point
-
-          const geojson = layer.toGeoJSON();
-
-          // Create a layer with the transformed GeoJSON
-          this.drawnShape = L.Proj.geoJson(geojson);
-          console.log(this.drawnShape);
-
-          // Add the transformed GeoJSON layer to the map
-
-          this.drawnShape.addTo(this.map);
-          utmCoordinates.push(utmCoordinates[0]);
-          //points.push(points[0])
-          this.sample = this.drawnShape;
-          console.log("utmCoordinates", utmCoordinates);
-          // Add the coordinates to the array
-          //this.drawnShapes.push(this.coordinates);
-
-          // Do something with the coordinates, such as displaying or processing them
-
-          this.ServiceService.coordinate = utmCoordinates;
-          //  this.ServiceService.shapes = this.aaa.push(this.drawnShape);
-          // Transform GeoJSON to EPSG:20137 CRS
-          this.editableLayers.addLayer(layer);
         } else if (layer instanceof L.Circle) {
           // Get the center LatLng of the circle
           const centerLatLng = layer.getLatLng();
@@ -473,30 +915,55 @@ export class GisMapComponent implements AfterViewInit {
           console.log("Circle LatLngs:", circleLatLngs);
           const utmCoordinates = this.convertCoordinatesToUTM(circleLatLngs);
           this.utmCoordinates = utmCoordinates;
-          console.log(utmCoordinates);
-          // Convert each L.LatLng object to [x, y] point
-          // Assuming this.coordinates is an array of L.LatLng objects
-          // Convert each L.LatLng object to [x, y] point
+          const area = this.calculateUTMPolygonArea(utmCoordinates);
+          // Show the area in a popup
+          const popupContent = `Area: ${area.toFixed(2)} square meters`;
+          layer.bindPopup(popupContent).openPopup();
+          console.log("Totalarea", area, utmCoordinates);
+          if (this.ServiceService.Totalarea <= area) {
+            const warningMessage =
+              "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
+            const toastWarning = this.notificationsService.warn(
+              "Warning",
+              warningMessage + popupContent
+            );
+            this.ServiceService.areaVerified = false;
+          } else if (area <= 75) {
+            const warningMessage =
+              "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
+            const toastWarning = this.notificationsService.warn(
+              "Warning",
+              warningMessage + popupContent
+            );
+            this.ServiceService.areaVerified = false;
+          } else {
+            this.ServiceService.areaVerified = true;
 
-          this.drawnShape = L.polygon(circleLatLngs, {
-            color: "blue",
-          });
+            console.log(utmCoordinates);
+            // Convert each L.LatLng object to [x, y] point
+            // Assuming this.coordinates is an array of L.LatLng objects
+            // Convert each L.LatLng object to [x, y] point
 
-          console.log(this.drawnShape);
+            this.drawnShape = L.polygon(circleLatLngs, {
+              color: "blue",
+            });
 
-          // Add the transformed GeoJSON layer to the map
+            console.log(this.drawnShape);
 
-          this.drawnShape.addTo(this.map);
-          utmCoordinates.push(utmCoordinates[0]);
-          //points.push(points[0])
-          this.sample = this.drawnShape;
-          console.log("utmCoordinates", utmCoordinates);
-          // Add the coordinates to the array
-          //this.drawnShapes.push(this.coordinates);
+            // Add the transformed GeoJSON layer to the map
 
-          // Do something with the coordinates, such as displaying or processing them
-          this.editableLayers.addLayer(layer);
-          this.ServiceService.coordinate = utmCoordinates;
+            this.drawnShape.addTo(this.map);
+            utmCoordinates.push(utmCoordinates[0]);
+            //points.push(points[0])
+            this.sample = this.drawnShape;
+            console.log("utmCoordinates", utmCoordinates);
+            // Add the coordinates to the array
+            //this.drawnShapes.push(this.coordinates);
+
+            // Do something with the coordinates, such as displaying or processing them
+            this.editableLayers.addLayer(layer);
+            this.ServiceService.coordinate = utmCoordinates;
+          }
           // Now you can use circleLatLngs as needed
         }
       }
@@ -520,7 +987,7 @@ export class GisMapComponent implements AfterViewInit {
           layer.bindPopup(popupContent).openPopup();
           console.log("Totalarea", area, utmCoordinates);
           if (this.ServiceService.check) {
-            if (this.ServiceService.Totalarea <= area) {
+            if (this.ServiceService.Totalarea == area) {
               const warningMessage =
                 "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
               const toastWarning = this.notificationsService.warn(
@@ -538,24 +1005,41 @@ export class GisMapComponent implements AfterViewInit {
               this.ServiceService.areaVerified = false;
             } else {
               this.ServiceService.areaVerified = true;
+              utmCoordinates.push(utmCoordinates[0]);
+              // Convert the edited polygon to GeoJSON
+              const geojson = layer.toGeoJSON();
+
+              // Create a layer with the transformed GeoJSON
+              const drawnShape = L.Proj.geoJson(geojson);
+
+              // Add the transformed GeoJSON layer to the map
+              drawnShape.addTo(this.map);
+              // this.editableLayers.addLayer(this.drawnShape);
+              // Do something with the coordinates, such as displaying or processing them
+              // For example, you can set them in a service or perform other actions
+              this.ServiceService.coordinate = utmCoordinates;
+              // this.ServiceService.shapes.push(drawnShape);
+
+              // Transform GeoJSON to EPSG:20137 CRS if needed
             }
+          } else {
+            utmCoordinates.push(utmCoordinates[0]);
+            // Convert the edited polygon to GeoJSON
+            const geojson = layer.toGeoJSON();
+
+            // Create a layer with the transformed GeoJSON
+            const drawnShape = L.Proj.geoJson(geojson);
+
+            // Add the transformed GeoJSON layer to the map
+            drawnShape.addTo(this.map);
+            // this.editableLayers.addLayer(this.drawnShape);
+            // Do something with the coordinates, such as displaying or processing them
+            // For example, you can set them in a service or perform other actions
+            this.ServiceService.coordinate = utmCoordinates;
+            // this.ServiceService.shapes.push(drawnShape);
+
+            // Transform GeoJSON to EPSG:20137 CRS if needed
           }
-          utmCoordinates.push(utmCoordinates[0]);
-          // Convert the edited polygon to GeoJSON
-          const geojson = layer.toGeoJSON();
-
-          // Create a layer with the transformed GeoJSON
-          const drawnShape = L.Proj.geoJson(geojson);
-
-          // Add the transformed GeoJSON layer to the map
-          drawnShape.addTo(this.map);
-          // this.editableLayers.addLayer(this.drawnShape);
-          // Do something with the coordinates, such as displaying or processing them
-          // For example, you can set them in a service or perform other actions
-          this.ServiceService.coordinate = utmCoordinates;
-          // this.ServiceService.shapes.push(drawnShape);
-
-          // Transform GeoJSON to EPSG:20137 CRS if needed
         }
       });
     });
@@ -609,134 +1093,200 @@ export class GisMapComponent implements AfterViewInit {
     // });
 
     // Geoserver information
-    const geoserverUrl = environment.geoserverUrl;
-    const groupLayerName = environment.groupLayerName;
-    const geoserverUrlwfs = environment.geoserverUrlwfs;
-    console.log(geoserverUrl, groupLayerName);
+    // const geoserverUrl = environment.geoserverUrl;
+    // const groupLayerName = environment.groupLayerName;
+    // const geoserverUrlwfs = environment.geoserverUrlwfs;
+    // console.log(geoserverUrl, groupLayerName);
 
-    // GetCapabilities request to retrieve layer names within the group
-    const capabilitiesUrl = `${geoserverUrl}?service=WMS&version=1.1.0&request=GetCapabilities`;
+    // // GetCapabilities request to retrieve layer names within the group
+    // const capabilitiesUrl = `${geoserverUrl}?service=WMS&version=1.1.0&request=GetCapabilities`;
 
-    fetch(capabilitiesUrl)
-      .then((response) => response.text())
-      .then((data) => {
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(data, "application/xml");
-        const layers = xmlDoc.getElementsByTagName("Layer");
+    // fetch(capabilitiesUrl)
+    //   .then((response) => response.text())
+    //   .then((data) => {
+    //     const parser = new DOMParser();
+    //     const xmlDoc = parser.parseFromString(data, "application/xml");
+    //     const layers = xmlDoc.getElementsByTagName("Layer");
 
-        for (let i = 0; i < layers.length; i++) {
-          const layer = layers[i];
-          let layerName = layer.getElementsByTagName("Name")[0].textContent;
-          console.log("layerName", layerName, layer);
+    //     for (let i = 0; i < layers.length; i++) {
+    //       const layer = layers[i];
+    //       let layerName = layer.getElementsByTagName("Name")[0].textContent;
+    //       console.log("layerName", layerName, layer);
 
-          if (layerName === environment.groupName) {
-            continue; // Skip this layer if it doesn't belong to the desired group
-          }
+    //       if (layerName === environment.groupName) {
+    //         continue; // Skip this layer if it doesn't belong to the desired group
+    //       }
 
-          // Create a new layer object and push it to the layers array
-          const newLayer: Layer = {
-            name: layerName,
-            vectorLayer: null,
-          };
+    //       // Create a new layer object and push it to the layers array
+    //       const newLayer: Layer = {
+    //         name: layerName,
+    //         vectorLayer: null,
+    //       };
 
-          // Add each layer to the map as a vector layer
-          const getFeatureUrl = `${geoserverUrlwfs}?service=WFS&version=1.0.0&request=GetFeature&typeName=${layerName}&outputFormat=application/json`;
-          fetch(getFeatureUrl)
-            .then((response) => response.json())
-            .then((geojson) => {
-              // Create a new vector layer using the fetched GeoJSON data
-              const vectorLayer = L.Proj.geoJson(geojson, {
-                style: (feature) => {
-                  // Generate a random color in hexadecimal format
-                  let randomColor =
-                    "#" + Math.floor(Math.random() * 16777215).toString(16);
-                  if (
-                    layerName == "Oromiya_woredas" ||
-                    layerName == "Oromia_Zones"
-                  ) {
-                  } else {
-                    randomColor = "#8f8686";
-                  }
-                  // Return the style object with the random color
-                  return {
-                    color: randomColor,
-                    fillColor: randomColor,
-                    fillOpacity: 0.5,
-                  };
-                },
+    //       // Add each layer to the map as a vector layer
+    //       const getFeatureUrl = `${geoserverUrlwfs}?service=WFS&version=1.0.0&request=GetFeature&typeName=${layerName}&outputFormat=application/json`;
+    //       fetch(getFeatureUrl)
+    //         .then((response) => response.json())
+    //         .then((geojson) => {
+    //           // Create a new vector layer using the fetched GeoJSON data
+    //           const vectorLayer = L.Proj.geoJson(geojson, {
+    //             style: (feature) => {
+    //               // Generate a random color in hexadecimal format
+    //               let randomColor =
+    //                 "#" + Math.floor(Math.random() * 16777215).toString(16);
+    //               if (
+    //                 layerName == "Oromiya_woredas" ||
+    //                 layerName == "Oromia_Zones"
+    //               ) {
+    //               } else {
+    //                 randomColor = "#8f8686";
+    //               }
+    //               // Return the style object with the random color
+    //               return {
+    //                 color: randomColor,
+    //                 fillColor: randomColor,
+    //                 fillOpacity: 0.5,
+    //               };
+    //             },
 
-                onEachFeature: (feature, layer) => {
-                  const properties = feature.properties; // Access the properties of the feature
-                  let popupContent = `Layer: ${layerName}<br>Feature ID: ${feature.id}<br>`;
+    //             onEachFeature: (feature, layer) => {
+    //               const properties = feature.properties; // Access the properties of the feature
+    //               let popupContent = `Layer: ${layerName}<br>Feature ID: ${feature.id}<br>`;
 
-                  // Dynamically add the properties to the popup content
-                  if (layerName == "Oromiya_woredas") {
-                    console.log(properties);
-                  }
+    //               // Dynamically add the properties to the popup content
+    //               if (layerName == "Oromiya_woredas") {
+    //                 console.log(properties);
+    //               }
 
-                  for (const propertyName in properties) {
-                    if (properties.hasOwnProperty(propertyName)) {
-                      popupContent += `${propertyName}: ${properties[propertyName]}<br>`;
-                    }
-                  }
+    //               for (const propertyName in properties) {
+    //                 if (properties.hasOwnProperty(propertyName)) {
+    //                   popupContent += `${propertyName}: ${properties[propertyName]}<br>`;
+    //                 }
+    //               }
 
-                  // Bind the customized popup content to the layer
-                  layer.bindPopup(popupContent);
-                },
-                coordsToLatLng: (
-                  coords: [number, number] | [number, number, number]
-                ) => {
-                  if (coords.length >= 2) {
-                    // Ignore the z-coordinate and use only the x and y coordinates for LatLng
-                    return L.CRS.EPSG4326.unproject(
-                      L.point(coords[0], coords[1])
-                    );
-                  }
-                  throw new Error("Invalid coordinate format");
-                },
-                attribution: layerName,
-              });
-              vectorLayer.on("click", (event: L.LeafletEvent) => {
-                const clickedLayer = event.layer;
-                const clickedFeature = clickedLayer.feature;
+    //               // Bind the customized popup content to the layer
+    //               layer.bindPopup(popupContent);
+    //             },
+    //             coordsToLatLng: (
+    //               coords: [number, number] | [number, number, number]
+    //             ) => {
+    //               if (coords.length >= 2) {
+    //                 // Ignore the z-coordinate and use only the x and y coordinates for LatLng
+    //                 return L.CRS.EPSG4326.unproject(
+    //                   L.point(coords[0], coords[1])
+    //                 );
+    //               }
+    //               throw new Error("Invalid coordinate format");
+    //             },
+    //             attribution: layerName,
+    //           });
+    //           vectorLayer.on("click", (event: L.LeafletEvent) => {
+    //             const clickedLayer = event.layer;
+    //             const clickedFeature = clickedLayer.feature;
 
-                if (clickedFeature && clickedFeature.properties) {
-                  let popupContent = "<div>";
-                  for (const key in clickedFeature.properties) {
-                    if (clickedFeature.properties.hasOwnProperty(key)) {
-                      popupContent += `<div><strong>${key}:</strong> ${clickedFeature.properties[key]}</div>`;
-                    }
-                  }
-                  popupContent += "</div>";
+    //             if (clickedFeature && clickedFeature.properties) {
+    //               let popupContent = "<div>";
+    //               for (const key in clickedFeature.properties) {
+    //                 if (clickedFeature.properties.hasOwnProperty(key)) {
+    //                   popupContent += `<div><strong>${key}:</strong> ${clickedFeature.properties[key]}</div>`;
+    //                 }
+    //               }
+    //               popupContent += "</div>";
 
-                  // Bind the customized popup content to the layer
-                  clickedLayer.bindPopup(popupContent).openPopup();
-                }
-              });
+    //               // Bind the customized popup content to the layer
+    //               clickedLayer.bindPopup(popupContent).openPopup();
+    //             }
+    //           });
 
-              // Store the vector layer reference in the newLayer object
-              newLayer.vectorLayer = vectorLayer;
-              console.log(vectorLayer);
-              if (
-                layerName === "Oromiya_woredas" &&
-                this.ServiceService.check
-              ) {
-                this.toggleLayer(true, "Oromiya_woredas");
-              }
+    //           // Store the vector layer reference in the newLayer object
+    //           newLayer.vectorLayer = vectorLayer;
+    //           console.log(vectorLayer);
+    //           if (
+    //             layerName === "Oromiya_woredas" &&
+    //             this.ServiceService.check
+    //           ) {
+    //             this.toggleLayer(true, "Oromiya_woredas");
+    //           }
 
-              // Add the vector layer to the map
-              // vectorLayer.addTo(this.map);
-            })
-            .catch((error) => {
-              console.error("Error fetching GeoJSON:", error);
-            });
-          this.layers.push(newLayer);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching GetCapabilities:", error);
-      });
+    //           // Add the vector layer to the map
+    //           // vectorLayer.addTo(this.map);
+    //         })
+    //         .catch((error) => {
+    //           console.error("Error fetching GeoJSON:", error);
+    //         });
+    //       this.layers.push(newLayer);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error fetching GetCapabilities:", error);
+    //   });
   }
+  // handleLayerSelection(
+  //   checked: boolean,
+  //   event: any,
+  //   targetArray: TreeNode[]
+  // ): void {
+  //   if (checked) {
+  //     this.geoser.getLayersFromGeoserver(event).subscribe(
+  //       (data: any) => {
+  //         const layersData = [data.layerGroup.publishables.published];
+  //         console.log("handleLayerSelection", layersData);
+
+  //         if (Array.isArray(layersData)) {
+  //           // If layersData is an array, map it to match the Layer interface
+  //           const layers: TreeNode[] = layersData.map((layerData: any) => {
+  //             return {
+  //               href: layerData.href,
+  //               lable: layerData.name,
+  //               name: layerData.name,
+  //               // You can set tileLayer and vectorLayer properties here if applicable
+  //             };
+  //           });
+
+  //           // Handle the fetched layers here
+  //           console.log("handleLayerSelection", layers);
+
+  //           // Add the layers to the targetArray
+  //           console.log("Before push:", this.targetArray);
+  //           this.targetArray.push(...layers);
+  //           console.log("After push:", this.targetArray);
+
+  //           for (let index = 0; index < this.targetArray.length; index++) {
+  //             const element = this.targetArray[index].name.split(":");
+  //             this.targetArray[index].lable = element[1];
+  //           }
+  //         } else {
+  //           // If layersData is not an array, handle it accordingly
+  //           // You might need to create a single Layer object here or handle it in a way that matches your requirements
+  //         }
+  //       },
+  //       (error: any) => {
+  //         console.error("Error fetching data:", error);
+  //         // Handle the error, e.g., show an error message to the user
+  //       }
+  //     );
+  //   } else {
+  //     // Clear the targetArray when unchecked
+  //     this.targetArray.length = 0;
+  //   }
+  // }
+
+  // Example usage in your existing functions:
+  // ParentGroupLayerSelected(checked: boolean, event: any): void {
+  //   this.handleLayerSelection(checked, event, this.subcities);
+  // }
+
+  // SubcitiesSelected(checked: boolean, event: any): void {
+  //   this.handleLayerSelection(checked, event, this.woredas);
+  // }
+
+  // WoredasSelected(checked: boolean, event: any): void {
+  //   this.handleLayerSelection(checked, event, this.woredaLayers);
+  // }
+
+  // WoredaLayersSelected(checked: boolean, event: any): void {
+  //   this.handleLayerSelection(checked, event, this.woredaLayersOneByOne);
+  // }
   calculateCircleCoordinates(center, radius) {
     const points = [];
     const radiusKilometers = radius / 1000; // Convert meters to kilometers
@@ -1019,44 +1569,48 @@ export class GisMapComponent implements AfterViewInit {
     };
   }
 
-  toggleLayer(visibility: boolean, layerName: string) {
-    const layer = this.layers.find((l) => l.name === layerName);
-    console.log(layer);
+  // toggleLayer(visibility: boolean, layerName: string) {
+  //   const layer = this.layers.find((l) => l.name === layerName);
+  //   console.log(layer);
 
-    if (layer && layer.vectorLayer) {
-      if (visibility) {
-        console.log(layer.vectorLayer);
-        this.map.addLayer(layer.vectorLayer);
-      } else {
-        console.log(layer.vectorLayer);
+  //   if (layer && layer.vectorLayer) {
+  //     if (visibility) {
+  //       console.log(layer.vectorLayer);
+  //       this.map.addLayer(layer.vectorLayer);
+  //     } else {
+  //       console.log(layer.vectorLayer);
 
-        this.map.removeLayer(layer.vectorLayer);
-      }
-    }
-  }
-
-  //  toggleLayer(checked: boolean, layerName: string): void {
-
-  //   const layer = this.layers.find(l => l.name === layerName);
-
-  //   if (checked) {
-  //     if (!layer.tileLayer) {
-  //       layer.tileLayer = L.tileLayer.wms(environment.geoserverUrl, {
-  //         layers: layerName,
-  //         format: 'image/png',
-  //         transparent: true,
-  //         attribution: 'this is '+layerName + 'map',
-  //          crs: this.EPSG20137, // Set the tile layer CRS to EPSG:20137,
-  //       });
-  //     }
-  //     layer.tileLayer.addTo(this.map);
-  //     this.onDatumChange()
-  //   } else {
-  //     if (layer.tileLayer) {
-  //       this.map.removeLayer(layer.tileLayer);
+  //       this.map.removeLayer(layer.vectorLayer);
   //     }
   //   }
   // }
+
+  toggleLayer(visibility: boolean, layerName: string) {
+    const layer = this.layers.find((l) => l.name === layerName);
+    //debugger;
+    if (layer && layer.vectorLayer) {
+      if (visibility) {
+        console.log("vectorlayer", layer.vectorLayer);
+
+        this.map.addLayer(layer.tileLayer);
+        this.map.addLayer(layer.vectorLayer);
+        //this.onDatumChange();
+      } else {
+        console.log("vectorlayer", layer.vectorLayer);
+        this.map.removeLayer(layer.tileLayer);
+        this.map.removeLayer(layer.vectorLayer);
+      }
+    } else if (layer && layer.tileLayer) {
+      if (visibility) {
+        console.log("tilelayer", layer.tileLayer);
+        this.map.addLayer(layer.tileLayer);
+        //this.onDatumChange();
+      } else {
+        console.log("tilelayer", layer.tileLayer);
+        this.map.removeLayer(layer.tileLayer);
+      }
+    }
+  }
   convertToLatLng(
     latitudeDegrees: number,
     latitudeMinutes: number,
@@ -1255,26 +1809,26 @@ export class GisMapComponent implements AfterViewInit {
       const drawnShapeBounds = this.drawnShape.getBounds();
       console.log("center", drawnShapeBounds);
 
-      const customIcon = new L.Icon({
-        iconUrl: environment.iconpath, // Replace with the actual path to your icon image
-        iconSize: [50, 50], // Adjust the size as needed
-        iconAnchor: [25, 50], // Adjust the anchor point if necessary
-        popupAnchor: [0, -50], // Adjust the popup anchor if needed
-        className: "custom-icon-class", // You can also add a custom CSS class
-      });
+      // const customIcon = new L.Icon({
+      //   iconUrl: environment.iconpath, // Replace with the actual path to your icon image
+      //   iconSize: [50, 50], // Adjust the size as needed
+      //   iconAnchor: [25, 50], // Adjust the anchor point if necessary
+      //   popupAnchor: [0, -50], // Adjust the popup anchor if needed
+      //   className: "custom-icon-class", // You can also add a custom CSS class
+      // });
       // Calculate the center of the bounds
       const center = drawnShapeBounds.getCenter();
       console.log("center", center);
 
-      var marker = new L.Marker(center, {
-        icon: customIcon,
-      });
+      // var marker = new L.Marker(center, {
+      //   icon: customIcon,
+      // });
       // this.addCenterMarker(center);
       // marker.addTo(this.map);
 
       // Fit the map bounds to the drawn shape with a specific maxZoom level
       this.map.fitBounds(this.drawnShape.getBounds());
-      //this.onDatumChange();
+      // this.onDatumChange();
       // this.map.setView(center, 15);
 
       //  if (this.ServiceService.check == true) {
@@ -1304,11 +1858,6 @@ export class GisMapComponent implements AfterViewInit {
       //}
       // Set the map view to the calculated center and zoom level
       // Fit the bounds with the new maxZoom level
-
-      this.aaa.push(this.drawnShape);
-      // this.onDatumChange()
-      this.ServiceService.shapes = this.aaa;
-      this.sample = this.drawnShape;
     }
   }
   // calculatePolygonArea(polygon) {
@@ -1625,32 +2174,37 @@ export class GisMapComponent implements AfterViewInit {
       this.map.options.crs = crs;
     } else if (this.selectedDatum === "Adindan / UTM zone 37N") {
       selectedProjection = adindanZone37Projection;
-      const crs = new L.Proj.CRS("EPSG:20137", selectedProjection, {
-        origin: [-180, 90],
-        resolutions: [
-          132291.9312505292, 66145.9656252646, 33072.9828126323,
-          16536.49140631615, 1033.5307128947595, 8268.245703158075,
-          4134.122851579038, 2067.061425789519, 1033.5307128947597,
-          516.7653564473798, 258.3826782236899, 129.19133911184494,
-          64.59566955592247, 32.29783477796124, 16.14891738898062,
-          8.07445869449031, 4.037229347245155, 2.0186146736225775,
-          1.0093073368112888, 1.0093073368112888, 1.0093073368165999,
-          1.009307336818619, 1.0093073368193081, 1.0093073368193542,
-          1.0093073368193683, 1.0093073368193714, 1.009307336819372,
-          1.0093073368193723, 1.0093073368193724,
+      // Conversion factor from meters to feet
+      const metersToFeet = 3.28084;
 
-          0.5046536684056444, 0.5046536684056445, 0.5046536684056446,
-          0.5046536684056447, 0.5046536684056448, 0.5046536684056449,
-          0.504653668405645, 0.5046536684056451, 0.5046536684056452,
-          0.5046536684056453,
+      // Define the base resolution in meters per pixel
+      const baseResolutionMeters = 10; // 10 meters
 
-          0.5046536684056444,
-        ],
-        bounds: L.bounds(
-          [-36909.130089988816, 376321.5212803309],
-          [937040.4635133516, 1148344.584522629]
-        ),
-      });
+      // Calculate the equivalent resolution in feet per pixel
+      const baseResolutionFeet = baseResolutionMeters * metersToFeet; // 32.8084 feet
+
+      // Create an array of resolutions that match your desired scales
+      const resolutions = [
+        baseResolutionMeters,
+        baseResolutionMeters / 2,
+        baseResolutionMeters / 4,
+        baseResolutionMeters / 8,
+        baseResolutionMeters / 16,
+        baseResolutionMeters / 32,
+        baseResolutionMeters / 64,
+        baseResolutionMeters / 128,
+        // ... Add more resolutions for finer zoom levels
+      ];
+
+      // Define your Leaflet CRS with the updated resolutions
+      const crs = new L.Proj.CRS(
+        "EPSG:20137",
+        "+proj=utm +zone=37 +a=6378249.145 +rf=293.465 +towgs84=-165,-11,206,0,0,0,0 +units=m +no_defs +type=crs",
+        {
+          resolutions: resolutions,
+          origin: [166600.5155002516, 375771.9736823894],
+        }
+      );
 
       // Set the updated map projection
       this.map.options.crs = crs;
@@ -1779,9 +2333,8 @@ export class GisMapComponent implements AfterViewInit {
     //    this.addCenterMarker(centerr);
     // }
     // Update the map view to the center coordinates of Ethiopia and adjust the zoom level
-    const center = L.latLng(9.145, 40.4897); // Update with Ethiopia center coordinates
-    const zoom = 15; // Update with the desired zoom level for the selected projection
-
+    const center = L.latLng(9.032457, 38.759775); // Update with Ethiopia center coordinates
+    const zoom = 13; // Update with the desired zoom level for the selected projection
     this.map.setView(center, zoom);
   }
 
@@ -1859,4 +2412,11 @@ interface Layer {
   name: string; // Name of the layer
   tileLayer?: L.TileLayer.WMS | null; // Tile layer (if it's a tile layer)
   vectorLayer?: L.Proj.GeoJSON | null; // Vector layer (if it's a vector layer)
+}
+
+interface TreeNode {
+  name: string;
+  children?: TreeNode[];
+  href?: string;
+  lable: string;
 }

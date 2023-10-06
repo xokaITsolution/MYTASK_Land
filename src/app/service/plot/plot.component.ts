@@ -54,9 +54,9 @@ export class PlotComponent implements OnChanges {
   displayGIS: boolean;
   geo: any;
   multipleplotcanbeadd: boolean = true;
-
+  display: boolean = false;
   constructor(
-    private serviceService: ServiceService,
+    public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService,
     private modalService: BsModalService
@@ -79,7 +79,7 @@ export class PlotComponent implements OnChanges {
     this.noinvalidplot = 0;
     console.log("emptedlist", this.PlotManagementList);
     this.getPloat();
-
+    this.getPlotStutusLookUP();
     // this.isvalidated();
   }
   modalRef: BsModalRef;
@@ -120,24 +120,14 @@ export class PlotComponent implements OnChanges {
 
         console.log(
           "plotloc:",
-          this.plotloc,
-          this.serviceService.multipleplotcanbeadd
+          this.plotloc
+          //this.serviceService.multipleplotcanbeadd
         );
         this.isplotllocnew = false;
-        if (this.serviceService.multipleplotcanbeadd) {
-          let filterservice = this.serviceService.multipleplotcanbeadd.filter(
-            (x) => x.id === this.serviceService.Service_ID
-          );
-          if (filterservice.length > 0) {
-            this.multipleplotcanbeadd = true;
-          } else {
-            this.multipleplotcanbeadd = false;
-          }
-        }
       } else {
         this.platformLocation = new PlatformLocation();
         this.isplotllocnew = true;
-        this.multipleplotcanbeadd = true;
+        // this.multipleplotcanbeadd = true;
         //this.serviceService.toMess=true
       }
     });
@@ -417,7 +407,21 @@ export class PlotComponent implements OnChanges {
         }
 
         console.log("PlotManagementList", PlotManagementLists);
-        console.log("this.PlotManagementList", this.PlotManagementList);
+        console.log(
+          "this.PlotManagementList",
+          this.PlotManagementList,
+          this.LicenceData
+        );
+        if (this.serviceService.multipleplotcanbeadd) {
+          let filterservice = this.serviceService.multipleplotcanbeadd.filter(
+            (x) => x.id === this.serviceService.Service_ID
+          );
+          if (filterservice.length > 0) {
+            this.multipleplotcanbeadd = true;
+          } else {
+            this.multipleplotcanbeadd = false;
+          }
+        }
       },
       (error) => {
         console.log("error");
@@ -443,6 +447,16 @@ export class PlotComponent implements OnChanges {
     plot.Application_No = this.AppNo;
     if (plot.Registration_Date) {
       plot.Registration_Date = plot.Registration_Date.split("T")[0];
+    }
+    if (this.serviceService.multipleplotcanbeadd) {
+      let filterservice = this.serviceService.multipleplotcanbeadd.filter(
+        (x) => x.id === this.serviceService.Service_ID
+      );
+      if (filterservice.length > 0) {
+        this.multipleplotcanbeadd = true;
+      } else {
+        this.multipleplotcanbeadd = false;
+      }
     }
     // this.plotForm = true;
   }
@@ -603,6 +617,22 @@ export class PlotComponent implements OnChanges {
     }
   }
 
+  getPlotStutusLookUP() {
+    this.serviceService.getPlotStutusLookUP().subscribe(
+      (PlotStutusLookUP) => {
+        this.serviceService.PlotStutusLook = PlotStutusLookUP;
+        this.serviceService.PlotStutusLook = Object.assign(
+          [],
+          this.serviceService.PlotStutusLook.list
+        );
+        // console.log('PlotStutusLookUP', PlotStutusLookUP);
+      },
+      (error) => {
+        console.log("error");
+      }
+    );
+  }
+
   isisvalidated(todoID, tskID, plotid, proid, DocID) {
     this.serviceService
       .isvalidated(todoID, tskID, plotid, proid, DocID)
@@ -676,6 +706,7 @@ export class PlotComponent implements OnChanges {
       this.Parcel_ID = Parcel.Plot_ID;
       this.LicenceData.Parcel_ID = Parcel.Plot_ID;
     }
+
     this.serviceService.UpdateLicence(this.LicenceData).subscribe(
       (Licence) => {
         console.log("Licence", Licence);
@@ -707,9 +738,9 @@ export class PlotComponent implements OnChanges {
   }
 
   DoneNew() {
+    this.serviceService.disablefins = false;
     this.plotForm = false;
     this.isvalidated();
-    this.serviceService.disablefins = false;
     this.toLease = false;
     this.CanDone = false;
   }

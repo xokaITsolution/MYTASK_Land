@@ -1,16 +1,17 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {environment} from '../../../environments/environment';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class CertificateVersionService {
-  private SaveUrl = environment.rootPath + 'Certificate_Version';
-  private getDeedTableURL = environment.rootPath + 'BPEL/getDeedRegstrationByPlotID';
+  private SaveUrl =
+    environment.rootPathApi + "Certificate_Version/procCertificate_Version";
+  private getDeedTableURL =
+    environment.rootPath + "BPEL/getDeedRegstrationByPlotID";
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   SaveCertificate(data: any) {
     return this.http.put(this.SaveUrl, data);
@@ -21,7 +22,6 @@ export class CertificateVersionService {
   }
 
   getDeedTable(plotid) {
-    return this.http.get(this.getDeedTableURL + '?plotid=' + plotid);
+    return this.http.get(this.getDeedTableURL + "?plotid=" + plotid);
   }
-
 }

@@ -4,4 +4,22 @@
   }
  
 
- 
+ /* Add styles for mini and full modal sizes */
+ .modal-dialog {
+   max-width: 100%;
+   /* Adjust this as needed */
+   width: auto !important;
+   transition: all 0.3s ease-in-out;
+ }
+
+ /* Mini Size */
+ .mini-size {
+   max-width: 300px;
+   /* Adjust the width as needed */
+ }
+
+ /* Full Size */
+ .full-size  {
+   max-width: 100%;
+   /* Adjust the width as needed */
+ }

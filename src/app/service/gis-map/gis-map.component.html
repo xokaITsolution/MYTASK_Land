@@ -1,173 +1,224 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-2">
+    <div class="col-md-3">
       <div class="sidebar">
         <div class="sidebar-content">
-          <h3>Layers</h3>
-          <div *ngFor="let layer of layers">
+            <div class="sideTitle">
+              <h1>Layers</h1>
+            </div>
+          <!-- <div *ngFor="let layer of layers">
             <label>
               <input type="checkbox" [value]="layer.name"[checked]="ServiceService.check!=true ? '':layer.name == 'Oromiya_woredas'" (change)="toggleLayer($event.target.checked, layer.name)" />
               {{ layer.name }}
             </label>
-          </div>
-        </div>
-</div></div>
-    <div class="col-md-10">
-     
-        <div id="mapp" style="width: 100%; height: 500px;"></div>
-        
-        
-        <div id="coordinateInfo"
-          style=" bottom: 10px;  background-color: rgba(255, 255, 255, 0.8);  border-radius: 5px;">
-          
-        </div>
-        <div *ngFor="let arrayof of arrayFoPolygonarea">
-            
-          <li>{{ arrayof[0].Name}} :&nbsp;{{arrayof[0].area}} &nbsp;{{arrayof[0].mesurment}}</li>
-        </div>
-      Totalarea:  {{ServiceService.Totalarea}}M<sup>2</sup>
+          </div> -->
+          <ul>
+            <div class="activeSite">
+              <h5 class="sub">Addis Ababa</h5>
+              <li class="container" *ngFor="let parentgroupLayer of groupLayer">
+                <label>
+                  <input type="checkbox" (change)="ParentGroupLayerSelected($event.target.checked,$event.target.value)"
+                    [value]="parentgroupLayer.href">{{parentgroupLayer.name}}
+                </label>
+              </li>
 
+              <ul>
+              
+                <li class="container" *ngFor="let subcity of subcities">
+                  <label>
+                    <input type="checkbox"
+                      (change)="SubcitiesSelected($event.target.checked,$event.target.value);toggleLayer($event.target.checked, subcity.names)"
+                      [value]="subcity.href">{{subcity.names}}
+                  </label>
+                </li>
+                <ul>
+                  <li class="container" *ngFor="let woreda of woredas">
+                    <label>
+                      <input type="checkbox"
+                        (change)="WoredasSelected($event.target.checked,$event.target.value);toggleLayer($event.target.checked, woreda.names)"
+                        [value]="woreda.href">{{woreda.names}}
+                    </label>
+                  </li>
+                  <ul>
+                    <li class="container" *ngFor="let woredalayer of woredaLayers">
+                      <label>
+                        <input type="checkbox"
+                          (change)="WoredaLayersSelected($event.target.checked, $event.target.value);toggleLayer($event.target.checked, woredalayer.names)"
+                          [value]="woredalayer.href">{{woredalayer.names}}
+                      </label>
+                    </li>
+                    <ul>
+                      <li class="container" *ngFor="let woredalayersofall of woredaLayersOneByOne">
+                        <label>
+                          <input type="checkbox" (change)="toggleLayer($event.target.checked, woredalayersofall.names)"
+                            [value]="woredalayersofall.names">{{woredalayersofall.names}}
+                        </label>
+                      </li>
+                    </ul>
+                  </ul>
+                </ul>
+              </ul>
+            </div>
+          </ul>
+        </div>
       </div>
     </div>
-      <div class="col-md-10" *ngIf="!ServiceService.fromPropoperty">
-        <h3>Enter Coordinates</h3>
-        <div class="form-row">
-          <div class="col-sm-12">
-            <div class="form-group row">
-              <label for="latitude" class="col-sm-4 col-form-label">Datum:</label>
-              <div class="col-sm-8">
-     
-                <select disabled [(ngModel)]="selectedDatum" (change)="onDatumChange()">
-                  <option *ngFor="let datum of datums" [value]="datum"  >{{ datum }}</option>
-                </select>
+    <div class="col-md-9">
+
+      <div id="mapp" style="width: 100%; height: 500px;"></div>
+
+
+      <div id="coordinateInfo" style=" bottom: 10px;  background-color: rgba(255, 255, 255, 0.8);  border-radius: 5px;">
+
+      </div>
+      <div *ngFor="let arrayof of arrayFoPolygonarea">
+
+        <li>{{ arrayof[0].Name}} :&nbsp;{{arrayof[0].area}} &nbsp;{{arrayof[0].mesurment}}</li>
+      </div>
+      Totalarea: {{ServiceService.Totalarea}}M<sup>2</sup>
+
+    </div>
+  </div>
+  <div class="col-md-10" *ngIf="!ServiceService.fromPropoperty">
+    <h3>Enter Coordinates</h3>
+    <div class="form-row">
+      <div class="col-sm-12">
+        <div class="form-group row">
+          <label for="latitude" class="col-sm-4 col-form-label">Datum:</label>
+          <div class="col-sm-8">
+
+            <select disabled [(ngModel)]="selectedDatum" (change)="onDatumChange()">
+              <option *ngFor="let datum of datums" [value]="datum">{{ datum }}</option>
+            </select>
+
+          </div>
+
+
+          <div *ngIf="selectedDatum">
+            <!-- Define input boxes based on selected datum -->
+            <div
+              *ngIf="selectedDatum === 'Adindan / UTM zone 36N' || selectedDatum === 'Adindan / UTM zone 37N' || selectedDatum === 'Adindan / UTM zone 38N'">
+              <!-- Add input boxes with type for Adindan / UTM zone 36N, 37N, and 38N -->
+              <div class="input-group">
+
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Latitude</span>
+                </div>
+                <input type="number" aria-label="Last name" class="form-control" [(ngModel)]="latitude">
+                <div class="input-group-append">
+                  <span class="input-group-text">N</span>
+                </div>
 
               </div>
-            
-          
-    <div *ngIf="selectedDatum">
-      <!-- Define input boxes based on selected datum -->
-      <div
-        *ngIf="selectedDatum === 'Adindan / UTM zone 36N' || selectedDatum === 'Adindan / UTM zone 37N' || selectedDatum === 'Adindan / UTM zone 38N'">
-        <!-- Add input boxes with type for Adindan / UTM zone 36N, 37N, and 38N -->
-          <div class="input-group">
-          
-            <div class="input-group-prepend">
-              <span class="input-group-text">Latitude</span>
+              &nbsp;
+              <div class="input-group">
+
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Longitude</span>
+                </div>
+                <input type="number" aria-label="Last name" class="form-control" [(ngModel)]="longitude">
+                <div class="input-group-append">
+                  <span class="input-group-text">E</span>
+                </div>
+
+              </div>
+
+
             </div>
-            <input type="number" aria-label="Last name" class="form-control" [(ngModel)]="latitude">
-            <div class="input-group-append">
-              <span class="input-group-text">N</span>
-            </div>
-          
-          </div>
-          &nbsp;
-        <div class="input-group">
-        
-          <div class="input-group-prepend">
-            <span class="input-group-text">Longitude</span>
-          </div>
-          <input type="number" aria-label="Last name" class="form-control" [(ngModel)]="longitude">
-          <div class="input-group-append">
-            <span class="input-group-text">E</span>
-          </div>
-        
-        </div>
-      
-        
-      </div>
-    
-  <div *ngIf="selectedDatum === 'GCS Adindan'">
-        <!-- Add input boxes with type for GCS Adindan -->
-    <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Latitude</span>
-      </div>
-      <input type="number" aria-label="First name"  [(ngModel)]="latitudeDegrees" class="form-control">
-      <input type="number" aria-label="Last name" class="form-control" [(ngModel)]="latitudeMinutes">
-      <input type="number" aria-label="Last name" class="form-control" [(ngModel)]="latitudeSeconds">
-      <div class="input-group-append">
-        <span class="input-group-text">DMS</span></div>
-    </div>
-    &nbsp;
-      <div class="input-group">
 
-        <div class="input-group-prepend">
-          <span class="input-group-text">Longitude</span>
-        </div>
-        <input type="number" aria-label="First name" [(ngModel)]="longitudeDegrees" class="form-control">
-        <input type="number" aria-label="Last name" class="form-control" [(ngModel)]="longitudeMinutes">
-        <input type="number" aria-label="Last name" class="form-control" [(ngModel)]="longitudeSeconds">
-        <div class="input-group-append">
-          <span class="input-group-text">DMS</span>
-        </div>
-      
-        </div>
-      </div>
-     
-    
-      <div
-        *ngIf="selectedDatum === 'WGS 1984 UTM Zone 36' || selectedDatum === 'WGS 1984 UTM Zone 37' || selectedDatum === 'WGS 1984 UTM Zone 38'">
-        <!-- Add input boxes with type for WGS 1984 UTM Zone 36, 37, and 38 -->
-        <div class="input-group">
-        
-          <div class="input-group-prepend">
-            <span class="input-group-text">Latitude</span>
-          </div>
-          <input type="number" aria-label="Last name" class="form-control" [(ngModel)]="latitude">
-          <div class="input-group-append">
-            <span class="input-group-text">N</span>
-          </div>
-        
-        </div>
-        &nbsp;
-        <div class="input-group">
-        
-          <div class="input-group-prepend">
-            <span class="input-group-text">Longitude</span>
-          </div>
-          <input type="number" aria-label="Last name" class="form-control" [(ngModel)]="longitude">
-          <div class="input-group-append">
-            <span class="input-group-text">E</span>
-          </div>
-        
-        </div>
-      </div>
-    
-      
-    </div>
+            <div *ngIf="selectedDatum === 'GCS Adindan'">
+              <!-- Add input boxes with type for GCS Adindan -->
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Latitude</span>
+                </div>
+                <input type="number" aria-label="First name" [(ngModel)]="latitudeDegrees" class="form-control">
+                <input type="number" aria-label="Last name" class="form-control" [(ngModel)]="latitudeMinutes">
+                <input type="number" aria-label="Last name" class="form-control" [(ngModel)]="latitudeSeconds">
+                <div class="input-group-append">
+                  <span class="input-group-text">DMS</span>
+                </div>
+              </div>
+              &nbsp;
+              <div class="input-group">
 
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Longitude</span>
+                </div>
+                <input type="number" aria-label="First name" [(ngModel)]="longitudeDegrees" class="form-control">
+                <input type="number" aria-label="Last name" class="form-control" [(ngModel)]="longitudeMinutes">
+                <input type="number" aria-label="Last name" class="form-control" [(ngModel)]="longitudeSeconds">
+                <div class="input-group-append">
+                  <span class="input-group-text">DMS</span>
+                </div>
 
-            <div class="form-group row">
-
-              <label for="import" class="col-sm-4 col-form-label">Import From Excel:</label>
-              <div class="col-sm-8">
-                <input type="file" #fileInput (change)="importShapes($event)" accept=".xlsx">
               </div>
             </div>
-            <div>
 
-              <button type="button" class="btn btn-primary mb-2" (click)="drawShape()">
-                Add Point
-              </button>&nbsp;
-              <button type="button" class="btn btn-success mb-2" (click)="drawPolygon()">
-                Draw Shape
-              </button>&nbsp;
-              <button type="button" class="btn btn-danger mb-2" (click)="removeShape()">
-                Remove Shape
-              </button>&nbsp;
-              <button type="button" class="btn btn-info mb-2" (click)="convertToExcel(utmCoordinates)">
-                Convert to Excel
-              </button>&nbsp;
-              <button (click)="mergePolygons()" type="button" class="btn btn-info mb-2">Merge Polygons</button> &nbsp;
-                <button (click)="onClick($event)" type="button" class="btn btn-info mb-2">select Polygons</button>
+
+            <div
+              *ngIf="selectedDatum === 'WGS 1984 UTM Zone 36' || selectedDatum === 'WGS 1984 UTM Zone 37' || selectedDatum === 'WGS 1984 UTM Zone 38'">
+              <!-- Add input boxes with type for WGS 1984 UTM Zone 36, 37, and 38 -->
+              <div class="input-group">
+
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Latitude</span>
+                </div>
+                <input type="number" aria-label="Last name" class="form-control" [(ngModel)]="latitude">
+                <div class="input-group-append">
+                  <span class="input-group-text">N</span>
+                </div>
+
+              </div>
+              &nbsp;
+              <div class="input-group">
+
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Longitude</span>
+                </div>
+                <input type="number" aria-label="Last name" class="form-control" [(ngModel)]="longitude">
+                <div class="input-group-append">
+                  <span class="input-group-text">E</span>
+                </div>
+
+              </div>
             </div>
+
+
+          </div>
+
+
+          <div class="form-group row">
+
+            <label for="import" class="col-sm-4 col-form-label">Import From Excel:</label>
+            <div class="col-sm-8">
+              <input type="file" #fileInput (change)="importShapes($event)" accept=".xlsx">
+            </div>
+          </div>
+          <div>
+
+            <button type="button" class="btn btn-primary mb-2" (click)="drawShape()">
+              Add Point
+            </button>&nbsp;
+            <button type="button" class="btn btn-success mb-2" (click)="drawPolygon()">
+              Draw Shape
+            </button>&nbsp;
+            <button type="button" class="btn btn-danger mb-2" (click)="removeShape()">
+              Remove Shape
+            </button>&nbsp;
+            <button type="button" class="btn btn-info mb-2" (click)="convertToExcel(utmCoordinates)">
+              Convert to Excel
+            </button>&nbsp;
+            <button (click)="mergePolygons()" type="button" class="btn btn-info mb-2">Merge Polygons</button> &nbsp;
+            <button (click)="onClick($event)" type="button" class="btn btn-info mb-2">select Polygons</button>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <p-toast position="top-right"></p-toast>`
-  <simple-notifications></simple-notifications>
+<p-toast position="top-right"></p-toast>`
+<simple-notifications></simple-notifications>
 
 <!-- <button (click)="clickto()">testUTM</button> -->

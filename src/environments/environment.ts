@@ -9,15 +9,15 @@ export const environment = {
   // formPath: '',
 
   imagepath: window["_imagepath"],
-  //username: "BL_Tech_Leader",
+  //username: "BL_Tech_Officer",
   iconpath: window["iconpath"],
   formPath: window["formPath"],
 
-  //username: "BL_Info_Mgr",
+  username: "AR_Data_Encoder",
 
   //username: "BL_Doc_Verifier",
-  username: "BL_Data_Encoder",
-  //username: "0911153139",
+  //username: "BL_Data_Encoder",
+  //username: "0911565749",
 
   // username: "BL_Cashier",
   phisicalPath: "./assets/i18n/",
@@ -34,9 +34,12 @@ export const environment = {
   rootPath2: window["rootPath2"],
   rootPath3: window["rootPath3"],
   groupLayerName: window["groupLayerName"],
+  parentGroupName: window["parentGroupName"],
+  SubcityName: window["SubcityName"],
   geoserverUrl: window["geoserverUrl"],
   geoserverUrlwfs: window["geoserverUrlwfs"],
   groupName: window["groupName"],
+  geoser: window["geoser"],
   multipleplotcanbeadd: window["multipleplotcanbeadd"],
 };
 

@@ -6,9 +6,10 @@
         <th scope="col" translate>Status</th>
         <th scope="col" translate>Area_M2</th>
         <th scope="col" translate>Registration Date</th>
-        <th scope="col">
+        <th scope="col" *ngIf="multipleplotcanbeadd">
+
           <button type="button" class="btn btn-primary" (click)="AddPLot()"
-            *ngIf="!disable && PlotManagementList.length < 5 && multipleplotcanbeadd" translate>Add New</button>
+            *ngIf="!disable && PlotManagementList.length < 5" translate>Add New</button>
         </th>
       </tr>
     </ng-template>
@@ -20,7 +21,7 @@
           <select class="form-control" disabled [(ngModel)]="Plot.Plot_Status" name="Status" id="Status"
             #Status="ngModel" [ngClass]="{ 'is-invalid': Status.invalid }" required>
             <option disabled translate>select</option>
-            <option *ngFor="let Status of serviceComponent.PlotStutusLookUP;" [value]="Status.Plot_Status_ID">
+            <option *ngFor="let Status of serviceService.PlotStutusLook" [value]="Status.Plot_Status_ID">
               {{Status.Name}}
             </option>
           </select>

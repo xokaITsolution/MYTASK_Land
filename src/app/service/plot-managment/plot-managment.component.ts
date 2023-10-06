@@ -60,7 +60,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   urlParams: any;
 
   constructor(
-    private serviceService: ServiceService,
+    public serviceService: ServiceService,
     private ngxSmartModalService: NgxSmartModalService,
     public serviceComponent: ServiceComponent,
     private ploatManagmentService: PloatManagmentService,
@@ -112,6 +112,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
 
       this.plotManagment = this.SelectedPlot;
       this.getplotloc(this.plotManagment.Plot_ID);
+      this.regionSelectedd(this.plotManagment.SDP_ID);
     }
     console.log("chang detected");
 
@@ -123,17 +124,14 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       this.isploatDisabled = false;
     }
 
-    if (this.plotManagment.Registration_Date) {
-      if (this.language != "amharic") {
-        this.plotManagment.Registration_Date =
-          this.plotManagment.Registration_Date.split("T")[0];
-      } else {
-        this.plotManagment.Registration_Date =
-          await this.getgregorianToEthiopianDate(
-            this.plotManagment.Registration_Date
-          );
-      }
-    }
+    // if (this.plotManagment.Registration_Date) {
+    //   if (this.language == "amharic") {
+    //     this.plotManagment.Registration_Date =
+    //       await this.getgregorianToEthiopianDate(
+    //         this.plotManagment.Registration_Date
+    //       );
+    //   }
+    // }
     // this.plotManagment.SDP_ID =
     //   this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
     if (

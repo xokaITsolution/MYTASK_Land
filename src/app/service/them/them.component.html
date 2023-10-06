@@ -17,14 +17,16 @@
         <select  disabled class="form-control"
                 [(ngModel)]="themCertificateVersion.Them_Customer_ID" name="ThemCustomerID" id="ThemCustomerID">
           <option disabled translate>select</option>
-          <option *ngFor="let customer of serviceComponent.CustomerLookUP;" [value]="customer.Customer_ID">
-            {{customer.FullName_EN}}
+          <option *ngFor="let Customer of customerdata" [value]="Customer.customer_ID">
+            {{ language === 'amharic' ? Customer.applicant_First_Name_AM + ' '+ Customer.applicant_Middle_Name_AM + ' '+
+            Customer.applicant_Last_Name_AM : Customer.applicant_First_Name_EN + ' '+ Customer.applicant_Middle_Name_En + ' '+
+            Customer.applicant_Last_Name_EN}}
           </option>
         </select>
       </div>
 
       <div class="col-sm-2">
-        <button type="button" *ngIf="!disable" class="btn btn-secondary" (click)="openModal('Customerthem')" translate="">Select Customer</button>
+        <button type="button" *ngIf="!disable" class="btn btn-secondary" (click)="Customerthem=true" translate="">Select Customer</button>
       </div>
     </div>
 
@@ -96,6 +98,7 @@
 </p-table>
 
 
+<!-- 
 <ngx-smart-modal #Customerthem identifier="Customerthem">
   <div class="modal-header">
     <h4 class="modal-title pull-left">Them Customer ID</h4>
@@ -136,4 +139,59 @@
 
 
   </div>
-</ngx-smart-modal>
+</ngx-smart-modal> -->
+
+
+<p-dialog [header]="'Them Customer ID' | translate" [(visible)]="Customerthem" [responsive]="true" [width]="900" [minY]="70" [maximizable]="true" 
+[baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                         'max-height': '80vh','min-height':'250px'}">
+
+  <div class="modal-body">
+    <p-table #dt [value]="customerdata" [paginator]="true" [rows]="5"
+      [globalFilterFields]="['tin','FullName_AM','FullName_EN','Applicant_Mother_Name_AM','Applicant_Mother_Name_EN','Mobile_No']">
+    
+      <ng-template pTemplate="caption">
+        <div class="table-header">
+          <span class="p-input-icon-left">
+            <div class="input-group mb-3">
+            <input   type="text" style="border-color: #007bff;"   [(ngModel)]="globvar"  name="globvar"
+            id="globvar">
+            <!-- <input type="text" pInputText [(ngModel)]="phoneNumber" placeholder="Enter phone number...">
+           <input type="text" pInputText [(ngModel)]="firstName" placeholder="Enter first name...">
+           <input type="text" pInputText [(ngModel)]="lastName" placeholder="Enter last name...">  -->
+           <div class="input-group-append">
+            <button class="btn btn-primary" type="button" translate  (click)="getcustomer(globvar)">Search</button>
+          </div>
+        </div>
+        <!-- <button type="button" class="btn btn-primary" (click)="add()" style="float: right;" translate>Add New</button> -->
+          </span>
+        
+        </div>
+  <!-- <input class="form-control border-end-0 border"   type="text" [placeholder]="'Search'|translate" (input)="cust.filterGlobal($event.target.value, 'contains')"  id="form1" class="form-control"> -->
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr >
+          <th translate>TIN</th>
+          <th translate>Full Name</th>
+          <th translate>Mother Name</th>
+          <th translate>mobile Number</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-Customer  let-rowData>
+        <tr (click)='highlighted = rowData;closeModal(Customer)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
+       
+          <td>{{Customer.tin}}</td>
+          <td>{{ language === 'amharic' ? Customer.applicant_First_Name_AM  + '  '+ Customer.applicant_Middle_Name_AM  + ' '+ Customer.applicant_Last_Name_AM : Customer.applicant_First_Name_EN  + '  '+ Customer.applicant_Middle_Name_En  + ' '+ Customer.applicant_Last_Name_EN}}</td>
+      
+          <td>{{ language === 'amharic' ? Customer.applicant_Mother_Name_AM:Customer.applicant_Mother_Name_EN }}</td>
+          <td>{{Customer.mobile_No}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+<div *ngIf="serviceComponent.lode">
+  <p-progressBar mode="indeterminate"></p-progressBar>
+</div>
+
+  </div>
+  <button type="button" class="btn btn-primary" (click)="Customerthem=false" style="float: right;" translate>Done</button>
+</p-dialog>
