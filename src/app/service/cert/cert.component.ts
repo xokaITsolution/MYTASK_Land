@@ -313,6 +313,8 @@ export class CertComponent implements OnChanges {
   Selectversion(certver) {
     this.Selectedcert = certver;
     this.certverForm = true;
+    this.disableTab = false;
+    this.displayGIS = false;
     console.log("certver", certver);
   }
 

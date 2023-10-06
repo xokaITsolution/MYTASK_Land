@@ -586,7 +586,7 @@ export class GisMapComponent implements AfterViewInit {
     this.map = L.map("mapp", {
       crs: this.EPSG20137,
       center: [9.032457, 38.759775],
-      zoom: 0, // Set the map CRS to EPSG:20137
+      zoom: 13, // Set the map CRS to EPSG:20137
     }); // Set an appropriate initial view for Ethiopia
     // Define custom zoom levels
 
@@ -1828,7 +1828,7 @@ export class GisMapComponent implements AfterViewInit {
 
       // Fit the map bounds to the drawn shape with a specific maxZoom level
       this.map.fitBounds(this.drawnShape.getBounds());
-      //this.onDatumChange();
+      // this.onDatumChange();
       // this.map.setView(center, 15);
 
       //  if (this.ServiceService.check == true) {
@@ -2174,32 +2174,37 @@ export class GisMapComponent implements AfterViewInit {
       this.map.options.crs = crs;
     } else if (this.selectedDatum === "Adindan / UTM zone 37N") {
       selectedProjection = adindanZone37Projection;
-      const crs = new L.Proj.CRS("EPSG:20137", selectedProjection, {
-        origin: [-180, 90],
-        resolutions: [
-          132291.9312505292, 66145.9656252646, 33072.9828126323,
-          16536.49140631615, 1033.5307128947595, 8268.245703158075,
-          4134.122851579038, 2067.061425789519, 1033.5307128947597,
-          516.7653564473798, 258.3826782236899, 129.19133911184494,
-          64.59566955592247, 32.29783477796124, 16.14891738898062,
-          8.07445869449031, 4.037229347245155, 2.0186146736225775,
-          1.0093073368112888, 1.0093073368112888, 1.0093073368165999,
-          1.009307336818619, 1.0093073368193081, 1.0093073368193542,
-          1.0093073368193683, 1.0093073368193714, 1.009307336819372,
-          1.0093073368193723, 1.0093073368193724,
+      // Conversion factor from meters to feet
+      const metersToFeet = 3.28084;
 
-          0.5046536684056444, 0.5046536684056445, 0.5046536684056446,
-          0.5046536684056447, 0.5046536684056448, 0.5046536684056449,
-          0.504653668405645, 0.5046536684056451, 0.5046536684056452,
-          0.5046536684056453,
+      // Define the base resolution in meters per pixel
+      const baseResolutionMeters = 10; // 10 meters
 
-          0.5046536684056444,
-        ],
-        bounds: L.bounds(
-          [-36909.130089988816, 376321.5212803309],
-          [937040.4635133516, 1148344.584522629]
-        ),
-      });
+      // Calculate the equivalent resolution in feet per pixel
+      const baseResolutionFeet = baseResolutionMeters * metersToFeet; // 32.8084 feet
+
+      // Create an array of resolutions that match your desired scales
+      const resolutions = [
+        baseResolutionMeters,
+        baseResolutionMeters / 2,
+        baseResolutionMeters / 4,
+        baseResolutionMeters / 8,
+        baseResolutionMeters / 16,
+        baseResolutionMeters / 32,
+        baseResolutionMeters / 64,
+        baseResolutionMeters / 128,
+        // ... Add more resolutions for finer zoom levels
+      ];
+
+      // Define your Leaflet CRS with the updated resolutions
+      const crs = new L.Proj.CRS(
+        "EPSG:20137",
+        "+proj=utm +zone=37 +a=6378249.145 +rf=293.465 +towgs84=-165,-11,206,0,0,0,0 +units=m +no_defs +type=crs",
+        {
+          resolutions: resolutions,
+          origin: [166600.5155002516, 375771.9736823894],
+        }
+      );
 
       // Set the updated map projection
       this.map.options.crs = crs;
@@ -2329,7 +2334,7 @@ export class GisMapComponent implements AfterViewInit {
     // }
     // Update the map view to the center coordinates of Ethiopia and adjust the zoom level
     const center = L.latLng(9.032457, 38.759775); // Update with Ethiopia center coordinates
-    const zoom = 15; // Update with the desired zoom level for the selected projection
+    const zoom = 13; // Update with the desired zoom level for the selected projection
     this.map.setView(center, zoom);
   }
 

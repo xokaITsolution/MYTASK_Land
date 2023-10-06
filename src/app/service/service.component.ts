@@ -1560,7 +1560,7 @@ export class ServiceComponent implements OnInit {
           [],
           this.CustomerTypeLookUP.list
         );
-        //  console.log('CustomerTypeLookUP', CustomerTypeLookUP);
+        console.log("CustomerTypeLookUP", this.CustomerTypeLookUP);
       },
       (error) => {
         console.log("error");

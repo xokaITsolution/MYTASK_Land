@@ -75,12 +75,14 @@
     padding: 0;
 } */
 
-/* Style the container div */
 .activeSite {
-    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
   background-color: #f4f4f4;
   /* Set background color */
   padding: 10px;
+  margin-left: -40px;
+  margin-top: 10px;
+  /* margin-left: -20px; */
   /* Add some padding */
   border: 1px solid #ccc;
   /* Add a border */

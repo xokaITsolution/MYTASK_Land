@@ -88,18 +88,18 @@
   <tabset #staticTabs>
     <tab [heading]="'Certificate Version' | translate">
       <div class="mt-3">
-        <app-certificate-version (completed)="EnableFins()" [Selectedcert]='Selectedcert'
+        <app-certificate-version [licenceData]="licenceData" (completed)="EnableFins()" [Selectedcert]='Selectedcert'
           [SelectedBase]="SelectedBase" [disable]="disable"></app-certificate-version>
       </div>
     </tab>
     <tab [heading]="'Them' | translate">
       <div class="mt-3">
-        <app-them (completed)="EnableFins()" [Selectedcert]='Selectedcert' [disable]="disable"></app-them>
+        <app-them (completed)="EnableFins()" [Selectedcert]='Selectedcert' [disable]="disable" [licenceData]="licenceData"></app-them>
       </div>
     </tab>
     <tab [heading]="'Debt/SuspensionRecord' | translate">
           <div class="mt-3">
-            <app-dept-suspension-record (completed)="EnableFins()" [Selectedcert]='Selectedcert' [disable]="disable" [LicenceData]="licenceData" 
+            <app-dept-suspension-record  (completed)="EnableFins()" [Selectedcert]='Selectedcert' [disable]="disable" [licenceData]="licenceData"
             [disable]="disable"></app-dept-suspension-record>
           </div>
         </tab>

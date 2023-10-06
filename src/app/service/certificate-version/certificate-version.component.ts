@@ -117,10 +117,7 @@ export class CertificateVersionComponent implements OnChanges {
       .subscribe(
         (certificateVersion) => {
           console.log("certificateVersion", certificateVersion);
-          const toast = this.notificationsService.success(
-            "Sucess",
-            certificateVersion
-          );
+          const toast = this.notificationsService.success("Sucess edited ");
           this.serviceService.disablefins = false;
           if (!this.Saved) {
             this.completed.emit();
@@ -156,10 +153,10 @@ export class CertificateVersionComponent implements OnChanges {
         (message) => {
           console.log("message", message);
           this.CertComponent.disableTab = true;
-          const toast = this.notificationsService.success("Sucess", message);
+          const toast = this.notificationsService.success("Sucess saved");
           this.serviceService.disablefins = false;
+          this.completed.emit();
           if (!this.Saved) {
-            this.completed.emit();
             this.Saved = true;
           }
         },

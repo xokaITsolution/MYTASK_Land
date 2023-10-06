@@ -17,7 +17,7 @@
         <select class="form-control" disabled [disabled]="disable" [(ngModel)]="property.Plot_Status" name="Status"
           id="Status">
           <option disabled translate>select</option>
-          <option *ngFor="let Status of serviceComponent.PlotStutusLookUP;" [value]="Status.Plot_Status_ID">
+          <option *ngFor="let Status of serviceService.PlotStutusLook" [value]="Status.Plot_Status_ID">
             {{Status.Name}}
           </option>
         </select>
