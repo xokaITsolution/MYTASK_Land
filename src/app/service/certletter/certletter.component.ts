@@ -198,7 +198,7 @@ export class CertletterComponent implements OnChanges {
           } else {
             this.disable_new = false;
           }
-          console.log("cerltter", cerltter);
+          console.log("this.cerlettrformList", this.cerlettrformList);
           console.log("this.cerltter", this.cerltter);
           /* if (a.list.length) {
          this.isnew = false;

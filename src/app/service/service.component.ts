@@ -1235,7 +1235,7 @@ export class ServiceComponent implements OnInit {
         }
 
         // this.PreAppData = (Object.assign({}, this.PreAppData.Table));
-        // console.log('PreAppData', this.PreAppData);
+        console.log('PreAppData', this.PreAppData);
         this.ifTask = true;
         this.GetNotePrevius(appNO);
         if (this.TaskN) {
