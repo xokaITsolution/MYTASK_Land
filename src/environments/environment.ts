@@ -9,11 +9,12 @@ export const environment = {
   // formPath: '',
 
   imagepath: window["_imagepath"],
+  imagepathclock: window["_imagepathclock"],
   //username: "BL_Tech_Officer",
   iconpath: window["iconpath"],
   formPath: window["formPath"],
 
-  username: "AR_Data_Encoder",
+  username: "AR_Tech_Officer",
 
   //username: "BL_Doc_Verifier",
   //username: "BL_Data_Encoder",

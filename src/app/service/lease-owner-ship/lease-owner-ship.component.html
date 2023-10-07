@@ -1,3 +1,4 @@
+<app-example *ngIf="LoadingExampleService.isLoading | async"></app-example>
 <form #f="ngForm" *ngIf ="serviceService.isleaseForm"  novalidate name="leaseform">
   <!--  -->
   <div class="form-row">

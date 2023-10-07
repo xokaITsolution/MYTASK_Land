@@ -21,9 +21,10 @@ import { BsModalRef, BsModalService } from "ngx-bootstrap";
 import { GisMapComponent } from "../gis-map/gis-map.component";
 import { environment } from "src/environments/environment";
 import { GisMapService } from "../gis-map/gis-map.service";
-import { Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import * as proj4 from "proj4";
 import { ActivatedRoute } from "@angular/router";
+import { LoadingExampleService } from "../loading/loadingExample.service";
 @Component({
   selector: "app-plot-managment",
   templateUrl: "./plot-managment.component.html",
@@ -70,7 +71,8 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     private routerService: ActivatedRoute,
     private modalService: BsModalService,
     public plotcomponent: PlotComponent,
-    public gisMapService: GisMapService
+    public gisMapService: GisMapService,
+    public LoadingExampleService: LoadingExampleService
   ) {
     this.plotManagment = new PlotManagment();
     this.platformLocation = new PlatformLocation();
@@ -399,6 +401,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   }
 
   async save() {
+    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     this.plotManagment.Plot_ID = JSON.stringify(this.plotManagment.Plot_ID);
     this.platformLocation.ploteId = this.plotManagment.Plot_ID;
     if (this.language === "amharic") {
@@ -418,6 +421,9 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
           deptSuspension
         );
         // this.serviceService.disablefins=false
+        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+          false
+        );
         if (!this.Saved) {
           this.completed.emit(this.plotManagment);
           this.Saved = true;
@@ -620,6 +626,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     // this.confirmationService.confirm({
     //   message: 'Are you sure u want to delete this Plot?',
     //   accept: () => {
+    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     console.log("this.plotManagment", this.plotManagment);
 
     if (this.language === "amharic") {
@@ -634,6 +641,9 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
           const toast = this.notificationsService.success(
             "Sucess",
             deptSuspension
+          );
+          this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+            false
           );
           // this.serviceService.disablefins = false;
           if (this.language === "amharic") {
@@ -685,6 +695,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   }
 
   async add() {
+    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     if (this.language === "amharic") {
       this.plotManagment.Registration_Date = await this.getEthiopianToGregorian(
         this.plotManagment.Registration_Date
@@ -716,7 +727,9 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         this.isnew = false;
         this.isploatDisabled = true;
         console.log("FinalPLoat before send", this.plotManagment);
-
+        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+          false
+        );
         if (!this.Saved) {
           this.completed.emit(this.plotManagment);
           this.Saved = true;

@@ -24,6 +24,7 @@ export const environment = {
   geoserverUrl: window["geoserverUrl"],
   geoserverUrlwfs: window["geoserverUrlwfs"],
   geoser: window["geoser"],
+  imagepathclock: window["_imagepathclock"],
   imagepath: window["_imagepath"],
   multipleplotcanbeadd: window["multipleplotcanbeadd"],
 };

@@ -1,3 +1,4 @@
+<app-example *ngIf="LoadingExampleService.isLoading | async"></app-example>
 <form class="m-10" #f="ngForm" novalidate name="certform">
   <div>
     <!--<div class="form-group row col-md-4">
@@ -183,13 +184,16 @@
               <label for="CustomerType" class="col-sm-4 col-form-label" translate>Customer Type</label>
 
               <div class="col-sm-8">
-                <select class="form-control" disabled [(ngModel)]="certificateVersion.customerType" name="CustomerType"
+                <input disabled type="text" [disabled]="disable" class="form-control" [(ngModel)]="certificateVersion.customerType"
+                  name="CustomerType" id="CustomerType" [placeholder]="'Customer Type' | translate">
+
+                <!-- <select class="form-control" disabled [(ngModel)]="certificateVersion.customerType" name="CustomerType"
                   id="CustomerType">
                   <option disabled translate>select</option>
                   <option *ngFor="let custType of serviceComponent.CustomerTypeLookUP;" [value]="custType.customerType">
                     {{custType.Customer_Type}}
                   </option>
-                </select>
+                </select> -->
               </div>
 
               <div *ngIf="pictoShow">

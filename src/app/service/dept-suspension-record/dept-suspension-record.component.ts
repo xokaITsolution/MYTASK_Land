@@ -57,6 +57,15 @@ export class DeptSuspensionRecordComponent implements OnChanges {
     );
   }
 
+  checkRelease() {
+    this.deptSuspensionRecord.Is_Suspended = false;
+    this.deptSuspensionRecord.Is_Released = true;
+  }
+
+  checkSuspended() {
+    this.deptSuspensionRecord.Is_Suspended = true;
+    this.deptSuspensionRecord.Is_Released = false;
+  }
   save() {
     this.deptSuspensionRecordService.save(this.deptSuspensionRecord).subscribe(
       (deptSuspension) => {
@@ -167,7 +176,7 @@ class DeptSuspensionRecord {
   public Letter_Ref_No: string;
   public Letter_Ref_Date: string;
   public Remark: string;
-  public Is_Suspended: string;
-  public Is_Released: string;
+  public Is_Suspended: boolean;
+  public Is_Released: boolean;
   public SDP_ID;
 }

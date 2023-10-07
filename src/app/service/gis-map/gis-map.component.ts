@@ -586,7 +586,7 @@ export class GisMapComponent implements AfterViewInit {
     this.map = L.map("mapp", {
       crs: this.EPSG20137,
       center: [9.032457, 38.759775],
-      zoom: 13, // Set the map CRS to EPSG:20137
+      zoom: 6, // Set the map CRS to EPSG:20137
     }); // Set an appropriate initial view for Ethiopia
     // Define custom zoom levels
 

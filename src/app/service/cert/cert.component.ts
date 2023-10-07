@@ -15,6 +15,9 @@ import { ViewEncapsulation } from "@angular/core";
 import { environment } from "src/environments/environment";
 import { BsModalRef, BsModalService } from "ngx-bootstrap";
 
+import { BehaviorSubject } from "rxjs";
+import { LoadingExampleService } from "../loading/loadingExample.service";
+
 @Component({
   selector: "app-cert",
   templateUrl: "./cert.component.html",
@@ -56,6 +59,8 @@ export class CertComponent implements OnChanges {
   };
   Saved = false;
   language: string;
+  isThem: boolean;
+  isdept: boolean;
 
   constructor(
     private serviceService: ServiceService,
@@ -67,6 +72,22 @@ export class CertComponent implements OnChanges {
   ) {}
 
   ngOnChanges() {
+    if (
+      this.serviceService.Service_ID ==
+        "7d256139-858b-48e7-a298-cae5438e526c" ||
+      this.serviceService.Service_ID == "d1a3b83a-aa39-4269-90e4-da551715baef"
+    ) {
+      this.isThem = true;
+    } else {
+      this.isThem = false;
+    }
+    if (
+      this.serviceService.Service_ID == "1c3d5a79-350e-4214-a343-d79e92a86e0f"
+    ) {
+      this.isdept = true;
+    } else {
+      this.isdept = false;
+    }
     if (environment.Lang_code === "am-et") {
       this.language = "amharic";
     } else {
@@ -196,7 +217,7 @@ export class CertComponent implements OnChanges {
           }
           return false;
         });
-        this.DeedTable = uniqueData;
+        this.BaseTable = uniqueData;
         console.log("BaseTable", BaseTable);
       },
       (error) => {
@@ -341,7 +362,17 @@ export class CertComponent implements OnChanges {
     this.serviceService.getCertificateVersion1(Base.Title_Deed_No).subscribe(
       (CertificateVersion: any) => {
         this.CertificateVersion = CertificateVersion.procCertificate_Versions;
+        const uniqueJobMatchIDs = {};
+        const uniqueData = this.CertificateVersion.filter((item) => {
+          if (!uniqueJobMatchIDs[item.version_ID]) {
+            uniqueJobMatchIDs[item.version_ID] = true;
+            return true;
+          }
+          return false;
+        });
+        this.CertificateVersion = uniqueData;
         console.log("CertificateVersion", this.CertificateVersion);
+
         // this.CertificateVersion = Object.assign(
         //   [],
         //   this.CertificateVersion.list
@@ -400,6 +431,7 @@ export class CertComponent implements OnChanges {
 
   EnableFins() {
     if (!this.Saved) {
+      this.disableTab = true;
       this.completed.emit();
       this.Saved = true;
     }

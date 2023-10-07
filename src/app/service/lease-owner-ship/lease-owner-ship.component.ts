@@ -16,7 +16,8 @@ import { PlotComponent } from "../plot/plot.component";
 import { Regions } from "../plot-managment/regions";
 import { ServiceService } from "../service.service";
 import { environment } from "src/environments/environment";
-
+import { LoadingExampleService } from "../loading/loadingExample.service";
+import { BehaviorSubject } from "rxjs";
 @Component({
   selector: "app-lease-owner-ship",
   templateUrl: "./lease-owner-ship.component.html",
@@ -53,7 +54,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService,
     private confirmationService: ConfirmationService,
-    public serviceService: ServiceService
+    public serviceService: ServiceService,
+    public LoadingExampleService: LoadingExampleService
   ) {
     this.leaseOwnerShip = new LeaseOwnerShip();
     this.leaseOwnerShip.ID = Guid.create().toString();
@@ -252,6 +254,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
   }
 
   async save() {
+    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     if (this.leaseOwnerShip.Lease_Hold_M2 < 75) {
       const toast = this.notificationsService.warn(
         "Lease Hold is not less than 75/የሊዝ ይዞታ ከ 75 መብለጥ የለበትም"
@@ -272,6 +275,9 @@ export class LeaseOwnerShipComponent implements OnChanges {
         const toast = this.notificationsService.success(
           "Sucess",
           deptSuspension
+        );
+        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+          false
         );
         //this.serviceService.disablefins = false;
         this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);

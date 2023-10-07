@@ -13,6 +13,8 @@ import { NgxSmartModalService } from "ngx-smart-modal";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ServiceService } from "../service.service";
 import { CertComponent } from "../cert/cert.component";
+import { BehaviorSubject } from "rxjs";
+import { LoadingExampleService } from "../loading/loadingExample.service";
 @Component({
   selector: "app-certificate-version",
   templateUrl: "./certificate-version.component.html",
@@ -46,7 +48,8 @@ export class CertificateVersionComponent implements OnChanges {
     private certificateVersionService: CertificateVersionService,
     private sanitizer: DomSanitizer,
     public serviceComponent: ServiceComponent,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    public LoadingExampleService: LoadingExampleService
   ) {
     this.certificateVersion = new CertificateVersion();
   }
@@ -110,6 +113,7 @@ export class CertificateVersionComponent implements OnChanges {
   }
 
   Save() {
+    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     console.log("certificateVersion", this.certificateVersion);
 
     this.certificateVersionService
@@ -120,6 +124,9 @@ export class CertificateVersionComponent implements OnChanges {
           const toast = this.notificationsService.success("Sucess edited ");
           this.serviceService.disablefins = false;
           if (!this.Saved) {
+            this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+              false
+            );
             this.completed.emit();
             this.Saved = true;
           }
@@ -147,6 +154,7 @@ export class CertificateVersionComponent implements OnChanges {
   }
 
   add() {
+    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     this.certificateVersionService
       .AddCertificate(this.certificateVersion)
       .subscribe(
@@ -156,6 +164,9 @@ export class CertificateVersionComponent implements OnChanges {
           const toast = this.notificationsService.success("Sucess saved");
           this.serviceService.disablefins = false;
           this.completed.emit();
+          this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+            false
+          );
           if (!this.Saved) {
             this.Saved = true;
           }

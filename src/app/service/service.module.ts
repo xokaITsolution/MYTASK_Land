@@ -86,6 +86,7 @@ import { CustomAlertComponent } from "./gis-map/CustomAlertComponent";
 import { OverlayPanelModule } from "primeng/overlaypanel";
 import { TestgismapComponent } from "./testgismap/testgismap.component";
 import { TreeComponentComponent } from "./tree-component/tree-component.component";
+import { ExampleComponent } from "./loading/example.component";
 @NgModule({
   imports: [
     //BackButtonDisableModule.forRoot({
@@ -144,6 +145,7 @@ import { TreeComponentComponent } from "./tree-component/tree-component.componen
   ],
 
   declarations: [
+    ExampleComponent,
     PaymentComponent,
     ServiceComponent,
     SurveyComponent,
