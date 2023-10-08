@@ -15,42 +15,44 @@
           <ul>
             <div class="activeSite">
               <h5 class="sub">Addis Ababa</h5>
-              <li class="container" *ngFor="let parentgroupLayer of groupLayer">
-                <label>
-                  <input type="checkbox" (change)="ParentGroupLayerSelected($event.target.checked,$event.target.value)"
-                    [value]="parentgroupLayer.href">{{parentgroupLayer.name}}
-                </label>
-              </li>
+            <li class="container" *ngFor="let parentgroupLayer of groupLayer; let i = index">
+              <label>
+                <input type="checkbox" id="parentgroupLayer{{i}}"
+                  (change)="ParentGroupLayerSelected($event.target.checked, parentgroupLayer.href)" [value]="parentgroupLayer.href"
+                  [checked]="i === 0">{{ parentgroupLayer.name }}
+              </label>
+            </li>
+
 
               <ul>
               
-                <li class="container" *ngFor="let subcity of subcities">
+                <li class="container" *ngFor="let subcity of subcities; let k = index">
                   <label>
-                    <input type="checkbox"
-                      (change)="SubcitiesSelected($event.target.checked,$event.target.value);toggleLayer($event.target.checked, subcity.names)"
-                      [value]="subcity.href">{{subcity.names}}
+                    <input type="checkbox"  id="subcitylayer{{k}}"
+                      (change)="SubcitiesSelected($event.target.checked,subcity.href);toggleLayer($event.target.checked, subcity.names)"
+                      [value]="subcity.href" [checked]="k === 0">{{subcity.names}}
                   </label>
                 </li>
                 <ul>
-                  <li class="container" *ngFor="let woreda of woredas">
+                  <li class="container" *ngFor="let woreda of woredas; let j = index">
                     <label>
-                      <input type="checkbox"
-                        (change)="WoredasSelected($event.target.checked,$event.target.value);toggleLayer($event.target.checked, woreda.names)"
-                        [value]="woreda.href">{{woreda.names}}
+                      <input type="checkbox" id="woreda{{j}}" 
+                        (change)="WoredasSelected($event.target.checked,woreda.href);toggleLayer($event.target.checked, woreda.names)"
+                        [value]="woreda.href" [checked]="j === 0">{{woreda.names}}
                     </label>
                   </li>
                   <ul>
-                    <li class="container" *ngFor="let woredalayer of woredaLayers">
+                    <li class="container" *ngFor="let woredalayer of woredaLayers;  let l = index">
                       <label>
-                        <input type="checkbox"
+                        <input type="checkbox" id="woredalayer{{l}}"
                           (change)="WoredaLayersSelected($event.target.checked, $event.target.value);toggleLayer($event.target.checked, woredalayer.names)"
-                          [value]="woredalayer.href">{{woredalayer.names}}
+                          [value]="woredalayer.href" >{{woredalayer.names}}
                       </label>
                     </li>
                     <ul>
-                      <li class="container" *ngFor="let woredalayersofall of woredaLayersOneByOne">
+                      <li class="container" *ngFor="let woredalayersofall of woredaLayersOneByOne; let m = index">
                         <label>
-                          <input type="checkbox" (change)="toggleLayer($event.target.checked, woredalayersofall.names)"
+                          <input type="checkbox" id="woredalayersofall{{m}}" (change)="toggleLayer($event.target.checked, woredalayersofall.names)"
                             [value]="woredalayersofall.names">{{woredalayersofall.names}}
                         </label>
                       </li>

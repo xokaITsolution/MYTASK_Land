@@ -174,6 +174,10 @@ export class GisMapComponent implements AfterViewInit {
               console.log("parent", this.groupLayer);
             }
           }
+          if (this.groupLayer.length > 0) {
+            const firstElementValue = this.groupLayer[0].href;
+            this.ParentGroupLayerSelected(true, firstElementValue);
+          }
           console.log("AddisLand", this.groupLayers[index]);
         }
       }
@@ -207,8 +211,9 @@ export class GisMapComponent implements AfterViewInit {
       format: "image/png",
       transparent: true,
       maxZoom: 22,
-      tileSize: tileSize,
+      tileSize: 512,
       zoomOffset: -1,
+      tms: true,
     });
 
     newLayer.tileLayer = TileLayer;
@@ -364,23 +369,28 @@ export class GisMapComponent implements AfterViewInit {
     if (checked) {
       //Call Geoserver API to fetch layers for the selected group layer
       this.geoser.getLayersFromGeoserver(event).subscribe((data: any) => {
-        this.subcities = data.layerGroup.publishables.published;
-        // Handle the fetched layers here
-        if (typeof this.subcities === "object") {
-          if (Array.isArray(this.subcities)) {
-            console.log("Variable is an array");
-          } else {
-            this.subcities = this.json2array(
-              data.layerGroup.publishables.published
-            );
-            console.log("subcities", this.subcities);
+        if (data != undefined) {
+          this.subcities = data.layerGroup.publishables.published;
+          // Handle the fetched layers here
+          if (typeof this.subcities === "object") {
+            if (Array.isArray(this.subcities)) {
+              console.log("Variable is an array");
+            } else {
+              this.subcities = this.json2array(
+                data.layerGroup.publishables.published
+              );
+              console.log("subcities", this.subcities);
+              if (this.subcities.length > 0) {
+                const firstElementValue = this.subcities[0].href;
+                this.SubcitiesSelected(true, firstElementValue);
+              }
+            }
           }
-        }
+          for (let index = 0; index <= this.subcities.length; index++) {
+            const element = this.subcities[index].name.split(":");
 
-        for (let index = 0; index <= this.subcities.length; index++) {
-          const element = this.subcities[index].name.split(":");
-
-          this.subcities[index].names = element[1];
+            this.subcities[index].names = element[1];
+          }
         }
       });
     } else {
@@ -396,21 +406,27 @@ export class GisMapComponent implements AfterViewInit {
       //Call Geoserver API to fetch layers for the selected group layer
       this.geoser.getLayersFromGeoserver(event).subscribe((data: any) => {
         // Handle the fetched layers here
-        this.woredas = data.layerGroup.publishables.published;
-        if (typeof this.woredas === "object") {
-          if (Array.isArray(this.woredas)) {
-            console.log("Variable is an array");
-          } else {
-            this.woredas = this.json2array(
-              data.layerGroup.publishables.published
-            );
-            console.log("woredas", this.woredas);
+        if (data != undefined) {
+          this.woredas = data.layerGroup.publishables.published;
+          if (typeof this.woredas === "object") {
+            if (Array.isArray(this.woredas)) {
+              console.log("Variable is an array");
+            } else {
+              this.woredas = this.json2array(
+                data.layerGroup.publishables.published
+              );
+              console.log("woredas", this.woredas);
+              if (this.woredas.length > 0) {
+                const firstElementValue = this.woredas[0].href;
+                this.WoredasSelected(true, firstElementValue);
+              }
+            }
           }
-        }
 
-        for (let index = 0; index < this.woredas.length; index++) {
-          const element = this.woredas[index].name.split(":");
-          this.woredas[index].names = element[1];
+          for (let index = 0; index < this.woredas.length; index++) {
+            const element = this.woredas[index].name.split(":");
+            this.woredas[index].names = element[1];
+          }
         }
       });
     } else {
@@ -424,21 +440,27 @@ export class GisMapComponent implements AfterViewInit {
       //Call Geoserver API to fetch layers for the selected group layer
       this.geoser.getLayersFromGeoserver(event).subscribe((data: any) => {
         // Handle the fetched layers here
-        this.woredaLayers = data.layerGroup.publishables.published;
-        console.log("woredaslayers", this.woredaLayers);
-        if (typeof this.woredaLayers === "object") {
-          if (Array.isArray(this.woredaLayers)) {
-            console.log("Variable is an array");
-          } else {
-            this.woredaLayers = this.json2array(
-              data.layerGroup.publishables.published
-            );
-            console.log("woredaLayers", this.woredaLayers);
+        if (data) {
+          this.woredaLayers = data.layerGroup.publishables.published;
+          console.log("woredaslayers", this.woredaLayers);
+          if (typeof this.woredaLayers === "object") {
+            if (Array.isArray(this.woredaLayers)) {
+              console.log("Variable is an array");
+            } else {
+              this.woredaLayers = this.json2array(
+                data.layerGroup.publishables.published
+              );
+              if (this.woredaLayers.length > 0) {
+                const firstElementValue = this.woredaLayers[0].href;
+                this.WoredaLayersSelected(true, firstElementValue);
+              }
+              console.log("woredaLayers", this.woredaLayers);
+            }
           }
-        }
-        for (let index = 0; index < this.woredaLayers.length; index++) {
-          const element = this.woredaLayers[index].name.split(":");
-          this.woredaLayers[index].names = element[1];
+          for (let index = 0; index < this.woredaLayers.length; index++) {
+            const element = this.woredaLayers[index].name.split(":");
+            this.woredaLayers[index].names = element[1];
+          }
         }
       });
     } else {
@@ -451,20 +473,26 @@ export class GisMapComponent implements AfterViewInit {
       //Call Geoserver API to fetch layers for the selected group layer
       this.geoser.getLayersFromGeoserver(event).subscribe((data: any) => {
         // Handle the fetched layers here
-        this.woredaLayersOneByOne = data.layerGroup.publishables.published;
-        if (typeof this.woredaLayersOneByOne === "object") {
-          if (Array.isArray(this.woredaLayersOneByOne)) {
-          } else {
-            this.woredaLayersOneByOne = this.json2array(
-              data.layerGroup.publishables.published
-            );
+        if (data != undefined) {
+          this.woredaLayersOneByOne = data.layerGroup.publishables.published;
+          if (typeof this.woredaLayersOneByOne === "object") {
+            if (Array.isArray(this.woredaLayersOneByOne)) {
+            } else {
+              this.woredaLayersOneByOne = this.json2array(
+                data.layerGroup.publishables.published
+              );
+            }
           }
-        }
-        for (let index = 0; index < this.woredaLayersOneByOne.length; index++) {
-          const element = this.woredaLayersOneByOne[index].name.split(":");
-          this.woredaLayersOneByOne[index].names = element[1];
-          this.woredaLayersOneByOne[index].visibility = false;
-          console.log("visiblity check", this.woredaLayersOneByOne[index]);
+          for (
+            let index = 0;
+            index < this.woredaLayersOneByOne.length;
+            index++
+          ) {
+            const element = this.woredaLayersOneByOne[index].name.split(":");
+            this.woredaLayersOneByOne[index].names = element[1];
+            this.woredaLayersOneByOne[index].visibility = false;
+            console.log("visiblity check", this.woredaLayersOneByOne[index]);
+          }
         }
       });
     } else {
@@ -586,7 +614,7 @@ export class GisMapComponent implements AfterViewInit {
     this.map = L.map("mapp", {
       crs: this.EPSG20137,
       center: [9.032457, 38.759775],
-      zoom: 6, // Set the map CRS to EPSG:20137
+      zoom: 13, // Set the map CRS to EPSG:20137
     }); // Set an appropriate initial view for Ethiopia
     // Define custom zoom levels
 
@@ -2018,7 +2046,7 @@ export class GisMapComponent implements AfterViewInit {
       // marker.addTo(this.map);
 
       this.map.fitBounds(this.drawnShape.getBounds());
-      // this.onDatumChange();
+      //this.onDatumChange();
       // this.map.setView(center, 15);
 
       if (this.ServiceService.check != true) {
