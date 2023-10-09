@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -8,18 +10,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ArchiveComponent implements OnInit {
   name = 'Angular';
-  pdfSrc 
+  pdfSrc :any=''
 
   contentLoaded() {
     console.log('File loaded');
   }
+  woreda
   globvar
-  getdata(globvar){
-    console.log(globvar)
-    this.pdfSrc = 'http://localhost/cdn/json/'+globvar;
+  getdata(a,b){
+    console.log()
+    this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(environment.folderpath+a+'/'+b);
     return
    
   }
+
   selectFolder(event: any) {
     const selectedFiles = event.target.files;
 
@@ -32,7 +36,7 @@ export class ArchiveComponent implements OnInit {
       }
     }
   }
-  constructor() { }
+  constructor(private sanitizer: DomSanitizer,) { }
 
   ngOnInit() {
   }

@@ -135,10 +135,10 @@ export class CertletterComponent implements OnChanges {
     this.Selectedcert = certver;
     this.certltrview = true;
     this.certReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
-      environment.certReportPath + "/" + this.SelectedBase.Title_Deed_No
+      environment.certReportPath + "/" + this.Selectedcert.Title_Deed_No
     );
     this.LetterReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
-      environment.LetterReportPath + "/" + this.SelectedBase.Title_Deed_No
+      environment.LetterReportPath + "/" + this.Selectedcert.Title_Deed_No
     );
 
     console.log("certver", certver);
