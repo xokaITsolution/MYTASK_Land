@@ -59,6 +59,9 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   isplotllocnew: boolean = true;
   language: string;
   urlParams: any;
+  plotlistnull: null;
+  PlotManagementfilterd: any;
+  serachplotExists: boolean;
 
   constructor(
     public serviceService: ServiceService,
@@ -445,6 +448,43 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       }
     );
     console.log("saveing....");
+  }
+  filter(e) {
+    if (e.target.value) {
+      this.serviceService.getPlotManagement(e.target.value).subscribe(
+        async (PlotManagementLists: any) => {
+          this.PlotManagementfilterd = PlotManagementLists.list;
+          console.log("PlotManagementListsfilterd", this.PlotManagementfilterd);
+          if (this.PlotManagementfilterd.length > 0) {
+            this.serachplotExists = true;
+          } else {
+            this.serachplotExists = false;
+          }
+        },
+        (error) => {
+          console.log("error => ", error);
+          const toast = this.notificationsService.error(
+            "Error",
+            "SomeThing Went Wrong"
+          );
+        }
+      );
+    } else {
+      this.plotlistnull = null;
+    }
+  }
+  async SelectPLot(plot) {
+    if (this.language === "amharic") {
+      plot.Registration_Date = await this.getgregorianToEthiopianDate(
+        plot.Registration_Date
+      );
+    } else {
+      plot.Registration_Date = plot.Registration_Date.split("T")[0];
+    }
+    this.plotManagment = plot;
+    console.log("dfghgfd", plot);
+
+    // this.plotForm = true;
   }
   getplotloc(plotid) {
     this.serviceService.getPlotloc(plotid).subscribe((response: any) => {

@@ -178,6 +178,9 @@ export class CertificateVersionComponent implements OnChanges {
               "Error",
               error.error.InnerException.Errors[0].message
             );
+            this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+              false
+            );
           } else {
             const toast = this.notificationsService.error(
               "Error",

@@ -72,11 +72,15 @@ export class PaymentComponent implements OnChanges {
   }
 
   getPaymentManagement() {
+    console.log("AAppNo", this.AppNo);
+
     this.serviceService.getPayment(this.AppNo).subscribe(
       (PaymentList) => {
         this.PaymentList = PaymentList;
         this.PaymentList = Object.assign([], this.PaymentList.list);
-        this.Amount = this.PaymentList[0].Amount;
+        if (this.PaymentList) {
+          this.Amount = this.PaymentList[0].Amount;
+        }
         console.log("PaymentList", PaymentList);
       },
       (error) => {
@@ -151,7 +155,7 @@ export class PaymentComponent implements OnChanges {
         this.SaveePaymentDetail(PaymentDetail);
         if (!this.Saved) {
           this.completed.emit();
-          this.serviceService.disablefins=false
+          this.serviceService.disablefins = false;
           this.Saved = true;
         }
       },
@@ -193,7 +197,7 @@ export class PaymentComponent implements OnChanges {
         this.getPaymentManagement();
         if (!this.Saved) {
           this.completed.emit();
-          this.serviceService.disablefins=false
+          this.serviceService.disablefins = false;
           this.Saved = true;
         }
       },

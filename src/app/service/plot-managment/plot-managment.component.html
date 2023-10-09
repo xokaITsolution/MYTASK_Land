@@ -6,7 +6,8 @@
       <div class="col-sm-9">
         <input type="text" class="form-control" [disabled]="disable || isploatDisabled"
           [(ngModel)]="plotManagment.Plot_ID" name="PlotID" id="PlotID" [placeholder]="Fields.FIELD_ONE | translate"
-          #PlotID="ngModel" [ngClass]="{ 'is-invalid': PlotID.invalid }" required>
+          #PlotID="ngModel" [ngClass]="{ 'is-invalid': PlotID.invalid }" required
+            (input)="filter($event)" >
       </div>
       <!-- <div class="col-sm-1 ml-0 pl-0">
         <button type="button" class="btn btn-primary" [disabled]="disable" (click)="displayGIS=true"><span
@@ -382,6 +383,7 @@
 
 
 
+
 <!-- <ngx-smart-modal>
   <div class="modal-header">
   </div>
@@ -392,6 +394,48 @@
     <span>Close</span>
   </div>
 </ngx-smart-modal> -->
-
-
+<p-dialog [(visible)]="serachplotExists" [responsive]="true"
+  [style]="{'minHeight':'10%','height':'800px','minWidth':'10%','width':'80%' }" [maximizable]="true"
+  [baseZIndex]="10000">
+  <p-table [value]="PlotManagementfilterd" [paginator]="true" [rows]="5">
+    <ng-template pTemplate="header">
+      <tr>
+        <th scope="col" translate>Plot_ID</th>
+        <th scope="col" translate>Status</th>
+        <th scope="col" translate>Area_M2</th>
+        <th scope="col" translate>Registration Date</th>
+       
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-Plot let-rowData>
+      <tr (click)='highlighted = rowData;SelectPLot(Plot);showform()' class="some-class" tabindex="1"
+        [class.ui-state-highlight]="rowData === highlighted">
   
+        <td>{{Plot.Plot_ID}} </td>
+        <td>
+          <select class="form-control" disabled [(ngModel)]="Plot.Plot_Status" name="Statuss" id="Statuss">
+            <option disabled translate>select</option>
+            <option *ngFor="let Status of serviceService.PlotStutusLook" [value]="Status.Plot_Status_ID">
+              {{Status.Name}}
+            </option>
+          </select>
+        </td>
+        <td>{{Plot.Plot_Size_M2}}</td>
+        <td>{{Plot.Registration_Date}}</td>
+        <td>
+          <button type="button" class="btn btn-primary" (click)="SelectPLot(Plot);serachplotExists=false" 
+            translate>select</button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-footer>
+    <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="8" *ngIf="toogleSpin"></p-progressSpinner>
+    <button type="button" class="btn btn-primary"  (click)="serachplotExists=false" translate>select
+    </button>
+  
+  </p-footer>
+  
+
+  </p-dialog>

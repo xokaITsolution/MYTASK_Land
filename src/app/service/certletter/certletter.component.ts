@@ -132,14 +132,18 @@ export class CertletterComponent implements OnChanges {
     }
   }
   Selectversion(certver) {
+    console.log("SelectedcertSelectedcert", this.Selectedcert);
+
     this.Selectedcert = certver;
     this.certltrview = true;
-    this.certReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
-      environment.certReportPath + "/" + this.SelectedBase.Title_Deed_No
-    );
-    this.LetterReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
-      environment.LetterReportPath + "/" + this.SelectedBase.Title_Deed_No
-    );
+    if (this.Selectedcert) {
+      this.certReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
+        environment.certReportPath + "/" + this.Selectedcert.title_Deed_No
+      );
+      this.LetterReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
+        environment.LetterReportPath + "/" + this.Selectedcert.title_Deed_No
+      );
+    }
 
     console.log("certver", certver);
     console.log("certReportPath", this.certReportPath);
