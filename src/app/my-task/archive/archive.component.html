@@ -1,16 +1,35 @@
 <div class="input-group mb-3">
-    <input   type="text" style="border-color: #007bff;"   [(ngModel)]="globvar"  name="globvar"
+
+  <select  [(ngModel)]="woreda"
+  required>
+  <option value="woreda1">Woreda 1</option>
+  <option value="woreda2">Woreda 2</option>
+  <option value="woreda3">Woreda 3</option>
+  <option value="woreda4">Woreda 4</option>
+  <option value="woreda5">Woreda 5</option>
+  <option value="woreda6">Woreda 6</option>
+  <option value="woreda7">Woreda 7</option>
+  <option value="woreda8">Woreda 8</option>
+  <option value="woreda9">Woreda 9</option>
+  <option value="woreda10">Woreda 10</option>
+  <option value="woreda11">Woreda 11</option>
+  <option value="woreda12">Woreda 12</option>
+  <option value="woreda13">Woreda 13</option>
+  <option value="woreda14">Woreda 14</option>
+  <option value="woreda15">Woreda 15</option>
+  <option value="woreda16">Woreda 16</option>
+  <option value="woreda17">Woreda 17</option>
+</select>
+
+    
+    <input    required type="text" style="border-color: #007bff;"  [(ngModel)]="globvar"  name="globvar"
     id="globvar">
-    <!-- <input type="text" pInputText [(ngModel)]="phoneNumber" placeholder="Enter phone number...">
-   <input type="text" pInputText [(ngModel)]="firstName" placeholder="Enter first name...">
-   <input type="text" pInputText [(ngModel)]="lastName" placeholder="Enter last name...">  -->
    <div class="input-group-append">
-    <button class="btn btn-primary" type="button" translate  (click)="getdata(globvar)">Search</button>
+    <button class="btn btn-primary" type="button" translate  (click)="getdata(woreda,globvar)">Search</button>
   </div>
 </div>
-<input type="file" (change)="selectFolder($event)" webkitdirectory directory multiple>
-<!-- <ngx-doc-viewer [url]="pdfSrc" viewer="google"  style="width:100%;height:93vh; overflow-x: auto;"
->
-<div>Loading</div>
-</ngx-doc-viewer> -->
+
+<div class="containerr">
+  <iframe  class="responsive-iframe" [src]="pdfSrc" ></iframe>
+</div>
 

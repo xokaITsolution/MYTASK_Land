@@ -267,7 +267,7 @@
   <!--The content below is only a placeholder and can be replaced.-->
   <div class="p-3 border-secondary border-5 bg-secondary text-white h-100 text-center m-10 mt-10">
     <div class="btn-group">
-      <button class="btn btn-primary mr-2" *ngIf="!hideit"  type="button" (click)="Back()" translate>Not Complete</button>
+      <button class="btn btn-primary mr-2" *ngIf="!hideit"  type="button" (click)="showdialogg()" translate>Not Complete</button>
 
  <!-- <button *ngIf="!hideit" type="button" class="btn btn-primary mr-2" (click)="Back()" translate>Back</button> -->
    <button type="button" class="btn btn-primary mr-2" (click)="openModal(template)" translate>Review</button>
@@ -360,7 +360,7 @@
         <select *ngIf="ifAppNo" class="form-control" [(ngModel)]="AppN" (change)="getAppData(AppN)"
           name="CustomerType" id="ApplicationLIst">
           <option disabled>select</option>
-          <option *ngFor="let AppNo of ApplicationNumberlist" [value]="AppNo.application_number">{{AppNo.application_number}}</option>
+          <option *ngFor="let AppNo of ApplicationNumberlist" [value]="AppNo.application_number">{{AppNo.application_number}} | {{AppNo.service_Name}} | {{AppNo.application_Date}}</option>
         </select>
       </div>
     </div>
@@ -629,7 +629,47 @@
 </div>
    </div>
   </p-dialog>
-  
+   
+<p-dialog  [(visible)]="showdialogee"  header="Post It Note"  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
+[baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                        'max-height': '80vh','min-height':'250px'}">
+                         <div class="modal-body">
+
+<div class="form-group row col-sm-10 m-0" >
+  <textarea
+  #myInput
+  [maxlength]="200"
+
+  class="form-control mx-2 mb-2 border-primary" 
+ rows="4" style="background: rgb(202, 236, 255)" 
+ [(ngModel)]="NoteObj.remarks"
+ [ngClass]="{ 'is-invalid': myInput.invalid }"
+>{{aaa}}
+</textarea>
+<span style="background-color: rgba(250, 240, 222, 0.693);">
+ 
+ <span style="font-weight: bolder;" translate>Characters</span>:-<span style="font-weight: bolder; color: green; ">{{myInput.value.length}} </span>/ <span translate style="font-weight: bolder;">no of Characters</span>:-<span style="font-size: larger; font-weight: bolder; color: green;">{{maxChars}}</span>
+</span>
+
+ <button type="button" class="btn btn-primary mx-2" 
+ [disabled]="myInput.value.length==0"
+ *ngIf="!this.NoteObj.postit_note_code"
+   (click)="addNote()" translate>Save</button>
+ <!-- <button type="button" class="btn btn-primary mx-4" *ngIf="this.NoteObj.postit_note_code"
+   (click)="saveNote()" translate>
+   Update
+ </button> -->
+ <!-- <button type="button" class="btn btn-danger mx-4" *ngIf="this.NoteObj.postit_note_code"
+   (click)="DeleteNote()" translate>
+   Delete
+ </button> -->
+ <button type="button" class="btn btn-primary" *ngIf="this.NoteObj.postit_note_code"
+   (click)="sendNotttte()" translate>
+   <span class="fa fa-telegram"></span> Send
+ </button>
+</div>
+  </div>
+ </p-dialog>
 <p-dialog  [(visible)]="showdialoges"  header="Post It Note"  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
 [positionTop]="1" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                          'max-height': '80vh','min-height':'250px'}">

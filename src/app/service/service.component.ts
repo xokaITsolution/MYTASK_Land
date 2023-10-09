@@ -1440,6 +1440,13 @@ export class ServiceComponent implements OnInit {
       this.SubmitAR(data);
     }
   }
+  showdialogee
+  showdialogg(){
+    this.showdialogee=true
+  }
+  sendNotttte(){
+    this.Back()
+  }
   getTaskRule(tasksId) {
     this.serviceService.getTaskRule(tasksId).subscribe(
       (DropDownList) => {
@@ -1567,11 +1574,24 @@ export class ServiceComponent implements OnInit {
       }
     );
   }
-  GetApplicationNumberByUser(username) {
+  GetApplicationNumberByUser(username,orgcode) {
     this.serviceService
-      .GetApplicationNumberByUser(username)
+      .GetApplicationNumberByUser(username,orgcode)
       .subscribe((ApplicationNumber: any) => {
         this.ApplicationNumberlist = ApplicationNumber;
+        this.ApplicationNumberlist= ( this.ApplicationNumberlist as Array<any>).sort((a, b) => {
+          if (a.application_Date >b.application_Date) {
+           
+              console.log('sttatattgs', this.ApplicationNumberlist)
+            return -1;
+          } else if (a.application_Date < b.application_Date) {
+           
+             console.log('sttatattgs', this.ApplicationNumberlist)
+            return 1;
+          } else {
+            return 0;
+          }
+        });
         this.AppNoList;
 
         console.log("finalystatuslist", this.ApplicationNumberlist);
@@ -1865,8 +1885,9 @@ export class ServiceComponent implements OnInit {
   getuserName(AppNo) {
     this.serviceService.getuserName(AppNo).subscribe((res: any) => {
       this.useNamelist = res;
+      console.log('useNamelist' ,this.useNamelist)
       if (this.useNamelist.length > 0) {
-        this.GetApplicationNumberByUser(this.useNamelist[0].userName);
+        this.GetApplicationNumberByUser(this.useNamelist[0].userName,this.useNamelist[0].organization_code);
       }
     });
   }

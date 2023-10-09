@@ -1,31 +1,67 @@
-
 <div>
-  <div class="m-10">You have {{taskwaithing}} number of active tasks waiting</div>
+
+  <div class="m-10" *ngIf="taskList"><span> {{ taskList.length }} </span>
+    <span translate>number of active tasks waiting</span>
+  </div>
 
   <div>
-    <table class="table">
-      <thead>
-      <tr>
-        <th scope="col" translate>#</th>
-        <th scope="col" translate>Application</th>
-        <th scope="col" translate>Date</th>
-        <th scope="col" translate>Task Description</th>
-        <th scope="col" translate>Task Status</th>
-        <th scope="col" translate>Type</th>
-        <th scope="col"></th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let task of tasks; let i = index;">
-        <th scope="row">{{i+1}}</th>
-        <td>{{task.Application}}</td>
-        <td>{{task.Date}}</td>
-        <td>{{task.TaskDescription}}</td>
-        <td>{{task.TaskStatus}}</td>
-        <td>{{task.Type}}</td>
-        <td><a href="" translate>GO</a></td>
-      </tr>
-      </tbody>
-    </table>
+    <p-table [value]="taskList" [paginator]="true" [rows]="10">
+      <ng-template pTemplate="header">
+        <tr>
+          <th width="15%" translate>Application</th>
+          <th translate>Date</th>
+          <th translate>Task Description</th>
+          <th translate>Task Status</th>
+          <th translate>Type</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-task>
+        <tr [class.green]="task.status == 'O' ||task.status == 'A' ||task.status == 'R' ||task.status == 'AS'"
+          [class.yeloww]="task.status == 'S' ||task.status == 'P'" [class.red]="task.Minutes_late >0">
+          <td>{{task.todo_comment}}</td>
+          <td>{{task.start_date}}</td>
+          <td>{{task.description}}</td>
+          <td>{{task.status}}</td>
+          <td>{{task.TaskType}}</td>
+          <td><button class="btn btn-primary" type="button" *ngIf="task.status!=='Q'"
+              (click)="IsLockedBy_OtherUser(task)" translate>
+              Pick
+            </button></td>
+          <td>
+            <button type="button" class="btn btn-primary" (click)="openModal('empList',task)" translate>assign</button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
   </div>
 </div>
+
+
+<ngx-smart-modal #empList identifier="empList">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left" translate>List of Users</h4>
+  </div>
+  <div class="modal-body">
+    <div class="col-sm-12 row  m-3">
+      <label for="IssuedBy" class="col-sm-4 col-form-label" translate>Select user</label>
+      <div class="col-sm-8">
+        <select class="form-control" (change)="passdata($event)" [(ngModel)]="selectedUser" NG name="IssuedBy"
+          id="IssuedBy">
+          <option disabled>select</option>
+          <option *ngFor="let User of SuperviedUsers;" [value]="User.UserId">{{User.UserName}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="pull-right">
+        <button type="button" class="btn btn-primary" (click)="assign('empList')" translate>Re Open</button>
+      </div>
+    </div>
+
+  </div>
+</ngx-smart-modal>
+
+
+<simple-notifications></simple-notifications>
