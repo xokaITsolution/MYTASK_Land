@@ -63,8 +63,9 @@ export class PaymentComponent implements OnChanges {
     this.getPaymentManagement();
 
     this.PaymentProcessPath = this.sanitizer.bypassSecurityTrustResourceUrl(
-      environment.PaymentReportPath + "/?ApplicatioNo=" + this.AppNo
+      environment.PaymentReportPath + "/" + this.AppNo
     );
+    console.log(" this.PaymentProcessPath", this.PaymentProcessPath);
   }
 
   getPaymentManagement() {
