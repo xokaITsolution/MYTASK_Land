@@ -253,6 +253,9 @@ export class PaymentComponent implements OnChanges {
   prossesPayment(modal) {
     this.ngxSmartModalService.getModal(modal).open();
   }
+  closeModal(modal) {
+    this.ngxSmartModalService.getModal(modal).close();
+  }
 }
 class GnewGuid {
   static newGuid() {
