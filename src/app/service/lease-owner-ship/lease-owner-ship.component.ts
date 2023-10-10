@@ -47,7 +47,9 @@ export class LeaseOwnerShipComponent implements OnChanges {
   Customer_NAME: string;
   islease: boolean;
   isfreehole: boolean;
-  msgs: Message[] = [];
+  msgs: any;
+  isconfirmupdate: boolean;
+  isconfirmsave: boolean;
   constructor(
     private ngxSmartModalService: NgxSmartModalService,
     private leaseOwnerShipService: LeaseOwnerShipService,
@@ -254,58 +256,42 @@ export class LeaseOwnerShipComponent implements OnChanges {
   }
 
   confirmsave() {
-    this.confirmationService.confirm({
-      message: "Are you sure that you want to save?",
-      header: "Confirmation",
-      icon: "pi pi-exclamation-triangle",
-      accept: () => {
-        this.msgs = [
-          {
-            severity: "info",
-            summary: "Confirmed",
-            detail: "You have accepted",
-          },
-        ];
-        this.add();
-      },
-      reject: () => {
-        this.msgs = [
-          {
-            severity: "info",
-            summary: "Rejected",
-            detail: "You have rejected",
-          },
-        ];
-      },
-    });
+    this.msgs = "Are you sure that you want to save?";
+    this.isconfirmsave = true;
   }
 
   confirmupdate() {
-    this.confirmationService.confirm({
-      message: "Are you sure that you want to update?",
-      header: "Confirmation",
-      icon: "pi pi-exclamation-triangle",
-      accept: () => {
-        this.msgs = [
-          {
-            severity: "info",
-            summary: "Confirmed",
-            detail: "You have accepted",
-          },
-        ];
-        this.save();
-      },
-      reject: () => {
-        this.msgs = [
-          {
-            severity: "info",
-            summary: "Rejected",
-            detail: "You have rejected",
-          },
-        ];
-      },
-    });
+    this.msgs = "Are you sure that you want to update?";
+    this.isconfirmupdate = true;
   }
+
+  // confirmupdate() {
+  //   this.msgs = [];
+  //   this.confirmationService.confirm({
+  //     message: "Are you sure that you want to update?",
+  //     header: "Confirmation",
+  //     icon: "pi pi-exclamation-triangle",
+  //     accept: () => {
+  //       this.msgs = [
+  //         {
+  //           severity: "info",
+  //           summary: "Confirmed",
+  //           detail: "You have accepted",
+  //         },
+  //       ];
+  //       this.save();
+  //     },
+  //     reject: () => {
+  //       this.msgs = [
+  //         {
+  //           severity: "info",
+  //           summary: "Rejected",
+  //           detail: "You have rejected",
+  //         },
+  //       ];
+  //     },
+  //   });
+  // }
   async save() {
     this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     if (this.leaseOwnerShip.Lease_Hold_M2 < 75) {
@@ -417,6 +403,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
   //}
 
   async add() {
+    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     if (this.leaseOwnerShip.Lease_Hold_M2 < 75) {
       const toast = this.notificationsService.warn(
         "Lease Hold is not less than 75/የሊዝ ይዞታ ከ 75 መብለጥ የለበትም"
@@ -435,6 +422,9 @@ export class LeaseOwnerShipComponent implements OnChanges {
         const toast = this.notificationsService.success(
           "Sucess",
           deptSuspension
+        );
+        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+          false
         );
         this.serviceService.Totalarea =
           this.leaseOwnerShip.Lease_Hold_M2 + this.leaseOwnerShip.Free_Hold_M2;
@@ -465,6 +455,9 @@ export class LeaseOwnerShipComponent implements OnChanges {
       },
       async (error) => {
         console.log(error);
+        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+          false
+        );
         if (error.status == "400") {
           const toast = this.notificationsService.error(
             "Error",

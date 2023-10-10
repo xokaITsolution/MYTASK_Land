@@ -235,7 +235,7 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
   </div>
     <button type="button" class="btn btn-primary" *ngIf="!isnew && !disable" (click)="save();" [disabled]="!f.valid"
       translate>Save</button>
-    <button type="button" class="btn btn-primary" *ngIf="isnew && !disable" (click)="add()" [disabled]="!f.valid"
+    <button type="button" class="btn btn-primary" *ngIf="isnew && !disable" (click)="confirmsave();" [disabled]="!f.valid"
       translate>Save</button>
 
 </form>
@@ -476,3 +476,18 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
   </div>
 </ng-template>
  -->
+
+<p-dialog [header]="'Confirmation' | translate" [(visible)]="isconfirmsave" [responsive]="true" [width]="300"
+  [minY]="40" [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                         'max-height': '80vh','min-height':'50px'}">
+  <p>
+
+    {{msgs}}
+  </p>
+
+  <p-footer>
+    <button type="button" pButton icon="pi pi-check" (click)="isconfirmsave=false;add()" label="Yes"></button>
+    <button type="button" pButton icon="pi pi-close" (click)="isconfirmsave=false" label="No"
+      class="ui-button-secondary"></button>
+  </p-footer>
+</p-dialog>

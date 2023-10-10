@@ -50,6 +50,8 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   TransferredTo: boolean = false;
   TransferredFrom: boolean = false;
   globvarto;
+  isconfirmsave: boolean;
+  msgs: string;
   constructor(
     private modalService: BsModalService,
     private ngxSmartModalService: NgxSmartModalService,
@@ -125,6 +127,10 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
     this.deedform = false;
     this.getdeed(this.selectedpro.property_ID);
     console.log(this.selectedpro.property_ID);
+  }
+  confirmsave() {
+    this.msgs = "Are you sure that you want to save?";
+    this.isconfirmsave = true;
   }
 
   getdeed(propertyid) {
