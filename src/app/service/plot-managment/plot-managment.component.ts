@@ -481,6 +481,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     } else {
       plot.Registration_Date = plot.Registration_Date.split("T")[0];
     }
+    this.isnew = false;
     this.plotManagment = plot;
     console.log("dfghgfd", plot);
 

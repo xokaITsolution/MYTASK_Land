@@ -149,8 +149,8 @@ export class PaymentComponent implements OnChanges {
         }
         this.getPaymentManagement();
         this.SaveePaymentDetail(PaymentDetail);
+        this.completed.emit();
         if (!this.Saved) {
-          this.completed.emit();
           this.serviceService.disablefins = false;
           this.Saved = true;
         }
@@ -191,8 +191,8 @@ export class PaymentComponent implements OnChanges {
       (message) => {
         const toast = this.notificationsService.success("Sucess", message);
         this.getPaymentManagement();
+        this.completed.emit();
         if (!this.Saved) {
-          this.completed.emit();
           this.serviceService.disablefins = false;
           this.Saved = true;
         }

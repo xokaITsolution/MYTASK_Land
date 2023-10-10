@@ -14,7 +14,7 @@ export const environment = {
   iconpath: window["iconpath"],
   formPath: window["formPath"],
 
-  username: "AR_cashier",
+  username: "AA0000000016",
 
   //username: "BL_Doc_Verifier",
   //username: "BL_Data_Encoder",
@@ -42,7 +42,7 @@ export const environment = {
   groupName: window["groupName"],
   geoser: window["geoser"],
   multipleplotcanbeadd: window["multipleplotcanbeadd"],
-  folderpath:window['folderpath']
+  folderpath: window["folderpath"],
 };
 
 /*

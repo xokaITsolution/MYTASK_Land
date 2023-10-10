@@ -403,7 +403,9 @@
         <th scope="col" translate>Plot_ID</th>
         <th scope="col" translate>Status</th>
         <th scope="col" translate>Area_M2</th>
+        <th scope="col" translate>woreda</th>
         <th scope="col" translate>Registration Date</th>
+        
        
       </tr>
     </ng-template>
@@ -421,7 +423,8 @@
           </select>
         </td>
         <td>{{Plot.Plot_Size_M2}}</td>
-        <td>{{Plot.Registration_Date}}</td>
+        <td>{{Plot.Wereda_ID }}</td>
+        <td>{{Plot.Registration_Date }}</td>
         <td>
           <button type="button" class="btn btn-primary" (click)="SelectPLot(Plot);serachplotExists=false" 
             translate>select</button>

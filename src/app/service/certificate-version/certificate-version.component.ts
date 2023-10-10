@@ -123,16 +123,20 @@ export class CertificateVersionComponent implements OnChanges {
           console.log("certificateVersion", certificateVersion);
           const toast = this.notificationsService.success("Sucess edited ");
           this.serviceService.disablefins = false;
+          this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+            false
+          );
           if (!this.Saved) {
-            this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-              false
-            );
             this.completed.emit();
             this.Saved = true;
           }
         },
         (error) => {
           console.log(error);
+          this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+            false
+          );
+
           if (error.status == "400") {
             const toast = this.notificationsService.error(
               "Error",

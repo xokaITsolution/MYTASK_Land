@@ -10,7 +10,7 @@ import { LeaseOwnerShipService } from "./lease-owner-ship.service";
 import { ServiceComponent } from "../service.component";
 import { NotificationsService } from "angular2-notifications";
 import { NgxSmartModalService } from "ngx-smart-modal";
-import { ConfirmationService } from "primeng/api";
+import { ConfirmationService, Message } from "primeng/api";
 import { Guid } from "guid-typescript";
 import { PlotComponent } from "../plot/plot.component";
 import { Regions } from "../plot-managment/regions";
@@ -47,7 +47,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
   Customer_NAME: string;
   islease: boolean;
   isfreehole: boolean;
-
+  msgs: Message[] = [];
   constructor(
     private ngxSmartModalService: NgxSmartModalService,
     private leaseOwnerShipService: LeaseOwnerShipService,
@@ -253,6 +253,59 @@ export class LeaseOwnerShipComponent implements OnChanges {
     );
   }
 
+  confirmsave() {
+    this.confirmationService.confirm({
+      message: "Are you sure that you want to save?",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      accept: () => {
+        this.msgs = [
+          {
+            severity: "info",
+            summary: "Confirmed",
+            detail: "You have accepted",
+          },
+        ];
+        this.add();
+      },
+      reject: () => {
+        this.msgs = [
+          {
+            severity: "info",
+            summary: "Rejected",
+            detail: "You have rejected",
+          },
+        ];
+      },
+    });
+  }
+
+  confirmupdate() {
+    this.confirmationService.confirm({
+      message: "Are you sure that you want to update?",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      accept: () => {
+        this.msgs = [
+          {
+            severity: "info",
+            summary: "Confirmed",
+            detail: "You have accepted",
+          },
+        ];
+        this.save();
+      },
+      reject: () => {
+        this.msgs = [
+          {
+            severity: "info",
+            summary: "Rejected",
+            detail: "You have rejected",
+          },
+        ];
+      },
+    });
+  }
   async save() {
     this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     if (this.leaseOwnerShip.Lease_Hold_M2 < 75) {

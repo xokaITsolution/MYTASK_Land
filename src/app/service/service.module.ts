@@ -87,11 +87,15 @@ import { OverlayPanelModule } from "primeng/overlaypanel";
 import { TestgismapComponent } from "./testgismap/testgismap.component";
 import { TreeComponentComponent } from "./tree-component/tree-component.component";
 import { ExampleComponent } from "./loading/example.component";
+import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { RadioButtonModule } from "primeng/radiobutton";
 @NgModule({
   imports: [
     //BackButtonDisableModule.forRoot({
     //  preserveScrollPosition: true
     // }),
+    RadioButtonModule,
+    ConfirmDialogModule,
     TreeModule,
     NgxDocViewerModule,
     TabViewModule,
