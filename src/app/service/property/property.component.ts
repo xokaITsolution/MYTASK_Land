@@ -69,7 +69,11 @@ export class PropertyComponent implements OnChanges {
     this.novalidprops = 0;
     this.getPloat();
   }
-
+savedata(){
+  if (!this.Saved) {
+    this.completed.emit();
+    this.Saved = true;}
+}
   getPloat() {
     if (this.LicenceData.Parcel_ID) {
       console.log("geting ploat this.Parcel_ID", this.LicenceData.Parcel_ID);

@@ -16,6 +16,10 @@ tr.green {
   color: rgb(0, 0, 0) !important;
   
 }
+
+.nsm-content {
+  margin-top: 200px !important
+}
 .background-overlay-light{
   position: relative !important;
 }

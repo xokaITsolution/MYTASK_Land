@@ -235,7 +235,7 @@
                   [certCode]="licenceData.Certificate_Code" [licenceData]="licenceData"></app-certletter>
               </div>
               <div *ngIf="ID==9">
-                <app-property (completed)="EnableFins();saveFormm('{}');" (getpro)="getPropertyTypeLookUP()" [LicenceData]="licenceData"
+                <app-property (completed)="EnableFins();saveFormm2('{}');" (getpro)="getPropertyTypeLookUP()" [LicenceData]="licenceData"
                         [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="false" [AppNo]="AppNo"
                         [Service_ID]="licenceData.Service_ID" [todoid]="todoID" [tskID]="tskID" [DocID]="DocID" >
                       </app-property> 
