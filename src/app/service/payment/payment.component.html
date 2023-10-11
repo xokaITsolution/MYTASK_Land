@@ -162,7 +162,7 @@
   </div>
 
 <div class="pull-right">
-  <button  *ngIf="!disable" type="button" class="btn btn-primary" (click)="prossesPayment('PaymentProcess')" translate>Process Payment</button>
+  <button  *ngIf="!disable" type="button" class="btn btn-primary" (click)="prossesPayment('PaymentProcess')" translate>Recipt</button>
 </div>
 </div>
 
@@ -174,7 +174,7 @@
 
   
   <div class="modal-header">
-    <h4 class="modal-title pull-left" translate>Process Payment</h4>
+    <h4 class="modal-title pull-left" translate>Recipt</h4>
   </div>
   <div class="modal-body">
 
@@ -183,8 +183,8 @@
     </div>
 
   </div>
-<!--  <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="closeModal('GisViewer')" translate>Done</button>
-  </div>-->
+ <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="closeModal('PaymentProcess')" translate>close</button>
+  </div>
 </ngx-smart-modal>
 

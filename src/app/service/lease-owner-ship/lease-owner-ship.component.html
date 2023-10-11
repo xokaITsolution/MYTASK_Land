@@ -161,11 +161,11 @@
 
 
   </div>
-  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!addnew && !disable" (click)="save()" translate>Update</button>
+  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!addnew && !disable" (click)="confirmupdate()" translate>Update</button>
   <!-- <button type="button" class="btn btn-danger ml-3" [disabled]="!f.valid" *ngIf="!addnew && !disable" (click)="Delete()"
     translate>Delete
   </button> -->
-  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="addnew && !disable" (click)="add()"
+  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="addnew && !disable" (click)="confirmsave()"
     translate>Save</button>
 </form>
 
@@ -258,4 +258,37 @@
 
   </div>
   <button type="button" class="btn btn-primary" (click)="visible=false" style="float: right;" translate>Done</button>
+</p-dialog>
+
+
+
+
+<p-dialog [header]="'Confirmation' | translate" [(visible)]="isconfirmupdate" [responsive]="true" [width]="300" [minY]="40"
+  [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                         'max-height': '80vh','min-height':'50px'}">
+<p>
+
+{{msgs}}
+</p>
+
+  <p-footer>
+    <button type="button" pButton icon="pi pi-check" (click)="isconfirmupdate=false;save()" label="Yes"></button>
+    <button type="button" pButton icon="pi pi-close" (click)="isconfirmupdate=false" label="No"
+      class="ui-button-secondary"></button>
+  </p-footer>
+ </p-dialog>          
+ 
+<p-dialog [header]="'Confirmation' | translate" [(visible)]="isconfirmsave" [responsive]="true" [width]="300"
+  [minY]="40" [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                         'max-height': '80vh','min-height':'50px'}">
+  <p>
+
+    {{msgs}}
+  </p>
+
+  <p-footer>
+    <button type="button" pButton icon="pi pi-check" (click)="isconfirmsave=false;add()" label="Yes"></button>
+    <button type="button" pButton icon="pi pi-close" (click)="isconfirmsave=false" label="No"
+      class="ui-button-secondary"></button>
+  </p-footer>
 </p-dialog>

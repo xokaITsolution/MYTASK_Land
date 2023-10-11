@@ -418,7 +418,7 @@
         
               <div *ngIf="preAppID==2">
               <div *ngIf="CurrentForm === '1'">
-                <app-plot [Parcel_ID]="licenceData.Parcel_ID" [disable]="true"
+                <app-plot  [Parcel_ID]="licenceData.Parcel_ID" [disable]="true"
                   [Parcel_mearge1]="licenceData.Plot_Merge_1" [Parcel_mearge2]="licenceData.Plot_Merge_2"
                   [Parcel_mearge3]="licenceData.Plot_Merge_3" [Parcel_mearge4]="licenceData.Plot_Merge_4"
                   [LicenceData]="licenceData" [AppNo]="AppNo" [todoid]="todoID" [DocID]="DocID" [tskID]="tskID"
@@ -446,7 +446,7 @@
             [certCode]="licenceData.Certificate_Code" [licenceData]="licenceData"></app-certletter>
         </div>
         <div *ngIf="preAppID==9">
-          <app-property  (completed)="saveForm('{}');EnableFins();" [LicenceData]="licenceData"
+          <app-property   [LicenceData]="licenceData"
                   [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="true" [AppNo]="AppNo"
                   [Service_ID]="licenceData.Service_ID" [todoid]="todoID" [tskID]="tskID" [DocID]="DocID" [disable]="true" >
           

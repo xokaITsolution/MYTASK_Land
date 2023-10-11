@@ -132,14 +132,19 @@ export class CertletterComponent implements OnChanges {
     }
   }
   Selectversion(certver) {
+    console.log("SelectedcertSelectedcert", this.Selectedcert);
+
     this.Selectedcert = certver;
     this.certltrview = true;
-    this.certReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
-      environment.certReportPath + "/" + this.Selectedcert.Title_Deed_No
-    );
-    this.LetterReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
-      environment.LetterReportPath + "/" + this.Selectedcert.Title_Deed_No
-    );
+    this.getDocmentArcive();
+    if (this.Selectedcert) {
+      this.certReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
+        environment.certReportPath + "/" + this.Selectedcert.title_Deed_No
+      );
+      this.LetterReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
+        environment.LetterReportPath + "/" + this.Selectedcert.title_Deed_No
+      );
+    }
 
     console.log("certver", certver);
     console.log("certReportPath", this.certReportPath);
@@ -181,18 +186,25 @@ export class CertletterComponent implements OnChanges {
   }
 
   getDocmentArcive() {
+    console.log("this.cerlettrformList", this.SelectedBase.Title_Deed_No);
     let a;
     this.serviceService
       .getDocmentArcive(this.SelectedBase.Title_Deed_No)
       .subscribe(
-        async (cerltter) => {
+        async (cerltter: any) => {
           a = cerltter;
+          console.log("this.cerlettrformList", a);
+
+          this.cerlettrformList = a.list;
           if (this.language == "amharic") {
-            a.list[0].Regstration_Date = await this.getgregorianToEthiopianDate(
-              a.list[0].Regstration_Date
-            );
+            if ((this.cerlettrformList[0].Regstration_Date! = null)) {
+              this.cerlettrformList[0].Regstration_Date =
+                await this.getgregorianToEthiopianDate(
+                  this.cerlettrformList[0].Regstration_Date
+                );
+            }
           }
-          this.cerlettrformList = Object.assign([], a.list);
+
           if (this.cerlettrformList.length > 0) {
             this.disable_new = true;
           } else {

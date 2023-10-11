@@ -100,12 +100,14 @@
 
 
 
-  <form class="form-row" *ngIf="cerlettrform">
+  <form class="form-row" #cerlettrform="ngForm" *ngIf="cerlettrform">
     <div class="col-md-6">
       <div class="form-group row col-12">
       <label  class="col-sm-4 col-form-label" translate>Document No</label>
       <div class="col-sm-8">
-      <input class="form-control" [disabled]="disable"   name="DocumentNo" id="DocumentNo" [(ngModel)]="cerltter.Document_Number" [placeholder]="'Document No' | translate">
+      <input class="form-control" [disabled]="disable"   name="DocumentNo" id="DocumentNo" [(ngModel)]="cerltter.Document_Number" [placeholder]="'Document No' | translate"
+      
+      #DocumentNo="ngModel" [ngClass]="{ 'is-invalid': DocumentNo.invalid }" required>
     </div></div>
     <div class="form-group row col-12">
       <label  class="col-sm-4 col-form-label" translate>Shelf Column</label>
@@ -153,11 +155,11 @@
       <button *ngIf="!disable"  type="button" class="btn btn-primary" (click)="save()"translate>Update</button>
     </div>
     <div class=" col-sm-7 pull-right" *ngIf="isnew">
-      <button *ngIf="!disable"  type="button" class="btn btn-primary" (click)="add()" translate>Save</button>
+      <button *ngIf="!disable"  type="button" class="btn btn-primary" (click)="add()" [disabled]="!cerlettrform.valid"  translate>Save</button>
     </div></div>
   </form>
 
-  <div class="m-3" *ngIf="certltrview">
+  <div class="m-3" *ngIf="disable_new">
 
     <button class="m-3 btn btn-primary" type="button" (click)="isLetterPrintingConfirmation=true" translate>Show Letter Printing Confirmation</button>
 

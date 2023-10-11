@@ -59,6 +59,9 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   isplotllocnew: boolean = true;
   language: string;
   urlParams: any;
+  plotlistnull: null;
+  PlotManagementfilterd: any;
+  serachplotExists: boolean;
 
   constructor(
     public serviceService: ServiceService,
@@ -431,6 +434,9 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       },
       (error) => {
         console.log(error);
+        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+          false
+        );
         if (error.status == "400") {
           const toast = this.notificationsService.error(
             "Error",
@@ -445,6 +451,44 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       }
     );
     console.log("saveing....");
+  }
+  filter(e) {
+    if (e.target.value) {
+      this.serviceService.getPlotManagement(e.target.value).subscribe(
+        async (PlotManagementLists: any) => {
+          this.PlotManagementfilterd = PlotManagementLists.list;
+          console.log("PlotManagementListsfilterd", this.PlotManagementfilterd);
+          if (this.PlotManagementfilterd.length > 0) {
+            this.serachplotExists = true;
+          } else {
+            this.serachplotExists = false;
+          }
+        },
+        (error) => {
+          console.log("error => ", error);
+          const toast = this.notificationsService.error(
+            "Error",
+            "SomeThing Went Wrong"
+          );
+        }
+      );
+    } else {
+      this.plotlistnull = null;
+    }
+  }
+  async SelectPLot(plot) {
+    if (this.language === "amharic") {
+      plot.Registration_Date = await this.getgregorianToEthiopianDate(
+        plot.Registration_Date
+      );
+    } else {
+      plot.Registration_Date = plot.Registration_Date.split("T")[0];
+    }
+    this.isnew = false;
+    this.plotManagment = plot;
+    console.log("dfghgfd", plot);
+
+    // this.plotForm = true;
   }
   getplotloc(plotid) {
     this.serviceService.getPlotloc(plotid).subscribe((response: any) => {
@@ -626,71 +670,75 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     // this.confirmationService.confirm({
     //   message: 'Are you sure u want to delete this Plot?',
     //   accept: () => {
-    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     console.log("this.plotManagment", this.plotManagment);
 
     if (this.language === "amharic") {
       this.plotManagment.Registration_Date = await this.getEthiopianToGregorian(
         this.plotManagment.Registration_Date
       );
+    }
+    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
 
-      this.plotManagment.Is_Deleted = true;
-      this.ploatManagmentService.save(this.plotManagment).subscribe(
-        async (deptSuspension) => {
-          console.log("deptSuspension", deptSuspension);
-          const toast = this.notificationsService.success(
-            "Sucess",
-            deptSuspension
-          );
-          this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-            false
-          );
-          // this.serviceService.disablefins = false;
+    this.plotManagment.Is_Deleted = true;
+    this.ploatManagmentService.save(this.plotManagment).subscribe(
+      async (deptSuspension) => {
+        console.log("deptSuspension", deptSuspension);
+        const toast = this.notificationsService.success(
+          "Sucess",
+          deptSuspension
+        );
+        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+          false
+        );
+        // this.serviceService.disablefins = false;
+        if (this.language === "amharic") {
+          this.plotManagment.Registration_Date =
+            await this.getgregorianToEthiopianDate(
+              this.plotManagment.Registration_Date
+            );
+        }
+
+        if (!this.Saved == undefined) {
+          this.completed.emit(this.plotManagment);
+          this.Saved = true;
+        }
+        (deptSuspension) => {
+          const toast = this.notificationsService.warn("Warning");
+        };
+      },
+
+      async (error) => {
+        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+          false
+        );
+        console.log(error);
+        if (error.status == "400") {
           if (this.language === "amharic") {
             this.plotManagment.Registration_Date =
               await this.getgregorianToEthiopianDate(
                 this.plotManagment.Registration_Date
               );
           }
-
-          if (!this.Saved == undefined) {
-            this.completed.emit(this.plotManagment);
-            this.Saved = true;
+          const toast = this.notificationsService.error(
+            "Error",
+            error.error.InnerException.Errors[0].message
+          );
+        } else {
+          if (this.language === "amharic") {
+            this.plotManagment.Registration_Date =
+              await this.getgregorianToEthiopianDate(
+                this.plotManagment.Registration_Date
+              );
           }
-          (deptSuspension) => {
-            const toast = this.notificationsService.warn("Warning");
-          };
-        },
-
-        async (error) => {
-          console.log(error);
-          if (error.status == "400") {
-            if (this.language === "amharic") {
-              this.plotManagment.Registration_Date =
-                await this.getgregorianToEthiopianDate(
-                  this.plotManagment.Registration_Date
-                );
-            }
-            const toast = this.notificationsService.error(
-              "Error",
-              error.error.InnerException.Errors[0].message
-            );
-          } else {
-            if (this.language === "amharic") {
-              this.plotManagment.Registration_Date =
-                await this.getgregorianToEthiopianDate(
-                  this.plotManagment.Registration_Date
-                );
-            }
-            const toast = this.notificationsService.error(
-              "Error",
-              "SomeThing Went Wrong"
-            );
-          }
+          const toast = this.notificationsService.error(
+            "Error",
+            "SomeThing Went Wrong"
+          );
         }
-      );
-      console.log("saveing....");
-    }
+      }
+    );
+    console.log("saveing....");
+
     //   });
   }
 
@@ -744,6 +792,9 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       },
       async (error) => {
         console.log(error);
+        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+          false
+        );
         if (error.status == "400") {
           if (this.language === "amharic") {
             this.plotManagment.Registration_Date =

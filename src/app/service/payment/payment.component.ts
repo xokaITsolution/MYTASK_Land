@@ -63,20 +63,21 @@ export class PaymentComponent implements OnChanges {
     this.getPaymentManagement();
 
     this.PaymentProcessPath = this.sanitizer.bypassSecurityTrustResourceUrl(
-      environment.PaymentReportPath +
-        "/?UserName=" +
-        environment.username +
-        "&ApplicatioNo=" +
-        this.AppNo
+      environment.PaymentReportPath + "/" + this.AppNo
     );
+    console.log(" this.PaymentProcessPath", this.PaymentProcessPath);
   }
 
   getPaymentManagement() {
+    console.log("AAppNo", this.AppNo);
+
     this.serviceService.getPayment(this.AppNo).subscribe(
       (PaymentList) => {
         this.PaymentList = PaymentList;
         this.PaymentList = Object.assign([], this.PaymentList.list);
-        this.Amount = this.PaymentList[0].Amount;
+        if (this.PaymentList) {
+          this.Amount = this.PaymentList[0].Amount;
+        }
         console.log("PaymentList", PaymentList);
       },
       (error) => {
@@ -149,9 +150,9 @@ export class PaymentComponent implements OnChanges {
         }
         this.getPaymentManagement();
         this.SaveePaymentDetail(PaymentDetail);
+        this.completed.emit();
         if (!this.Saved) {
-          this.completed.emit();
-          this.serviceService.disablefins=false
+          this.serviceService.disablefins = false;
           this.Saved = true;
         }
       },
@@ -191,9 +192,9 @@ export class PaymentComponent implements OnChanges {
       (message) => {
         const toast = this.notificationsService.success("Sucess", message);
         this.getPaymentManagement();
+        this.completed.emit();
         if (!this.Saved) {
-          this.completed.emit();
-          this.serviceService.disablefins=false
+          this.serviceService.disablefins = false;
           this.Saved = true;
         }
       },
@@ -251,6 +252,9 @@ export class PaymentComponent implements OnChanges {
 
   prossesPayment(modal) {
     this.ngxSmartModalService.getModal(modal).open();
+  }
+  closeModal(modal) {
+    this.ngxSmartModalService.getModal(modal).close();
   }
 }
 class GnewGuid {

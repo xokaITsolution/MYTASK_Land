@@ -134,7 +134,7 @@ export class GisMapComponent implements AfterViewInit {
 
     this.initMap();
     this.getcapablities();
-    this.getGroupLayers();
+
     // this.changingg.subscribe((v: any) => {
     //   console.log("value is changing", v);
     //   this.processImportedShapes(v);
@@ -268,6 +268,7 @@ export class GisMapComponent implements AfterViewInit {
 
           // push all changes on layers
           this.layers.push(newLayer);
+          this.getGroupLayers();
         }
       })
       .catch((error) => {
@@ -401,6 +402,8 @@ export class GisMapComponent implements AfterViewInit {
     }
   }
   SubcitiesSelected(checked: boolean, event: any) {
+    console.log("subcitie", event);
+
     if (checked) {
       //debugger
       //Call Geoserver API to fetch layers for the selected group layer
@@ -416,16 +419,19 @@ export class GisMapComponent implements AfterViewInit {
                 data.layerGroup.publishables.published
               );
               console.log("woredas", this.woredas);
-              if (this.woredas.length > 0) {
-                const firstElementValue = this.woredas[0].href;
-                this.WoredasSelected(true, firstElementValue);
-              }
             }
           }
 
           for (let index = 0; index < this.woredas.length; index++) {
             const element = this.woredas[index].name.split(":");
             this.woredas[index].names = element[1];
+          }
+          if (this.woredas.length > 0) {
+            const firstElementValue = this.woredas[0].href;
+            const firstElementname = this.woredas[0].names;
+            console.log("firstElementname", firstElementname);
+            this.WoredasSelected(true, firstElementValue);
+            this.toggleLayer(true, firstElementname);
           }
         }
       });
@@ -614,7 +620,7 @@ export class GisMapComponent implements AfterViewInit {
     this.map = L.map("mapp", {
       crs: this.EPSG20137,
       center: [9.032457, 38.759775],
-      zoom: 13, // Set the map CRS to EPSG:20137
+      zoom: 0, // Set the map CRS to EPSG:20137
     }); // Set an appropriate initial view for Ethiopia
     // Define custom zoom levels
 
@@ -1015,7 +1021,7 @@ export class GisMapComponent implements AfterViewInit {
           layer.bindPopup(popupContent).openPopup();
           console.log("Totalarea", area, utmCoordinates);
           if (this.ServiceService.check) {
-            if (this.ServiceService.Totalarea == area) {
+            if (this.ServiceService.Totalarea <= area) {
               const warningMessage =
                 "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
               const toastWarning = this.notificationsService.warn(
@@ -1614,6 +1620,8 @@ export class GisMapComponent implements AfterViewInit {
   // }
 
   toggleLayer(visibility: boolean, layerName: string) {
+    console.log("layerName", layerName);
+
     const layer = this.layers.find((l) => l.name === layerName);
     //debugger;
     if (layer && layer.vectorLayer) {
@@ -1856,7 +1864,7 @@ export class GisMapComponent implements AfterViewInit {
 
       // Fit the map bounds to the drawn shape with a specific maxZoom level
       this.map.fitBounds(this.drawnShape.getBounds());
-      // this.onDatumChange();
+      this.onDatumChange();
       // this.map.setView(center, 15);
 
       //  if (this.ServiceService.check == true) {
@@ -2046,7 +2054,7 @@ export class GisMapComponent implements AfterViewInit {
       // marker.addTo(this.map);
 
       this.map.fitBounds(this.drawnShape.getBounds());
-      //this.onDatumChange();
+      this.onDatumChange();
       // this.map.setView(center, 15);
 
       if (this.ServiceService.check != true) {
@@ -2362,7 +2370,7 @@ export class GisMapComponent implements AfterViewInit {
     // }
     // Update the map view to the center coordinates of Ethiopia and adjust the zoom level
     const center = L.latLng(9.032457, 38.759775); // Update with Ethiopia center coordinates
-    const zoom = 13; // Update with the desired zoom level for the selected projection
+    const zoom = 0; // Update with the desired zoom level for the selected projection
     this.map.setView(center, zoom);
   }
 

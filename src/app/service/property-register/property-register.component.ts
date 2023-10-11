@@ -53,6 +53,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   combineArray: [];
   convertedCoordinates: any = [];
   havedata: boolean;
+  isconfirmsave: boolean;
+  msgs: string;
   constructor(
     private serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -787,6 +789,10 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     // }
 
     // Close and reopen the modal to apply the size changes
+  }
+  confirmsave() {
+    this.msgs = "Are you sure that you want to save?";
+    this.isconfirmsave = true;
   }
 
   upload(event, form) {
