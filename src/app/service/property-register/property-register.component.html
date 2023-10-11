@@ -1,4 +1,4 @@
-
+<app-example *ngIf="LoadingExampleService.isLoading | async"></app-example>
 
 <form #f="ngForm" novalidate name="proform">
   <div *ngIf="havedata" class="d-flex justify-content-center" style="position: absolute;

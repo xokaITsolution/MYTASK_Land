@@ -17,12 +17,12 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { ConfirmationService } from "primeng/api";
 import { NgxSmartModalService } from "ngx-smart-modal";
 import { ServiceService } from "../service.service";
-import { Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { environment } from "src/environments/environment";
 import { BsModalRef, BsModalService } from "ngx-bootstrap";
 import { ActivatedRoute } from "@angular/router";
 import { PlatformLocation } from "../plot-managment/plot-managment.component";
-
+import { LoadingExampleService } from "../loading/loadingExample.service";
 @Component({
   selector: "app-property-register",
   templateUrl: "./property-register.component.html",
@@ -67,7 +67,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     private ngxSmartModalService: NgxSmartModalService,
     private confirmationService: ConfirmationService,
     private renderer: Renderer2,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    public LoadingExampleService: LoadingExampleService
   ) {
     this.propertyRegister = new PropertyRegister();
     this.propformLocation = new PropformLocation();
@@ -188,6 +189,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   }
 
   async save() {
+    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     this.havedata = true;
     let totalsize =
       parseInt(this.propertyRegister.building_Size_M2) +
@@ -201,6 +203,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         "the sum of building_Size_M2 , compound_Size_M2  and parking_Area_M2 must be equle to " +
           this.serviceService.Plot_Size_M2 +
           "M2"
+      );
+      this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+        false
       );
       this.havedata = false;
       return;
@@ -233,9 +238,15 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
           }
           this.havedata = false;
           const toast = this.notificationsService.success("Sucess", property);
+          this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+            false
+          );
         },
         (error) => {
           console.log(error);
+          this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+            false
+          );
           if (error.status == "400") {
             const toast = this.notificationsService.error(
               "Error",
@@ -440,6 +451,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     console.log("this.files", this.serviceService.files);
   }
   async add() {
+    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     this.havedata = true;
     let totalsize =
       parseInt(this.propertyRegister.building_Size_M2) +
@@ -455,6 +467,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
           "M2"
       );
       this.havedata = false;
+      this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+        false
+      );
       return;
     } else {
       const prop = Object.assign({}, this.propertyRegister);
@@ -478,6 +493,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       this.propertyRegisterService.Add(prop).subscribe(
         (deptSuspension) => {
           console.log("deptSuspension", deptSuspension);
+
           this.completed.emit();
           this.isnew = true;
           if (!this.Saved) {
@@ -491,6 +507,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             "Sucess",
             deptSuspension
           );
+          this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+            false
+          );
           this.havedata = false;
           // this.serviceService.disablefins = false;
           this.serviceService.propertyISEnable = false;
@@ -499,6 +518,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         },
         (error) => {
           console.log(error);
+          this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+            false
+          );
           if (error.status == "400") {
             const toast = this.notificationsService.error(
               "Error",
