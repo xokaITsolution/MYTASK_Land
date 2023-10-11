@@ -69,11 +69,12 @@ export class PropertyComponent implements OnChanges {
     this.novalidprops = 0;
     this.getPloat();
   }
-savedata(){
-  if (!this.Saved) {
-    this.completed.emit();
-    this.Saved = true;}
-}
+  savedata() {
+    if (!this.Saved) {
+      this.completed.emit();
+      this.Saved = true;
+    }
+  }
   getPloat() {
     if (this.LicenceData.Parcel_ID) {
       console.log("geting ploat this.Parcel_ID", this.LicenceData.Parcel_ID);
@@ -159,6 +160,15 @@ savedata(){
           //   "00000000-0000-0000-0000-000000000000",
           //   this.DocID
           // );
+          const uniqueJobMatchIDs = {};
+          const uniqueData = this.PlotManagementList.filter((item) => {
+            if (!uniqueJobMatchIDs[item.plot_ID]) {
+              uniqueJobMatchIDs[item.plot_ID] = true;
+              return true;
+            }
+            return false;
+          });
+          this.PlotManagementList = uniqueData;
         }
 
         console.log("PlotManagementList", PlotManagementList);

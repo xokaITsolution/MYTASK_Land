@@ -104,8 +104,10 @@ export class ServiceService {
   private saveCustomeredit = environment.rootPath + "Customer";
   private dbstatus = environment.rootPath + "BPEL/";
   public customerUrl = environment.rootPathApi + "Customer/procCustomer";
-  private GetApplicationNumberByUserURL =environment.rootPathApi + "view/View_getUserNameForReviewByApplication/UserName/"
-   // environment.rootPath + "BPEL/GetApplicationNumberByUser"; // URL to web api
+  private GetApplicationNumberByUserURL =
+    environment.rootPathApi +
+    "view/View_getUserNameForReviewByApplication/UserName/";
+  // environment.rootPath + "BPEL/GetApplicationNumberByUser"; // URL to web api
   httpOptions = {
     headers: new HttpHeaders({ "Content-Type": "application/json" }),
     params: {},
@@ -138,6 +140,7 @@ export class ServiceService {
   Service_ID: any;
   PlotStutusLook: any;
   serviceDP: any;
+  isvalidatedPlotGis: boolean = true;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -153,9 +156,9 @@ export class ServiceService {
   getuserName(Appno) {
     return this.http.get(this.getusernameUrl + Appno);
   }
-  GetApplicationNumberByUser(username,orgcod) {
+  GetApplicationNumberByUser(username, orgcod) {
     return this.http.get(
-      this.GetApplicationNumberByUserURL + username+ "/" + orgcod
+      this.GetApplicationNumberByUserURL + username + "/" + orgcod
     );
   }
   getAppointmentByApp(params): Observable<any> {

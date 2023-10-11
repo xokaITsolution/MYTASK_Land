@@ -88,6 +88,7 @@ export class PaymentComponent implements OnChanges {
 
   isNew: boolean = false;
   SelectPayment(Payment) {
+    this.completed.emit();
     this.currpayment = Payment;
     this.serviceService.getPaymentDetail(Payment.PID).subscribe(
       (PaymentDetailList) => {
@@ -192,7 +193,7 @@ export class PaymentComponent implements OnChanges {
       (message) => {
         const toast = this.notificationsService.success("Sucess", message);
         this.getPaymentManagement();
-       
+
         if (!this.Saved) {
           this.completed.emit();
           this.serviceService.disablefins = false;

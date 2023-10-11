@@ -1865,6 +1865,17 @@ export class GisMapComponent implements AfterViewInit {
       // Fit the map bounds to the drawn shape with a specific maxZoom level
       this.map.fitBounds(this.drawnShape.getBounds());
       this.onDatumChange();
+      // this.setviewFromDatumchange(center);
+      // Specify the zoom level
+      const zoomLevel = 6; // Adjust this to your desired zoom level
+
+      // Specify the duration of the flyTo animation in seconds
+      const flyToDuration = 5; // 2 seconds
+
+      // Use the flyTo method to animate the map
+      this.map.flyTo(center, zoomLevel, {
+        duration: flyToDuration,
+      });
       // this.map.setView(center, 15);
 
       //  if (this.ServiceService.check == true) {
@@ -2055,6 +2066,17 @@ export class GisMapComponent implements AfterViewInit {
 
       this.map.fitBounds(this.drawnShape.getBounds());
       this.onDatumChange();
+      // this.setviewFromDatumchange(center);
+      // Specify the zoom level
+      const zoomLevel = 6; // Adjust this to your desired zoom level
+
+      // Specify the duration of the flyTo animation in seconds
+      const flyToDuration = 5; // 2 seconds
+
+      // Use the flyTo method to animate the map
+      this.map.flyTo(center, zoomLevel, {
+        duration: flyToDuration,
+      });
       // this.map.setView(center, 15);
 
       if (this.ServiceService.check != true) {
@@ -2370,7 +2392,46 @@ export class GisMapComponent implements AfterViewInit {
     // }
     // Update the map view to the center coordinates of Ethiopia and adjust the zoom level
     const center = L.latLng(9.032457, 38.759775); // Update with Ethiopia center coordinates
-    const zoom = 0; // Update with the desired zoom level for the selected projection
+    const zoom = 6; // Update with the desired zoom level for the selected projection
+    this.map.setView(center, zoom);
+  }
+  setviewFromDatumchange(center) {
+    // Conversion factor from meters to feet
+    const metersToFeet = 3.28084;
+
+    // Define the base resolution in meters per pixel
+    const baseResolutionMeters = 10; // 10 meters
+
+    // Calculate the equivalent resolution in feet per pixel
+    const baseResolutionFeet = baseResolutionMeters * metersToFeet; // 32.8084 feet
+
+    // Create an array of resolutions that match your desired scales
+    const resolutions = [
+      baseResolutionFeet,
+      baseResolutionFeet / 2,
+      baseResolutionFeet / 4,
+      baseResolutionFeet / 8,
+      baseResolutionFeet / 16,
+      baseResolutionFeet / 32,
+      baseResolutionFeet / 64,
+      baseResolutionFeet / 128,
+      // ... Add more resolutions for finer zoom levels
+    ];
+
+    // Define your Leaflet CRS with the updated resolutions
+    const crs = new L.Proj.CRS(
+      "EPSG:20137",
+      "+proj=utm +zone=37 +a=6378249.145 +rf=293.465 +towgs84=-165,-11,206,0,0,0,0 +units=m +no_defs +type=crs",
+      {
+        resolutions: resolutions,
+        origin: [166600.5155002516, 375771.9736823894],
+      }
+    );
+
+    // Set the updated map projection
+    this.map.options.crs = crs;
+    //const center = L.latLng(9.032457, 38.759775); // Update with Ethiopia center coordinates
+    const zoom = 6; // Update with the desired zoom level for the selected projection
     this.map.setView(center, zoom);
   }
 

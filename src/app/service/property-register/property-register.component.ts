@@ -569,7 +569,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             if (this.proploc.length > 0) {
               this.propformLocation = this.proploc[0];
               this.convertPolygonCoordinates(this.proploc[0].geowithzone);
-
+              this.serviceService.isvalidatedPlotGis = true;
               console.log(
                 "protlocprotlocprotlocprotloc:",
                 this.proploc,
