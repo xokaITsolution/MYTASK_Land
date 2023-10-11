@@ -438,8 +438,8 @@
         </div>
 
         <div *ngIf="preAppID==5">
-          <app-payment [disable]="true" (completed)="EnableFins();saveForm('{}');" (send)="payment()"
-            [tskID]="tskID" [AppNo]="AppNo" [todoid]="todoID"></app-payment>
+          <app-payment [disable]="true" (send)="payment()"
+          [tskID]="tskID" [AppNo]="AppNo" [todoid]="todoID"></app-payment>
         </div>
         <div *ngIf="preAppID==7">
           <app-certletter [disable]="true" (completed)="EnableFins();saveForm(jsonempty);" [AppNo]="AppNo"
