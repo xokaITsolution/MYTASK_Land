@@ -30,7 +30,9 @@ export class ServiceService {
   private CertificateVersionUrl1 =
     environment.rootPath3 + "Certificate_Version/procCertificate_Version";
   private DeedUrl = environment.rootPath + "Deed_Registration"; // URL to web api
-  private License_ServiceURL = environment.rootPath + "License_Service"; // URL to web api
+  private License_ServiceURL = environment.rootPath + "License_Service";
+  private License_Service =
+    environment.rootPathApi + "License_Service/procLicense_Service"; // URL to web api
   private saveFileLookUP = environment.rootPath + "BPEL/SaveDocumentMaster"; // URL to web api
   private Postit_user = environment.rootPathApi + "view/View_postit_note_user";
   private CustomerTypeLookUP = environment.rootPath + "Customer_Type_Lookup"; // URL to web api
@@ -263,7 +265,7 @@ export class ServiceService {
   }
 
   UpdateLicence(LicenceData) {
-    return this.http.put(this.License_ServiceURL, LicenceData);
+    return this.http.put(this.License_Service, LicenceData);
   }
 
   isvalidated(todoid, taskid, Plotid, ProperyID, DocID) {
