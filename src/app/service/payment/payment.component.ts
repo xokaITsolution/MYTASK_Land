@@ -47,6 +47,7 @@ export class PaymentComponent implements OnChanges {
   piid;
   payment: any;
   el = new E();
+  yourQRCodeDataPayment: string;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -61,7 +62,8 @@ export class PaymentComponent implements OnChanges {
   ngOnChanges() {
     console.log("disable", this.disable);
     this.getPaymentManagement();
-
+    this.yourQRCodeDataPayment =
+      environment.PaymentReportPath + "/" + this.AppNo;
     this.PaymentProcessPath = this.sanitizer.bypassSecurityTrustResourceUrl(
       environment.PaymentReportPath + "/" + this.AppNo
     );

@@ -23,7 +23,7 @@ import * as FileSaver from "file-saver";
 //import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 //import { log } from 'console';
-
+export * from "./qrcode.directive";
 type AOA = any[][];
 @Component({
   selector: "app-service",
@@ -1235,7 +1235,7 @@ export class ServiceComponent implements OnInit {
         }
 
         // this.PreAppData = (Object.assign({}, this.PreAppData.Table));
-        console.log('PreAppData', this.PreAppData);
+        console.log("PreAppData", this.PreAppData);
         this.ifTask = true;
         this.GetNotePrevius(appNO);
         if (this.TaskN) {
@@ -1278,8 +1278,8 @@ export class ServiceComponent implements OnInit {
       this.preAppID = 2;
     } else if (
       task.form_code == "b1a9c82a-9553-4055-a6cf-cd42d72cbe87" ||
-      task.form_code == "39d82943-6633-4df8-bb7a-6aa0933135e2"||
-      task.form_code =="fa3720f6-28f3-41a3-8867-426df29f4d76"
+      task.form_code == "39d82943-6633-4df8-bb7a-6aa0933135e2" ||
+      task.form_code == "fa3720f6-28f3-41a3-8867-426df29f4d76"
     ) {
       this.preAppID = 5;
     } else if (
@@ -1441,12 +1441,12 @@ export class ServiceComponent implements OnInit {
       this.SubmitAR(data);
     }
   }
-  showdialogee
-  showdialogg(){
-    this.showdialogee=true
+  showdialogee;
+  showdialogg() {
+    this.showdialogee = true;
   }
-  sendNotttte(){
-    this.Back()
+  sendNotttte() {
+    this.Back();
   }
   getTaskRule(tasksId) {
     this.serviceService.getTaskRule(tasksId).subscribe(
@@ -1575,19 +1575,19 @@ export class ServiceComponent implements OnInit {
       }
     );
   }
-  GetApplicationNumberByUser(username,orgcode) {
+  GetApplicationNumberByUser(username, orgcode) {
     this.serviceService
-      .GetApplicationNumberByUser(username,orgcode)
+      .GetApplicationNumberByUser(username, orgcode)
       .subscribe((ApplicationNumber: any) => {
         this.ApplicationNumberlist = ApplicationNumber;
-        this.ApplicationNumberlist= ( this.ApplicationNumberlist as Array<any>).sort((a, b) => {
-          if (a.application_Date >b.application_Date) {
-           
-              console.log('sttatattgs', this.ApplicationNumberlist)
+        this.ApplicationNumberlist = (
+          this.ApplicationNumberlist as Array<any>
+        ).sort((a, b) => {
+          if (a.application_Date > b.application_Date) {
+            console.log("sttatattgs", this.ApplicationNumberlist);
             return -1;
           } else if (a.application_Date < b.application_Date) {
-           
-             console.log('sttatattgs', this.ApplicationNumberlist)
+            console.log("sttatattgs", this.ApplicationNumberlist);
             return 1;
           } else {
             return 0;
@@ -1886,9 +1886,12 @@ export class ServiceComponent implements OnInit {
   getuserName(AppNo) {
     this.serviceService.getuserName(AppNo).subscribe((res: any) => {
       this.useNamelist = res;
-      console.log('useNamelist' ,this.useNamelist)
+      console.log("useNamelist", this.useNamelist);
       if (this.useNamelist.length > 0) {
-        this.GetApplicationNumberByUser(this.useNamelist[0].userName,this.useNamelist[0].organization_code);
+        this.GetApplicationNumberByUser(
+          this.useNamelist[0].userName,
+          this.useNamelist[0].organization_code
+        );
       }
     });
   }

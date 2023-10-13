@@ -21,9 +21,13 @@ import { CounterComponent } from "./counter/counter.component";
 import { NavMenuComponent } from "./nav-menu/nav-menu.component";
 import { GeojsondeskComponent } from "./components/geojsondesk/geojsondesk.component";
 import { DrawmapComponent } from "./components/drawmap/drawmap.component";
-import { MatIconModule, MatPaginatorModule, MatSelectModule, MatTableModule } from "@angular/material";
+import {
+  MatIconModule,
+  MatPaginatorModule,
+  MatSelectModule,
+  MatTableModule,
+} from "@angular/material";
 import { environment } from "src/environments/environment";
-
 
 @NgModule({
   declarations: [
@@ -40,7 +44,7 @@ import { environment } from "src/environments/environment";
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
-    
+
     // HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService, {dataEncapsulation: false}),
     AngularFontAwesomeModule,
     ServiceModule,
@@ -55,13 +59,12 @@ import { environment } from "src/environments/environment";
         useFactory: HttpLoaderFactory,
         deps: [HttpClient],
       },
-      
     }),
     MatTableModule,
     MatPaginatorModule,
     FormsModule,
     MatSelectModule,
-    MatIconModule
+    MatIconModule,
   ],
   providers: [{ provide: APP_BASE_HREF, useValue: window["_app_base"] }],
   bootstrap: [AppComponent],

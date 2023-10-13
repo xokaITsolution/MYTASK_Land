@@ -94,23 +94,26 @@
       </div>
     </div>
 
-    <div class="form-group row col-md-7">
-      <label class="col-sm-3 col-form-label" for="IsReleased" translate>Is Released</label>
-      <div class="col-sm-9">
-        <!-- <p-checkbox [(ngModel)]="deptSuspensionRecord.Is_Released" (onChange)="checkRelease()" [disabled]="disable"
-          name="IsReleased" id="IsReleased" binary="true"></p-checkbox> -->
-          <p-radioButton name="group2" value="true"  [(ngModel)]="deptSuspensionRecord.Is_Released"  (onClick)="checkRelease()" inputId="preopt2"></p-radioButton>
-      </div>
+  <div class="form-group row col-md-7">
+    <label class="col-sm-3 col-form-label" for="IsReleased" translate>Is Released</label>
+    <div class="col-sm-9">
+      <p-radioButton name="group2" value="true" [(ngModel)]="deptSuspensionRecord.Is_Released"
+        (click)="selectOption('released')" [ngModelOptions]="{standalone: true}"
+        inputId="preopt2">
+      </p-radioButton>
     </div>
-    <div class="form-group row col-md-7">
-      <label class="col-sm-3 col-form-label" for="IsSuspended" translate>Is Suspended</label>
-      <div class="col-sm-9">
-        <!-- <p-checkbox [(ngModel)]="deptSuspensionRecord.Is_Suspended" (onChange)="checkSuspended()" [disabled]="disable"
-          name="IsSuspended" id="IsSuspended" binary="true"></p-checkbox> -->
-      <p-radioButton name="IsSuspended" value="true"  [(ngModel)]="deptSuspensionRecord.Is_Suspended" (onClick)="checkSuspended()" inputId="preopt1"></p-radioButton>
-      </div>
-    
+  </div>
+  
+  <div class="form-group row col-md-7">
+    <label class="col-sm-3 col-form-label" for="IsSuspended" translate>Is Suspended</label>
+    <div class="col-sm-9">
+      <p-radioButton name="IsSuspended" value="true" [(ngModel)]="deptSuspensionRecord.Is_Suspended"
+        (click)="selectOption('suspended')" [ngModelOptions]="{standalone: true}"
+       inputId="preopt1">
+      </p-radioButton>
     </div>
+  </div>
+
 
   </div>
   <div class="btn-toolbar" *ngIf="deptSuspensionRecord.ID  && !disable"><!--

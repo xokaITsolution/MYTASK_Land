@@ -27,6 +27,7 @@ export class DeptSuspensionRecordComponent implements OnChanges {
   @Input() licenceData;
   customerdata: any;
   Customerdept: boolean;
+  selectedOption: string = "released";
   constructor(
     private ngxSmartModalService: NgxSmartModalService,
     private deptSuspensionRecordService: DeptSuspensionRecordService,

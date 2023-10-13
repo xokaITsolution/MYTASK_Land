@@ -43,7 +43,7 @@
     <p-tabView (onChange)="tabChanged($event)" [(activeIndex)]="selectedTab"  selected="true">
       <p-tabPanel [header]="'Plot Management' | translate">
         <div class="mt-3">
-          <app-plot-managment (completed)="EnableFins()" (completeddel)="EnableFinsDel()" [SelectedPlot]='SelectedPlot' [LicenceData]="LicenceData"
+          <app-plot-managment (completed)="EnableFins(); EnableFinsPloat(Parcel)" (completeddel)="EnableFinsDel()" [SelectedPlot]='SelectedPlot' [LicenceData]="LicenceData"
             [disable]="disable" [Fields]="Fields"></app-plot-managment>
             <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1" translate>Next</button></div>
         </div>

@@ -3,7 +3,7 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ProgressBarModule } from "primeng/progressbar";
 import { ServiceRoutingModule } from "./service-routing.module";
-import { ServiceComponent } from "./service.component";
+import { QrCodeDirective, ServiceComponent } from "./service.component";
 import { PlotManagmentComponent } from "./plot-managment/plot-managment.component";
 import { LeaseOwnerShipComponent } from "./lease-owner-ship/lease-owner-ship.component";
 import { PropertyRegisterComponent } from "./property-register/property-register.component";
@@ -89,8 +89,11 @@ import { TreeComponentComponent } from "./tree-component/tree-component.componen
 import { ExampleComponent } from "./loading/example.component";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { RadioButtonModule } from "primeng/radiobutton";
+import { QRCodeModule } from "angular2-qrcode";
+
 @NgModule({
   imports: [
+    QRCodeModule,
     //BackButtonDisableModule.forRoot({
     //  preserveScrollPosition: true
     // }),
@@ -149,6 +152,7 @@ import { RadioButtonModule } from "primeng/radiobutton";
   ],
 
   declarations: [
+    QrCodeDirective,
     ExampleComponent,
     PaymentComponent,
     ServiceComponent,
@@ -160,6 +164,7 @@ import { RadioButtonModule } from "primeng/radiobutton";
     TitleDeedRegistrationComponent,
     CertificateVersionComponent,
     CertletterComponent,
+
     ThemComponent,
     DeptSuspensionRecordComponent,
     LoadingComponent,

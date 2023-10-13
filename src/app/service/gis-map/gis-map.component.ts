@@ -797,7 +797,6 @@ export class GisMapComponent implements AfterViewInit {
               centerLatLng,
               radiusMeters
             );
-
             console.log("Circle LatLngs:", circleLatLngs);
             const utmCoordinates = this.convertCoordinatesToUTM(circleLatLngs);
             this.utmCoordinates = utmCoordinates;
@@ -819,30 +818,33 @@ export class GisMapComponent implements AfterViewInit {
             //points.push(points[0])
             this.sample = this.drawnShape;
             console.log("utmCoordinates", utmCoordinates);
-            const area = this.calculateUTMPolygonArea(utmCoordinates);
-            // Show the area in a popup
-            const popupContent = `Area: ${area.toFixed(2)} square meters`;
-            layer.bindPopup(popupContent).openPopup();
-            console.log("Totalarea", area, utmCoordinates);
-            if (this.ServiceService.Totalarea <= area) {
-              const warningMessage =
-                "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
-              const toastWarning = this.notificationsService.warn(
-                "Warning",
-                warningMessage + popupContent
-              );
-              this.ServiceService.areaVerified = false;
-            } else if (area <= 75) {
-              const warningMessage =
-                "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
-              const toastWarning = this.notificationsService.warn(
-                "Warning",
-                warningMessage + popupContent
-              );
-              this.ServiceService.areaVerified = false;
-            } else {
-              this.ServiceService.areaVerified = true;
-            }
+            // const area = this.calculateUTMPolygonArea(utmCoordinates);
+            // // Show the area in a popup
+            // const maxAreaDifference = 0.05 * this.ServiceService.Totalarea;
+            // const areaDifference = Math.abs(
+            //   this.ServiceService.Totalarea - area
+            // );
+            // console.log(
+            //   "Totalareatolerance",
+            //   areaDifference,
+            //   maxAreaDifference
+            // );
+            // const popupContent = `Area: ${area.toFixed(
+            //   2
+            // )} square meters, Tolerance:${maxAreaDifference} square meters `;
+            // layer.bindPopup(popupContent).openPopup();
+
+            // if (areaDifference >= maxAreaDifference) {
+            //   const warningMessage =
+            //     "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
+            //   const toastWarning = this.notificationsService.warn(
+            //     "Warning",
+            //     warningMessage + popupContent
+            //   );
+            //   this.ServiceService.areaVerified = false;
+            // } else {
+            //   this.ServiceService.areaVerified = true;
+            // }
             // Add the coordinates to the array
             //this.drawnShapes.push(this.coordinates);
 
@@ -850,6 +852,34 @@ export class GisMapComponent implements AfterViewInit {
 
             this.ServiceService.coordinate = utmCoordinates;
             // Now you can use circleLatLngs as needed
+          } else if (layer instanceof L.Polyline) {
+            this.coordinates = layer.getLatLngs(); // Get the coordinates of the polygon
+
+            const polyline = L.polyline(this.coordinates, {
+              color: "blue",
+            }).addTo(this.map);
+            console.log(this.coordinates);
+
+            const utmCoordinates = this.convertCoordinatesToUTM(
+              this.coordinates
+            );
+            this.utmCoordinates = utmCoordinates;
+            console.log(utmCoordinates);
+
+            // const geojson = layer.toGeoJSON();
+
+            // this.drawnShape = L.Proj.geoJson(geojson);
+            // console.log(this.drawnShape);
+
+            // this.drawnShape.addTo(this.map);
+            utmCoordinates.push(utmCoordinates[0]);
+
+            this.sample = this.drawnShape;
+            console.log("utmCoordinates", utmCoordinates);
+
+            this.ServiceService.coordinate = utmCoordinates;
+
+            polyline.bindPopup("This is a polyline!");
           }
 
           this.editableLayers.addLayer(layer);
@@ -882,18 +912,16 @@ export class GisMapComponent implements AfterViewInit {
           }
           const area = this.calculateUTMPolygonArea(utmCoordinates);
           // Show the area in a popup
-          const popupContent = `Area: ${area.toFixed(2)} square meters`;
-          layer.bindPopup(popupContent).openPopup();
           console.log("Totalarea", area, utmCoordinates);
-          if (this.ServiceService.Totalarea <= area) {
-            const warningMessage =
-              "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
-            const toastWarning = this.notificationsService.warn(
-              "Warning",
-              warningMessage + popupContent
-            );
-            this.ServiceService.areaVerified = false;
-          } else if (area <= 75) {
+          const maxAreaDifference = 0.05 * this.ServiceService.Totalarea;
+          const areaDifference = Math.abs(this.ServiceService.Totalarea - area);
+          console.log("Totalareatolerance", areaDifference, maxAreaDifference);
+          const popupContent = `Area: ${area.toFixed(
+            2
+          )} square meters, Tolerance:${maxAreaDifference} square meters `;
+          layer.bindPopup(popupContent).openPopup();
+
+          if (areaDifference >= maxAreaDifference) {
             const warningMessage =
               "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
             const toastWarning = this.notificationsService.warn(
@@ -951,18 +979,15 @@ export class GisMapComponent implements AfterViewInit {
           this.utmCoordinates = utmCoordinates;
           const area = this.calculateUTMPolygonArea(utmCoordinates);
           // Show the area in a popup
-          const popupContent = `Area: ${area.toFixed(2)} square meters`;
-          layer.bindPopup(popupContent).openPopup();
           console.log("Totalarea", area, utmCoordinates);
-          if (this.ServiceService.Totalarea <= area) {
-            const warningMessage =
-              "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
-            const toastWarning = this.notificationsService.warn(
-              "Warning",
-              warningMessage + popupContent
-            );
-            this.ServiceService.areaVerified = false;
-          } else if (area <= 75) {
+          const maxAreaDifference = 0.05 * this.ServiceService.Totalarea;
+          const areaDifference = Math.abs(this.ServiceService.Totalarea - area);
+          console.log("Totalareatolerance", areaDifference, maxAreaDifference);
+          const popupContent = `Area: ${area.toFixed(
+            2
+          )} square meters, Tolerance:${maxAreaDifference} square meters `;
+          layer.bindPopup(popupContent).openPopup();
+          if (areaDifference >= maxAreaDifference) {
             const warningMessage =
               "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
             const toastWarning = this.notificationsService.warn(
@@ -999,6 +1024,32 @@ export class GisMapComponent implements AfterViewInit {
             this.ServiceService.coordinate = utmCoordinates;
           }
           // Now you can use circleLatLngs as needed
+        } else if (layer instanceof L.Polyline) {
+          this.coordinates = layer.getLatLngs(); // Get the coordinates of the polygon
+
+          const polyline = L.polyline(this.coordinates, {
+            color: "blue",
+          }).addTo(this.map);
+          console.log(this.coordinates);
+
+          const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
+          this.utmCoordinates = utmCoordinates;
+          console.log(utmCoordinates);
+
+          // const geojson = layer.toGeoJSON();
+
+          // this.drawnShape = L.Proj.geoJson(geojson);
+          // console.log(this.drawnShape);
+
+          this.drawnShape.addTo(this.map);
+          utmCoordinates.push(utmCoordinates[0]);
+
+          this.sample = this.drawnShape;
+          // console.log("utmCoordinates", utmCoordinates);
+
+          this.ServiceService.coordinate = utmCoordinates;
+
+          polyline.bindPopup("This is a polyline!");
         }
       }
     });
@@ -1017,19 +1068,23 @@ export class GisMapComponent implements AfterViewInit {
           console.log("UTM Coordinates:", utmCoordinates);
           const area = this.calculateUTMPolygonArea(utmCoordinates);
           // Show the area in a popup
-          const popupContent = `Area: ${area.toFixed(2)} square meters`;
-          layer.bindPopup(popupContent).openPopup();
           console.log("Totalarea", area, utmCoordinates);
           if (this.ServiceService.check) {
-            if (this.ServiceService.Totalarea <= area) {
-              const warningMessage =
-                "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
-              const toastWarning = this.notificationsService.warn(
-                "Warning",
-                warningMessage + popupContent
-              );
-              this.ServiceService.areaVerified = false;
-            } else if (area <= 75) {
+            const maxAreaDifference = 0.05 * this.ServiceService.Totalarea;
+            const areaDifference = Math.abs(
+              this.ServiceService.Totalarea - area
+            );
+            console.log(
+              "Totalareatolerance",
+              areaDifference,
+              maxAreaDifference
+            );
+            const popupContent = `Area: ${area.toFixed(
+              2
+            )} square meters, Tolerance:${maxAreaDifference} square meters `;
+            layer.bindPopup(popupContent).openPopup();
+
+            if (areaDifference >= maxAreaDifference) {
               const warningMessage =
                 "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
               const toastWarning = this.notificationsService.warn(

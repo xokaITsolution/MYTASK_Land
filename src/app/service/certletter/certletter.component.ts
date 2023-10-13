@@ -46,6 +46,8 @@ export class CertletterComponent implements OnChanges {
   language: string;
   disable_new: boolean;
   loadingPreDoc = false;
+  yourQRCodeDatacert: string;
+  yourQRCodeDataLetter: string;
   constructor(
     private sanitizer: DomSanitizer,
     public serviceService: ServiceService,
@@ -138,6 +140,10 @@ export class CertletterComponent implements OnChanges {
     this.certltrview = true;
     this.getDocmentArcive();
     if (this.Selectedcert) {
+      this.yourQRCodeDatacert =
+        environment.certReportPath + "/" + this.Selectedcert.title_Deed_No;
+      this.yourQRCodeDataLetter =
+        environment.LetterReportPath + "/" + this.Selectedcert.title_Deed_No;
       this.certReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
         environment.certReportPath + "/" + this.Selectedcert.title_Deed_No
       );

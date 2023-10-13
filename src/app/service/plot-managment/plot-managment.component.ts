@@ -698,8 +698,8 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
             );
         }
 
+        this.completed.emit(this.plotManagment);
         if (!this.Saved == undefined) {
-          this.completed.emit(this.plotManagment);
           this.Saved = true;
         }
         (deptSuspension) => {
