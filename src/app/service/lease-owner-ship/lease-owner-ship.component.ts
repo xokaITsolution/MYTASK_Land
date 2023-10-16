@@ -71,9 +71,9 @@ export class LeaseOwnerShipComponent implements OnChanges {
     }
     console.log("haha lease", this.SelectedPlot);
     if (this.SelectedPlot) {
-      this.getleaseOwnerShip(this.SelectedPlot.Plot_ID);
+      this.getleaseOwnerShip(this.SelectedPlot.plot_ID);
       if (this.addnew) {
-        this.leaseOwnerShip.Plot_ID = this.SelectedPlot.Plot_ID;
+        this.leaseOwnerShip.Plot_ID = this.SelectedPlot.plot_ID;
         console.log("lease select", this.SelectedPlot);
         console.log("lease plot id", this.leaseOwnerShip.Plot_ID);
 
@@ -200,7 +200,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
     this.serviceService.isleaseForm = true;
     this.leaseOwnerShip = new LeaseOwnerShip();
     this.leaseOwnerShip.ID = Guid.create().toString();
-    this.leaseOwnerShip.Plot_ID = this.SelectedPlot.Plot_ID;
+    this.leaseOwnerShip.Plot_ID = this.SelectedPlot.plot_ID;
     this.leaseOwnerShip.todoid = this.todoid;
     this.leaseOwnerShip.applicationo = this.applicationo;
     // this.leaseOwnerShip.SDP_ID = this.LicenceData.SDP_ID;

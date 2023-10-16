@@ -107,9 +107,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     console.log("chang detected");
     if (this.selectedpro !== undefined && this.selectedpro !== null) {
       this.propertyRegister = this.selectedpro;
-      this.propertyRegister.plot_ID = this.selectedpro.Plot_ID;
+      this.propertyRegister.plot_ID = this.selectedpro.plot_ID;
 
-      console.log("selected", this.selectedpro.Plot_ID);
+      console.log("selected", this.selectedpro.plot_ID);
       //
       //this.getplotlocbyid(this.propertyRegister.plot_ID);
       this.getproplocbyid(this.propertyRegister.plot_ID);
@@ -504,10 +504,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
           if (prop.property_Parent_ID != "0") {
             this.serviceService.hide = false;
           }
-          const toast = this.notificationsService.success(
-            "Sucess",
-            deptSuspension
-          );
+          const toast = this.notificationsService.success("Sucess");
           this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
             false
           );
@@ -522,19 +519,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
           this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
             false
           );
-          if (error.status == "400") {
-            const toast = this.notificationsService.error(
-              "Error",
-              error.error.InnerException.Message
-            );
-            this.havedata = false;
-          } else {
-            const toast = this.notificationsService.error(
-              "Error",
-              "SomeThing Went Wrong"
-            );
-            this.havedata = false;
-          }
+
+          const toast = this.notificationsService.error("Error", error.error);
+          this.havedata = false;
         }
       );
       console.log("saveing....");

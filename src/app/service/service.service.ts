@@ -24,7 +24,9 @@ export class ServiceService {
   private getusernameUrl =
     environment.rootPathApi +
     "view/View_getUserNameForReviewByApplication/application_number?application_number=";
-  private PlotManagementUrl = environment.rootPath + "Plot_Registration"; // URL to web api
+  private PlotManagementUrl = environment.rootPath + "Plot_Registration";
+  private PlotManagementUrlapi =
+    environment.rootPathApi + "Plot_Registration/procPlot_Registration/"; // URL to web api
   private PropertyListUrl = environment.rootPath + "Property_Registration"; // URL to web api
   private CertificateVersionUrl = environment.rootPath + "Certificate_Version"; // URL to web api
   private CertificateVersionUrl1 =
@@ -584,6 +586,9 @@ export class ServiceService {
         plotid +
         "&searchString&pageIndex&pageSize"
     );
+  }
+  getPlotManagementApi(plotid) {
+    return this.http.get(this.PlotManagementUrlapi + plotid);
   }
 
   getPropertyList(plotid) {
