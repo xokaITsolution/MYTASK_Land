@@ -116,8 +116,8 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       console.log("plotManagment", this.SelectedPlot);
 
       this.plotManagment = this.SelectedPlot;
-      this.getplotloc(this.plotManagment.Plot_ID);
-      this.regionSelectedd(this.plotManagment.SDP_ID);
+      this.getplotloc(this.plotManagment.plot_ID);
+      this.regionSelectedd(this.plotManagment.sdP_ID);
     }
     console.log("chang detected");
 
@@ -140,12 +140,12 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     // this.plotManagment.SDP_ID =
     //   this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
     if (
-      this.plotManagment.SDP_ID != null ||
-      this.plotManagment.SDP_ID != undefined
+      this.plotManagment.sdP_ID != null ||
+      this.plotManagment.sdP_ID != undefined
     ) {
-      this.regionSelectedd(this.plotManagment.SDP_ID);
+      this.regionSelectedd(this.plotManagment.sdP_ID);
     }
-    console.log("vvvvv", this.plotManagment.SDP_ID);
+    console.log("vvvvv", this.plotManagment.sdP_ID);
   }
   async getEthiopianToGregorian(date) {
     if (date) {
@@ -167,9 +167,9 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   }
   selectedDateTime(dates: any, selecter) {
     if (selecter == 1) {
-      this.plotManagment.Registration_Date =
+      this.plotManagment.registration_Date =
         dates[0]._day + "/" + dates[0]._month + "/" + dates[0]._year;
-      console.log(this.plotManagment.Registration_Date);
+      console.log(this.plotManagment.registration_Date);
     }
   }
   ngOnInit() {
@@ -191,7 +191,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       "is plot Disabled :: ",
       this.isploatDisabled,
       "plot id :: ",
-      this.plotManagment.Plot_ID,
+      this.plotManagment.plot_ID,
       "plotManagement :: ",
       this.plotManagment
     );
@@ -228,7 +228,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         this.zoneOptions = region.woredas;
         this.selectedRegion = region;
         this.woredas = [];
-        this.plotManagment.Land_Grade_ID;
+        this.plotManagment.land_Grade_ID;
         return true;
       }
       return false;
@@ -241,7 +241,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         this.zoneOptions = region.woredas;
         this.selectedRegion = region;
         this.woredas = [];
-        this.plotManagment.Land_Grade_ID;
+        this.plotManagment.land_Grade_ID;
         return true;
       }
       return false;
@@ -277,11 +277,11 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   }
 
   finishSelection() {
-    this.plotManagment.Plot_ID = this.plotManagment.Plot_ID.toString();
-    this.platformLocation.ploteId = this.plotManagment.Plot_ID;
-    console.log("gusssss", this.plotManagment.Plot_ID);
+    this.plotManagment.plot_ID = this.plotManagment.plot_ID.toString();
+    this.platformLocation.ploteId = this.plotManagment.plot_ID;
+    console.log("gusssss", this.plotManagment.plot_ID);
     this.getplotloc(this.platformLocation.ploteId);
-    if (this.plotManagment.Plot_ID) {
+    if (this.plotManagment.plot_ID) {
       this.message.add({
         severity: "success",
         summary: "Plot Selection",
@@ -304,7 +304,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
 
   selectPlotID(plotData) {
     console.log("selected plot :: ", plotData);
-    this.plotManagment.Plot_ID = plotData;
+    this.plotManagment.plot_ID = plotData;
     // if (plotData.properties.OBJECTID || plotData.properties.ID_3 || plotData.properties.ID_0) {
     //   console.log('plot id from gis :: ', plotData.properties.POP2000);
     //   console.log('plot id before gis :: ', this.plotManagment.Plot_ID);
@@ -350,14 +350,14 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     if (this.serviceService.coordinate) {
       let coordinate = this.convertToMultiPoint(this.serviceService.coordinate);
       // let coordinate2= this.convertToMultiPoints(this.serviceService.coordinate)
-      this.plotManagment.Plot_ID = this.serviceService.coordinate.toString();
+      this.plotManagment.plot_ID = this.serviceService.coordinate.toString();
     }
     this.displayGIS = false;
   }
   plotSelector(event) {
     console.log("event", event.mapPoint.spatialReference.latestWkid);
     if (!this.isploatDisabled) {
-      this.plotManagment.Plot_ID = event.mapPoint.spatialReference.latestWkid;
+      this.plotManagment.plot_ID = event.mapPoint.spatialReference.latestWkid;
       this.ngxSmartModalService.getModal("GisViewer").close();
     }
   }
@@ -369,51 +369,51 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   closeModal(modal) {
     console.log("closeing.....");
     this.plotManagment.GISCoordinate =
-      this.plotManagment.GIS_X_Coordinate_1 +
+      this.plotManagment.giS_X_Coordinate_1 +
       ":" +
-      this.plotManagment.GIS_Y_Coordinate_1 +
+      this.plotManagment.giS_Y_Coordinate_1 +
       "," +
-      this.plotManagment.GIS_X_Coordinate_2 +
+      this.plotManagment.giS_X_Coordinate_2 +
       ":" +
-      this.plotManagment.GIS_Y_Coordinate_2 +
+      this.plotManagment.giS_Y_Coordinate_2 +
       "," +
-      this.plotManagment.GIS_X_Coordinate_3 +
+      this.plotManagment.giS_X_Coordinate_3 +
       ":" +
-      this.plotManagment.GIS_Y_Coordinate_3 +
+      this.plotManagment.giS_Y_Coordinate_3 +
       "," +
-      this.plotManagment.GIS_X_Coordinate_4 +
+      this.plotManagment.giS_X_Coordinate_4 +
       ":" +
-      this.plotManagment.GIS_Y_Coordinate_4 +
+      this.plotManagment.giS_Y_Coordinate_4 +
       "," +
-      this.plotManagment.GIS_X_Coordinate_5 +
+      this.plotManagment.giS_X_Coordinate_5 +
       ":" +
-      this.plotManagment.GIS_Y_Coordinate_5 +
+      this.plotManagment.giS_Y_Coordinate_5 +
       "," +
-      this.plotManagment.GIS_X_Coordinate_6 +
+      this.plotManagment.giS_X_Coordinate_6 +
       ":" +
-      this.plotManagment.GIS_Y_Coordinate_6 +
+      this.plotManagment.giS_Y_Coordinate_6 +
       "," +
-      this.plotManagment.GIS_X_Coordinate_7 +
+      this.plotManagment.giS_X_Coordinate_7 +
       ":" +
-      this.plotManagment.GIS_Y_Coordinate_7 +
+      this.plotManagment.giS_Y_Coordinate_7 +
       "," +
-      this.plotManagment.GIS_X_Coordinate_8 +
+      this.plotManagment.giS_X_Coordinate_8 +
       ":" +
-      this.plotManagment.GIS_X_Coordinate_8;
+      this.plotManagment.giS_X_Coordinate_8;
     this.ngxSmartModalService.getModal(modal).close();
   }
 
   async save() {
     this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
-    this.plotManagment.Plot_ID = JSON.stringify(this.plotManagment.Plot_ID);
-    this.platformLocation.ploteId = this.plotManagment.Plot_ID;
+    this.plotManagment.plot_ID = JSON.stringify(this.plotManagment.plot_ID);
+    this.platformLocation.ploteId = this.plotManagment.plot_ID;
     if (this.language === "amharic") {
-      this.plotManagment.Registration_Date = await this.getEthiopianToGregorian(
-        this.plotManagment.Registration_Date
+      this.plotManagment.registration_Date = await this.getEthiopianToGregorian(
+        this.plotManagment.registration_Date
       );
     }
-    this.plotManagment.Registration_Date = await this.getEthiopianToGregorian(
-      this.plotManagment.Registration_Date
+    this.plotManagment.registration_Date = await this.getEthiopianToGregorian(
+      this.plotManagment.registration_Date
     );
 
     this.ploatManagmentService.save(this.plotManagment).subscribe(
@@ -505,7 +505,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   }
   getplotlocbyid() {
     this.serviceService
-      .getPlotloc(this.plotManagment.Plot_ID)
+      .getPlotloc(this.plotManagment.plot_ID)
       .subscribe((response: any) => {
         this.plotloc = response.procPlot_Locations;
         if (this.plotloc.length > 0) {
@@ -637,7 +637,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         );
         this.platformLocation.geowithzone = coordinate;
         console.log("responseresponseresponse", response, response[0].RoleId);
-        this.platformLocation.ploteId = this.plotManagment.Plot_ID;
+        this.platformLocation.ploteId = this.plotManagment.plot_ID;
         this.platformLocation.created_By = response[0].RoleId;
         this.platformLocation.created_Date = new Date();
         this.serviceService.savePlotloc(this.platformLocation).subscribe(
@@ -673,13 +673,13 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     console.log("this.plotManagment", this.plotManagment);
 
     if (this.language === "amharic") {
-      this.plotManagment.Registration_Date = await this.getEthiopianToGregorian(
-        this.plotManagment.Registration_Date
+      this.plotManagment.registration_Date = await this.getEthiopianToGregorian(
+        this.plotManagment.registration_Date
       );
     }
     this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
 
-    this.plotManagment.Is_Deleted = true;
+    this.plotManagment.is_Deleted = true;
     this.ploatManagmentService.save(this.plotManagment).subscribe(
       async (deptSuspension) => {
         console.log("deptSuspension", deptSuspension);
@@ -692,9 +692,9 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         );
         // this.serviceService.disablefins = false;
         if (this.language === "amharic") {
-          this.plotManagment.Registration_Date =
+          this.plotManagment.registration_Date =
             await this.getgregorianToEthiopianDate(
-              this.plotManagment.Registration_Date
+              this.plotManagment.registration_Date
             );
         }
 
@@ -714,9 +714,9 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         console.log(error);
         if (error.status == "400") {
           if (this.language === "amharic") {
-            this.plotManagment.Registration_Date =
+            this.plotManagment.registration_Date =
               await this.getgregorianToEthiopianDate(
-                this.plotManagment.Registration_Date
+                this.plotManagment.registration_Date
               );
           }
           const toast = this.notificationsService.error(
@@ -725,9 +725,9 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
           );
         } else {
           if (this.language === "amharic") {
-            this.plotManagment.Registration_Date =
+            this.plotManagment.registration_Date =
               await this.getgregorianToEthiopianDate(
-                this.plotManagment.Registration_Date
+                this.plotManagment.registration_Date
               );
           }
           const toast = this.notificationsService.error(
@@ -743,20 +743,20 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   }
 
   async add() {
+    this.plotManagment.plot_ID = "-1";
     this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     if (this.language === "amharic") {
-      this.plotManagment.Registration_Date = await this.getEthiopianToGregorian(
-        this.plotManagment.Registration_Date
+      this.plotManagment.registration_Date = await this.getEthiopianToGregorian(
+        this.plotManagment.registration_Date
       );
     }
     this.ploatManagmentService.Add(this.plotManagment).subscribe(
       async (deptSuspension) => {
         console.log("deptSuspension", deptSuspension);
         this.serviceService.toMess = true;
-        const toast = this.notificationsService.success(
-          "Success",
-          deptSuspension
-        );
+        const toast = this.notificationsService.success("Success");
+        this.plotManagment.plot_ID = deptSuspension[0].plot_ID;
+        this.plotManagment.parcel_No = deptSuspension[0].plot_ID;
         const warningMessage =
           "የሊዝ ወይም የነባር ይዞታ መመዝገቡን አረጋግጥ/Check lease or freehold record is active for this plot";
         const toastWarning = this.notificationsService.warn(
@@ -764,9 +764,9 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
           warningMessage
         );
         if (this.language === "amharic") {
-          this.plotManagment.Registration_Date =
+          this.plotManagment.registration_Date =
             await this.getgregorianToEthiopianDate(
-              this.plotManagment.Registration_Date
+              this.plotManagment.registration_Date
             );
         }
         this.serviceService.toEnablenext = false;
@@ -797,9 +797,9 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         );
         if (error.status == "400") {
           if (this.language === "amharic") {
-            this.plotManagment.Registration_Date =
+            this.plotManagment.registration_Date =
               await this.getgregorianToEthiopianDate(
-                this.plotManagment.Registration_Date
+                this.plotManagment.registration_Date
               );
           }
           const toast = this.notificationsService.error(
@@ -808,9 +808,9 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
           );
         } else {
           if (this.language === "amharic") {
-            this.plotManagment.Registration_Date =
+            this.plotManagment.registration_Date =
               await this.getgregorianToEthiopianDate(
-                this.plotManagment.Registration_Date
+                this.plotManagment.registration_Date
               );
           }
           const toast = this.notificationsService.error(
@@ -826,44 +826,44 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
 }
 
 export class PlotManagment {
-  public Plot_ID: string;
-  public Description: string;
-  public SDP_ID: string;
-  public Wereda_ID: string;
-  public House_No: string;
-  public Block_No: string;
-  public Parcel_No: string;
-  public Plot_Size_M2: string;
-  public Plot_Status: string;
-  public Registration_Date: string;
-  public Type_Of_Use_ID: string;
-  public Land_Grade_ID: string;
-  public GIS_X_Coordinate_1: string;
-  public GIS_X_Coordinate_2: string;
-  public GIS_X_Coordinate_3: string;
-  public GIS_X_Coordinate_4: string;
-  public GIS_X_Coordinate_5: string;
-  public GIS_X_Coordinate_6: string;
-  public GIS_X_Coordinate_7: string;
-  public GIS_X_Coordinate_8: string;
-  public GIS_Y_Coordinate_1: string;
-  public GIS_Y_Coordinate_2: string;
-  public GIS_Y_Coordinate_3: string;
-  public GIS_Y_Coordinate_4: string;
-  public GIS_Y_Coordinate_5: string;
-  public GIS_Y_Coordinate_6: string;
-  public GIS_Y_Coordinate_7: string;
-  public GIS_Y_Coordinate_8: string;
+  public plot_ID: string;
+  public description: string;
+  public sdP_ID: string;
+  public wereda_ID: string;
+  public house_No: string;
+  public block_No: string;
+  public parcel_No: string;
+  public plot_Size_M2: string;
+  public plot_Status: string;
+  public registration_Date: string;
+  public type_Of_Use_ID: string;
+  public land_Grade_ID: string;
+  public giS_X_Coordinate_1: string;
+  public giS_X_Coordinate_2: string;
+  public giS_X_Coordinate_3: string;
+  public giS_X_Coordinate_4: string;
+  public giS_X_Coordinate_5: string;
+  public giS_X_Coordinate_6: string;
+  public giS_X_Coordinate_7: string;
+  public giS_X_Coordinate_8: string;
+  public giS_Y_Coordinate_1: string;
+  public giS_Y_Coordinate_2: string;
+  public giS_Y_Coordinate_3: string;
+  public giS_Y_Coordinate_4: string;
+  public giS_Y_Coordinate_5: string;
+  public giS_Y_Coordinate_6: string;
+  public giS_Y_Coordinate_7: string;
+  public giS_Y_Coordinate_8: string;
   public GISCoordinate: string;
-  public N_Plot_ID: string;
-  public S_Plot_ID: string;
-  public E_Plot_ID: string;
-  public W_Plot_ID: string;
-  public Is_Deleted;
-  public Street_No;
-  public Nortech_No: string;
-  public Licence_Service_ID;
-  public Application_No;
+  public n_Plot_ID: string;
+  public s_Plot_ID: string;
+  public e_Plot_ID: string;
+  public w_Plot_ID: string;
+  public is_Deleted;
+  public street_No;
+  public nortech_No: string;
+  public licence_Service_ID;
+  public application_No;
 }
 export class PlatformLocation {
   public ploteId: any;

@@ -5,9 +5,10 @@
       <label for="PlotID" class="col-sm-3 col-form-label" translate>{{Fields.FIELD_ONE}}</label>
       <div class="col-sm-9">
         <input type="text" class="form-control" [disabled]="disable || isploatDisabled"
-          [(ngModel)]="plotManagment.Plot_ID" name="PlotID" id="PlotID" [placeholder]="Fields.FIELD_ONE | translate"
-          #PlotID="ngModel" [ngClass]="{ 'is-invalid': PlotID.invalid }" required
-            (input)="filter($event)" >
+          [(ngModel)]="plotManagment.plot_ID" name="PlotID" id="PlotID" [placeholder]="Fields.FIELD_ONE | translate"
+          
+            (input)="filter($event)"  readonly>
+            <!-- #PlotID="ngModel" [ngClass]="{ 'is-invalid': PlotID.invalid }" required -->
       </div>
       <!-- <div class="col-sm-1 ml-0 pl-0">
         <button type="button" class="btn btn-primary" [disabled]="disable" (click)="displayGIS=true"><span
@@ -18,7 +19,7 @@
       <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>
       <div class="col-sm-9">
         <input type="date" class="form-control" [disabled]="disable"
-         [(ngModel)]="plotManagment.Registration_Date"
+         [(ngModel)]="plotManagment.registration_Date"
           name="RegisterationDate" id="RegisterationDate"
            [placeholder]="'Registeration date' | translate"
           #RegisterationDate="ngModel"
@@ -29,7 +30,7 @@
       <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>
       <div class="col-sm-9">
         <input type="text" readonly class="form-control" [disabled]="disable"
-         [(ngModel)]="plotManagment.Registration_Date"
+         [(ngModel)]="plotManagment.registration_Date"
           name="RegisterationDate" id="RegisterationDate"
            [placeholder]="'Registeration date' | translate"
           #RegisterationDate="ngModel"
@@ -41,7 +42,7 @@
       <label for="SubCity" class="col-sm-3 col-form-label" translate>Sub-City</label>
       <div class="col-sm-9">
         <select class="form-select"  [disabled]="disable" 
-        [(ngModel)]="plotManagment.SDP_ID" name="SubCity" id="SubCity" disabled
+        [(ngModel)]="plotManagment.sdP_ID" name="SubCity" id="SubCity" disabled
           #SubCity="ngModel"  
           [ngClass]="{ 'is-invalid': SubCity.invalid }" 
           (change)="regionSelectedd($event)" required>
@@ -55,7 +56,7 @@
     <div class="form-group row col-md-6">
       <label for="LandGrade" class="col-sm-3 col-form-label" translate>Land Grade</label>
       <div class="col-sm-9">
-        <select class="form-select" [disabled]="disable" [(ngModel)]="plotManagment.Land_Grade_ID" name="LandGrade"
+        <select class="form-select" [disabled]="disable" [(ngModel)]="plotManagment.land_Grade_ID" name="LandGrade"
           id="LandGrade" #LandGrade="ngModel" [ngClass]="{ 'is-invalid': LandGrade.invalid }"
           (input)="subcitySelected($event)" required>
           <option disabled>select</option>
@@ -68,7 +69,7 @@
     <div class="form-group row col-md-6">
       <label for="landuse" class="col-sm-3 col-form-label" translate>Land Use</label>
       <div class="col-sm-9">
-        <select class="form-select"  [disabled]="disable" [(ngModel)]="plotManagment.Type_Of_Use_ID" name="landuse"
+        <select class="form-select"  [disabled]="disable" [(ngModel)]="plotManagment.type_Of_Use_ID" name="landuse"
           id="landuse" #landuse="ngModel" [ngClass]="{ 'is-invalid': landuse.invalid }"
           (input)="subcitySelected($event)" required>
           <option disabled>select</option>
@@ -82,7 +83,7 @@
     <div class="form-group row col-md-6">
       <label for="Description" class="col-sm-3 col-form-label" translate>Description</label>
       <div class="col-sm-9">
-        <textarea class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.Description" name="Description"
+        <textarea class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.description" name="Description"
           id="Description" [placeholder]="'Description' | translate"></textarea>
       </div>
     </div>
@@ -90,7 +91,7 @@
     <div class="form-group row col-md-6">
       <label for="Woreda" class="col-sm-3 col-form-label" translate>Woreda</label>
       <div class="col-sm-9">
-        <select [disabled]="disable" class="form-select"  [(ngModel)]="plotManagment.Wereda_ID" name="Woreda" id="Woreda" #Woreda="ngModel"
+        <select [disabled]="disable" class="form-select"  [(ngModel)]="plotManagment.wereda_ID" name="Woreda" id="Woreda" #Woreda="ngModel"
           [ngClass]="{ 'is-invalid': Woreda.invalid }" required><option disabled>select</option>
           <option *ngFor="let zoneOption of zoneOptions;" [value]="zoneOption['value']">
             {{zoneOption['text']}}
@@ -101,7 +102,7 @@
     <div class="form-group row col-md-6">
       <label for="N-PlotID" class="col-sm-3 col-form-label" translate>N-PlotID</label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.N_Plot_ID"
+        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.n_Plot_ID"
           name="N-PlotID" id="N-PlotID" [placeholder]="'N-PlotID' | translate">
       </div>
     </div>
@@ -109,7 +110,7 @@
     <div class="form-group row col-md-6">
       <label for="BLockNo" class="col-sm-3 col-form-label" translate>BLock No</label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.Block_No" name="BLockNo"
+        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.block_No" name="BLockNo"
           id="BLockNo" [placeholder]="'BLock No' | translate" #BLockNo="ngModel"
           [ngClass]="{ 'is-invalid': BLockNo.invalid }" required>
       </div>
@@ -130,14 +131,14 @@
     <div class="form-group row col-md-6">
       <label for="S-PlotID" class="col-sm-3 col-form-label" translate>S-PlotID</label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.S_Plot_ID"
+        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.s_Plot_ID"
           name="S-PlotID" id="S-PlotID" [placeholder]="'S-PlotID' | translate">
       </div>
     </div>
     <div class="form-group row col-md-6">
       <label for="ParcelNo" class="col-sm-3 col-form-label" translate>Parcel No</label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.Parcel_No"
+        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.parcel_No"
           name="ParcelNo" id="ParcelNo" [placeholder]="'Parcel No' | translate" #ParcelNo="ngModel"
           [ngClass]="{ 'is-invalid': ParcelNo.invalid }" required>
       </div>
@@ -145,14 +146,14 @@
     <div class="form-group row col-md-6">
       <label for="E-PlotID" class="col-sm-3 col-form-label" translate>E-PlotID</label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.E_Plot_ID"
+        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.e_Plot_ID"
           name="E-PlotID" id="E-PlotID" [placeholder]="'E-PlotID' | translate">
       </div>
     </div>
     <div class="form-group row col-md-6">
       <label for="Area" class="col-sm-3 col-form-label" translate>Area(m2)</label>
       <div class="col-sm-9">
-        <input type="number" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.Plot_Size_M2"
+        <input type="number" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.plot_Size_M2"
           name="Area" id="Area" disabled [placeholder]="'Area(m2)' | translate" #Area="ngModel"
           [ngClass]="{ 'is-invalid': Area.invalid }">
       </div>
@@ -160,14 +161,14 @@
     <div class="form-group row col-md-6">
       <label for="W-PlotID" class="col-sm-3 col-form-label" translate>W-PlotID</label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.W_Plot_ID"
+        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.w_Plot_ID"
           name="W-PlotID" id="W-PlotID" [placeholder]="'W-PlotID' | translate">
       </div>
     </div>
     <div class="form-group row col-md-6">
       <label for="Status" class="col-sm-3 col-form-label" translate>Status</label>
       <div class="col-sm-9">
-        <select class="form-select"  [disabled]="disable" [(ngModel)]="plotManagment.Plot_Status" name="Status"
+        <select class="form-select"  [disabled]="disable" [(ngModel)]="plotManagment.plot_Status" name="Status"
           id="Status" #Status="ngModel" [ngClass]="{ 'is-invalid': Status.invalid }" required>
           <option disabled translate>select</option>
           <option *ngFor="let Status of serviceService.PlotStutusLook" [value]="Status.Plot_Status_ID">
@@ -179,7 +180,7 @@
 <div class="form-group row col-md-6">
       <label for="N-PlotID" class="col-sm-3 col-form-label" translate>Nortech_No</label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.Nortech_No"
+        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.nortech_No"
           name="Nortech_No" id="Nortech_No" [placeholder]="'Nortech_No' | translate">
       </div>
     </div>
@@ -204,112 +205,112 @@
       <div class="form-group row col-md-6">
         <label for="X1" class="col-sm-3 col-form-label" translate>X1</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_X_Coordinate_1" name="X1" id="X1"
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.giS_X_Coordinate_1" name="X1" id="X1"
             [placeholder]="'X1' | translate">
         </div>
       </div>
       <div class="form-group row col-md-6">
         <label for="Y1" class="col-sm-3 col-form-label" translate>Y1</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_Y_Coordinate_1" name="Y1" id="Y1"
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.giS_Y_Coordinate_1" name="Y1" id="Y1"
             [placeholder]="'Y1' | translate">
         </div>
       </div>
       <div class="form-group row col-md-6">
         <label for="X2" class="col-sm-3 col-form-label" translate>X2</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_X_Coordinate_2" name="X2" id="X2"
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.giS_X_Coordinate_2" name="X2" id="X2"
             [placeholder]="'X2' | translate">
         </div>
       </div>
       <div class="form-group row col-md-6">
         <label for="Y2" class="col-sm-3 col-form-label" translate>Y2</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_Y_Coordinate_2" name="Y2" id="Y2"
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.giS_Y_Coordinate_2" name="Y2" id="Y2"
             [placeholder]="'Y2' | translate">
         </div>
       </div>
       <div class="form-group row col-md-6">
         <label for="X3" class="col-sm-3 col-form-label" translate>X3</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_X_Coordinate_3" name="X3" id="X3"
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.giS_X_Coordinate_3" name="X3" id="X3"
             [placeholder]="'X3' | translate">
         </div>
       </div>
       <div class="form-group row col-md-6">
         <label for="Y3" class="col-sm-3 col-form-label" translate>Y3</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_Y_Coordinate_3" name="Y3" id="Y3"
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.giS_Y_Coordinate_3" name="Y3" id="Y3"
             [placeholder]="'Y3' | translate">
         </div>
       </div>
       <div class="form-group row col-md-6">
         <label for="X4" class="col-sm-3 col-form-label" translate>X4</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_X_Coordinate_4" name="X4" id="X4"
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.giS_X_Coordinate_4" name="X4" id="X4"
             [placeholder]="'X4' | translate">
         </div>
       </div>
       <div class="form-group row col-md-6">
         <label for="Y4" class="col-sm-3 col-form-label" translate>Y4</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_Y_Coordinate_4" name="Y4" id="Y4"
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.giS_Y_Coordinate_4" name="Y4" id="Y4"
             [placeholder]="'Y4' | translate">
         </div>
       </div>
       <div class="form-group row col-md-6">
         <label for="X5" class="col-sm-3 col-form-label" translate>X5</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_X_Coordinate_5" name="X5" id="X5"
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.giS_X_Coordinate_5" name="X5" id="X5"
             [placeholder]="'X5' | translate">
         </div>
       </div>
       <div class="form-group row col-md-6">
         <label for="Y5" class="col-sm-3 col-form-label" translate>Y5</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_Y_Coordinate_5" name="Y5" id="Y5"
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.giS_Y_Coordinate_5" name="Y5" id="Y5"
             [placeholder]="'Y5' | translate">
         </div>
       </div>
       <div class="form-group row col-md-6">
         <label for="X6" class="col-sm-3 col-form-label" translate>X6</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_X_Coordinate_6" name="X6" id="X6"
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.giS_X_Coordinate_6" name="X6" id="X6"
             [placeholder]="'X6' | translate">
         </div>
       </div>
       <div class="form-group row col-md-6">
         <label for="Y6" class="col-sm-3 col-form-label" translate>Y6</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_Y_Coordinate_6" name="Y6" id="Y6"
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.giS_Y_Coordinate_6" name="Y6" id="Y6"
             [placeholder]="'Y6' | translate">
         </div>
       </div>
       <div class="form-group row col-md-6">
         <label for="X7" class="col-sm-3 col-form-label" translate>X7</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_X_Coordinate_7" name="X7" id="X7"
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.giS_X_Coordinate_7" name="X7" id="X7"
             [placeholder]="'X7' | translate">
         </div>
       </div>
       <div class="form-group row col-md-6">
         <label for="Y7" class="col-sm-3 col-form-label" translate>Y7</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_Y_Coordinate_7" name="Y7" id="Y7"
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.giS_Y_Coordinate_7" name="Y7" id="Y7"
             [placeholder]="'Y7' | translate">
         </div>
       </div>
       <div class="form-group row col-md-6">
         <label for="X8" class="col-sm-3 col-form-label" translate>X8</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_X_Coordinate_8" name="X8" id="X8"
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.giS_X_Coordinate_8" name="X8" id="X8"
             [placeholder]="'X8' | translate">
         </div>
       </div>
       <div class="form-group row col-md-6">
         <label for="Y8" class="col-sm-3 col-form-label" translate>Y8</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" [(ngModel)]="plotManagment.GIS_Y_Coordinate_8" name="Y8" id="Y8"
+          <input type="text" class="form-control" [(ngModel)]="plotManagment.giS_Y_Coordinate_8" name="Y8" id="Y8"
             [placeholder]="'Y8' | translate">
         </div>
       </div>

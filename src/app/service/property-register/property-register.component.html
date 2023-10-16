@@ -51,7 +51,8 @@
       <div class="col-sm-9">
         <input type="text" class="form-control" [(ngModel)]="propertyRegister.property_ID" name="PropertyID"
           id="PropertyID" [placeholder]="'Property ID'|translate"
-          #PropertyID="ngModel" [ngClass]="{ 'is-invalid': PropertyID.invalid }" [disabled]="disable" required>
+          readonly>
+          <!-- #PropertyID="ngModel" [ngClass]="{ 'is-invalid': PropertyID.invalid }" [disabled]="disable" required -->
       </div>
     </div>
     <div class="form-group row col-md-6">

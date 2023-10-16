@@ -77,6 +77,7 @@ export class PropertyComponent implements OnChanges {
   }
   getPloat() {
     if (this.LicenceData.Parcel_ID) {
+      //this.completed.emit();
       console.log("geting ploat this.Parcel_ID", this.LicenceData.Parcel_ID);
       this.getPlotManagement(this.LicenceData.Parcel_ID);
     }
@@ -129,63 +130,101 @@ export class PropertyComponent implements OnChanges {
   }
   getPlotManagement(Parcel_ID) {
     let a;
-    this.serviceService.getPlotManagement(Parcel_ID).subscribe(
-      async (PlotManagementList) => {
-        a = PlotManagementList;
-        let b = false;
-        console.log("this.PlotManagementList", this.PlotManagementList);
-        for (let i = 0; i < (PlotManagementList as any).list.length; i++) {
-          console.log("plot list loop");
+    this.serviceService.getPlotManagementApi(Parcel_ID).subscribe(
+      async (PlotManagementLists: any) => {
+        this.PlotManagementList = PlotManagementLists.procPlot_Registrations;
+        this.PlotManagementList = this.removeDuplicates(
+          this.PlotManagementList
+        );
+        console.log("PlotManagementList", this.PlotManagementList);
+        this.isisvalidated(
+          this.todoid,
+          this.tskID,
+          this.PlotManagementList[0].plot_ID,
+          "00000000-0000-0000-0000-000000000000",
+          this.DocID
+        );
 
-          if (
-            a.list[0].Plot_ID == (PlotManagementList as any).list[i].Plot_ID
-          ) {
-            b = true;
-            break;
-          }
-        }
-        if (b) {
-          this.novalidprops = this.novalidprops + 1;
-          if (this.language == "amharic") {
-            a.list[0].Registration_Date =
-              await this.getgregorianToEthiopianDate(
-                a.list[0].Registration_Date
-              );
-          }
-          this.PlotManagementList.push(a.list[0]);
-          // this.isisvalidated(
-          //   this.todoid,
-          //   this.tskID,
-          //   a.list[0].Plot_ID,
-          //   "00000000-0000-0000-0000-000000000000",
-          //   this.DocID
-          // );
-          const uniqueJobMatchIDs = {};
-          const uniqueData = this.PlotManagementList.filter((item) => {
-            if (!uniqueJobMatchIDs[item.plot_ID]) {
-              uniqueJobMatchIDs[item.plot_ID] = true;
-              return true;
-            }
-            return false;
-          });
-          this.PlotManagementList = uniqueData;
-        }
-
-        console.log("PlotManagementList", PlotManagementList);
-        console.log("this.PlotManagementList", this.PlotManagementList);
+        console.log("PlotManagementList", PlotManagementLists);
+        console.log(
+          "this.PlotManagementList",
+          this.PlotManagementList,
+          this.LicenceData
+        );
       },
       (error) => {
         console.log("error");
       }
     );
   }
+  removeDuplicates(data) {
+    const uniqueArray = data.filter(
+      (item, index, self) =>
+        self.findIndex((i) => i.Application_No === item.Application_No) ===
+        index
+    );
+
+    return uniqueArray;
+  }
+  // getPlotManagement(Parcel_ID) {
+  //   let a;
+  //   this.serviceService.getPlotManagement(Parcel_ID).subscribe(
+  //     async (PlotManagementList) => {
+  //       a = PlotManagementList;
+  //       let b = false;
+  //       console.log("this.PlotManagementList", this.PlotManagementList);
+  //       for (let i = 0; i < (PlotManagementList as any).list.length; i++) {
+  //         console.log("plot list loop");
+
+  //         if (
+  //           a.list[0].plot_ID == (PlotManagementList as any).list[i].plot_ID
+  //         ) {
+  //           b = true;
+  //           break;
+  //         }
+  //       }
+  //       if (b) {
+  //         this.novalidprops = this.novalidprops + 1;
+  //         if (this.language == "amharic") {
+  //           a.list[0].Registration_Date =
+  //             await this.getgregorianToEthiopianDate(
+  //               a.list[0].Registration_Date
+  //             );
+  //         }
+  //         this.PlotManagementList.push(a.list[0]);
+  //         // this.isisvalidated(
+  //         //   this.todoid,
+  //         //   this.tskID,
+  //         //   a.list[0].plot_ID,
+  //         //   "00000000-0000-0000-0000-000000000000",
+  //         //   this.DocID
+  //         // );
+  //         const uniqueJobMatchIDs = {};
+  //         const uniqueData = this.PlotManagementList.filter((item) => {
+  //           if (!uniqueJobMatchIDs[item.plot_ID]) {
+  //             uniqueJobMatchIDs[item.plot_ID] = true;
+  //             return true;
+  //           }
+  //           return false;
+  //         });
+  //         this.PlotManagementList = uniqueData;
+  //       }
+
+  //       console.log("PlotManagementList", PlotManagementList);
+  //       console.log("this.PlotManagementList", this.PlotManagementList);
+  //     },
+  //     (error) => {
+  //       console.log("error");
+  //     }
+  //   );
+  // }
 
   SelectProprty(property) {
     this.propertyForm = true;
     this.propertyregForm = false;
     this.SelectedProperty = property;
 
-    this.serviceService.Plot_Size_M2 = this.SelectedProperty.Plot_Size_M2;
+    this.serviceService.Plot_Size_M2 = this.SelectedProperty.plot_Size_M2;
     console.log("plotManagment", this.SelectedProperty);
     this.getPropertyList();
     // this.disable=false;
@@ -193,7 +232,7 @@ export class PropertyComponent implements OnChanges {
 
   getPropertyList() {
     this.serviceService
-      .getPropertyLists(this.SelectedProperty.Plot_ID)
+      .getPropertyLists(this.SelectedProperty.plot_ID)
       .subscribe(
         (PropertyList: any) => {
           this.PropertyList = PropertyList.procProperty_Registrations;
@@ -258,9 +297,9 @@ export class PropertyComponent implements OnChanges {
       this.selectedprofromtree.property_Parent_ID =
         this.selectedFile.property_ID;
     }
-    console.log("plotManagment", this.SelectedProperty.Plot_ID);
+    console.log("plotManagment", this.SelectedProperty.plot_ID);
 
-    this.selectedprofromtree.Plot_ID = this.SelectedProperty.Plot_ID;
+    this.selectedprofromtree.plot_ID = this.SelectedProperty.plot_ID;
     this.selectedprofromtree.Property_Type_ID = 1;
     this.selectedprofromtree.licence_Service_ID = this.Licence_Service_ID;
   }
@@ -316,7 +355,7 @@ export class PropertyComponent implements OnChanges {
 
       this.propertyregForm = true;
       this.isnew = false;
-      this.selectedFile.Plot_ID = this.SelectedProperty.Plot_ID;
+      this.selectedFile.plot_ID = this.SelectedProperty.plot_ID;
       this.selectedprofromtree = this.selectedFile;
 
       console.log("any", this.selectedprofromtree, this.SelectedProperty);

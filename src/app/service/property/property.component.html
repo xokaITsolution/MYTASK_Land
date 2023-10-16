@@ -13,17 +13,17 @@
     <ng-template pTemplate="body" let-property let-rowData>
       <tr (click)='highlighted = rowData;SelectProprty(property)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
      
-        <td>{{property.Plot_ID}}</td>
-        <select class="form-control" disabled [disabled]="disable" [(ngModel)]="property.Plot_Status" name="Status"
+        <td>{{property.plot_ID}}</td>
+        <select class="form-control" disabled [disabled]="disable" [(ngModel)]="property.plot_Status" name="Status"
           id="Status">
           <option disabled translate>select</option>
           <option *ngFor="let Status of serviceService.PlotStutusLook" [value]="Status.Plot_Status_ID">
             {{Status.Name}}
           </option>
         </select>
-        <td>{{property.Plot_Size_M2}}</td>
-        <td>{{property.Registration_Date}}</td>
-        <td>{{property.Plot_ID}}</td>
+        <td>{{property.plot_Size_M2}}</td>
+        <td>{{property.registration_Date}}</td>
+        <td>{{property.plot_ID}}</td>
         <td>
           <button type="button" class="btn btn-primary" (click)="SelectProprty(property)" translate>Select</button>
         </td>

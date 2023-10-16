@@ -16,7 +16,7 @@
     <ng-template pTemplate="body" let-Plot  let-rowData>
       <tr (click)='highlighted = rowData;SelectPLot(Plot);showform()' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
         
-        <td>{{Plot.Plot_ID}} </td>
+        <td>{{Plot.plot_ID}} </td>
         <td>
           <select class="form-control" disabled [(ngModel)]="Plot.Plot_Status" name="Status" id="Status"
             #Status="ngModel" [ngClass]="{ 'is-invalid': Status.invalid }" required>
@@ -26,8 +26,8 @@
             </option>
           </select>
         </td>
-        <td>{{Plot.Plot_Size_M2}}</td>
-        <td>{{Plot.Registration_Date}}</td>
+        <td>{{Plot.plot_Size_M2}}</td>
+        <td>{{Plot.registration_Date}}</td>
         <td>
           <button type="button" class="btn btn-primary" (click)="SelectPLot(Plot);showform()" *ngIf="disable" translate>select</button>
           <button type="button" class="btn btn-primary" (click)="SelectPLot(Plot);showform()" *ngIf="!disable" translate>Edit</button>
@@ -60,7 +60,7 @@
       <button *ngIf="!serviceService.toMess" type="button" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
         (click)="getplotlocbyid(Plot_ID);openModall(templattte)">Spatial</button> &nbsp;
       
-        <button  type="button" class="btn btn-primary mr-1" [disabled]="serviceService.toMess" (click)="DoneNew()"
+        <button  type="button" class="btn btn-primary mr-1" [disabled]="serviceService.toMess && isplotllocnew" (click)="DoneNew()"
         translate>Finish</button>
        
        </div>
@@ -99,7 +99,7 @@
       
       <button type="button" class="btn btn-primary mr-1" [disabled]="serviceService.toMess" (click)="DoneNew()"
         translate>Finish</button>
-          <span style="color:red;font-weight: bolder;font-size: large;" *ngIf="serviceService.toMess" translate>you need to save
+          <span style="color:red;font-weight: bolder;font-size: large;" *ngIf="serviceService.toMess && isplotllocnew" translate>you need to save
             Plote Location first</span>
       </div>
     </aw-wizard-step>
