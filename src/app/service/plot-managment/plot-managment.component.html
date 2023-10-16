@@ -6,8 +6,9 @@
       <div class="col-sm-9">
         <input type="text" class="form-control" [disabled]="disable || isploatDisabled"
           [(ngModel)]="plotManagment.Plot_ID" name="PlotID" id="PlotID" [placeholder]="Fields.FIELD_ONE | translate"
-          #PlotID="ngModel" [ngClass]="{ 'is-invalid': PlotID.invalid }" required
-            (input)="filter($event)" >
+          
+            (input)="filter($event)"  readonly>
+            <!-- #PlotID="ngModel" [ngClass]="{ 'is-invalid': PlotID.invalid }" required -->
       </div>
       <!-- <div class="col-sm-1 ml-0 pl-0">
         <button type="button" class="btn btn-primary" [disabled]="disable" (click)="displayGIS=true"><span

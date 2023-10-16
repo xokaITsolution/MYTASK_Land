@@ -743,6 +743,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   }
 
   async add() {
+    this.plotManagment.Plot_ID = "-1";
     this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     if (this.language === "amharic") {
       this.plotManagment.Registration_Date = await this.getEthiopianToGregorian(

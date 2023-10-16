@@ -490,6 +490,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
           prop.registration_Date
         );
       }
+      prop.property_ID = "-1";
       this.propertyRegisterService.Add(prop).subscribe(
         (deptSuspension) => {
           console.log("deptSuspension", deptSuspension);
