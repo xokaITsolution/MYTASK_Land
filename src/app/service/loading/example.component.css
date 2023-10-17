@@ -1,10 +1,10 @@
 .clock img {
-    width: 150px;
-    height: 150px;
+    width: 200px;
+    height: 200px;
     border: 2px solid #000;
     border-radius: 50%;
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
@@ -12,6 +12,7 @@
     align-items: center;
     z-index: 10000;
 }
+
 .overlay {
     position: fixed;
     top: 0;

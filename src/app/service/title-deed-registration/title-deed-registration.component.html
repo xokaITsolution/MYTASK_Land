@@ -147,16 +147,17 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
       <label for="Ownership_ID" class="col-sm-3 col-form-label" translate>Transfer id</label>
       <div class="col-sm-9">
     
-        <input type="text" [disabled]="disable" class="form-control" [(ngModel)]="titleDeedRegistration.Ownership_ID" name="Ownership_ID"
-          id="Ownership_ID" [placeholder]="'Transfer ID' | translate" #Ownership_ID="ngModel"
-          [ngClass]="{ 'is-invalid': Ownership_ID.invalid }" required>
+        <input type="text" [disabled]="disable" class="form-control" [(ngModel)]="titleDeedRegistration.ownership_ID" name="Ownership_ID"
+          id="Ownership_ID" [placeholder]="'Transfer ID' | translate"
+         readonly
+          >
       </div>
     </div>
 
         <div class="form-group row col-md-7" *ngIf="language !== 'amharic'">
           <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>
           <div class="col-sm-9">
-            <input type="date" class="form-control" [disabled]="disable" [(ngModel)]="titleDeedRegistration.Date"
+            <input type="date" class="form-control" [disabled]="disable" [(ngModel)]="titleDeedRegistration.date"
               name="RegisterationDate" id="RegisterationDate" [placeholder]="'Registeration date' | translate"
               #RegisterationDate="ngModel" [ngClass]="{ 'is-invalid': RegisterationDate.invalid }" required>
           </div>
@@ -164,7 +165,7 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
         <div class="form-group row col-md-7" *ngIf="language === 'amharic'">
           <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>
           <div class="col-sm-9">
-            <input type="text" readonly class="form-control" [disabled]="disable" [(ngModel)]="titleDeedRegistration.Date"
+            <input type="text" readonly class="form-control" [disabled]="disable" [(ngModel)]="titleDeedRegistration.date"
               name="RegisterationDateam" id="RegisterationDateam" [placeholder]="'Registeration date' | translate"
               #RegisterationDateam="ngModel" [ngClass]="{ 'is-invalid': RegisterationDateam.invalid }" required
               appDatepickerEthiopian (dateEmitter)="selectedDateTime($event,1)">
@@ -174,12 +175,18 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
     <div class="form-group row col-md-7">
       <label for="TransferredFrom" class="col-sm-3 col-form-label" translate>Transferred From</label>
       <div class="col-sm-9">
-          <input type="text" class="form-control"  [(ngModel)]="titleDeedRegistration.Transfer_From_Customer"
-            name="TransferredFromid" id="customer" [placeholder]="'select customer' | translate" hidden>
+          <input type="text" class="form-control"  [(ngModel)]="titleDeedRegistration.transfer_From_Customer"
+            name="TransferredFromid" id="customer" [placeholder]="'select customer' | translate" hidden
+            #TransferredFromid="ngModel"
+          [ngClass]="{ 'is-invalid': TransferredFromid.invalid }" required >
 
         <input type="text" class="form-control" [disabled]="disable"  [(ngModel)]="Transfer_From_CustomerName"
           name="TransferredFrom" id="TransferredFrom" [placeholder]="'select customer' | translate"
-        (click)="TransferredFrom=true;TransferredTo=false" readonly >
+        (click)="TransferredFrom=true;TransferredTo=false" readonly 
+        >
+            <span style="color: red;" *ngIf="TransferredFromid.invalid ">
+              required
+            </span>
 
           <!-- <select disabled class="form-control" name="TransferredFrom" id="TransferredFrom"
             [(ngModel)]="titleDeedRegistration.Transfer_From_Customer">
@@ -192,13 +199,18 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
     <div class="form-group row col-md-7">
       <label for="TransferredTo" class="col-sm-3 col-form-label" translate>Transferred To</label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" [(ngModel)]="titleDeedRegistration.Transfer_To_Customer"
-          name="TransferredToid" id="customerto" [placeholder]="'select customer' | translate" hidden>
+        <input type="text" class="form-control" [(ngModel)]="titleDeedRegistration.transfer_To_Customer"
+          name="TransferredToid" id="customerto" [placeholder]="'select customer' | translate" hidden
+           #TransferredToid="ngModel"
+          [ngClass]="{ 'is-invalid': TransferredToid.invalid }" required>
     
         <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="Transfer_To_CustomerName"
           name="TransferredTo" id="TransferredTo" [placeholder]="'select customer' | translate"
-          (click)="TransferredTo=true;TransferredFrom=false" readonly>
-    
+          (click)="TransferredTo=true;TransferredFrom=false" readonly
+         >
+        <span style="color: red;" *ngIf="TransferredToid.invalid ">
+          required
+        </span>
       
       </div>
     </div>
@@ -217,7 +229,7 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
     <div class="form-group row col-md-7">
       <label for="TransferType" class="col-sm-3 col-form-label" translate>Transfer Type</label>
       <div class="col-sm-9">
-        <select [disabled]="disable" class="form-control" [(ngModel)]="titleDeedRegistration.Transfer_Type" name="TransferType"
+        <select [disabled]="disable" class="form-control" [(ngModel)]="titleDeedRegistration.transfer_Type" name="TransferType"
           id="TransferType">
           <option disabled translate>select</option>
           <option *ngFor="let TransferType of serviceComponent.TransferTypeLookUP;" [value]="TransferType.Transfer_ID">
@@ -228,7 +240,7 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
     <div class="form-group row col-md-7">
       <label for="IsActive" class="col-sm-3 col-form-label" translate>Is Active</label>
       <div class="col-sm-8">
-        <p-checkbox [(ngModel)]="titleDeedRegistration.Is_Active" name="IsActive" id="IsActive"
+        <p-checkbox [(ngModel)]="titleDeedRegistration.is_Active" name="IsActive" id="IsActive"
           binary="true"></p-checkbox>
       </div>
     </div>
@@ -254,10 +266,10 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
   </ng-template>
   <ng-template pTemplate="body" let-deed>
     <tr [class.active]="deed.selected">
-      <td>{{deed.Ownership_ID}}</td>
-      <td>{{deed.Date}}</td>
+      <td>{{deed.ownership_ID}}</td>
+      <td>{{deed.date}}</td>
       <td>
-        <p-checkbox [(ngModel)]="deed.Is_Active" [disabled]="true" name="Is_Paid" id="Is_Paid" binary="true">
+        <p-checkbox [(ngModel)]="deed.is_Active" [disabled]="true" name="Is_Paid" id="Is_Paid" binary="true">
         </p-checkbox>
       </td>
       <td>

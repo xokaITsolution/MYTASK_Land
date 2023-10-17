@@ -1,3 +1,4 @@
+<app-example *ngIf="LoadingExampleService.isLoading | async"></app-example>
 <div class="m-3">
   <p-table [value]="PlotManagementList" [paginator]="true" [rows]="5">
     <ng-template pTemplate="header">
@@ -61,20 +62,20 @@
               <app-property-register (completed)="EnableFinspro();savedata()" (completeddel)="EnabledelFinspro()"
                 [selectedpro]='selectedFile' [disable]="disable" [LicenceData]="LicenceData">
               </app-property-register>
-              <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1" translate>Next</button></div>
+              <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1" [disabled]="serviceService.propertyISEnable && !serviceService.ispropoertylocation" translate>Next</button></div>
      
             </div>
           </p-tabPanel>
-          <p-tabPanel [header]="'Measurement' | translate">
+          <p-tabPanel [header]="'Measurement' | translate" [disabled]="true">
             <div class="mt-3">
               <app-measurment (completed)="EnableFins()" [selectedpro]='selectedFile'  [disable]="disable"
                 [Licence_Service_ID]="Licence_Service_ID"></app-measurment>
-                <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 2" translate>Next</button></div>
+                <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 2"  translate>Next</button></div>
               <div style="float: left;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 0"
                   translate>previous</button></div>
             </div>
           </p-tabPanel>
-          <p-tabPanel [header]="'Title Deed Registration' | translate">
+          <p-tabPanel [header]="'Title Deed Registration' | translate" [disabled]="true">
             <div class="mt-3">
               <app-title-deed-registration (completed)="EnableFins()" [selectedpro]='selectedFile'
                 [disable]="disable" [Licence_Service_ID]="Licence_Service_ID" [AppNo]="AppNo" [Service_ID]="Service_ID">
@@ -88,7 +89,40 @@
 
       <!--forNew-->
       <div class="m-3" *ngIf="isnew">
-        <aw-wizard [navBarLayout]="'large-empty-symbols'">
+        <p-tabView (onChange)="tabChanged($event)" [(activeIndex)]="selectedTab" selected="true">
+          <p-tabPanel [header]="'Property Registration' | translate">
+            <div class="mt-3">
+            <app-property-register (completed)="EnableFinspronew($event)" [selectedpro]='selectedprofromtree' [disable]="disable"
+              [LicenceData]="LicenceData">
+            </app-property-register>
+              <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1"
+                  [disabled]="serviceService.propertyISEnable && !serviceService.ispropoertylocation" translate>Next</button>
+              </div>
+        
+            </div>
+          </p-tabPanel>
+          <p-tabPanel [header]="'Measurement' | translate" [disabled]="true">
+            <div class="mt-3">
+                <app-measurment (completed)="EnableFinsMesNEw()" [selectedpro]='selectedprofromtree' [disable]="disable"
+                  [Licence_Service_ID]="Licence_Service_ID"></app-measurment>
+              <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 2"
+                  translate>Next</button></div>
+              <div style="float: left;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 0"
+                  translate>previous</button></div>
+            </div>
+          </p-tabPanel>
+          <p-tabPanel [header]="'Title Deed Registration' | translate" [disabled]="true">
+            <div class="mt-3">
+                <app-title-deed-registration (completed)="EnableFinstitle(); EnableFinsFixedasset();"
+                  [selectedpro]='selectedprofromtree' [disable]="disable" [Licence_Service_ID]="Licence_Service_ID" [AppNo]="AppNo"
+                  [Service_ID]="Service_ID">
+                </app-title-deed-registration>
+              <div style="float: left;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1"
+                  translate>previous</button></div>
+            </div>
+          </p-tabPanel>
+        </p-tabView>
+        <!-- <aw-wizard [navBarLayout]="'large-empty-symbols'">
           <aw-wizard-step [stepTitle]="'Property Registration' | translate"
             [navigationSymbol]="{ symbol: '&#xf05a;', fontFamily: 'FontAwesome'  }">
 
@@ -98,7 +132,7 @@
               </app-property-register>
             </div>
             <div class="pull-right">
-              <button type="button" class="btn btn-primary mr-1" [disabled]="serviceService.propertyISEnable" awNextStep translate>Next</button>
+              <button type="button" class="btn btn-primary mr-1" [disabled]="serviceService.propertyISEnable && !serviceService.ispropoertylocation" awNextStep translate>Next</button>
             </div>
           </aw-wizard-step>
           <aw-wizard-step [stepTitle]="'Measurement' | translate"
@@ -129,7 +163,7 @@
                 translate>Done</button>
             </div>
           </aw-wizard-step>
-        </aw-wizard>
+        </aw-wizard> -->
       </div>
     </div>
   </div>

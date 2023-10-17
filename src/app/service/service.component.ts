@@ -20,8 +20,9 @@ import { NgxDocViewerModule } from "ngx-doc-viewer";
 import { HttpEvent, HttpEventType, HttpParams } from "@angular/common/http";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
+import { BehaviorSubject } from "rxjs/internal/BehaviorSubject";
 //import { MatProgressBarModule } from '@angular/material/progress-bar';
-
+import { LoadingExampleService } from "./loading/loadingExample.service";
 //import { log } from 'console';
 export * from "./qrcode.directive";
 type AOA = any[][];
@@ -32,7 +33,8 @@ type AOA = any[][];
   encapsulation: ViewEncapsulation.None,
 })
 export class ServiceComponent implements OnInit {
-  [x: string]: any;
+  maxChars;
+  aaa;
   jsonempty = {};
   ApplicationNumberlist;
   useNamelist;
@@ -200,6 +202,7 @@ export class ServiceComponent implements OnInit {
   mimeType: any;
   fileupload: string;
   uploadcontract: boolean;
+  updated: any;
   constructor(
     private modalService: BsModalService,
     private activatedRoute: ActivatedRoute,
@@ -209,7 +212,8 @@ export class ServiceComponent implements OnInit {
     private sanitizer: DomSanitizer,
     public ngxModal: NgxSmartModalService,
     private renderer: Renderer2,
-    private el: ElementRef
+    private el: ElementRef,
+    public LoadingExampleService: LoadingExampleService
   ) {}
   hide = true;
 
@@ -691,7 +695,7 @@ export class ServiceComponent implements OnInit {
   }
   payment() {
     if (
-      this.Submitt("00000000-0000-0000-0000-000000000000") ===
+      this.Submit("00000000-0000-0000-0000-000000000000") ===
       this.Submit("00000000-0000-0000-0000-000000000000")
     ) {
       this.Close();
@@ -1839,6 +1843,8 @@ export class ServiceComponent implements OnInit {
   }
 
   public getAll(AppNo) {
+    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
+
     this.getuserName(this.AppNo);
     console.log("appppppp", AppNo);
     this.serviceService.getAll(AppNo).subscribe(
@@ -1876,6 +1882,9 @@ export class ServiceComponent implements OnInit {
         // console.log('Licence data2', this.licenceData);
         // this.taskType = this.licenceData.TaskType;
         this.loading = false;
+        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+          false
+        );
       },
       (error) => {
         console.log(error);

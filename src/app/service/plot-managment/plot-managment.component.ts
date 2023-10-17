@@ -121,11 +121,11 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     }
     console.log("chang detected");
 
-    if (this.plotManagment["Plot_ID"]) {
-      this.isnew = this.plotManagment["Parcel_No"] ? false : true;
+    if (this.plotManagment["plot_ID"]) {
+      this.isnew = this.plotManagment["parcel_No"] ? false : true;
       this.isploatDisabled = true;
     } else {
-      this.isnew = this.plotManagment["Parcel_No"] ? false : true;
+      this.isnew = this.plotManagment["parcel_No"] ? false : true;
       this.isploatDisabled = false;
     }
 
@@ -682,11 +682,8 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     this.plotManagment.is_Deleted = true;
     this.ploatManagmentService.save(this.plotManagment).subscribe(
       async (deptSuspension) => {
-        console.log("deptSuspension", deptSuspension);
-        const toast = this.notificationsService.success(
-          "Sucess",
-          deptSuspension
-        );
+        console.log("deptSuspension");
+        const toast = this.notificationsService.success("Sucess updated");
         this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
           false
         );

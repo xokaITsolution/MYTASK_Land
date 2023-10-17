@@ -480,7 +480,7 @@ export class PlotComponent implements OnChanges {
 
     return uniqueArray;
   }
-  SelectPLot(plot) {
+  async SelectPLot(plot) {
     this.SelectedPlot = plot;
     console.log("dfghgfd", plot);
     this.plot_ID = this.SelectedPlot.plot_ID;
@@ -488,8 +488,13 @@ export class PlotComponent implements OnChanges {
     plot.SDP_ID = this.serviceComponent.licenceData.SDP_ID;
     plot.Licence_Service_ID = this.LicenceData.Licence_Service_ID;
     plot.Application_No = this.AppNo;
-    if (plot.Registration_Date) {
-      plot.Registration_Date = plot.Registration_Date.split("T")[0];
+    if (this.language != "amharic") {
+      plot.registration_Date = plot.registration_Date.split("T")[0];
+    }
+    if (this.language == "amharic") {
+      plot.registration_Date = await this.getgregorianToEthiopianDate(
+        plot.registration_Date
+      );
     }
     if (this.serviceService.multipleplotcanbeadd) {
       let filterservice = this.serviceService.multipleplotcanbeadd.filter(
@@ -684,6 +689,7 @@ export class PlotComponent implements OnChanges {
           if (Validated == "Validated") {
             this.noinvalidplot = this.noinvalidplot - 1;
             console.log("noinvalidplot", this.noinvalidplot);
+
             if (this.noinvalidplot == 0) {
               if (!this.Saved) {
                 this.completed.emit();
@@ -720,7 +726,7 @@ export class PlotComponent implements OnChanges {
 
   EnableFinsPloat(Parcel) {
     console.log("FinalPLoat", Parcel);
-    console.log("FinalPLoat ID", Parcel.plot_ID);
+    //console.log("FinalPLoat ID", Parcel.plot_ID);
     // this.plotForm = false;
     this.plotId = Parcel.plot_ID;
 
@@ -752,7 +758,7 @@ export class PlotComponent implements OnChanges {
 
     this.serviceService.UpdateLicence(this.LicenceData).subscribe(
       (Licence) => {
-        console.log("Licence", Licence);
+        console.log("Licence");
         if (this.isnew) {
           this.SelectedPlot = Parcel;
           // this.SelectedPlot.Parcel_ID = Parcel_ID;
@@ -762,18 +768,7 @@ export class PlotComponent implements OnChanges {
         }
       },
       (error) => {
-        console.log("error");
-        if (error.status == "400") {
-          const toast = this.notificationsService.error(
-            "Error",
-            error.error.InnerException.Errors[0].message
-          );
-        } else {
-          const toast = this.notificationsService.error(
-            "Error",
-            "SomeThing Went Wrong"
-          );
-        }
+        const toast = this.notificationsService.error("Error", error.error);
       }
     );
     this.PlotManagementList = [];

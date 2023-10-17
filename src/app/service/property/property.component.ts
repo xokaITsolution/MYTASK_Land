@@ -11,7 +11,8 @@ import { TreeNode } from "primeng/api";
 import { NotificationsService } from "angular2-notifications";
 import { ServiceComponent } from "../service.component";
 import { environment } from "src/environments/environment";
-
+import { LoadingExampleService } from "../loading/loadingExample.service";
+import { BehaviorSubject } from "rxjs";
 @Component({
   selector: "app-property",
   templateUrl: "./property.component.html",
@@ -54,7 +55,8 @@ export class PropertyComponent implements OnChanges {
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    public LoadingExampleService: LoadingExampleService
   ) {}
 
   ngOnChanges() {
@@ -220,6 +222,7 @@ export class PropertyComponent implements OnChanges {
   // }
 
   SelectProprty(property) {
+    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     this.propertyForm = true;
     this.propertyregForm = false;
     this.SelectedProperty = property;
@@ -242,8 +245,16 @@ export class PropertyComponent implements OnChanges {
           this.getTree(Object.assign([], this.PropertyList));
           this.novalidprops = this.PropertyList.length;
           //this.isvalidated();
+          if (this.PropertyList.length > 0) {
+            this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+              false
+            );
+          }
         },
         (error) => {
+          this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+            false
+          );
           console.log("error");
         }
       );

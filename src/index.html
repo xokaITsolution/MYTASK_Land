@@ -31,8 +31,9 @@
       window['parentGroupName'] = "AddisLand"
       window['groupName'] = "W1.Arada.Layers";
         window['SubcityName'] =  window.location.pathname.split("/")[1]+ "_AddisLand"
-    window['geoserverUrl'] = "http://land.xokait.com.et:8080/geoserver/arada_AddisLand/wms";
-      window['geoserverUrlwfs'] = "http://land.xokait.com.et:8080/geoserver/arada_AddisLand/ows";
+   const workspace = window.location.pathname.split("/")[1] + '_AddisLand';
+      window['geoserverUrl'] = `http://land.xokait.com.et:8080/geoserver/${workspace}/wms`;
+      window['geoserverUrlwfs'] = `http://land.xokait.com.et:8080/geoserver/${workspace}/ows`;
       window['geoser'] = "http://land.xokait.com.et:8080/geoserver";
      
       window['PaymentReportPath'] = 'http://land.xokait.com.et/en-us/Receipt';
@@ -85,7 +86,6 @@
       //     else {
       //       window['_app_base'] = `${langPrefix == 'am-et' || langPrefix == 'en-us' ? '/' + urlSegment[1] : '/'}`;
       //     }
-
           //console.log('/' + window.location.pathname.split('/')[1] + '/' + window.location.pathname.split('/')[2]);
         // }
 

@@ -17,7 +17,16 @@ import { environment } from "../../../environments/environment";
 import { ServiceService } from "../../service/service.service";
 import { Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-
+import { TreeNode } from "primeng/api";
+interface AssignedBodyTree {
+  label: string;
+  value: string;
+  children: any;
+}
+interface AssignedBodyTree2 {
+  label: string;
+  value: string;
+}
 @Component({
   selector: "app-testgismap",
   templateUrl: "./testgismap.component.html",
@@ -30,7 +39,7 @@ export class TestgismapComponent implements AfterViewInit, OnInit {
   sample: L.Layer;
   rectangleOverlay: any;
   utmCoordinates: any;
-
+  nodes: TreeNode[];
   latitude: number;
   longitude: number;
   latitudeDegrees: number;
@@ -125,6 +134,7 @@ export class TestgismapComponent implements AfterViewInit, OnInit {
             }
           }
           console.log("AddisLand", this.groupLayers[index]);
+          this.getTree(this.groupLayer);
         }
       }
     });
@@ -136,7 +146,204 @@ export class TestgismapComponent implements AfterViewInit, OnInit {
 
     return result;
   }
+  async getTree(grouplist) {
+    this.nodes = [];
+    // debugger
+    console.log("this.groupLayer", this.groupLayer);
 
+    for (let i = 0; i < this.groupLayer.length; i++) {
+      let a: AssignedBodyTree = {
+        label: "",
+        value: "",
+        children: "",
+      };
+      console.log("hhhe", a);
+      a["label"] = this.groupLayer[i].name;
+      a["value"] = this.groupLayer[i].href;
+      a.children = [];
+      var sub = await this.geoser
+        .getLayersFromGeoserver(this.groupLayer[i].href)
+        .toPromise();
+      let keys = Object.keys(sub);
+      console.log("wor.key", keys);
+
+      if (keys[0] == "layer") {
+        console.log("wor.layer.name", sub.layer.name);
+        continue;
+      }
+
+      this.subcities = sub.layerGroup.publishables.published;
+
+      if (typeof this.subcities === "object") {
+        if (Array.isArray(this.subcities)) {
+          console.log("Variable is an array");
+        } else {
+          this.subcities = this.json2array(
+            sub.layerGroup.publishables.published
+          );
+          console.log("subcities", this.subcities);
+        }
+      }
+
+      // for (let index = 0; index <= this.subcities.length; index++) {
+      //   const element = this.subcities[index].name.split(':')
+      //   // console.log("element",element);
+
+      //   this.subcities[index].name = element[1];
+      //   console.log("element",this.subcities[index].name);
+      //   continue;
+      // }
+      const l11 = Object.assign([], this.subcities);
+      console.log("subb", this.subcities.length);
+
+      for (let j = 0; j < this.subcities.length; j++) {
+        let b: AssignedBodyTree = {
+          label: "",
+          value: "",
+          children: "",
+        };
+        const element = this.subcities[j].name.split(":");
+        this.subcities[j].name = element[1];
+        b["label"] = this.subcities[j].name;
+        b["value"] = this.subcities[j].href;
+        b.children = [];
+        a.children.push(b);
+        // debugger
+        var wor = await this.geoser
+          .getLayersFromGeoserver(this.subcities[j].href)
+          .toPromise();
+        let keys = Object.keys(wor);
+        console.log("wor.key", keys);
+
+        if (keys[0] == "layer") {
+          console.log("wor.layer.name", wor.layer.name);
+          continue;
+        }
+        this.woredas = wor.layerGroup.publishables.published;
+        if (typeof this.woredas === "object") {
+          if (Array.isArray(this.woredas)) {
+            console.log("Variable is an array");
+          } else {
+            this.woredas = this.json2array(
+              wor.layerGroup.publishables.published
+            );
+            console.log("subcities", this.woredas);
+          }
+        }
+        console.log("this.files111", this.woredas);
+        const l1 = Object.assign([], this.woredas);
+
+        for (let k = 0; k < this.woredas.length; k++) {
+          let c: AssignedBodyTree = {
+            label: "",
+            value: "",
+            children: "",
+          };
+          const element = this.woredas[k].name.split(":");
+          this.woredas[k].name = element[1];
+          c["label"] = this.woredas[k].name;
+          c["value"] = this.woredas[k].href;
+          c.children = [];
+          b.children.push(c);
+          // debugger
+          var worlay = await this.geoser
+            .getLayersFromGeoserver(this.woredas[k].href)
+            .toPromise();
+          // console.log("worlay",worlay.layer.name);
+          let keys = Object.keys(worlay);
+          console.log("wor.key", keys);
+
+          if (keys[0] == "layer") {
+            console.log("wor.layer.name", worlay.layer.name);
+            continue;
+          }
+          console.log("worlay", worlay.layerGroup.publishables.published);
+          this.woredaLayers = worlay.layerGroup.publishables.published;
+          console.log("ddd", this.woredaLayers);
+
+          if (typeof this.woredaLayers === "object") {
+            if (Array.isArray(this.woredaLayers)) {
+              console.log("Variable is an array");
+            } else {
+              this.woredaLayers = this.json2array(
+                worlay.layerGroup.publishables.published
+              );
+              console.log("subcities", this.woredaLayers);
+            }
+          }
+          console.log("this11", this.woredaLayers);
+          const l1 = Object.assign([], this.woredaLayers);
+
+          for (let l = 0; l < this.woredaLayers.length; l++) {
+            let d: AssignedBodyTree = {
+              label: "",
+              value: "",
+              children: "",
+            };
+            const element = this.woredaLayers[l].name.split(":");
+            this.woredaLayers[l].name = element[1];
+            d["label"] = this.woredaLayers[l].name;
+            d["value"] = this.woredaLayers[l].href;
+            d.children = [];
+            c.children.push(d);
+            // debugger
+            var worlayonebyone = await this.geoser
+              .getLayersFromGeoserver(this.woredaLayers[l].href)
+              .toPromise();
+            // console.log("worlay",worlay.layer.name);
+            let keys = Object.keys(worlayonebyone);
+            console.log("wor.key", keys);
+
+            if (keys[0] == "layer") {
+              console.log("wor.layer.name", worlayonebyone.layer.name);
+              continue;
+            }
+            console.log(
+              "worlayonebyone",
+              worlayonebyone.layerGroup.publishables.published
+            );
+            this.woredaLayersOneByOne =
+              worlayonebyone.layerGroup.publishables.published;
+            console.log("ddd", this.woredaLayersOneByOne);
+
+            if (typeof this.woredaLayersOneByOne === "object") {
+              if (Array.isArray(this.woredaLayersOneByOne)) {
+                console.log("Variable is an array");
+              } else {
+                this.woredaLayersOneByOne = this.json2array(
+                  worlayonebyone.layerGroup.publishables.published
+                );
+                console.log("woredaLayersOneByOne", this.woredaLayersOneByOne);
+              }
+            }
+            console.log("this11", this.woredaLayersOneByOne);
+            const l1 = Object.assign([], this.woredaLayersOneByOne);
+
+            for (let m = 0; m < this.woredaLayersOneByOne.length; m++) {
+              let e: AssignedBodyTree2 = {
+                label: "",
+                value: "",
+              };
+              // debugger
+              const element = this.woredaLayersOneByOne[m].name.split(":");
+              this.woredaLayersOneByOne[m].name = element[1];
+              e.label = this.woredaLayersOneByOne[m].name;
+              e.value = this.woredaLayersOneByOne[m].href;
+              this.woredaLayersOneByOne[l].children = [];
+              d.children.push(e);
+            }
+          }
+        }
+      }
+      this.nodes.push(a);
+    }
+    // if(this.nodes.length ==7){
+    //   this.savedstatuslist=false
+    // }else{
+    //    this.savedstatuslist=true
+    // }
+    console.log("this.files", this.nodes);
+  }
   ParentGroupLayerSelected(checked: boolean, event: any): void {
     if (checked) {
       //Call Geoserver API to fetch layers for the selected group layer

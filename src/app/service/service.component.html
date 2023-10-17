@@ -328,8 +328,10 @@
 <div *ngIf="okdb" _ngcontent-c5="" class="col-md-12" ><!----><div _ngcontent-c5="" class="ng-star-inserted"><div _ngcontent-c5="" class="p-3 bg-success text-white"><table _ngcontent-c5="" class="table"><thead _ngcontent-c5=""><tr _ngcontent-c5=""><th _ngcontent-c5="" scope="col"><span _ngcontent-c5="" translate="">Status: Database</span></th></tr></thead></table></div></div><!----></div>
 
 <div *ngIf="!okdb"  _ngcontent-c5="" class="col-md-12" ><!----><div _ngcontent-c5="" class="ng-star-inserted"><div _ngcontent-c5="" class="p-3 bg-danger text-white"><table _ngcontent-c5="" class="table"><thead _ngcontent-c5=""><tr _ngcontent-c5=""><th _ngcontent-c5="" scope="col"><span _ngcontent-c5="" translate="">Status: Database</span></th></tr></thead></table></div></div><!----></div>
+
 <div *ngIf="loading">
-  <app-loading></app-loading>
+  <!-- <app-loading></app-loading> -->
+  <app-example *ngIf="LoadingExampleService.isLoading | async"></app-example>
 </div>
 
 
@@ -603,7 +605,7 @@
   rows="4" style="background: rgb(202, 236, 255)" 
   [(ngModel)]="NoteObj.remarks"
   [ngClass]="{ 'is-invalid': myInput.invalid }"
- >{{aaa}}
+ >
  </textarea>
 <span style="background-color: rgba(250, 240, 222, 0.693);">
   
@@ -670,7 +672,7 @@
 </div>
   </div>
  </p-dialog>
-<p-dialog  [(visible)]="showdialoges"  header="Post It Note"  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
+<p-dialog  [(visible)]="showdialoge"  header="Post It Note"  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
 [positionTop]="1" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                          'max-height': '80vh','min-height':'250px'}">
                           <div class="modal-body">

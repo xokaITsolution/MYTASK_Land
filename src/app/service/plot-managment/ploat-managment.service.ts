@@ -16,7 +16,7 @@ export class PloatManagmentService {
   constructor(private http: HttpClient) {}
 
   save(data) {
-    return this.http.put<any[]>(this.PlotManagementUrlsave, data);
+    return this.http.put<any[]>(this.PlotManagementUrlAdd, data);
   }
 
   Add(data) {

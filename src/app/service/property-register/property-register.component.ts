@@ -563,8 +563,11 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                 this.proploc,
                 this.proploc[0].geowithzone
               );
+              this.serviceService.ispropoertylocation = true;
+
               this.isproplocnew = true;
             } else {
+              this.serviceService.ispropoertylocation = false;
               this.isproplocnew = false;
             }
           });
