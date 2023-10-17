@@ -60,7 +60,7 @@
       <button *ngIf="!serviceService.toMess" type="button" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
         (click)="getplotlocbyid(Plot_ID);openModall(templattte)">Spatial</button> &nbsp;
       
-        <button  type="button" class="btn btn-primary mr-1" [disabled]="serviceService.toMess && isplotllocnew" (click)="DoneNew()"
+        <button  type="button" class="btn btn-primary mr-1" [disabled]="!isfinished" (click)="DoneNew()"
         translate>Finish</button>
        
        </div>
@@ -97,9 +97,9 @@
       <button *ngIf="!serviceService.toMess" type="button" class="btn btn-primary  ml-3" data-toggle="modal"
         data-target="#myModal" translate (click)="getplotlocbyid(Plot_ID);openModall(templattte)">Spatial</button> &nbsp;
       
-      <button type="button" class="btn btn-primary mr-1" [disabled]="serviceService.toMess" (click)="DoneNew()"
+      <button type="button" class="btn btn-primary mr-1" [disabled]="!isfinished" (click)="DoneNew()"
         translate>Finish</button>
-          <span style="color:red;font-weight: bolder;font-size: large;" *ngIf="serviceService.toMess && isplotllocnew" translate>you need to save
+          <span style="color:red;font-weight: bolder;font-size: large;" *ngIf="serviceService.toMess &&  isplotllocnew" translate>you need to save
             Plote Location first</span>
       </div>
     </aw-wizard-step>
@@ -127,9 +127,9 @@
   <!-- Modal footer -->
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="saveplotloc();closeModall()"
-      *ngIf="isplotllocnew &&  !disable && serviceService.areaVerified" translate>Save</button>
+      *ngIf="!isplotllocnew &&  !disable && serviceService.areaVerified" translate>Save</button>
     <button type="button" class="btn btn-primary" (click)="updateplotloc();closeModall()"
-      *ngIf="!isplotllocnew &&  !disable" translate>Update</button>
+      *ngIf="isplotllocnew &&  !disable" translate>Update</button>
   
       <button type="button" class="btn btn-danger" (click)="closeModall()" translate>Close</button>
   </div>

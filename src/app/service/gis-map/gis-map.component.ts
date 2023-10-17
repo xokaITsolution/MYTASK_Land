@@ -1081,12 +1081,11 @@ export class GisMapComponent implements AfterViewInit {
         // Assuming limited area bounds as a polygon
         const limitedAreaBounds = L.polygon(this.alllatlong[0]).addTo(this.map);
 
-        // Check if the drawn shape intersects with the limited area bounds
-        if (limitedAreaBounds.getBounds().contains(layer.getBounds())) {
-          this.map.addLayer(layer);
+        console.log(layer);
+        if (layer instanceof L.Polygon) {
+          if (limitedAreaBounds.getBounds().contains(layer.getBounds())) {
+            this.map.addLayer(layer);
 
-          console.log(layer);
-          if (layer instanceof L.Polygon) {
             this.coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the polygon
             // Convert the drawn polygon to GeoJSON
             // Convert the drawn polygon to GeoJSON
@@ -1127,18 +1126,33 @@ export class GisMapComponent implements AfterViewInit {
             this.ServiceService.coordinate = utmCoordinates;
             //  this.ServiceService.shapes = this.aaa.push(this.drawnShape);
             // Transform GeoJSON to EPSG:20137 CRS
-          } else if (layer instanceof L.Circle) {
-            // Get the center LatLng of the circle
-            const centerLatLng = layer.getLatLng();
+          } else {
+            const toast = this.messageService.add({
+              severity: "warn",
+              summary: "Warn",
+              detail:
+                "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡",
+            });
+            this.map.removeLayer(layer);
+            this.editableLayers.removeLayer(layer);
+            this.removeShape();
+            this.ServiceService.disablebutton = false;
+          }
+        } else if (layer instanceof L.Circle) {
+          // Get the center LatLng of the circle
+          const centerLatLng = layer.getLatLng();
 
-            // Get the radius of the circle in meters
-            const radiusMeters = layer.getRadius();
+          // Get the radius of the circle in meters
+          const radiusMeters = layer.getRadius();
 
-            // Calculate the LatLng coordinates of the circle
-            const circleLatLngs = this.calculateCircleCoordinates(
-              centerLatLng,
-              radiusMeters
-            );
+          // Calculate the LatLng coordinates of the circle
+          const circleLatLngs = this.calculateCircleCoordinates(
+            centerLatLng,
+            radiusMeters
+          );
+          const limitedAreaBoundss = L.latLngBounds(this.alllatlong[0]);
+
+          if (limitedAreaBoundss.contains(centerLatLng)) {
             console.log("Circle LatLngs:", circleLatLngs);
             const utmCoordinates = this.convertCoordinatesToUTM(circleLatLngs);
             this.utmCoordinates = utmCoordinates;
@@ -1160,83 +1174,50 @@ export class GisMapComponent implements AfterViewInit {
             //points.push(points[0])
             this.sample = this.drawnShape;
             console.log("utmCoordinates", utmCoordinates);
-            // const area = this.calculateUTMPolygonArea(utmCoordinates);
-            // // Show the area in a popup
-            // const maxAreaDifference = 0.05 * this.ServiceService.Totalarea;
-            // const areaDifference = Math.abs(
-            //   this.ServiceService.Totalarea - area
-            // );
-            // console.log(
-            //   "Totalareatolerance",
-            //   areaDifference,
-            //   maxAreaDifference
-            // );
-            // const popupContent = `Area: ${area.toFixed(
-            //   2
-            // )} square meters, Tolerance:${maxAreaDifference} square meters `;
-            // layer.bindPopup(popupContent).openPopup();
-
-            // if (areaDifference >= maxAreaDifference) {
-            //   const warningMessage =
-            //     "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
-            //   const toastWarning = this.notificationsService.warn(
-            //     "Warning",
-            //     warningMessage + popupContent
-            //   );
-            //   this.ServiceService.areaVerified = false;
-            // } else {
-            //   this.ServiceService.areaVerified = true;
-            // }
-            // Add the coordinates to the array
-            //this.drawnShapes.push(this.coordinates);
-
-            // Do something with the coordinates, such as displaying or processing them
 
             this.ServiceService.coordinate = utmCoordinates;
             // Now you can use circleLatLngs as needed
-          } else if (layer instanceof L.Polyline) {
-            this.coordinates = layer.getLatLngs(); // Get the coordinates of the polygon
-
-            const polyline = L.polyline(this.coordinates, {
-              color: "blue",
-            }).addTo(this.map);
-            console.log(this.coordinates);
-
-            const utmCoordinates = this.convertCoordinatesToUTM(
-              this.coordinates
-            );
-            this.utmCoordinates = utmCoordinates;
-            console.log(utmCoordinates);
-
-            // const geojson = layer.toGeoJSON();
-
-            // this.drawnShape = L.Proj.geoJson(geojson);
-            // console.log(this.drawnShape);
-
-            // this.drawnShape.addTo(this.map);
-            utmCoordinates.push(utmCoordinates[0]);
-
-            this.sample = this.drawnShape;
-            console.log("utmCoordinates", utmCoordinates);
-
-            this.ServiceService.coordinate = utmCoordinates;
-
-            polyline.bindPopup("This is a polyline!");
+          } else {
+            const toast = this.messageService.add({
+              severity: "warn",
+              summary: "Warn",
+              detail:
+                "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡",
+            });
+            this.map.removeLayer(layer);
+            this.editableLayers.removeLayer(layer);
+            this.removeShape();
+            this.ServiceService.disablebutton = false;
           }
-
-          this.editableLayers.addLayer(layer);
         } else {
-          const toast = this.messageService.add({
-            severity: "warn",
-            summary: "Warn",
-            detail:
-              "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡",
-          });
-          this.map.removeLayer(layer);
-          this.editableLayers.removeLayer(layer);
-          this.removeShape();
-          this.ServiceService.disablebutton = false;
+          this.coordinates = layer.getLatLngs(); // Get the coordinates of the polygon
+
+          const polyline = L.polyline(this.coordinates, {
+            color: "blue",
+          }).addTo(this.map);
+          console.log(this.coordinates);
+
+          const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
+          this.utmCoordinates = utmCoordinates;
+          console.log(utmCoordinates);
+
+          // const geojson = layer.toGeoJSON();
+
+          // this.drawnShape = L.Proj.geoJson(geojson);
+          // console.log(this.drawnShape);
+
+          // this.drawnShape.addTo(this.map);
+          utmCoordinates.push(utmCoordinates[0]);
+
+          this.sample = this.drawnShape;
+          console.log("utmCoordinates", utmCoordinates);
+
+          this.ServiceService.coordinate = utmCoordinates;
+
+          polyline.bindPopup("This is a polyline!");
         }
+
+        this.editableLayers.addLayer(layer);
       } else {
         if (layer instanceof L.Polygon) {
           this.coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the polygon
@@ -1255,7 +1236,8 @@ export class GisMapComponent implements AfterViewInit {
           const area = this.calculateUTMPolygonArea(utmCoordinates);
           // Show the area in a popup
           console.log("Totalarea", area, utmCoordinates);
-          const maxAreaDifference = 0.05 * this.ServiceService.Totalarea;
+          const maxAreaDifference =
+            environment.Totalareatolerance * this.ServiceService.Totalarea;
           const areaDifference = Math.abs(this.ServiceService.Totalarea - area);
           console.log("Totalareatolerance", areaDifference, maxAreaDifference);
           const popupContent = `Area: ${area.toFixed(

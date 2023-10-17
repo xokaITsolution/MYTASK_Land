@@ -425,6 +425,7 @@ export class CertComponent implements OnChanges {
 
   closedeedModal(deed, modal) {
     this.Base.Ownership_ID = deed.Ownership_ID;
+    this.Base.Title_Deed_No = deed.Property_ID;
     console.log("closeingdeed.....");
     this.displayDeed = false;
   }

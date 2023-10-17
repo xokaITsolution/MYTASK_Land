@@ -27,5 +27,6 @@ export const environment = {
   imagepathclock: window["_imagepathclock"],
   imagepath: window["_imagepath"],
   multipleplotcanbeadd: window["multipleplotcanbeadd"],
-  folderpath:window['folderpath']
+  folderpath: window["folderpath"],
+  Totalareatolerance: window["Totalareatolerance"],
 };

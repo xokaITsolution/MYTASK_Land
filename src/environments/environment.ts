@@ -16,7 +16,7 @@ export const environment = {
 
   //username: "AR_Tech_Officer",
 
-  username: "0910291103",
+  username: "AR_Data_Encoder",
   //username: "BL_Data_Encoder",
   //username: "0911565749",
 
@@ -24,6 +24,7 @@ export const environment = {
   phisicalPath: "./assets/i18n/",
   Lang_code: window["lang"],
   localGisServer: window["local_GIS_server"],
+  Totalareatolerance: window["Totalareatolerance"],
   wfsGeoServer: window["wfs_geoserver"],
   PaymentReportPath: window["PaymentReportPath"],
   certReportPath: window["certReportPath"],

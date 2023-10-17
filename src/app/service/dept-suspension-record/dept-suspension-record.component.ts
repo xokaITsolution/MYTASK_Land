@@ -27,7 +27,7 @@ export class DeptSuspensionRecordComponent implements OnChanges {
   @Input() licenceData;
   customerdata: any;
   Customerdept: boolean;
-  selectedOption: string = "released";
+
   constructor(
     private ngxSmartModalService: NgxSmartModalService,
     private deptSuspensionRecordService: DeptSuspensionRecordService,
@@ -43,7 +43,19 @@ export class DeptSuspensionRecordComponent implements OnChanges {
     this.getdeed(this.Selectedcert.version_ID);
     this.deptForm = false;
   }
-
+  selectOption(e) {
+    if (e == "suspended") {
+      this.deptSuspensionRecord.Is_Suspended = true;
+      this.deptSuspensionRecord.Is_Released = false;
+    } else {
+      this.deptSuspensionRecord.Is_Suspended = false;
+      this.deptSuspensionRecord.Is_Released = true;
+    }
+    console.log(
+      this.deptSuspensionRecord.Is_Suspended,
+      this.deptSuspensionRecord.Is_Released
+    );
+  }
   getdeed(Version_ID) {
     this.deptSuspensionRecordService.getAll(Version_ID).subscribe(
       (deptSuspension) => {

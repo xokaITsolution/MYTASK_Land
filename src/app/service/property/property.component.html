@@ -42,7 +42,7 @@
           <p class="text-center" translate>Property List</p>
         </div>
         <div>
-          <button type="button" class="btn btn-success col-lg-12" [disabled]="newplot" 
+          <button type="button" class="btn btn-success col-lg-12" [disabled]="newplot && !serviceService.isproportinal" 
             (click)="AddNew()" translate>Add New</button>
         </div>
         <p-tree class="row col-lg-12" [value]="serviceService.files" selectionMode="single" [(selection)]="selectedFile"

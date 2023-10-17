@@ -71,7 +71,7 @@
 
 
 
-    <div class="mt-3" *ngIf="certltrview">
+    <div class="mt-3" *ngIf="certltrview && !isprintedtask">
       <p-table [value]="cerlettrformList" [paginator]="true" [rows]="3">
         <ng-template pTemplate="header">
           <tr>
@@ -159,7 +159,8 @@
     </div></div>
   </form>
 
-  <div class="m-3" *ngIf="disable_new">
+  <div class="m-3" *ngIf="certltrview" >
+    <!-- *ngIf="disable_new" -->
 
     <button class="m-3 btn btn-primary" type="button" (click)="isLetterPrintingConfirmation=true" translate>Show Letter Printing Confirmation</button>
 

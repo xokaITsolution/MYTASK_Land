@@ -12,7 +12,7 @@ import { ServiceService } from "./service.service";
 import { NotificationsService } from "angular2-notifications";
 import { BsModalService } from "ngx-bootstrap/modal";
 import { BsModalRef } from "ngx-bootstrap/modal/bs-modal-ref.service";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { EventEmitter } from "events";
 import { NgxSmartModalService } from "ngx-smart-modal";
 import { environment } from "src/environments/environment";
@@ -23,7 +23,9 @@ import * as FileSaver from "file-saver";
 import { BehaviorSubject } from "rxjs/internal/BehaviorSubject";
 //import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { LoadingExampleService } from "./loading/loadingExample.service";
-//import { log } from 'console';
+import { DialogService, DynamicDialogConfig } from "primeng/api";
+import { FilePreviewDialogComponent } from "./file-preview-dialog/file-preview-dialog.component";
+
 export * from "./qrcode.directive";
 type AOA = any[][];
 @Component({
@@ -42,6 +44,7 @@ export class ServiceComponent implements OnInit {
     [1, 2],
     [3, 4],
   ];
+  PreviewshowdialogeArray: boolean[] = [];
   wopts: XLSX.WritingOptions = { bookType: "xlsx", type: "array" };
   fileName: string = "SheetJS.xlsx";
   @Input("isDisabled") isDisabled: boolean;
@@ -213,8 +216,10 @@ export class ServiceComponent implements OnInit {
     public ngxModal: NgxSmartModalService,
     private renderer: Renderer2,
     private el: ElementRef,
-    public LoadingExampleService: LoadingExampleService
+    public LoadingExampleService: LoadingExampleService,
+    private dialogService: DialogService
   ) {}
+
   hide = true;
 
   saveFormm(formData) {
@@ -451,6 +456,38 @@ export class ServiceComponent implements OnInit {
     }
     this.updated.emit({ docs: this.RequerdDocs });
   }
+  openPreviewDialog(RequerdDocpre: any) {
+    // Pass the content to the dialog
+    const dialogConfig = {
+      data: {
+        header: "File Preview",
+        content: this.getDialogContent(RequerdDocpre),
+        baseZIndex: 10001,
+      },
+    };
+    console.log("dialogConfig", dialogConfig);
+
+    // Open the dialog with the specified component and config
+    this.dialogService.open(FilePreviewDialogComponent, dialogConfig);
+  }
+  getDialogContent(RequerdDocpre: any): SafeHtml {
+    if (this.mimeExtension[RequerdDocpre.mimeType].extension === "pdf") {
+      // Display a PDF using an iframe
+      const iframeContent = `<iframe width="100%" src="${RequerdDocpre.File}" alt="FileUploaded" class="pdf-iframe"></iframe>`;
+      return this.sanitizer.bypassSecurityTrustHtml(iframeContent);
+    } else if (
+      ["jpg", "png", "gif"].includes(
+        this.mimeExtension[RequerdDocpre.mimeType].extension
+      )
+    ) {
+      // Display an image
+      const imageContent = `<img width="100%" src="${RequerdDocpre.File}" alt="FileUploaded" />`;
+      return this.sanitizer.bypassSecurityTrustHtml(imageContent);
+    } else {
+      // Handle other file types if needed
+      return "Unsupported file type";
+    }
+  }
 
   countDown(seconds: number) {
     let countDownStart = 0;
@@ -605,6 +642,10 @@ export class ServiceComponent implements OnInit {
         }
         console.log("SavedFiles", this.SavedFiles);
         console.log("RequerdDocspre", this.RequerdDocspre);
+
+        this.RequerdDocspre.forEach((item, index) => {
+          this.PreviewshowdialogeArray[index] = false; // Initialize all dialog variables to false
+        });
       },
       (error) => {
         this.loadingPreDoc = false;
@@ -683,7 +724,7 @@ export class ServiceComponent implements OnInit {
       this.saveForm2("{}");
       this.Saved = true;
     }
-    this.serviceService.disablefins = true;
+    //this.serviceService.disablefins = true;
   }
   property() {
     console.log("this.Saved", this.Saved);
@@ -691,7 +732,7 @@ export class ServiceComponent implements OnInit {
     this.saveForm2("{}");
     this.Saved = true;
 
-    this.serviceService.disablefins = true;
+    //this.serviceService.disablefins = true;
   }
   payment() {
     if (
@@ -735,6 +776,7 @@ export class ServiceComponent implements OnInit {
   }
 
   EnableFins() {
+    this.serviceService.disablefins = false;
     console.log("enableningggg....", this.validated);
 
     // this.saveForm(this.jsonempty);
@@ -1386,7 +1428,7 @@ export class ServiceComponent implements OnInit {
           this.getAll(message[0]);
 
           if (formData == "{}") {
-            this.serviceService.disablefins = true;
+            //this.serviceService.disablefins = true;
             const toast = this.notificationsService;
           } else {
             const toast = this.notificationsService.success(

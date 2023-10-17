@@ -21,7 +21,7 @@ import { AngularFontAwesomeModule } from "angular-font-awesome";
 import { TabsModule } from "ngx-bootstrap/tabs";
 import { BsDropdownModule } from "ngx-bootstrap/dropdown";
 import { ToastModule } from "primeng/toast";
-import { MessageService } from "primeng/api";
+import { DialogService, MessageService } from "primeng/api";
 import { CertificateVersionService } from "./certificate-version/certificate-version.service";
 import { DeptSuspensionRecordService } from "./dept-suspension-record/dept-suspension-record.service";
 import { LeaseOwnerShipService } from "./lease-owner-ship/lease-owner-ship.service";
@@ -90,6 +90,11 @@ import { ExampleComponent } from "./loading/example.component";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { RadioButtonModule } from "primeng/radiobutton";
 import { QRCodeModule } from "angular2-qrcode";
+import { FilePreviewDialogComponent } from "./file-preview-dialog/file-preview-dialog.component";
+import {
+  DynamicDialogComponent,
+  DynamicDialogModule,
+} from "primeng/components/dynamicdialog/dynamicdialog";
 
 @NgModule({
   imports: [
@@ -97,6 +102,7 @@ import { QRCodeModule } from "angular2-qrcode";
     //BackButtonDisableModule.forRoot({
     //  preserveScrollPosition: true
     // }),
+    DynamicDialogModule,
     RadioButtonModule,
     ConfirmDialogModule,
     TreeModule,
@@ -186,8 +192,13 @@ import { QRCodeModule } from "angular2-qrcode";
     CustomAlertComponent,
     TestgismapComponent,
     TreeComponentComponent,
+    FilePreviewDialogComponent,
   ],
-  entryComponents: [GisMapComponent, CustomAlertComponent],
+  entryComponents: [
+    GisMapComponent,
+    CustomAlertComponent,
+    FilePreviewDialogComponent,
+  ],
   providers: [
     ConfirmationService,
     ServiceService,
@@ -202,6 +213,7 @@ import { QRCodeModule } from "angular2-qrcode";
     PropertyRegisterService,
     ThemService,
     TitleDeedRegistrationService,
+    DialogService,
   ],
 })
 export class ServiceModule {}

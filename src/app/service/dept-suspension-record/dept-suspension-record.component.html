@@ -94,10 +94,10 @@
       </div>
     </div>
 
-  <div class="form-group row col-md-7">
+  <!-- <div class="form-group row col-md-7">
     <label class="col-sm-3 col-form-label" for="IsReleased" translate>Is Released</label>
     <div class="col-sm-9">
-      <p-radioButton name="group2" value="true" [(ngModel)]="deptSuspensionRecord.Is_Released"
+      <p-radioButton name="group2" [value]="deptSuspensionRecord.Is_Released" [(ngModel)]="deptSuspensionRecord.Is_Released"
         (click)="selectOption('released')" [ngModelOptions]="{standalone: true}"
         inputId="preopt2">
       </p-radioButton>
@@ -107,12 +107,28 @@
   <div class="form-group row col-md-7">
     <label class="col-sm-3 col-form-label" for="IsSuspended" translate>Is Suspended</label>
     <div class="col-sm-9">
-      <p-radioButton name="IsSuspended" value="true" [(ngModel)]="deptSuspensionRecord.Is_Suspended"
+      <p-radioButton name="IsSuspended" [value]="deptSuspensionRecord.Is_Suspended" [(ngModel)]="deptSuspensionRecord.Is_Suspended"
         (click)="selectOption('suspended')" [ngModelOptions]="{standalone: true}"
        inputId="preopt1">
       </p-radioButton>
     </div>
+  </div> -->
+  <!-- Default radio -->
+<div class="form-group row col-md-7">
+  <label class="col-sm-3 col-form-label" for="IsReleased" translate>Is Released</label>
+  <div class="col-sm-9">
+    <input class="form-check-input" (change)="selectOption('released')" type="radio" name="radioNoLabel"
+      id="radioNoLabel1" value="" aria-label="..." />
   </div>
+</div>
+
+<div class="form-group row col-md-7">
+  <label class="col-sm-3 col-form-label" for="IsSuspended" translate>Is Suspended</label>
+  <div class="col-sm-9">
+    <input class="form-check-input" (change)="selectOption('suspended')" type="radio" name="radioNoLabel"
+      id="radioNoLabel2" value="" aria-label="..." />
+  </div>
+</div>
 
 
   </div>

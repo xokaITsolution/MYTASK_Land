@@ -48,6 +48,8 @@ export class CertletterComponent implements OnChanges {
   loadingPreDoc = false;
   yourQRCodeDatacert: string;
   yourQRCodeDataLetter: string;
+  printtasktskID: any;
+  isprintedtask: boolean;
   constructor(
     private sanitizer: DomSanitizer,
     public serviceService: ServiceService,
@@ -70,6 +72,11 @@ export class CertletterComponent implements OnChanges {
     // this.completed.emit();
     this.routerService.params.subscribe((params) => {
       this.urlParams = params;
+      console.log("this.urlParams", this.urlParams);
+      this.printtasktskID = this.urlParams.tskID;
+      if ("fd9559bf-a98f-4772-9197-bcc4ce667529" == this.printtasktskID) {
+        this.isprintedtask = true;
+      }
     });
     this.BaseTable = [];
     if (this.licenceData.Parcel_ID) {
@@ -134,6 +141,10 @@ export class CertletterComponent implements OnChanges {
     }
   }
   Selectversion(certver) {
+    if ("fd9559bf-a98f-4772-9197-bcc4ce667529" == this.printtasktskID) {
+      this.isprintedtask = true;
+      this.serviceService.disablefins = false;
+    }
     console.log("SelectedcertSelectedcert", this.Selectedcert);
 
     this.Selectedcert = certver;

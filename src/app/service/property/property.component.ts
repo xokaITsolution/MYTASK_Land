@@ -13,6 +13,7 @@ import { ServiceComponent } from "../service.component";
 import { environment } from "src/environments/environment";
 import { LoadingExampleService } from "../loading/loadingExample.service";
 import { BehaviorSubject } from "rxjs";
+import { LeaseOwnerShipService } from "../lease-owner-ship/lease-owner-ship.service";
 @Component({
   selector: "app-property",
   templateUrl: "./property.component.html",
@@ -51,12 +52,14 @@ export class PropertyComponent implements OnChanges {
   Saved = false;
   language: string;
   newplot: boolean = true;
+  tasksCertificate: any;
 
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService,
-    public LoadingExampleService: LoadingExampleService
+    public LoadingExampleService: LoadingExampleService,
+    private leaseOwnerShipService: LeaseOwnerShipService
   ) {}
 
   ngOnChanges() {
@@ -230,7 +233,37 @@ export class PropertyComponent implements OnChanges {
     this.serviceService.Plot_Size_M2 = this.SelectedProperty.plot_Size_M2;
     console.log("plotManagment", this.SelectedProperty);
     this.getPropertyList();
+    this.getleaseOwnerShip(this.SelectedProperty.plot_ID);
     // this.disable=false;
+  }
+  getleaseOwnerShip(plotID) {
+    console.log("plotIDplotID", plotID);
+
+    this.leaseOwnerShipService.getAll(plotID).subscribe(
+      (CertificateVersion) => {
+        this.tasksCertificate = CertificateVersion;
+        this.tasksCertificate = Object.assign([], this.tasksCertificate.list);
+
+        console.log("tasksCertificate", this.tasksCertificate);
+        if (this.tasksCertificate[0].Type_ID == "2") {
+          this.serviceService.isproportinal = true;
+        }
+      },
+      (error) => {
+        console.log(error);
+        if (error.status == "400") {
+          const toast = this.notificationsService.error(
+            "Error",
+            error.error.InnerException.Errors[0].message
+          );
+        } else {
+          const toast = this.notificationsService.error(
+            "Error",
+            "SomeThing Went Wrong"
+          );
+        }
+      }
+    );
   }
 
   getPropertyList() {
@@ -242,6 +275,7 @@ export class PropertyComponent implements OnChanges {
           this.PropertyList = Object.assign([], this.PropertyList);
           console.log("PropertyList", PropertyList);
           this.PropertyList.push({ property_ID: "No Parent" });
+
           this.getTree(Object.assign([], this.PropertyList));
           this.novalidprops = this.PropertyList.length;
           //this.isvalidated();
@@ -336,34 +370,17 @@ export class PropertyComponent implements OnChanges {
 
     if (this.selectedFile.property_ID == "No Parent") {
       this.getpro.emit();
-      // this.serviceService
-      //   .getPropertyTypeLookUP()
-      //   .subscribe((PropertyTypeLookUP) => {
-      //     this.PropertyTypeLookUP = PropertyTypeLookUP;
-      //     this.PropertyTypeLookUP = Object.assign(
-      //       [],
-      //       this.PropertyTypeLookUP.list
-      //     );
-      //     // console.log('PropertyTypeLookUP', PropertyTypeLookUP);
-      //   });
+      if (this.tasksCertificate[0].Type_ID == "2") {
+        this.newplot = false;
+      } else if (this.serviceService.files.length == 1) {
+        this.newplot = false;
+      }
 
-      this.newplot = false;
       this.propertyregForm = false;
 
       this.serviceService.hide = true;
       this.isnew = true;
     } else {
-      // this.serviceService
-      //   .getPropertyTypeLookUP()
-      //   .subscribe((PropertyTypeLookUP) => {
-      //     this.PropertyTypeLookUP = PropertyTypeLookUP;
-      //     this.PropertyTypeLookUP = Object.assign(
-      //       [],
-      //       this.PropertyTypeLookUP.list
-      //     );
-
-      //   });
-
       this.propertyregForm = true;
       this.isnew = false;
       this.selectedFile.plot_ID = this.SelectedProperty.plot_ID;
@@ -453,9 +470,12 @@ export class PropertyComponent implements OnChanges {
 
   EnableFinspronew(Property) {
     this.getPropertyList();
-    //this.completed.emit();
+    if (!this.serviceService.frompropertyUpdate) {
+      this.completed.emit();
+    }
     // this.propertyregForm = false;
     this.selectedFile = Property;
+    this.selectedprofromtree = this.selectedFile;
     console.log("next to measurement", Property.property_ID);
 
     this.selectedprofromtree;

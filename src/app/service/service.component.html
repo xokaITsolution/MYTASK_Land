@@ -475,66 +475,70 @@
             </p-tabPanel>
             <p-tabPanel [header]="'Document' | translate">
               <div class="mt-3">
-                <div *ngIf="RequerdDocspre">
-                  <div class="form-group row col-sm-12 m-0" *ngFor="
-                      let RequerdDocpre of RequerdDocspre;
-                      let i = index
-                    ">
-                    <label class="col-sm-12 col-form-label m-0">
-                      {{ language === 'amharic' ? RequerdDocpre.description_Local :RequerdDocpre.description_en 
-                      }}</label>
-                    <div class="col-sm-12 m-0 text-center">
-                      <div *ngIf="loadingPreDoc">
-                        <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="4">
-                        </p-progressSpinner>
-                      </div>
+       
 
-                      <!--<p-fileUpload customUpload="true"
-                                (Handler)="upload($event,RequiredDoc)"
-                                accept="application/pdf,image/*">
-                  </p-fileUpload>-->
-
-                      <div class="alert alert-warning" role="alert" *ngIf="!RequerdDocpre.File && !loadingPreDoc">
-                        Document not uploaded!</div>
-                      <div *ngIf="RequerdDocpre.File">
-                        
-                          <div class="alert alert-info">
-                            <a [href]='RequerdDocpre.File'
-                              [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType].extension" >
-                              Attached - Please download!</a>
-                            
-                          </div>
-                        
-
-                        <!--<button type="button" class="btn btn-primary" (click)="removeUpload(RequiredDoc)">
-                    remove
-                  </button>-->
-
-
-                        <!-- <img
-                          width="100%"
-                          [src]="RequerdDocpre.File"
-                          alt="FileUPloaded"
-                        /> -->
-
-                        <div *ngIf="!RequerdDocpre.File">
-                          <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="4">
-                          </p-progressSpinner>
-                        </div>
-
-                        <div *ngIf="mimeExtension[RequerdDocpre.mimeType].extension == 'pdf'">
-                          <iframe width="100%" [src]="RequerdDocpre.File" alt="FileUPloaded" class="pdf-ifram"></iframe>
-
-                        </div>
-                        <div
-                          *ngIf="mimeExtension[RequerdDocpre.mimeType].extension == 'jpg' || mimeExtension[RequerdDocpre.mimeType].extension == 'png' || mimeExtension[RequerdDocpre.mimeType].extension == 'gif'">
-                          <img width="100%" [src]="RequerdDocpre.File" alt="FileUPloaded" />
-                        </div>
-                        
-                      </div>
+          
+          <div *ngIf="RequerdDocspre">
+            <div class="form-group row col-sm-12 m-0" *ngFor="let RequerdDocpre of RequerdDocspre; let i = index">
+              <label class="col-sm-12 col-form-label m-0">
+                {{ language === 'amharic' ? RequerdDocpre.description_Local : RequerdDocpre.description_en }}
+              </label>
+              <div class="col-sm-12 m-0 text-center">
+                <div *ngIf="loadingPreDoc">
+                  <p-progressSpinner [style]="{ width: '50px', height: '50px' }" strokeWidth="4"></p-progressSpinner>
+                </div>
+          
+                <div class="alert alert-warning" role="alert" *ngIf="!RequerdDocpre.File && !loadingPreDoc">
+                  Document not uploaded!
+                </div>
+                <div *ngIf="RequerdDocpre.File">
+                  <div class="alert alert-info">
+                    <a [href]="RequerdDocpre.File"
+                      [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType].extension">Attached -
+                      Please download!</a>
+                  <!-- Add Preview button here -->
+                  </div>
+                  <div *ngIf="!RequerdDocpre.File">
+                    <p-progressSpinner [style]="{ width: '50px', height: '50px' }" strokeWidth="4"></p-progressSpinner>
+                  </div>
+                   
+                  <div *ngIf="mimeExtension[RequerdDocpre.mimeType].extension == 'pdf'">
+                  
+                  <button type="button" class="btn btn-primary" id="Preview{{i}}" (click)="PreviewshowdialogeArray[i] = true">Preview</button>
+                  
+                  <p-dialog [(visible)]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
+                    [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                      'max-height': '80vh','min-height':'250px'}">
+                    <div class="modal-body">
+                      <iframe width="100%" [src]="RequerdDocpre.File" alt="FileUploaded" class="pdf-iframe"></iframe>
                     </div>
+                    <div>
+                    <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = false">close</button>
+                    </div>
+                  </p-dialog>
+                  </div>
+                  <div *ngIf="['jpg', 'png', 'gif'].includes(mimeExtension[RequerdDocpre.mimeType].extension)">
+               
+                    <button  type="button" class="btn btn-primary"  id="Preview{{i}}" (click)="PreviewshowdialogeArray[i] = true">Preview</button>
+                    <p-dialog [(visible)]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
+                      [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                        'max-height': '80vh','min-height':'250px'}">
+                  <div class="modal-body">
+                      <img width="50%" [src]="RequerdDocpre.File" alt="FileUploaded" />
+                  </div>
+                 <div>
+                <button type="button" class="btn btn-primary"  id="Preview{{i}}" (click)="PreviewshowdialogeArray[i] = false">close</button>
+                 </div>
+                </p-dialog>
+                   
+
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+
+
               </div>
             </p-tabPanel>
             <p-tabPanel [header]="'Note' | translate">

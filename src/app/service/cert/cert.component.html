@@ -99,7 +99,8 @@
         <app-them (completed)="EnableFins()" [Selectedcert]='Selectedcert' [disable]="disable" [licenceData]="licenceData"></app-them>
       </div>
     </tab>
-    <tab [heading]="'Debt/SuspensionRecord' | translate"   [disabled]="!isdept" >
+    <tab [heading]="'Debt/SuspensionRecord' | translate" [disabled]="!isdept"  >  
+      <!-- [disabled]="!isdept" -->
           <div class="mt-3">
             <app-dept-suspension-record  (completed)="EnableFins()" [Selectedcert]='Selectedcert' [disable]="disable" [licenceData]="licenceData"
             [disable]="disable"></app-dept-suspension-record>
@@ -169,7 +170,7 @@
           <div class="col-sm-9">
             <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="Base.Title_Deed_No"
               name="TitleDeedNo" id="TitleDeedNo" [placeholder]="'TitleDeedNo' | translate" #TitleDeedNo="ngModel"
-              [ngClass]="{ 'is-invalid': TitleDeedNo.invalid }" required>
+              [ngClass]="{ 'is-invalid': TitleDeedNo.invalid }" required readonly>
           </div>
         </div>
         <div class="form-group row offset-md-3 col-md-6" *ngIf="language === 'amharic'">
@@ -206,7 +207,7 @@
 
             <input type="text" class="form-control"  [(ngModel)]="Base.Ownership_ID" 
               name="Ownership_ID" id="Ownership_ID" #OwnershipID="ngModel" [placeholder]="'Title Deed ID' | translate" 
-               [ngClass]="{ 'is-invalid': OwnershipID.invalid }" required >
+               [ngClass]="{ 'is-invalid': OwnershipID.invalid }" required  readonly>
           </div>
           <div class="col-sm-2">
             <button type="button" *ngIf="!disable" class="btn btn-secondary" (click)="displayDeed=true"

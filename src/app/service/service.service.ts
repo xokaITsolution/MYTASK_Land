@@ -145,7 +145,9 @@ export class ServiceService {
   PlotStutusLook: any;
   serviceDP: any;
   isvalidatedPlotGis: boolean = true;
-  ispropoertylocation: boolean;
+  ispropoertylocation: boolean = false;
+  frompropertyUpdate: boolean;
+  isproportinal: boolean = false;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);

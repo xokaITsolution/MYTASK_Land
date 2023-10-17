@@ -298,6 +298,9 @@ export class LeaseOwnerShipComponent implements OnChanges {
       const toast = this.notificationsService.warn(
         "Lease Hold is not less than 75/የሊዝ ይዞታ ከ 75 መብለጥ የለበትም"
       );
+      this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+        false
+      );
       return;
     }
     if (this.language == "amharic") {
@@ -334,6 +337,9 @@ export class LeaseOwnerShipComponent implements OnChanges {
       },
       async (error) => {
         console.log(error);
+        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+          false
+        );
         if (error.status == "400") {
           const toast = this.notificationsService.error(
             "Error",
