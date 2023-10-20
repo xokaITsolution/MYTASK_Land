@@ -1,36 +1,9 @@
 <app-example *ngIf="LoadingExampleService.isLoading | async"></app-example>
 
 <form #f="ngForm" novalidate name="proform">
-  <div *ngIf="havedata" class="d-flex justify-content-center" style="position: absolute;
-                  top: 50%;
-                  left: 40%;
-                  margin-top: -50px;
-                  margin-left: -60px;
-                  width: 300px;
-                  height: 100px;
-                  z-index: 10000;">
-    <div class="spinner-grow text-success" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-    <div class="spinner-grow text-success" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-    <div class="spinner-grow text-success" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-    <div class="spinner-grow text-success" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-    <div class="spinner-grow text-success" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-    <div class="spinner-grow text-success" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-    <div class="spinner-grow text-success" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-    </div>
+ 
+            
+
   <div class="form-row">
     <div class="form-group row col-md-6">
       <label for="PlotID" class="col-sm-3 col-form-label" translate>PlotID</label>
@@ -150,7 +123,7 @@
           id="UpperFloor" [placeholder]="'Upper Floor'|translate" [disabled]="disable">
       </div>
     </div>
-   <div class="form-group row col-md-6">
+   <div class="form-group row col-md-6" *ngIf="isnew">
       <label class="col-sm-3 col-form-label" translate>Map Plan</label>
       <div class="col-sm-9">
         <p-fileUpload *ngIf="!disable" #form customUpload="true" (uploadHandler)="upload($event,form)"
@@ -231,7 +204,15 @@
         <input class="form-control" id="Floor_No" name="Floor_No" [(ngModel)]="propertyRegister.floor_No"
           [placeholder]="'Floor No'|translate" type="number" [disabled]="disable"></div>
     </div>
- 
+  
+    <div class="form-group row col-md-6">
+      <label  for="is_commerscial" translate="">is_commerscial</label>
+    <div class="col-sm-9">
+     
+    <p-checkbox  [(ngModel)]="propertyRegister.is_commerscial" name="is_commerscial" id="IsActive1"
+      binary="true"></p-checkbox>
+      </div>
+  </div>
 
 
   </div>
@@ -300,9 +281,9 @@
               <p-fileUpload #form1 customUpload="true" (uploadHandler)="planDocument($event,form1)"
                 maxFileSize="25000000" accept="image/*"></p-fileUpload>
 
-              <div *ngIf="propformLocation.plan_Document">
+              <!-- <div *ngIf="propformLocation.plan_Document">
                 <span translate class="text-danger">Requierd</span>
-              </div>
+              </div> -->
               <!-- <div *ngIf="pictoShow">
                   <button type="button" class="btn btn-primary" (click)="openModal('pic')" translate>Show</button>
                 </div> -->
@@ -315,9 +296,9 @@
                 maxFileSize="25000000" accept="image/*"></p-fileUpload>
 
 
-              <div *ngIf="MapFloorPlan.invalid">
+              <!-- <div *ngIf="MapFloorPlan.invalid">
                 <span translate class="text-danger">Requierd</span>
-              </div>
+              </div> -->
               <!-- <div *ngIf="pictoShow">
                 <button type="button" class="btn btn-primary" (click)="openModal('pic')" translate>Show</button>
               </div> -->
@@ -329,9 +310,9 @@
               <p-fileUpload #form3 customUpload="true" (uploadHandler)="pictureEast($event,form3)"
                 maxFileSize="25000000" accept="image/*"></p-fileUpload>
 
-              <div *ngIf="MapFloorPlan.invalid">
+              <!-- <div *ngIf="MapFloorPlan.invalid">
                 <span translate class="text-danger">Requierd</span>
-              </div>
+              </div> -->
               <!-- <div *ngIf="pictoShow">
                 <button type="button" class="btn btn-primary" (click)="openModal('pic')" translate>Show</button>
               </div> -->
@@ -344,9 +325,9 @@
                 maxFileSize="25000000" accept="image/*"></p-fileUpload>
 
 
-              <div *ngIf="MapFloorPlan.invalid">
+              <!-- <div *ngIf="MapFloorPlan.invalid">
                 <span translate class="text-danger">Requierd</span>
-              </div>
+              </div> -->
               <!-- <div *ngIf="pictoShow">
               <button type="button" class="btn btn-primary" (click)="openModal('pic')" translate>Show</button>
             </div> -->
@@ -358,9 +339,9 @@
               <p-fileUpload #form5 customUpload="true" (uploadHandler)="pictureWest($event,form5)"
                 maxFileSize="25000000" accept="image/*"></p-fileUpload>
 
-              <div *ngIf="MapFloorPlan.invalid">
+              <!-- <div *ngIf="MapFloorPlan.invalid">
                 <span translate class="text-danger">Requierd</span>
-              </div>
+              </div> -->
               <!-- <div *ngIf="pictoShow">
               <button type="button" class="btn btn-primary" (click)="openModal('pic')" translate>Show</button>
             </div> -->
@@ -376,7 +357,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <div *ngIf="location.invalid">
+          <div *ngIf="Hight_Meter.invalid">
             <span translate class="text-danger">Requierd</span>
           </div>
           <button type="button" class="btn btn-primary" (click)="saveproploc();closeModall()"
@@ -407,7 +388,6 @@
 </p-dialog>
 
 
- 
 
 
 

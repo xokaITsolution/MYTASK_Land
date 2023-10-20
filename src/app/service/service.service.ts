@@ -148,6 +148,9 @@ export class ServiceService {
   ispropoertylocation: boolean = false;
   frompropertyUpdate: boolean;
   isproportinal: boolean = false;
+  totlaizeproportinal: number = 0;
+  PropertyList: any;
+  selectedproperty: any;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -594,6 +597,13 @@ export class ServiceService {
     return this.http.get(this.PlotManagementUrlapi + plotid);
   }
 
+  getPlotManagementApiLicen(Licence_Service_ID) {
+    return this.http.get(
+      this.PlotManagementUrlapi +
+        "Licence_Service_ID/Licence_Service_ID?Licence_Service_ID=" +
+        Licence_Service_ID
+    );
+  }
   getPropertyList(plotid) {
     return this.http.get(
       this.PropertyListUrl +

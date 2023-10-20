@@ -249,16 +249,16 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
         (deptSuspension) => {
           console.log("deptSuspension", deptSuspension);
           const toast = this.notificationsService.success("Sucess");
-          if (this.serviceService.isvalidatedPlotGis) {
-            this.completed.emit();
-          }
+
+          this.completed.emit();
+
           // if (!this.Saved) {
           //   this.completed.emit();
           //   this.Saved = true;
           // }
           this.adddeed();
           this.getdeed(this.selectedpro.property_ID);
-          this.serviceService.disablefins = false;
+          //this.serviceService.disablefins = false;
         },
         (error) => {
           console.log(error);
@@ -287,14 +287,14 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
         const toast = this.notificationsService.success("Sucess");
         this.getdeed(this.selectedpro.property_ID);
         this.adddeed();
-        if (this.serviceService.isvalidatedPlotGis) {
-          this.completed.emit();
-        }
+
+        this.completed.emit();
+
         // if (!this.Saved) {
         //
         //   this.Saved = true;
         // }
-        this.serviceService.disablefins = false;
+        //this.serviceService.disablefins = false;
       },
       (error) => {
         console.log(error);

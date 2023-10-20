@@ -76,43 +76,55 @@ export class PropertyComponent implements OnChanges {
   }
   savedata() {
     if (!this.Saved) {
-      this.completed.emit();
+      if (this.serviceService.isproportinal == true) {
+        if (
+          this.serviceService.totlaizeproportinal ==
+          this.serviceService.Plot_Size_M2
+        ) {
+          this.completed.emit();
+        }
+      } else {
+        this.completed.emit();
+      }
       this.Saved = true;
     }
   }
   getPloat() {
-    if (this.LicenceData.Parcel_ID) {
+    if (this.LicenceData.Licence_Service_ID) {
       //this.completed.emit();
-      console.log("geting ploat this.Parcel_ID", this.LicenceData.Parcel_ID);
-      this.getPlotManagement(this.LicenceData.Parcel_ID);
+      console.log(
+        "geting ploat this.Parcel_ID",
+        this.LicenceData.Licence_Service_ID
+      );
+      this.getPlotManagement(this.LicenceData.Licence_Service_ID);
     }
     if (this.LicenceData.Plot_Merge_1) {
       console.log(
         "geting ploat this.Plot_Merge_1",
         this.LicenceData.Plot_Merge_1
       );
-      this.getPlotManagement(this.LicenceData.Plot_Merge_1);
+      this.getPlotManagement(this.LicenceData.Licence_Service_ID);
     }
     if (this.LicenceData.Plot_Merge_2) {
       console.log(
         "geting ploat this.Plot_Merge_2",
         this.LicenceData.Plot_Merge_2
       );
-      this.getPlotManagement(this.LicenceData.Plot_Merge_2);
+      this.getPlotManagement(this.LicenceData.Licence_Service_ID);
     }
     if (this.LicenceData.Plot_Merge_3) {
       console.log(
         "geting ploat this.Plot_Merge_3",
         this.LicenceData.Plot_Merge_3
       );
-      this.getPlotManagement(this.LicenceData.Plot_Merge_3);
+      this.getPlotManagement(this.LicenceData.Licence_Service_ID);
     }
     if (this.LicenceData.Plot_Merge_4) {
       console.log(
         "geting ploat this.Plot_Merge_4",
         this.LicenceData.Plot_Merge_4
       );
-      this.getPlotManagement(this.LicenceData.Plot_Merge_4);
+      this.getPlotManagement(this.LicenceData.Licence_Service_ID);
     }
   }
   async getEthiopianToGregorian(date) {
@@ -133,9 +145,9 @@ export class PropertyComponent implements OnChanges {
       return datenow.nowTime;
     }
   }
-  getPlotManagement(Parcel_ID) {
+  getPlotManagement(Licence_Service_ID) {
     let a;
-    this.serviceService.getPlotManagementApi(Parcel_ID).subscribe(
+    this.serviceService.getPlotManagementApiLicen(Licence_Service_ID).subscribe(
       async (PlotManagementLists: any) => {
         this.PlotManagementList = PlotManagementLists.procPlot_Registrations;
         this.PlotManagementList = this.removeDuplicates(
@@ -245,7 +257,7 @@ export class PropertyComponent implements OnChanges {
         this.tasksCertificate = Object.assign([], this.tasksCertificate.list);
 
         console.log("tasksCertificate", this.tasksCertificate);
-        if (this.tasksCertificate[0].Type_ID == "2") {
+        if (this.tasksCertificate[0].Type_ID == 2) {
           this.serviceService.isproportinal = true;
         }
       },
@@ -274,11 +286,13 @@ export class PropertyComponent implements OnChanges {
           this.PropertyList = PropertyList.procProperty_Registrations;
           this.PropertyList = Object.assign([], this.PropertyList);
           console.log("PropertyList", PropertyList);
-          this.PropertyList.push({ property_ID: "No Parent" });
 
+          this.PropertyList.push({ property_ID: "No Parent" });
+          this.serviceService.PropertyList = this.PropertyList;
           this.getTree(Object.assign([], this.PropertyList));
           this.novalidprops = this.PropertyList.length;
           //this.isvalidated();
+
           if (this.PropertyList.length > 0) {
             this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
               false
@@ -330,6 +344,26 @@ export class PropertyComponent implements OnChanges {
         this.serviceService.files.push(a);
       }
     }
+    const uniqueArray = this.PropertyList.filter(
+      (item, index, self) =>
+        self.findIndex((i) => i.property_ID === item.property_ID) === index
+    );
+    this.serviceService.totlaizeproportinal = 0;
+    uniqueArray.forEach((element) => {
+      console.log("this.serviceService.totlaizeproportinal", element);
+      if (element.property_ID != "No Parent") {
+        let totalsize =
+          parseInt(element.building_Size_M2) +
+          parseInt(element.proportional_from_Compound_Size) +
+          parseInt(element.parking_Area_M2);
+
+        this.serviceService.totlaizeproportinal += totalsize;
+      }
+    });
+    console.log(
+      "this.serviceService.totlaizeproportinal",
+      this.serviceService.totlaizeproportinal
+    );
     console.log("this.files", this.serviceService.files);
   }
 
@@ -342,9 +376,12 @@ export class PropertyComponent implements OnChanges {
       this.selectedprofromtree.property_Parent_ID =
         this.selectedFile.property_ID;
     }
+
     console.log("plotManagment", this.SelectedProperty.plot_ID);
 
     this.selectedprofromtree.plot_ID = this.SelectedProperty.plot_ID;
+    this.selectedprofromtree.compound_Size_M2 =
+      this.SelectedProperty.plot_Size_M2;
     this.selectedprofromtree.Property_Type_ID = 1;
     this.selectedprofromtree.licence_Service_ID = this.Licence_Service_ID;
   }
@@ -366,13 +403,20 @@ export class PropertyComponent implements OnChanges {
     }
   }
   nodeSelect() {
-    console.log("selectedFile", this.selectedFile);
+    console.log(
+      "selectedFile",
+      this.selectedFile,
+      this.tasksCertificate[0].Type_ID,
+      this.serviceService.files.length
+    );
 
     if (this.selectedFile.property_ID == "No Parent") {
       this.getpro.emit();
-      if (this.tasksCertificate[0].Type_ID == "2") {
+      if (this.tasksCertificate[0].Type_ID == 2) {
         this.newplot = false;
-      } else if (this.serviceService.files.length == 1) {
+      } else if (this.serviceService.files.length == 2) {
+        this.newplot = true;
+      } else {
         this.newplot = false;
       }
 
@@ -391,6 +435,7 @@ export class PropertyComponent implements OnChanges {
       if (this.selectedFile.property_Type_ID == 1) {
         this.newplot = true;
       } else {
+        this.newplot = false;
         this.serviceComponent.PropertyTypeLookUP =
           this.serviceComponent.PropertyTypeLookUP.filter(
             (x) => x.Property_Type_ID != 1
@@ -434,6 +479,16 @@ export class PropertyComponent implements OnChanges {
               }
               // this.CanDone = true;
             }
+            if (this.serviceService.isproportinal == true) {
+              if (
+                this.serviceService.totlaizeproportinal ==
+                this.serviceService.Plot_Size_M2
+              ) {
+                this.completed.emit();
+              }
+            } else {
+              this.completed.emit();
+            }
           } else {
             // this.validated = false;
             // const toast = this.notificationsService.warn("Warning", Validated);
@@ -470,9 +525,18 @@ export class PropertyComponent implements OnChanges {
 
   EnableFinspronew(Property) {
     this.getPropertyList();
-    if (!this.serviceService.frompropertyUpdate) {
+
+    if (this.serviceService.isproportinal == true) {
+      if (
+        this.serviceService.totlaizeproportinal ==
+        this.serviceService.Plot_Size_M2
+      ) {
+        this.completed.emit();
+      }
+    } else {
       this.completed.emit();
     }
+
     // this.propertyregForm = false;
     this.selectedFile = Property;
     this.selectedprofromtree = this.selectedFile;

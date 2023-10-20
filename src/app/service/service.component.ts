@@ -287,12 +287,12 @@ export class ServiceComponent implements OnInit {
         (response) => {
           console.log("save-from-response", response);
 
-          // this.serviceService.disablefins = false;
+          this.serviceService.disablefins = false;
           this.AppNo = response[0];
           this.DocID = response[1];
           //  this.todoID = response[2];
           this.getAll(this.AppNo);
-          // const toast = this.notificationsService.success("Success", "Saved");
+          const toast = this.notificationsService.success("Success", "Saved");
           this.validated = true;
         },
         (error) => {

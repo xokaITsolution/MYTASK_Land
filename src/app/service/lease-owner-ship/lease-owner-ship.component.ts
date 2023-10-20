@@ -18,6 +18,7 @@ import { ServiceService } from "../service.service";
 import { environment } from "src/environments/environment";
 import { LoadingExampleService } from "../loading/loadingExample.service";
 import { BehaviorSubject } from "rxjs";
+import { tasks } from "knockout";
 @Component({
   selector: "app-lease-owner-ship",
   templateUrl: "./lease-owner-ship.component.html",
@@ -109,17 +110,14 @@ export class LeaseOwnerShipComponent implements OnChanges {
     if (value == 2) {
       this.islease = false;
       this.isfreehole = false;
-      this.leaseOwnerShip.Lease_Hold_M2 = 0;
     } else if (value == 1) {
+      this.islease = true;
+      this.isfreehole = false;
+      // this.leaseOwnerShip.Lease_Hold_M2 = null;
+      // this.leaseOwnerShip.Free_Hold_M2 = 0;
+    } else if (value == 3) {
       this.islease = false;
       this.isfreehole = false;
-      this.leaseOwnerShip.Lease_Hold_M2 = null;
-      this.leaseOwnerShip.Free_Hold_M2 = 0;
-    } else {
-      this.islease = false;
-      this.isfreehole = false;
-      this.leaseOwnerShip.Lease_Hold_M2 = 0;
-      this.leaseOwnerShip.Free_Hold_M2 = 0;
     }
   }
   getcustomer(globvar) {
@@ -166,6 +164,11 @@ export class LeaseOwnerShipComponent implements OnChanges {
             task.Date_of_final_lease_payment
           );
       }
+    }
+    if (parseInt(task.Type_ID) === 1) {
+      this.islease = true;
+    } else {
+      this.islease = false;
     }
     this.serviceService.isleaseForm = true;
     this.serviceService
@@ -231,8 +234,15 @@ export class LeaseOwnerShipComponent implements OnChanges {
       (CertificateVersion) => {
         this.tasks = CertificateVersion;
         this.tasks = Object.assign([], this.tasks.list);
+        console.log("this.tasks", this.tasks);
+
         if (this.tasks.length > 0) {
           this.serviceService.toMess = false;
+          if (parseInt(tasks[0].Type_ID) === 1) {
+            this.islease = true;
+          } else {
+            this.islease = false;
+          }
         } else {
           this.serviceService.toMess = true;
           console.log("tasks", this.tasks, this.serviceService.toMess);

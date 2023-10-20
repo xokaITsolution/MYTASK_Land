@@ -53,6 +53,7 @@ export class GisMapComponent implements AfterViewInit {
   woredas: any;
   woredaLayers: any;
   woredaLayersOneByOne: any;
+
   constructor(
     public ServiceService: ServiceService,
     private messageService: MessageService,
@@ -304,7 +305,7 @@ export class GisMapComponent implements AfterViewInit {
         value: "",
         children: "",
       };
-      console.log("hhhe", a);
+      //console.log("hhhe", a);
       a["label"] = this.groupLayer[i].name;
       a["value"] = this.groupLayer[i].href;
       a.children = [];
@@ -312,10 +313,10 @@ export class GisMapComponent implements AfterViewInit {
         .getLayersFromGeoserver(this.groupLayer[i].href)
         .toPromise();
       let keys = Object.keys(sub);
-      console.log("wor.key", keys);
+      //console.log("wor.key", keys);
 
       if (keys[0] == "layer") {
-        console.log("wor.layer.name", sub.layer.name);
+        //console.log("wor.layer.name", sub.layer.name);
         continue;
       }
 
@@ -323,12 +324,12 @@ export class GisMapComponent implements AfterViewInit {
 
       if (typeof this.subcities === "object") {
         if (Array.isArray(this.subcities)) {
-          console.log("Variable is an array");
+          //console.log("Variable is an array");
         } else {
           this.subcities = this.json2array(
             sub.layerGroup.publishables.published
           );
-          console.log("subcities", this.subcities);
+          //console.log("subcities", this.subcities);
         }
       }
 
@@ -341,7 +342,7 @@ export class GisMapComponent implements AfterViewInit {
       //   continue;
       // }
       const l11 = Object.assign([], this.subcities);
-      console.log("subb", this.subcities.length);
+      //console.log("subb", this.subcities.length);
 
       for (let j = 0; j < this.subcities.length; j++) {
         let b: AssignedBodyTree = {
@@ -363,22 +364,22 @@ export class GisMapComponent implements AfterViewInit {
         console.log("wor.key", keys);
 
         if (keys[0] == "layer") {
-          console.log("wor.layer.name", wor.layer.name);
+          //console.log("wor.layer.name", wor.layer.name);
           continue;
         }
         this.woredas = wor.layerGroup.publishables.published;
         if (typeof this.woredas === "object") {
           if (Array.isArray(this.woredas)) {
-            console.log("Variable is an array");
+            //console.log("Variable is an array");
           } else {
             this.woredas = this.json2array(
               wor.layerGroup.publishables.published
             );
-            console.log("subcities", this.woredas);
+            //console.log("subcities", this.woredas);
           }
         }
 
-        console.log("this.files111", this.woredas);
+        //console.log("this.files111", this.woredas);
         if (this.subcities.length - 1 == this.subcities.length) {
         }
 
@@ -402,27 +403,27 @@ export class GisMapComponent implements AfterViewInit {
             .toPromise();
           // console.log("worlay",worlay.layer.name);
           let keys = Object.keys(worlay);
-          console.log("wor.key", keys);
+          //console.log("wor.key", keys);
 
           if (keys[0] == "layer") {
-            console.log("wor.layer.name", worlay.layer.name);
+            //console.log("wor.layer.name", worlay.layer.name);
             continue;
           }
-          console.log("worlay", worlay.layerGroup.publishables.published);
+          //console.log("worlay", worlay.layerGroup.publishables.published);
           this.woredaLayers = worlay.layerGroup.publishables.published;
-          console.log("ddd", this.woredaLayers);
+          //console.log("ddd", this.woredaLayers);
 
           if (typeof this.woredaLayers === "object") {
             if (Array.isArray(this.woredaLayers)) {
-              console.log("Variable is an array");
+              //console.log("Variable is an array");
             } else {
               this.woredaLayers = this.json2array(
                 worlay.layerGroup.publishables.published
               );
-              console.log("subcities", this.woredaLayers);
+              //console.log("subcities", this.woredaLayers);
             }
           }
-          console.log("this11", this.woredaLayers);
+          //console.log("this11", this.woredaLayers);
           const l1 = Object.assign([], this.woredaLayers);
 
           for (let l = 0; l < this.woredaLayers.length; l++) {
@@ -443,31 +444,31 @@ export class GisMapComponent implements AfterViewInit {
               .toPromise();
             // console.log("worlay",worlay.layer.name);
             let keys = Object.keys(worlayonebyone);
-            console.log("wor.key", keys);
+            //console.log("wor.key", keys);
 
             if (keys[0] == "layer") {
-              console.log("wor.layer.name", worlayonebyone.layer.name);
+              //console.log("wor.layer.name", worlayonebyone.layer.name);
               continue;
             }
-            console.log(
-              "worlayonebyone",
-              worlayonebyone.layerGroup.publishables.published
-            );
+            // console.log(
+            //   "worlayonebyone",
+            //   worlayonebyone.layerGroup.publishables.published
+            // );
             this.woredaLayersOneByOne =
               worlayonebyone.layerGroup.publishables.published;
-            console.log("ddd", this.woredaLayersOneByOne);
+            //console.log("ddd", this.woredaLayersOneByOne);
 
             if (typeof this.woredaLayersOneByOne === "object") {
               if (Array.isArray(this.woredaLayersOneByOne)) {
-                console.log("Variable is an array");
+                //console.log("Variable is an array");
               } else {
                 this.woredaLayersOneByOne = this.json2array(
                   worlayonebyone.layerGroup.publishables.published
                 );
-                console.log("woredaLayersOneByOne", this.woredaLayersOneByOne);
+                //console.log("woredaLayersOneByOne", this.woredaLayersOneByOne);
               }
             }
-            console.log("this11", this.woredaLayersOneByOne);
+            //console.log("this11", this.woredaLayersOneByOne);
             const l1 = Object.assign([], this.woredaLayersOneByOne);
 
             for (let m = 0; m < this.woredaLayersOneByOne.length; m++) {
@@ -500,7 +501,7 @@ export class GisMapComponent implements AfterViewInit {
     const aradaImageMNode: CustomTreeNode | undefined =
       this.findAradaImageMNode(this.nodes);
     if (aradaImageMNode) {
-      console.log(aradaImageMNode);
+      //console.log(aradaImageMNode);
       const layer = this.layers.find((l) => l.name === aradaImageMNode.label);
       this.map.addLayer(layer.tileLayer);
     }
@@ -509,7 +510,7 @@ export class GisMapComponent implements AfterViewInit {
     // }else{
     //    this.savedstatuslist=true
     // }
-    console.log("this.files", this.nodes);
+    //console.log("this.files", this.nodes);
   }
   // Function to find the "Arada image_M" node in the tree structure
   findAradaImageMNode(nodes: CustomTreeNode[]): CustomTreeNode | undefined {
@@ -545,7 +546,7 @@ export class GisMapComponent implements AfterViewInit {
     // Set the tileSize based on the desired resolution in feet per pixel
     const tileSize = Math.round(20 / desiredResolutionFeet); // 20 feet is the desired resolution in feet
 
-    console.log("tileSize", tileSize);
+    //console.log("tileSize", tileSize);
 
     // Create the WMS tile layer with the updated tileSize
     const TileLayer = L.tileLayer.wms(`${this.geoserverUrlwfs}`, {
@@ -1076,12 +1077,14 @@ export class GisMapComponent implements AfterViewInit {
       const layer = e.layer;
 
       if (!this.ServiceService.check) {
-        console.log("Shape created:alllatlong", this.alllatlong[0]);
+        console.log("Shape created:alllatlong", this.alllatlong);
 
         // Assuming limited area bounds as a polygon
-        const limitedAreaBounds = L.polygon(this.alllatlong[0]).addTo(this.map);
+        const limitedAreaBounds = L.polygon(this.alllatlong[0][0]).addTo(
+          this.map
+        );
 
-        console.log(layer);
+        console.log(limitedAreaBounds);
         if (layer instanceof L.Polygon) {
           if (limitedAreaBounds.getBounds().contains(layer.getBounds())) {
             this.map.addLayer(layer);
@@ -1150,7 +1153,7 @@ export class GisMapComponent implements AfterViewInit {
             centerLatLng,
             radiusMeters
           );
-          const limitedAreaBoundss = L.latLngBounds(this.alllatlong[0]);
+          const limitedAreaBoundss = L.latLngBounds(this.alllatlong[0][0]);
 
           if (limitedAreaBoundss.contains(centerLatLng)) {
             console.log("Circle LatLngs:", circleLatLngs);
@@ -1431,11 +1434,16 @@ export class GisMapComponent implements AfterViewInit {
               // Do something with the coordinates, such as displaying or processing them
               // For example, you can set them in a service or perform other actions
               this.ServiceService.coordinate = utmCoordinates;
+              console.log("utmCoordinates", utmCoordinates);
               // this.ServiceService.shapes.push(drawnShape);
 
               // Transform GeoJSON to EPSG:20137 CRS if needed
             }
           } else {
+            const coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the edited polygon
+
+            // Assuming you have a function to convert coordinates to UTM
+            const utmCoordinates = this.convertCoordinatesToUTM(coordinates);
             utmCoordinates.push(utmCoordinates[0]);
             // Convert the edited polygon to GeoJSON
             const geojson = layer.toGeoJSON();
@@ -1445,6 +1453,7 @@ export class GisMapComponent implements AfterViewInit {
 
             // Add the transformed GeoJSON layer to the map
             drawnShape.addTo(this.map);
+            console.log("utmCoordinates", utmCoordinates);
             // this.editableLayers.addLayer(this.drawnShape);
             // Do something with the coordinates, such as displaying or processing them
             // For example, you can set them in a service or perform other actions
@@ -2184,35 +2193,105 @@ export class GisMapComponent implements AfterViewInit {
     };
     fileReader.readAsArrayBuffer(file);
   }
-  public processcoordinates(data: any[]): void {
-    console.log("dataaaa", data);
+  // public processcoordinates(data: any[]): void {
+  //   console.log("dataaaa", data);
 
+  //   // Remove the header row from the data
+  //   const coordinates = data.slice(1);
+  //   console.log("coordinates", coordinates);
+
+  //   // Map the data to LatLng objects
+  //   const latLngs = coordinates.map((row) =>
+  //     this.conveUTMToLatLng(row[0], row[1], row[3], row[2])
+  //   );
+
+  //   console.log("latLngs", latLngs);
+  //   this.alllatlong.push(latLngs);
+  // }
+  public processcoordinates(data: any[]): void {
     // Remove the header row from the data
     const coordinates = data.slice(1);
     console.log("coordinates", coordinates);
+    // Map the data to LatLng objects and their associated shape properties
+    const combinedData = [];
 
-    // Map the data to LatLng objects
+    // coordinates.forEach((row) => {
+    //   // Extract shape properties from the last element of the row
+    //   const shapeProperties = row.pop();
+    //   const data = {
+    //     shapeProperties: shapeProperties,
+    //   };
+    //   combinedData.push(data);
+    // });
+    // Push this combined data into the array
+
     const latLngs = coordinates.map((row) =>
       this.conveUTMToLatLng(row[0], row[1], row[3], row[2])
     );
+    const shapeProperties = coordinates.map((row) => row.pop());
+    combinedData.push(latLngs);
 
-    console.log("latLngs", latLngs);
-    this.alllatlong.push(latLngs);
+    const uniqueJobMatchIDs = {};
+    const uniqueData = shapeProperties.filter((item) => {
+      if (!uniqueJobMatchIDs[item.property_ID]) {
+        uniqueJobMatchIDs[item.property_ID] = true;
+        return true;
+      }
+      return false;
+    });
+    combinedData.push(uniqueData);
+
+    // Now, combinedData contains the latLng and shapeProperties in each object
+
+    console.log("shapeProperties", combinedData);
+
+    this.alllatlong.push(combinedData);
   }
+
   public drawnshapeAfterProcess() {
     console.log("this.alllatlong", this.alllatlong);
 
     this.alllatlong.forEach((shape) => {
+      let latslng = shape[0];
+      let dataofproperty = shape[1][0];
+
+      console.log("shapeProperties", latslng);
+
       const randomColor =
         "#" + Math.floor(Math.random() * 16777215).toString(16);
-      const polygonOptions = {
+      const polygonOptionss = {
         color: randomColor,
       };
 
-      this.drawnShape = L.polygon(shape).addTo(this.map);
-      this.arrayFoPolygonarea.push(this.calculatePolygonArea(L.polygon(shape)));
-      console.log("this.alllatlong", this.arrayFoPolygonarea);
-      this.editableLayers.addLayer(this.drawnShape);
+      const polygonOptions = {
+        weight: 3,
+        dashArray: "5, 10",
+        lineCap: "square",
+        color: "blue",
+      };
+      console.log("polygonOptions", polygonOptions);
+
+      let slectedpro =
+        dataofproperty.property_ID == this.ServiceService.selectedproperty
+          ? polygonOptions
+          : polygonOptionss;
+      this.drawnShape = L.polygon(latslng, slectedpro).addTo(this.map);
+      this.drawnShape
+        .bindPopup(
+          dataofproperty.ploteId == undefined
+            ? dataofproperty.property_ID
+            : dataofproperty.ploteId
+        )
+        .openPopup();
+      // this.arrayFoPolygonarea.push(this.calculatePolygonArea(L.polygon(shape)));
+      // console.log("this.alllatlong", this.arrayFoPolygonarea);
+      if (
+        dataofproperty.ploteId == undefined ||
+        (dataofproperty.ploteId == null &&
+          dataofproperty.property_ID == this.ServiceService.selectedproperty)
+      ) {
+        this.editableLayers.addLayer(this.drawnShape);
+      }
     });
     if (this.drawnShape instanceof L.Marker) {
       //this.map.setView(this.drawnShape.getLatLng(), this.map.getZoom());
@@ -2224,24 +2303,9 @@ export class GisMapComponent implements AfterViewInit {
       const drawnShapeBounds = this.drawnShape.getBounds();
       console.log("center", drawnShapeBounds);
 
-      // const customIcon = new L.Icon({
-      //   iconUrl: environment.iconpath, // Replace with the actual path to your icon image
-      //   iconSize: [50, 50], // Adjust the size as needed
-      //   iconAnchor: [25, 50], // Adjust the anchor point if necessary
-      //   popupAnchor: [0, -50], // Adjust the popup anchor if needed
-      //   className: "custom-icon-class", // You can also add a custom CSS class
-      // });
-      // Calculate the center of the bounds
       const center = drawnShapeBounds.getCenter();
       console.log("center", center);
 
-      // var marker = new L.Marker(center, {
-      //   icon: customIcon,
-      // });
-      // this.addCenterMarker(center);
-      // marker.addTo(this.map);
-
-      // Fit the map bounds to the drawn shape with a specific maxZoom level
       this.map.fitBounds(this.drawnShape.getBounds());
       this.onDatumChange();
       // this.setviewFromDatumchange(center);
@@ -2256,58 +2320,8 @@ export class GisMapComponent implements AfterViewInit {
         duration: flyToDuration,
       });
       // this.map.setView(center, 15);
-
-      //  if (this.ServiceService.check == true) {
-      // this.map.on(L.Draw.Event.CREATED, (e: any) => {
-      //   const layer = e.layer;
-      //   console.log("alllatlong", this.alllatlong[0]);
-
-      //   // Assuming limited area bounds as a polygon
-      //   const limitedAreaBounds = L.polygon(this.alllatlong[0]).addTo(this.map);
-
-      //   // Check if the drawn shape intersects with the limited area bounds
-      //   if (limitedAreaBounds.getBounds().contains(layer.getBounds())) {
-      //     this.map.addLayer(layer);
-      //     this.ServiceService.disablebutton = true;
-      //   } else {
-      //     const toast = this.messageService.add({
-      //       severity: "warn",
-      //       summary: "Warn",
-      //       detail:
-      //         "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡",
-      //     });
-      //     this.map.removeLayer(layer);
-      //     this.removeShape();
-      //     this.ServiceService.disablebutton = false;
-      //   }
-      // });
-      //}
-      // Set the map view to the calculated center and zoom level
-      // Fit the bounds with the new maxZoom level
     }
   }
-  // calculatePolygonArea(polygon) {
-  //   const result = [];
-  //   // Assuming 'polygon' is an L.Polygon instance
-  //   const latLngs = polygon.getLatLngs()[0]; // Get the coordinates of the polygon
-  //   let area = 0;
-
-  //   for (let i = 0; i < latLngs.length - 1; i++) {
-  //     const lat1 = latLngs[i].lat;
-  //     const lon1 = latLngs[i].lng;
-  //     const lat2 = latLngs[i + 1].lat;
-  //     const lon2 = latLngs[i + 1].lng;
-
-  //     area += lon1 * lat2 - lon2 * lat1;
-  //   }
-  //   let final = parseInt(area.toFixed(3));
-  //   result.push({
-  //     Name: "shape",
-  //     area: Math.abs(final) * 0.5,
-  //     mesurment: "M2",
-  //   });
-  //   return result; // Take the absolute value and divide by 2 to get the area in square meters
-  // }
 
   calculateUTMPolygonArea(
     utmPoints: { northing: number; easting: number }[]
@@ -2464,7 +2478,7 @@ export class GisMapComponent implements AfterViewInit {
           console.log("alllatlong", this.alllatlong[0]);
 
           // Assuming limited area bounds as a polygon
-          const limitedAreaBounds = L.polygon(this.alllatlong[0]).addTo(
+          const limitedAreaBounds = L.polygon(this.alllatlong[0][0]).addTo(
             this.map
           );
 

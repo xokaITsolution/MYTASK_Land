@@ -52,7 +52,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   geo: any;
   combineArray: [];
   convertedCoordinates: any = [];
-  havedata: boolean;
+
   isconfirmsave: boolean;
   msgs: string;
   totlaizeproportinal: number = 0;
@@ -109,7 +109,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     if (this.selectedpro !== undefined && this.selectedpro !== null) {
       this.propertyRegister = this.selectedpro;
       this.propertyRegister.plot_ID = this.selectedpro.plot_ID;
-
+      this.propertyRegister.property_Parent_ID =
+        this.selectedpro.property_Parent_ID;
       console.log("selected", this.selectedpro.plot_ID);
       //
       //this.getplotlocbyid(this.propertyRegister.plot_ID);
@@ -191,25 +192,110 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
 
   async save() {
     this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
-    this.havedata = true;
-    let totalsize =
-      parseInt(this.propertyRegister.building_Size_M2) +
-      parseInt(this.propertyRegister.proportional_from_Compound_Size) +
-      parseInt(this.propertyRegister.parking_Area_M2);
-    console.log(parseInt(this.serviceService.Plot_Size_M2));
+    if (this.serviceService.isproportinal == true) {
+      let totalsize =
+        parseInt(this.propertyRegister.building_Size_M2) +
+        parseInt(this.propertyRegister.proportional_from_Compound_Size) +
+        parseInt(this.propertyRegister.parking_Area_M2) +
+        parseInt(this.propertyRegister.size_In_Proportional);
+      console.log("totalsize", totalsize);
 
-    if (parseInt(this.serviceService.Plot_Size_M2) < totalsize) {
-      const toast = this.notificationsService.error(
-        "error",
-        "the sum of building_Size_M2 , compound_Size_M2  and parking_Area_M2 must be equle to " +
-          this.serviceService.Plot_Size_M2 +
-          "M2"
-      );
-      this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-        false
-      );
-      this.havedata = false;
-      return;
+      this.serviceService
+        .getPropertyLists(this.propertyRegister.plot_ID)
+        .subscribe(async (PropertyList: any) => {
+          let propertylst = PropertyList.procProperty_Registrations;
+          console.log("propertylst", propertylst);
+          if (propertylst.length > 0) {
+            propertylst.forEach((element) => {
+              if (element.property_ID != "No Parent") {
+                if (element.property_ID != this.propertyRegister.property_ID) {
+                  let totalsize =
+                    parseInt(element.building_Size_M2) +
+                    parseInt(element.proportional_from_Compound_Size) +
+                    parseInt(element.parking_Area_M2) +
+                    parseInt(element.size_In_Proportional);
+                  this.totlaizeproportinal += totalsize;
+                }
+              }
+            });
+            this.totlaizeproportinal =
+              parseInt(this.serviceService.Plot_Size_M2) -
+              this.totlaizeproportinal;
+          } else {
+            this.totlaizeproportinal = parseInt(
+              this.serviceService.Plot_Size_M2
+            );
+          }
+
+          console.log(
+            "this.totlaizeproportinal",
+            this.totlaizeproportinal,
+            this.serviceService.Plot_Size_M2
+          );
+          if (this.totlaizeproportinal < totalsize) {
+            const toast = this.notificationsService.error(
+              "error",
+              "total Compound Size remain is" + this.totlaizeproportinal + "M2"
+            );
+
+            this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
+              false
+            );
+            return;
+          } else {
+            const prop = Object.assign({}, this.propertyRegister);
+            if (prop.children) {
+              prop.children = null;
+            }
+            if (prop.parent) {
+              if (prop.parent.children) {
+                prop.parent.children = null;
+              }
+            }
+            if (prop.property_Parent_ID == "No Parent") {
+              prop.property_Parent_ID = "0";
+            }
+            if (this.language == "amharic") {
+              prop.registration_Date = await this.getEthiopianToGregorian(
+                prop.registration_Date
+              );
+            }
+            console.log("saveing....", prop);
+            this.propertyRegisterService.save(prop).subscribe(
+              (property) => {
+                console.log("property", property);
+                this.getPropertyList(prop.plot_ID);
+                if (!this.Saved) {
+                  this.completed.emit();
+                  this.Saved = true;
+                }
+                this.serviceService.frompropertyUpdate = true;
+
+                const toast =
+                  this.notificationsService.success("Sucess updated");
+                this.LoadingExampleService.isLoading =
+                  new BehaviorSubject<boolean>(false);
+              },
+              (error) => {
+                console.log(error);
+                this.LoadingExampleService.isLoading =
+                  new BehaviorSubject<boolean>(false);
+                if (error.status == "400") {
+                  const toast = this.notificationsService.error(
+                    "Error",
+                    error.error.InnerException.Errors[0].message
+                  );
+                } else {
+                  const toast = this.notificationsService.error(
+                    "Error",
+                    "SomeThing Went Wrong"
+                  );
+                }
+              }
+            );
+            console.log("saveing....");
+          }
+        });
     } else {
       const prop = Object.assign({}, this.propertyRegister);
       if (prop.children) {
@@ -238,7 +324,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             this.Saved = true;
           }
           this.serviceService.frompropertyUpdate = true;
-          this.havedata = false;
+
           const toast = this.notificationsService.success("Sucess updated");
           this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
             false
@@ -254,13 +340,11 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
               "Error",
               error.error.InnerException.Errors[0].message
             );
-            this.havedata = false;
           } else {
             const toast = this.notificationsService.error(
               "Error",
               "SomeThing Went Wrong"
             );
-            this.havedata = false;
           }
         }
       );
@@ -281,7 +365,10 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         this.platformLocation = this.plotloc[0];
         console.log(this.plotloc[0]);
 
-        this.convertPolygonCoordinates(this.plotloc[0].geowithzone);
+        this.convertPolygonCoordinates(
+          this.plotloc[0].geowithzone,
+          this.plotloc[0]
+        );
         this.serviceService.fromPropoperty = true;
         console.log("plotloc:", this.plotloc, this.plotloc[0].geowithzone);
         //this.isplotllocnew = true;
@@ -454,33 +541,51 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   }
   async add() {
     this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
-    this.havedata = true;
     if (this.serviceService.isproportinal == true) {
       let totalsize =
         parseInt(this.propertyRegister.building_Size_M2) +
         parseInt(this.propertyRegister.proportional_from_Compound_Size) +
-        parseInt(this.propertyRegister.parking_Area_M2);
-      console.log(parseInt(this.serviceService.Plot_Size_M2));
+        parseInt(this.propertyRegister.parking_Area_M2) +
+        parseInt(this.propertyRegister.size_In_Proportional);
+      console.log("totalsize", totalsize);
 
       this.serviceService
         .getPropertyLists(this.propertyRegister.plot_ID)
         .subscribe(async (PropertyList: any) => {
           let propertylst = PropertyList.procProperty_Registrations;
           console.log("propertylst", propertylst);
-          propertylst.forEach((element) => {
-            let totalsize =
-              parseInt(element.building_Size_M2) +
-              parseInt(element.proportional_from_Compound_Size) +
-              parseInt(element.parking_Area_M2);
-            this.totlaizeproportinal += totalsize;
-          });
-          console.log("this.totlaizeproportinal", this.totlaizeproportinal);
+          if (propertylst.length > 0) {
+            propertylst.forEach((element) => {
+              if (element.property_ID != "No Parent") {
+                let totalsize =
+                  parseInt(element.building_Size_M2) +
+                  parseInt(element.proportional_from_Compound_Size) +
+                  parseInt(element.parking_Area_M2) +
+                  parseInt(element.size_In_Proportional);
+
+                this.totlaizeproportinal += totalsize;
+              }
+            });
+            this.totlaizeproportinal =
+              parseInt(this.serviceService.Plot_Size_M2) -
+              this.totlaizeproportinal;
+          } else {
+            this.totlaizeproportinal = parseInt(
+              this.serviceService.Plot_Size_M2
+            );
+          }
+
+          console.log(
+            "this.totlaizeproportinal",
+            this.totlaizeproportinal,
+            this.serviceService.Plot_Size_M2
+          );
           if (this.totlaizeproportinal < totalsize) {
             const toast = this.notificationsService.error(
               "error",
               "total Compound Size remain is" + this.totlaizeproportinal + "M2"
             );
-            this.havedata = false;
+
             this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
               false
             );
@@ -522,7 +627,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                 //this.getproplocbyid(prop.plot_ID);
                 this.LoadingExampleService.isLoading =
                   new BehaviorSubject<boolean>(false);
-                this.havedata = false;
+
                 // this.serviceService.disablefins = false;
                 this.serviceService.propertyISEnable = true;
 
@@ -537,7 +642,6 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                   "Error",
                   error.error
                 );
-                this.havedata = false;
               }
             );
             console.log("saveing....");
@@ -547,7 +651,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       let totalsize =
         parseInt(this.propertyRegister.building_Size_M2) +
         parseInt(this.propertyRegister.proportional_from_Compound_Size) +
-        parseInt(this.propertyRegister.parking_Area_M2);
+        parseInt(this.propertyRegister.parking_Area_M2) +
+        parseInt(this.propertyRegister.size_In_Proportional);
       console.log(parseInt(this.serviceService.Plot_Size_M2));
 
       if (parseInt(this.serviceService.Plot_Size_M2) < totalsize) {
@@ -557,7 +662,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             this.serviceService.Plot_Size_M2 +
             "M2"
         );
-        this.havedata = false;
+
         this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
           false
         );
@@ -600,7 +705,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
               false
             );
-            this.havedata = false;
+
             // this.serviceService.disablefins = false;
             this.serviceService.propertyISEnable = true;
 
@@ -613,57 +718,91 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             );
 
             const toast = this.notificationsService.error("Error", error.error);
-            this.havedata = false;
           }
         );
         console.log("saveing....");
       }
     }
   }
-  getproploc(plotid) {
-    this.serviceService.getProploc(plotid).subscribe((response: any) => {
-      this.proploc = response.procProporty_Locations;
+  // getproploc(plotid) {
+  //   this.serviceService.getProploc(plotid).subscribe((response: any) => {
+  //     this.proploc = response.procProporty_Locations;
 
-      console.log("protlocprotloc:", this.proploc);
-      if (this.proploc.length > 0) {
-        this.propformLocation = this.proploc[0];
-        this.isproplocnew = true;
-      } else {
-        this.isproplocnew = false;
-      }
-    });
-  }
+  //     console.log("protlocprotloc:", this.proploc);
+  //     if (this.proploc.length > 0) {
+  //       this.propformLocation = this.proploc[0];
+  //       this.isproplocnew = true;
+  //     } else {
+  //       this.isproplocnew = false;
+  //     }
+  //   });
+  // }
   getproplocbyid(plotid) {
     this.convertedCoordinates = [];
     this.serviceService.getPlotloc(plotid).subscribe((response: any) => {
       this.plotloc = response.procPlot_Locations;
-      console.log("plotlocccc:", this.plotloc, this.plotloc[0].geowithzone);
+      console.log("plotlocccc:", this.plotloc);
       if (this.plotloc.length > 0) {
-        // this.platformLocation=this.plotloc[0]
-        this.convertPolygonCoordinates(this.plotloc[0].geowithzone);
+        this.convertPolygonCoordinates(
+          this.plotloc[0].geowithzone,
+          this.plotloc[0]
+        );
+        this.serviceService.selectedproperty = this.selectedpro.property_ID;
+        console.log("this.propformLocation", this.serviceService.PropertyList);
+        this.serviceService.PropertyList.forEach((element) => {
+          if (element.property_ID != "No Parent") {
+            this.serviceService
+              .getProploc(element.property_ID)
+              .subscribe((response: any) => {
+                this.proploc = response.procProporty_Locations;
+                console.log(
+                  "this.propformLocation",
+                  this.proploc,
+                  this.selectedpro.property_ID
+                );
+                if (this.proploc.length > 0) {
+                  this.proploc.forEach((elementeach) => {
+                    console.log("this.propformLocation", elementeach);
+                    if (
+                      elementeach.proporty_Id == this.selectedpro.property_ID
+                    ) {
+                      this.propformLocation = elementeach;
 
-        console.log("plotlocccc:", this.plotloc, this.plotloc[0].geowithzone);
-        this.serviceService
-          .getProploc(this.selectedpro.property_ID)
-          .subscribe((response: any) => {
-            this.proploc = response.procProporty_Locations;
-            if (this.proploc.length > 0) {
-              this.propformLocation = this.proploc[0];
-              this.convertPolygonCoordinates(this.proploc[0].geowithzone);
-              this.serviceService.isvalidatedPlotGis = true;
-              console.log(
-                "protlocprotlocprotlocprotloc:",
-                this.proploc,
-                this.proploc[0].geowithzone
-              );
-              this.serviceService.ispropoertylocation = true;
+                      this.serviceService.isvalidatedPlotGis = true;
+                      this.serviceService.ispropoertylocation = true;
 
-              this.isproplocnew = true;
-            } else {
-              this.serviceService.ispropoertylocation = false;
-              this.isproplocnew = false;
-            }
-          });
+                      this.isproplocnew = true;
+                      this.convertPolygonCoordinates(
+                        elementeach.geowithzone,
+                        element
+                      );
+                    } else {
+                      this.propformLocation = new PropformLocation();
+                      console.log(
+                        "this.propformLocation",
+                        this.propformLocation
+                      );
+                      this.serviceService.isvalidatedPlotGis = true;
+                      this.serviceService.ispropoertylocation = true;
+
+                      this.isproplocnew = true;
+                      this.convertPolygonCoordinates(
+                        elementeach.geowithzone,
+                        element
+                      );
+                    }
+                  });
+                } else {
+                  if (element.property_ID == this.selectedpro.property_ID) {
+                    console.log("this.propformLocation", element);
+                    this.propformLocation = new PropformLocation();
+                    this.serviceService.ispropoertylocation = false;
+                    this.isproplocnew = false;
+                  }
+                }
+              });
+          }
+        });
       }
     });
   }
@@ -701,7 +840,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
 
     return multiPointString;
   }
-  convertPolygonCoordinates(polygonString: string): any[] {
+  convertPolygonCoordinates(polygonString: string, data): any[] {
     const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
 
     const result = [];
@@ -721,15 +860,21 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       }
     }
     console.log("result", result);
-    this.convertCoordinates(result);
+    this.convertCoordinates(result, data);
 
     return result;
   }
 
-  convertCoordinates(data) {
+  convertCoordinates(data, prop) {
     const convertedCoordinates = [];
     // Convert UTM coordinates to the desired format
-    convertedCoordinates.push(["northing", "easting", "hemisphere", "zone"]);
+    convertedCoordinates.push([
+      "northing",
+      "easting",
+      "hemisphere",
+      "zone",
+      "shapeProperties",
+    ]);
 
     for (const coord of data) {
       convertedCoordinates.push([
@@ -737,15 +882,46 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         coord.easting,
         coord.hemisphere,
         coord.zone,
+        prop,
       ]);
     }
-    const arrayOfArrays = [];
 
+    const arrayOfArrays = [];
+    // let proparray = [];
+    // proparray.push(prop);
+
+    // convertedCoordinates.push(proparray);
     // Push the innerArray into arrayOfArrays
     arrayOfArrays.push(convertedCoordinates);
     console.log("convertedCconvertedCoordinatesoordinates", arrayOfArrays);
     this.tellChild(arrayOfArrays);
   }
+  // convertCoordinates(data, prop) {
+  //   const arrayOfShapes = [];
+
+  //   // Create the header row
+  //   const headerRow = ["northing", "easting", "hemisphere", "zone"];
+
+  //   for (const coord of data) {
+  //     const shape = {
+  //       name: prop,
+  //       coordinates: [
+  //         coord.northing,
+  //         coord.easting,
+  //         coord.hemisphere,
+  //         coord.zone,
+  //       ],
+  //     };
+
+  //     arrayOfShapes.push(shape);
+  //   }
+
+  //   // Insert the header row at the beginning
+  //   arrayOfShapes.unshift(headerRow);
+
+  //   console.log("arrayOfShapes", arrayOfShapes);
+  //   this.tellChild(arrayOfShapes);
+  // }
 
   updateproploc() {
     console.log(
@@ -833,7 +1009,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
 
         this.serviceService.saveProploc(this.propformLocation).subscribe(
           (CustID) => {
-            this.getproploc(this.propformLocation.proporty_Id);
+            //this.getproploc(this.propformLocation.proporty_Id);
             const toast = this.notificationsService.success(
               "Sucess",
               "Succesfully saved"
@@ -1054,6 +1230,7 @@ export class PropertyRegister {
   public imageType: any;
   public children;
   public parent;
+  public is_commerscial;
 }
 export class PropformLocation {
   public proporty_Id: any;

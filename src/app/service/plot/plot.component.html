@@ -58,7 +58,7 @@
      
       
       <button *ngIf="!serviceService.toMess" type="button" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
-        (click)="getplotlocbyid(Plot_ID);openModall(templattte)">Spatial</button> &nbsp;
+        (click)="openModall(templattte);getplotlocbyid(plot_ID)">Spatial</button> &nbsp;
       
         <button  type="button" class="btn btn-primary mr-1" [disabled]="!isfinished" (click)="DoneNew()"
         translate>Finish</button>
@@ -95,7 +95,7 @@
       </div>
       <div class="pull-right">
       <button *ngIf="!serviceService.toMess" type="button" class="btn btn-primary  ml-3" data-toggle="modal"
-        data-target="#myModal" translate (click)="getplotlocbyid(Plot_ID);openModall(templattte)">Spatial</button> &nbsp;
+        data-target="#myModal" translate (click)="getplotlocbyid(plot_ID);openModall(templattte)">Spatial</button> &nbsp;
       
       <button type="button" class="btn btn-primary mr-1" [disabled]="!isfinished" (click)="DoneNew()"
         translate>Finish</button>
@@ -127,9 +127,10 @@
   <!-- Modal footer -->
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="saveplotloc();closeModall()"
-      *ngIf="!isplotllocnew &&  !disable && serviceService.areaVerified" translate>Save</button>
-    <button type="button" class="btn btn-primary" (click)="updateplotloc();closeModall()"
-      *ngIf="isplotllocnew &&  !disable" translate>Update</button>
+      *ngIf="isplotllocnew &&  !disable && serviceService.areaVerified" translate>Save</button>
+  
+      <button type="button" *ngIf="!isplotllocnew" class="btn btn-primary" (click)="updateplotloc();closeModall()"
+       translate>Update</button>
   
       <button type="button" class="btn btn-danger" (click)="closeModall()" translate>Close</button>
   </div>

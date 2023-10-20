@@ -78,7 +78,12 @@ export class PlotComponent implements OnChanges {
     );
     this.PlotManagementList = [];
     this.noinvalidplot = 0;
-    console.log("emptedlist", this.PlotManagementList);
+    console.log(
+      "emptedlist",
+      this.PlotManagementList,
+      this.LicenceData.Licence_Service_ID
+    );
+
     this.getPloat();
     this.getPlotStutusLookUP();
     // this.isvalidated();
@@ -97,41 +102,24 @@ export class PlotComponent implements OnChanges {
     this.serviceService.check = true;
     this.changingValue.next(aa);
   }
-  // getplotloc(plotid) {
-  //   this.serviceService.getPlotloc(plotid).subscribe((response: any) => {
-  //     this.plotloc = response.procPlot_Locations;
 
-  //     console.log("plotloc:", this.plotloc);
-  //     if (this.plotloc.length > 0) {
-  //       this.platformLocation = this.plotloc[0];
-  //       this.isplotllocnew = false;
-  //     } else {
-  //       this.isplotllocnew = true;
-  //     }
-  //   });
-  // }
   getplotlocbyid(plot_ID) {
     this.serviceService.getPlotloc(plot_ID).subscribe((response: any) => {
       this.plotloc = response.procPlot_Locations;
-      if (this.plotloc.length > 0) {
+
+      if (this.plotloc.length == 0) {
+        console.log("plotloc:", this.plotloc);
+        this.isfinished = false;
+        this.platformLocation = new PlatformLocation();
+        this.isplotllocnew = true;
+      } else {
         this.platformLocation = this.plotloc[0];
         console.log(this.plotloc[0]);
 
         this.convertPolygonCoordinates(this.plotloc[0].geowithzone);
 
-        console.log(
-          "plotloc:",
-          this.plotloc
-          //this.serviceService.multipleplotcanbeadd
-        );
         this.isplotllocnew = false;
         this.isfinished = true;
-      } else {
-        this.isfinished = false;
-        this.platformLocation = new PlatformLocation();
-        this.isplotllocnew = true;
-        // this.multipleplotcanbeadd = true;
-        //this.serviceService.toMess=true
       }
     });
   }
@@ -241,11 +229,6 @@ export class PlotComponent implements OnChanges {
   saveplotloc() {
     console.log("coordinatcoordinat", this.serviceService.coordinate);
     if (this.serviceService.coordinate) {
-      // let coordinate= this.convertToMultiPoint(this.serviceService.coordinate)
-      // console.log('coordinatecoordinate',coordinate)
-
-      // let coordinate= this.convertToMultiPoint(this.serviceService.coordinate)
-      // this.platformLocation.geowithzone=coordinate
       this.serviceService.getUserRole().subscribe((response: any) => {
         let coordinates = this.convertToMultiPoints(
           this.serviceService.coordinate
@@ -333,26 +316,26 @@ export class PlotComponent implements OnChanges {
 
   getPloat() {
     this.PlotManagementList = [];
-    if (this.Parcel_ID) {
+    if (this.LicenceData.Licence_Service_ID) {
       console.log("geting ploat this.Parcel_ID", this.Parcel_ID);
-      this.getPlotManagement(this.Parcel_ID);
+      this.getPlotManagement(this.LicenceData.Licence_Service_ID);
     }
-    if (this.Parcel_mearge1) {
-      console.log("geting ploat this.Parcel_mearge1", this.Parcel_mearge1);
-      this.getPlotManagement(this.Parcel_mearge1);
-    }
-    if (this.Parcel_mearge2) {
-      console.log("geting ploat this.Parcel_mearge2", this.Parcel_mearge2);
-      this.getPlotManagement(this.Parcel_mearge2);
-    }
-    if (this.Parcel_mearge3) {
-      console.log("geting ploat this.Parcel_mearge3", this.Parcel_mearge3);
-      this.getPlotManagement(this.Parcel_mearge3);
-    }
-    if (this.Parcel_mearge4) {
-      console.log("geting ploat this.Parcel_mearge4", this.Parcel_mearge4);
-      this.getPlotManagement(this.Parcel_mearge4);
-    }
+    // if (this.Parcel_mearge1) {
+    //   console.log("geting ploat this.Parcel_mearge1", this.Parcel_mearge1);
+    //   this.getPlotManagement(this.Parcel_mearge1);
+    // }
+    // if (this.Parcel_mearge2) {
+    //   console.log("geting ploat this.Parcel_mearge2", this.Parcel_mearge2);
+    //   this.getPlotManagement(this.Parcel_mearge2);
+    // }
+    // if (this.Parcel_mearge3) {
+    //   console.log("geting ploat this.Parcel_mearge3", this.Parcel_mearge3);
+    //   this.getPlotManagement(this.Parcel_mearge3);
+    // }
+    // if (this.Parcel_mearge4) {
+    //   console.log("geting ploat this.Parcel_mearge4", this.Parcel_mearge4);
+    //   this.getPlotManagement(this.Parcel_mearge4);
+    // }
   }
   async getEthiopianToGregorian(date) {
     if (date) {
@@ -372,9 +355,9 @@ export class PlotComponent implements OnChanges {
       return datenow.nowTime;
     }
   }
-  getPlotManagement(Parcel_ID) {
+  getPlotManagement(Licence_Service_ID) {
     let a;
-    this.serviceService.getPlotManagementApi(Parcel_ID).subscribe(
+    this.serviceService.getPlotManagementApiLicen(Licence_Service_ID).subscribe(
       async (PlotManagementLists: any) => {
         this.PlotManagementList = PlotManagementLists.procPlot_Registrations;
         this.PlotManagementList = this.removeDuplicates(
@@ -484,7 +467,7 @@ export class PlotComponent implements OnChanges {
     this.SelectedPlot = plot;
     console.log("dfghgfd", plot);
     this.plot_ID = this.SelectedPlot.plot_ID;
-    this.getplotlocbyid(this.plot_ID);
+    this.getplotlocbyid(plot.plot_ID);
     plot.SDP_ID = this.serviceComponent.licenceData.SDP_ID;
     plot.Licence_Service_ID = this.LicenceData.Licence_Service_ID;
     plot.Application_No = this.AppNo;
@@ -692,7 +675,7 @@ export class PlotComponent implements OnChanges {
 
             if (this.noinvalidplot == 0) {
               if (!this.Saved) {
-                this.completed.emit();
+                //this.completed.emit();
                 this.Saved = true;
                 this.CanDone = true;
               }
@@ -776,8 +759,8 @@ export class PlotComponent implements OnChanges {
   }
 
   DoneNew() {
-    this.serviceService.disablefins = false;
     this.completed.emit();
+    //this.serviceService.disablefins = false;
     this.plotForm = false;
     this.isvalidated();
     this.toLease = false;

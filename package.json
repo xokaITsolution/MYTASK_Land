@@ -54,6 +54,7 @@
     "leaflet-google": "^1.0.1",
     "leaflet-illustrate": "^0.0.3",
     "leaflet-mouse-position": "^1.2.0",
+    "leaflet.pattern": "^0.1.0",
     "leaflet.utm": "^1.0.0",
     "material-icons": "^0.7.6",
     "ng-sidebar": "^9.4.2",
