@@ -173,6 +173,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
           }
         }
         this.titleDeedRegistrationList = titleDeedRegistrationList;
+
         console.log(
           "this.titleDeedRegistration",
           this.titleDeedRegistrationList

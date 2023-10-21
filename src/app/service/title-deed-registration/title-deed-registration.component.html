@@ -492,10 +492,9 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
 <p-dialog [header]="'Confirmation' | translate" [(visible)]="isconfirmsave" [responsive]="true" [width]="300"
   [minY]="40" [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                          'max-height': '80vh','min-height':'50px'}">
-  <p>
-
-    {{msgs}}
-  </p>
+<p translate>
+  {{"Are you sure that you want to save?" | translate}}
+</p>
 
   <p-footer>
     <button type="button" pButton icon="pi pi-check" (click)="isconfirmsave=false;add()" label="Yes"></button>

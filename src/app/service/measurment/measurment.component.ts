@@ -5,8 +5,9 @@ import {
   OnChanges,
   Output,
 } from "@angular/core";
-import { ServiceComponent } from "../service.component";
 import { MeasurmentService } from "./measurment.service";
+import { ServiceComponent } from "../service.component";
+import { ServiceService } from "../service.service";
 import { NotificationsService } from "angular2-notifications";
 import { ConfirmationService } from "primeng/api";
 
@@ -28,8 +29,9 @@ export class MeasurmentComponent implements OnChanges {
   Saved = false;
 
   constructor(
-    public serviceComponent: ServiceComponent,
     private measurmentService: MeasurmentService,
+    public serviceComponent: ServiceComponent,
+    public ServiceService: ServiceService,
     private notificationsService: NotificationsService,
     private confirmationService: ConfirmationService
   ) {

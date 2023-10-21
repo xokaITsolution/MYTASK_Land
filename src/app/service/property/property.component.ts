@@ -14,6 +14,8 @@ import { environment } from "src/environments/environment";
 import { LoadingExampleService } from "../loading/loadingExample.service";
 import { BehaviorSubject } from "rxjs";
 import { LeaseOwnerShipService } from "../lease-owner-ship/lease-owner-ship.service";
+import { TitleDeedRegistrationService } from "../title-deed-registration/title-deed-registration.service";
+import { MeasurmentService } from "../measurment/measurment.service";
 @Component({
   selector: "app-property",
   templateUrl: "./property.component.html",
@@ -59,7 +61,9 @@ export class PropertyComponent implements OnChanges {
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService,
     public LoadingExampleService: LoadingExampleService,
-    private leaseOwnerShipService: LeaseOwnerShipService
+    private leaseOwnerShipService: LeaseOwnerShipService,
+    private measurmentService: MeasurmentService,
+    private titleDeedRegistrationService: TitleDeedRegistrationService
   ) {}
 
   ngOnChanges() {
@@ -402,13 +406,15 @@ export class PropertyComponent implements OnChanges {
       this.tab2 = true;
     }
   }
-  nodeSelect() {
+  async nodeSelect() {
     console.log(
       "selectedFile",
       this.selectedFile,
       this.tasksCertificate[0].Type_ID,
       this.serviceService.files.length
     );
+    let a: any = await this.getmeasurment(this.selectedFile.property_ID);
+    let b = await this.getdeed(this.selectedFile.property_ID);
 
     if (this.selectedFile.property_ID == "No Parent") {
       this.getpro.emit();
@@ -430,10 +436,52 @@ export class PropertyComponent implements OnChanges {
       this.selectedFile.plot_ID = this.SelectedProperty.plot_ID;
       this.selectedprofromtree = this.selectedFile;
 
-      console.log("any", this.selectedprofromtree, this.SelectedProperty);
+      a = Object.assign([], a.list);
+      b = b.procDeed_Registrations.filter(
+        (x) => x.property_ID === this.selectedFile.property_ID
+      );
+
+      console.log(
+        "any",
+        this.serviceService.ishavetitleDeedRegistrationList,
+        this.serviceService.ismeasurmentList,
+        a,
+        b
+      );
       this.selectedprofromtree = this.selectedFile;
+
+      if (a.length > 0) {
+        this.serviceService.ismeasurmentList = true;
+      } else {
+        this.serviceService.ismeasurmentList = false;
+      }
+      if (b.length > 0) {
+        this.serviceService.ishavetitleDeedRegistrationList = true;
+      } else {
+        this.serviceService.ishavetitleDeedRegistrationList = false;
+      }
+
       if (this.selectedFile.property_Type_ID == 1) {
         this.newplot = true;
+      } else if (
+        this.selectedFile.property_Type_ID == 2 ||
+        this.selectedFile.property_Type_ID == 3
+      ) {
+        if (
+          this.serviceService.ishavetitleDeedRegistrationList &&
+          this.serviceService.ismeasurmentList
+        ) {
+          this.newplot = false;
+          if (this.selectedFile.children.length == 0) {
+            const toast = this.notificationsService.warn(
+              "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
+            );
+          }
+        } else {
+          const toast = this.notificationsService.warn(
+            "building or apartment with out minimum one title deed registration for property , you can't add sub property/ህንጻ ወይም አፓርትመንት ቢያንስ አንድ የንብረት ባለቤትነት ማረጋገጫ ለንብረት ምዝገባ, ንዑስ ንብረቱን ማከል አይችሉም"
+          );
+        }
       } else {
         this.newplot = false;
         this.serviceComponent.PropertyTypeLookUP =
@@ -442,6 +490,16 @@ export class PropertyComponent implements OnChanges {
           );
       }
     }
+  }
+
+  async getmeasurment(propertyid) {
+    var s = await this.measurmentService.getAll(propertyid).toPromise();
+    return s;
+  }
+  async getdeed(propertyid) {
+    var a: any = this.titleDeedRegistrationService.getAllby().toPromise();
+
+    return a;
   }
 
   SelectPropertyPLot(ProprtyPlot) {
@@ -479,16 +537,16 @@ export class PropertyComponent implements OnChanges {
               }
               // this.CanDone = true;
             }
-            if (this.serviceService.isproportinal == true) {
-              if (
-                this.serviceService.totlaizeproportinal ==
-                this.serviceService.Plot_Size_M2
-              ) {
-                this.completed.emit();
-              }
-            } else {
-              this.completed.emit();
-            }
+            // if (this.serviceService.isproportinal == true) {
+            //   if (
+            //     this.serviceService.totlaizeproportinal ==
+            //     this.serviceService.Plot_Size_M2
+            //   ) {
+            //     this.completed.emit();
+            //   }
+            // } else {
+            //   this.completed.emit();
+            // }
           } else {
             // this.validated = false;
             // const toast = this.notificationsService.warn("Warning", Validated);
@@ -516,6 +574,22 @@ export class PropertyComponent implements OnChanges {
   }
 
   EnableFinsFixedasset() {
+    if (this.serviceService.isproportinal == true) {
+      if (
+        this.serviceService.totlaizeproportinal ==
+        this.serviceService.Plot_Size_M2
+      ) {
+        this.completed.emit();
+      }
+    } else {
+      if (this.selectedFile.children.length == 0) {
+        const toast = this.notificationsService.warn(
+          "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
+        );
+      } else {
+        this.completed.emit();
+      }
+    }
     // this.propertyregForm = false;
     console.log("fixed asset");
     this.toFixedasset = true;
@@ -534,7 +608,13 @@ export class PropertyComponent implements OnChanges {
         this.completed.emit();
       }
     } else {
-      this.completed.emit();
+      if (this.selectedFile.children.length == 0) {
+        const toast = this.notificationsService.warn(
+          "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
+        );
+      } else {
+        this.completed.emit();
+      }
     }
 
     // this.propertyregForm = false;
@@ -567,6 +647,22 @@ export class PropertyComponent implements OnChanges {
   }
 
   EnableFinstitle() {
+    if (this.serviceService.isproportinal == true) {
+      if (
+        this.serviceService.totlaizeproportinal ==
+        this.serviceService.Plot_Size_M2
+      ) {
+        this.completed.emit();
+      }
+    } else {
+      if (this.selectedFile.children.length == 0) {
+        const toast = this.notificationsService.warn(
+          "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
+        );
+      } else {
+        this.completed.emit();
+      }
+    }
     // this.propertyregForm = false;
     // this.getPropertyList();
     // this.completed.emit();

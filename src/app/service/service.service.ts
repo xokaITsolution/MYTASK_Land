@@ -151,6 +151,8 @@ export class ServiceService {
   totlaizeproportinal: number = 0;
   PropertyList: any;
   selectedproperty: any;
+  ishavetitleDeedRegistrationList: boolean = false;
+  ismeasurmentList: boolean = false;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);

@@ -192,7 +192,8 @@
           name="Building_No" [placeholder]="'Building No'|translate" type="text" [(ngModel)]="propertyRegister.building_No" [disabled]="disable" ></div>
     </div>
     
-    <div class="form-group row col-md-6"><label class="col-sm-3 col-form-label" for="Location_of_Property"
+    <div class="form-group row col-md-6">
+      <label class="col-sm-3 col-form-label" for="Location_of_Property"
         translate="">Location of Property</label>
       <div class="col-sm-9">
         <input class="form-control" id="Location_of_Property"
@@ -206,7 +207,7 @@
     </div>
   
     <div class="form-group row col-md-6">
-      <label  for="is_commerscial" translate="">is_commerscial</label>
+      <label  for="is_commerscial"  class="col-sm-3 col-form-label"  translate="">is_commerscial</label>
     <div class="col-sm-9">
      
     <p-checkbox  [(ngModel)]="propertyRegister.is_commerscial" name="is_commerscial" id="IsActive1"
@@ -373,12 +374,13 @@
   <!-- Modal footer -->
 </ng-template>
 </ngx-smart-modal>
+
 <p-dialog [header]="'Confirmation' | translate" [(visible)]="isconfirmsave" [responsive]="true" [width]="300"
   [minY]="40" [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                          'max-height': '80vh','min-height':'50px'}">
-  <p translate>
-    {{"Are you sure that you want to save?" | translate}}
-  </p>
+<p translate>
+  {{"Are you sure that you want to save?" | translate}}
+</p>
 
   <p-footer>
     <button type="button" pButton icon="pi pi-check" (click)="isconfirmsave=false;add()" [label]="'yes' | translate"></button>
