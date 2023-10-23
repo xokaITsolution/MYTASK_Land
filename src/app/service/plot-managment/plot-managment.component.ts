@@ -24,7 +24,7 @@ import { GisMapService } from "../gis-map/gis-map.service";
 import { BehaviorSubject, Subject } from "rxjs";
 import * as proj4 from "proj4";
 import { ActivatedRoute } from "@angular/router";
-import { LoadingExampleService } from "../loading/loadingExample.service";
+
 @Component({
   selector: "app-plot-managment",
   templateUrl: "./plot-managment.component.html",
@@ -74,8 +74,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     private routerService: ActivatedRoute,
     private modalService: BsModalService,
     public plotcomponent: PlotComponent,
-    public gisMapService: GisMapService,
-    public LoadingExampleService: LoadingExampleService
+    public gisMapService: GisMapService
   ) {
     this.plotManagment = new PlotManagment();
     this.platformLocation = new PlatformLocation();
@@ -116,6 +115,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       console.log("plotManagment", this.SelectedPlot);
 
       this.plotManagment = this.SelectedPlot;
+      this.plotManagment.plot_Status = 1;
       this.getplotloc(this.plotManagment.plot_ID);
       this.regionSelectedd(this.plotManagment.sdP_ID);
     }
@@ -404,7 +404,6 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   }
 
   async save() {
-    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     this.plotManagment.plot_ID = JSON.stringify(this.plotManagment.plot_ID);
     this.platformLocation.ploteId = this.plotManagment.plot_ID;
     if (this.language === "amharic") {
@@ -424,9 +423,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
           deptSuspension
         );
         // this.serviceService.disablefins=false
-        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-          false
-        );
+
         if (!this.Saved) {
           this.completed.emit(this.plotManagment);
           this.Saved = true;
@@ -434,9 +431,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       },
       (error) => {
         console.log(error);
-        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-          false
-        );
+
         if (error.status == "400") {
           const toast = this.notificationsService.error(
             "Error",
@@ -677,16 +672,13 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         this.plotManagment.registration_Date
       );
     }
-    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
 
     this.plotManagment.is_Deleted = true;
     this.ploatManagmentService.save(this.plotManagment).subscribe(
       async (deptSuspension) => {
         console.log("deptSuspension");
         const toast = this.notificationsService.success("Sucess updated");
-        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-          false
-        );
+
         // this.serviceService.disablefins = false;
         if (this.language === "amharic") {
           this.plotManagment.registration_Date =
@@ -705,9 +697,6 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       },
 
       async (error) => {
-        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-          false
-        );
         console.log(error);
         if (error.status == "400") {
           if (this.language === "amharic") {
@@ -741,7 +730,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
 
   async add() {
     this.plotManagment.plot_ID = "-1";
-    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
+
     if (this.language === "amharic") {
       this.plotManagment.registration_Date = await this.getEthiopianToGregorian(
         this.plotManagment.registration_Date
@@ -772,9 +761,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         this.isnew = false;
         this.isploatDisabled = true;
         console.log("FinalPLoat before send", this.plotManagment);
-        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-          false
-        );
+
         if (!this.Saved) {
           this.completed.emit(this.plotManagment);
           this.Saved = true;
@@ -789,9 +776,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       },
       async (error) => {
         console.log(error);
-        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-          false
-        );
+
         if (error.status == "400") {
           if (this.language === "amharic") {
             this.plotManagment.registration_Date =
@@ -831,7 +816,7 @@ export class PlotManagment {
   public block_No: string;
   public parcel_No: string;
   public plot_Size_M2: string;
-  public plot_Status: string;
+  public plot_Status: any;
   public registration_Date: string;
   public type_Of_Use_ID: string;
   public land_Grade_ID: string;

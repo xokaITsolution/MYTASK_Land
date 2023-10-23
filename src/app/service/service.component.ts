@@ -22,7 +22,7 @@ import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
 import { BehaviorSubject } from "rxjs/internal/BehaviorSubject";
 //import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { LoadingExampleService } from "./loading/loadingExample.service";
+
 import { DialogService, DynamicDialogConfig } from "primeng/api";
 import { FilePreviewDialogComponent } from "./file-preview-dialog/file-preview-dialog.component";
 
@@ -197,7 +197,7 @@ export class ServiceComponent implements OnInit {
   plotRegistrationFields = {
     FIELD_ONE: "Plot id",
   };
-  okdb;
+  okdb: boolean = true;
   moreDetail = {
     toggle: false,
   };
@@ -216,7 +216,6 @@ export class ServiceComponent implements OnInit {
     public ngxModal: NgxSmartModalService,
     private renderer: Renderer2,
     private el: ElementRef,
-    public LoadingExampleService: LoadingExampleService,
     private dialogService: DialogService
   ) {}
 
@@ -330,18 +329,18 @@ export class ServiceComponent implements OnInit {
     return mimeExtensions[mimeType] || "file";
   }
   ngOnInit() {
-    setInterval(() => {
-      this.serviceService
-        .getdbstatus("00000000-0000-0000-0000-000000000000")
-        .subscribe((response: any) => {
-          console.log("response", response);
-          if (response == true) {
-            this.okdb = true;
-          } else {
-            this.okdb = false;
-          }
-        });
-    }, 1000);
+    // setInterval(() => {
+    //   this.serviceService
+    //     .getdbstatus("00000000-0000-0000-0000-000000000000")
+    //     .subscribe((response: any) => {
+    //       console.log("response", response);
+    //       if (response == true) {
+    //         this.okdb = true;
+    //       } else {
+    //         this.okdb = false;
+    //       }
+    //     });
+    // }, 1000);
     this.serviceService.getUserRole().subscribe((response: any) => {
       for (let index = 0; index < response.length; index++) {
         const element = response[index];
@@ -1885,8 +1884,6 @@ export class ServiceComponent implements OnInit {
   }
 
   public getAll(AppNo) {
-    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
-
     this.getuserName(this.AppNo);
     console.log("appppppp", AppNo);
     this.serviceService.getAll(AppNo).subscribe(
@@ -1924,9 +1921,6 @@ export class ServiceComponent implements OnInit {
         // console.log('Licence data2', this.licenceData);
         // this.taskType = this.licenceData.TaskType;
         this.loading = false;
-        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-          false
-        );
       },
       (error) => {
         console.log(error);

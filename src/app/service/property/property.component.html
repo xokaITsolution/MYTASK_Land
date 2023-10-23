@@ -1,4 +1,4 @@
-<app-example *ngIf="LoadingExampleService.isLoading | async"></app-example>
+
 <div class="m-3">
   <p-table [value]="PlotManagementList" [paginator]="true" [rows]="5">
     <ng-template pTemplate="header">
@@ -59,7 +59,7 @@
         <p-tabView (onChange)="tabChanged($event)" [(activeIndex)]="selectedTab"  selected="true">
           <p-tabPanel [header]="'Property Registration' | translate">
             <div class="mt-3">
-              <app-property-register (completed)="EnableFinspro();savedata()" (completeddel)="EnabledelFinspro()"
+              <app-property-register (completed)="EnableFinspro();" (completeddel)="EnabledelFinspro()"
                 [selectedpro]='selectedFile' [disable]="disable" [LicenceData]="LicenceData">
               </app-property-register>
               <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1" [disabled]="serviceService.propertyISEnable && !serviceService.ispropoertylocation" translate>Next</button></div>

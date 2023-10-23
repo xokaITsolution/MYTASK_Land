@@ -16,7 +16,7 @@ import { PlotComponent } from "../plot/plot.component";
 import { Regions } from "../plot-managment/regions";
 import { ServiceService } from "../service.service";
 import { environment } from "src/environments/environment";
-import { LoadingExampleService } from "../loading/loadingExample.service";
+
 import { BehaviorSubject } from "rxjs";
 import { tasks } from "knockout";
 @Component({
@@ -57,8 +57,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService,
     private confirmationService: ConfirmationService,
-    public serviceService: ServiceService,
-    public LoadingExampleService: LoadingExampleService
+    public serviceService: ServiceService
   ) {
     this.leaseOwnerShip = new LeaseOwnerShip();
     this.leaseOwnerShip.ID = Guid.create().toString();
@@ -303,14 +302,11 @@ export class LeaseOwnerShipComponent implements OnChanges {
   //   });
   // }
   async save() {
-    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     if (this.leaseOwnerShip.Lease_Hold_M2 < 75) {
       const toast = this.notificationsService.warn(
         "Lease Hold is not less than 75/የሊዝ ይዞታ ከ 75 መብለጥ የለበትም"
       );
-      this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-        false
-      );
+
       return;
     }
     if (this.language == "amharic") {
@@ -328,9 +324,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
           "Sucess",
           deptSuspension
         );
-        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-          false
-        );
+
         //this.serviceService.disablefins = false;
         this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
 
@@ -347,9 +341,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
       },
       async (error) => {
         console.log(error);
-        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-          false
-        );
+
         if (error.status == "400") {
           const toast = this.notificationsService.error(
             "Error",
@@ -419,7 +411,6 @@ export class LeaseOwnerShipComponent implements OnChanges {
   //}
 
   async add() {
-    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     if (this.leaseOwnerShip.Lease_Hold_M2 < 75) {
       const toast = this.notificationsService.warn(
         "Lease Hold is not less than 75/የሊዝ ይዞታ ከ 75 መብለጥ የለበትም"
@@ -439,9 +430,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
           "Sucess",
           deptSuspension
         );
-        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-          false
-        );
+
         this.serviceService.Totalarea =
           this.leaseOwnerShip.Lease_Hold_M2 + this.leaseOwnerShip.Free_Hold_M2;
         this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
@@ -471,9 +460,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
       },
       async (error) => {
         console.log(error);
-        this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-          false
-        );
+
         if (error.status == "400") {
           const toast = this.notificationsService.error(
             "Error",

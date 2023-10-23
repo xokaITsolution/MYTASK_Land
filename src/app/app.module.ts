@@ -3,7 +3,11 @@ import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  HttpClientModule,
+} from "@angular/common/http";
 
 import { MyTaskModule } from "./my-task/my-task.module";
 import { ServiceModule } from "./service/service.module";
@@ -28,6 +32,9 @@ import {
   MatTableModule,
 } from "@angular/material";
 import { environment } from "src/environments/environment";
+import { LoadingBarComponent } from "./loading-bar/loading-bar.component";
+import { LoadingBarService } from "./loading-bar/loading-bar.service";
+import { LoadingBarInterceptor } from "./loading-bar/loading-bar-interceptor";
 
 @NgModule({
   declarations: [
@@ -38,6 +45,7 @@ import { environment } from "src/environments/environment";
     NavMenuComponent,
     GeojsondeskComponent,
     DrawmapComponent,
+    LoadingBarComponent,
   ],
   imports: [
     BrowserModule,
@@ -66,7 +74,15 @@ import { environment } from "src/environments/environment";
     MatSelectModule,
     MatIconModule,
   ],
-  providers: [{ provide: APP_BASE_HREF, useValue: window["_app_base"] }],
+  providers: [
+    { provide: APP_BASE_HREF, useValue: window["_app_base"] },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoadingBarInterceptor,
+      multi: true,
+    },
+    LoadingBarService,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

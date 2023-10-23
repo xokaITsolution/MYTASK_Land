@@ -1,4 +1,4 @@
-<app-example *ngIf="LoadingExampleService.isLoading | async"></app-example>
+
 
 <form #f="ngForm" novalidate name="proform">
  
@@ -251,7 +251,7 @@
 </ngx-smart-modal>
 
 
-<ngx-smart-modal #templattte identifier="templattte">
+<ngx-smart-modal  #templattte identifier="templattte">
 
 <ng-template #templattte >
 
@@ -264,6 +264,8 @@
       <button class="full-button" (click)="setModalSize('full','templattte')">Full</button>
     </div> -->
 
+    <button class="modal-button m-2" (click)="openMiniModal()">-</button>
+    <button class="modal-button m-2" (click)="openFullModal()">+</button>
     <button type="button" class="close" (click)="closeModall()">&times;</button>
   </div>
 

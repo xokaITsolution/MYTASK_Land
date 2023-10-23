@@ -1,6 +1,8 @@
-<select hidden (change)="changlang(LangID)" [(ngModel)]="LangID" >
+<!-- <select hidden (change)="changlang(LangID)" [(ngModel)]="LangID" >
   <option *ngFor="let lang of langs;"
           [value]="lang.key"  >{{lang.lang}}</option>
-</select> 
+</select>  -->
 
 <router-outlet></router-outlet>
+<app-loading-bar *ngIf="loadingBarService.loadingBarSubject"></app-loading-bar>
+<!-- <ngx-loading-bar height="30px" width="30px"></ngx-loading-bar> -->

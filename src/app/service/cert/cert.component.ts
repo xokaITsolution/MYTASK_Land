@@ -16,7 +16,6 @@ import { environment } from "src/environments/environment";
 import { BsModalRef, BsModalService } from "ngx-bootstrap";
 
 import { BehaviorSubject } from "rxjs";
-import { LoadingExampleService } from "../loading/loadingExample.service";
 
 @Component({
   selector: "app-cert",

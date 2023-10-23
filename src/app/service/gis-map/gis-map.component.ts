@@ -14,12 +14,13 @@ import "proj4leaflet";
 import { environment } from "../../../environments/environment";
 import { ServiceService } from "../../service/service.service";
 import * as utm from "utm";
-import { Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { BsModalService } from "ngx-bootstrap";
 import { CustomAlertComponent } from "./CustomAlertComponent";
 import { NotificationsService } from "angular2-notifications";
 import { MessageService, TreeNode } from "primeng/api";
 import { ApiService } from "../testgismap/api.service";
+
 interface AssignedBodyTree {
   label: string;
   value: string;

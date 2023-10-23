@@ -14,9 +14,9 @@ export const environment = {
   iconpath: window["iconpath"],
   formPath: window["formPath"],
 
-  username: "AR_Tech_Officer",
+  //username: "AR_Tech_Officer",
 
-  //username: "AR_Data_Encoder",
+  username: "AR_Data_Encoder",
   //username: "BL_Data_Encoder",
   //username: "0911565749",
 

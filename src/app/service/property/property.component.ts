@@ -11,7 +11,7 @@ import { TreeNode } from "primeng/api";
 import { NotificationsService } from "angular2-notifications";
 import { ServiceComponent } from "../service.component";
 import { environment } from "src/environments/environment";
-import { LoadingExampleService } from "../loading/loadingExample.service";
+
 import { BehaviorSubject } from "rxjs";
 import { LeaseOwnerShipService } from "../lease-owner-ship/lease-owner-ship.service";
 import { TitleDeedRegistrationService } from "../title-deed-registration/title-deed-registration.service";
@@ -60,7 +60,7 @@ export class PropertyComponent implements OnChanges {
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService,
-    public LoadingExampleService: LoadingExampleService,
+
     private leaseOwnerShipService: LeaseOwnerShipService,
     private measurmentService: MeasurmentService,
     private titleDeedRegistrationService: TitleDeedRegistrationService
@@ -241,7 +241,6 @@ export class PropertyComponent implements OnChanges {
   // }
 
   SelectProprty(property) {
-    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     this.propertyForm = true;
     this.propertyregForm = false;
     this.SelectedProperty = property;
@@ -298,15 +297,9 @@ export class PropertyComponent implements OnChanges {
           //this.isvalidated();
 
           if (this.PropertyList.length > 0) {
-            this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-              false
-            );
           }
         },
         (error) => {
-          this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-            false
-          );
           console.log("error");
         }
       );
@@ -359,7 +352,8 @@ export class PropertyComponent implements OnChanges {
         let totalsize =
           parseInt(element.building_Size_M2) +
           parseInt(element.proportional_from_Compound_Size) +
-          parseInt(element.parking_Area_M2);
+          parseInt(element.parking_Area_M2) +
+          parseInt(element.size_In_Proportional);
 
         this.serviceService.totlaizeproportinal += totalsize;
       }
@@ -460,7 +454,8 @@ export class PropertyComponent implements OnChanges {
       } else {
         this.serviceService.ishavetitleDeedRegistrationList = false;
       }
-
+      this.serviceService.selectedproperty_Type_ID =
+        this.selectedFile.property_Type_ID;
       if (this.selectedFile.property_Type_ID == 1) {
         this.newplot = true;
       } else if (
@@ -580,14 +575,30 @@ export class PropertyComponent implements OnChanges {
         this.serviceService.Plot_Size_M2
       ) {
         this.completed.emit();
+      } else {
+        const toast = this.notificationsService.warn(
+          "if the lease type is proportional the sum of property built-in size must be equal to lease size/የሊዝ አይነት ተመጣጣኝ ከሆነ አብሮ የተሰራው ንብረት ድምር ከሊዝ መጠን ጋር እኩል መሆን አለበት።"
+        );
       }
     } else {
-      if (this.selectedFile.children.length == 0) {
-        const toast = this.notificationsService.warn(
-          "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
-        );
-      } else {
-        this.completed.emit();
+      if (
+        this.serviceService.ishavetitleDeedRegistrationList &&
+        this.serviceService.ismeasurmentList
+      ) {
+        if (
+          2 == this.serviceService.selectedproperty_Type_ID ||
+          3 == this.serviceService.selectedproperty_Type_ID
+        ) {
+          if (this.selectedFile.children.length == 0) {
+            const toast = this.notificationsService.warn(
+              "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
+            );
+          } else {
+            this.completed.emit();
+          }
+        } else {
+          this.completed.emit();
+        }
       }
     }
     // this.propertyregForm = false;
@@ -599,24 +610,38 @@ export class PropertyComponent implements OnChanges {
 
   EnableFinspronew(Property) {
     this.getPropertyList();
-
     if (this.serviceService.isproportinal == true) {
       if (
         this.serviceService.totlaizeproportinal ==
         this.serviceService.Plot_Size_M2
       ) {
         this.completed.emit();
+      } else {
+        const toast = this.notificationsService.warn(
+          "if the lease type is proportional the sum of property built-in size must be equal to lease size/የሊዝ አይነት ተመጣጣኝ ከሆነ አብሮ የተሰራው ንብረት ድምር ከሊዝ መጠን ጋር እኩል መሆን አለበት።"
+        );
       }
     } else {
-      if (this.selectedFile.children.length == 0) {
-        const toast = this.notificationsService.warn(
-          "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
-        );
-      } else {
-        this.completed.emit();
+      if (
+        this.serviceService.ishavetitleDeedRegistrationList &&
+        this.serviceService.ismeasurmentList
+      ) {
+        if (
+          2 == this.serviceService.selectedproperty_Type_ID ||
+          3 == this.serviceService.selectedproperty_Type_ID
+        ) {
+          if (this.selectedFile.children.length == 0) {
+            const toast = this.notificationsService.warn(
+              "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
+            );
+          } else {
+            this.completed.emit();
+          }
+        } else {
+          this.completed.emit();
+        }
       }
     }
-
     // this.propertyregForm = false;
     this.selectedFile = Property;
     this.selectedprofromtree = this.selectedFile;
@@ -653,14 +678,30 @@ export class PropertyComponent implements OnChanges {
         this.serviceService.Plot_Size_M2
       ) {
         this.completed.emit();
+      } else {
+        const toast = this.notificationsService.warn(
+          "if the lease type is proportional the sum of property built-in size must be equal to lease size/የሊዝ አይነት ተመጣጣኝ ከሆነ አብሮ የተሰራው ንብረት ድምር ከሊዝ መጠን ጋር እኩል መሆን አለበት።"
+        );
       }
     } else {
-      if (this.selectedFile.children.length == 0) {
-        const toast = this.notificationsService.warn(
-          "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
-        );
-      } else {
-        this.completed.emit();
+      if (
+        this.serviceService.ishavetitleDeedRegistrationList &&
+        this.serviceService.ismeasurmentList
+      ) {
+        if (
+          2 == this.serviceService.selectedproperty_Type_ID ||
+          3 == this.serviceService.selectedproperty_Type_ID
+        ) {
+          if (this.selectedFile.children.length == 0) {
+            const toast = this.notificationsService.warn(
+              "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
+            );
+          } else {
+            this.completed.emit();
+          }
+        } else {
+          this.completed.emit();
+        }
       }
     }
     // this.propertyregForm = false;

@@ -153,6 +153,8 @@ export class ServiceService {
   selectedproperty: any;
   ishavetitleDeedRegistrationList: boolean = false;
   ismeasurmentList: boolean = false;
+  insertedProperty: any;
+  selectedproperty_Type_ID: any;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);

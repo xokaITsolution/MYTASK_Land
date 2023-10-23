@@ -14,7 +14,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { ServiceService } from "../service.service";
 import { CertComponent } from "../cert/cert.component";
 import { BehaviorSubject } from "rxjs";
-import { LoadingExampleService } from "../loading/loadingExample.service";
+
 @Component({
   selector: "app-certificate-version",
   templateUrl: "./certificate-version.component.html",
@@ -48,8 +48,7 @@ export class CertificateVersionComponent implements OnChanges {
     private certificateVersionService: CertificateVersionService,
     private sanitizer: DomSanitizer,
     public serviceComponent: ServiceComponent,
-    private notificationsService: NotificationsService,
-    public LoadingExampleService: LoadingExampleService
+    private notificationsService: NotificationsService
   ) {
     this.certificateVersion = new CertificateVersion();
   }
@@ -113,7 +112,6 @@ export class CertificateVersionComponent implements OnChanges {
   }
 
   Save() {
-    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     console.log("certificateVersion", this.certificateVersion);
 
     this.certificateVersionService
@@ -123,9 +121,7 @@ export class CertificateVersionComponent implements OnChanges {
           console.log("certificateVersion", certificateVersion);
           const toast = this.notificationsService.success("Sucess edited ");
           this.serviceService.disablefins = false;
-          this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-            false
-          );
+
           if (!this.Saved) {
             this.completed.emit();
             this.Saved = true;
@@ -133,9 +129,6 @@ export class CertificateVersionComponent implements OnChanges {
         },
         (error) => {
           console.log(error);
-          this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-            false
-          );
 
           if (error.status == "400") {
             const toast = this.notificationsService.error(
@@ -158,7 +151,6 @@ export class CertificateVersionComponent implements OnChanges {
   }
 
   add() {
-    this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(true);
     this.certificateVersionService
       .AddCertificate(this.certificateVersion)
       .subscribe(
@@ -168,9 +160,7 @@ export class CertificateVersionComponent implements OnChanges {
           const toast = this.notificationsService.success("Sucess saved");
           this.serviceService.disablefins = false;
           this.completed.emit();
-          this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-            false
-          );
+
           if (!this.Saved) {
             this.Saved = true;
           }
@@ -181,9 +171,6 @@ export class CertificateVersionComponent implements OnChanges {
             const toast = this.notificationsService.error(
               "Error",
               error.error.InnerException.Errors[0].message
-            );
-            this.LoadingExampleService.isLoading = new BehaviorSubject<boolean>(
-              false
             );
           } else {
             const toast = this.notificationsService.error(
