@@ -444,16 +444,18 @@ export class ServiceComponent implements OnInit {
     // );
 
     //  this.RequerdDocs
-    for (let i = 0; i < this.RequerdDocs.length; i++) {
-      console.log(
-        "this.RequerdDocs[i].description_en.indexOf('*')",
-        this.RequerdDocs[i].description_en.indexOf("*")
-      );
-      if (this.RequerdDocs[i].description_en.indexOf("*") !== -1) {
-        this.RequerdDocs[i].required = true;
+    if (this.RequerdDocs) {
+      for (let i = 0; i < this.RequerdDocs.length; i++) {
+        console.log(
+          "this.RequerdDocs[i].description_en.indexOf('*')",
+          this.RequerdDocs[i].description_en.indexOf("*")
+        );
+        if (this.RequerdDocs[i].description_en.indexOf("*") !== -1) {
+          this.RequerdDocs[i].required = true;
+        }
       }
+      this.updated.emit({ docs: this.RequerdDocs });
     }
-    this.updated.emit({ docs: this.RequerdDocs });
   }
   openPreviewDialog(RequerdDocpre: any) {
     // Pass the content to the dialog
@@ -1625,9 +1627,7 @@ export class ServiceComponent implements OnInit {
       .GetApplicationNumberByUser(username, orgcode)
       .subscribe((ApplicationNumber: any) => {
         this.ApplicationNumberlist = ApplicationNumber;
-        this.ApplicationNumberlist = (
-          this.ApplicationNumberlist as Array<any>
-        ).sort((a, b) => {
+        this.ApplicationNumberlist.sort((a, b) => {
           if (a.application_Date > b.application_Date) {
             console.log("sttatattgs", this.ApplicationNumberlist);
             return -1;
@@ -1638,7 +1638,8 @@ export class ServiceComponent implements OnInit {
             return 0;
           }
         });
-        this.AppNoList;
+
+        //this.AppNoList;
 
         console.log("finalystatuslist", this.ApplicationNumberlist);
       });
@@ -1931,7 +1932,7 @@ export class ServiceComponent implements OnInit {
   getuserName(AppNo) {
     this.serviceService.getuserName(AppNo).subscribe((res: any) => {
       this.useNamelist = res;
-      console.log("useNamelist", this.useNamelist);
+      console.log("useNamelist", this.useNamelist, AppNo);
       if (this.useNamelist.length > 0) {
         this.GetApplicationNumberByUser(
           this.useNamelist[0].userName,

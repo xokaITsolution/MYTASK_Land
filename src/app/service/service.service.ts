@@ -155,6 +155,10 @@ export class ServiceService {
   ismeasurmentList: boolean = false;
   insertedProperty: any;
   selectedproperty_Type_ID: any;
+  iscircleLatLngs: number = 0;
+  centerLatLng: any;
+  plotsizenotequal: boolean;
+  isNextactive: boolean;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -455,7 +459,12 @@ export class ServiceService {
         "&searchString&pageIndex&pageSize"
     );
   }
-  getcustomer(col) {
+  getcustomerlease(col) {
+    return this.http.get(
+      this.saveCustomerdata + "Column/CustomerLoadByHaveLeaseculumn/" + col
+    );
+  }
+  getcustomerAll(col) {
     return this.http.get(this.saveCustomerdata + "Column/" + col);
   }
   getcustomerbyid(col) {

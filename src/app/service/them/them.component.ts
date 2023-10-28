@@ -55,7 +55,7 @@ export class ThemComponent implements OnChanges {
   }
   getcustomer(globvar) {
     console.log(globvar);
-    this.serviceService.getcustomer(globvar).subscribe((resp: any) => {
+    this.serviceService.getcustomerlease(globvar).subscribe((resp: any) => {
       this.customerdata = resp.procCustomers;
     });
   }

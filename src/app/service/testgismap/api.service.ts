@@ -28,9 +28,8 @@ export class ApiService {
 
     return this.http.get(href, { headers });
   }
-  fetchGroupLayers(): Observable<any> {
-    const url = `${this.geourl}/rest/workspaces/${this.subcityGroupName}/layergroups.json`;
-
+  fetchGroupLayers(subcityGroupName): Observable<any> {
+    const url = `${this.geourl}/rest/workspaces/${subcityGroupName}/layergroups.json`;
     // Set the required headers
     const headers = new HttpHeaders()
       .set("Content-Type", "application/json")

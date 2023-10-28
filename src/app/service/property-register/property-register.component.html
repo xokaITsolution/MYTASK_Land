@@ -31,9 +31,9 @@
     <div class="form-group row col-md-6">
       <label for="BuildingSize" class="col-sm-3 col-form-label" translate>Building Size (M2)</label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" [(ngModel)]="propertyRegister.building_Size_M2" name="BuildingSize"
+        <input type="number" class="form-control" [(ngModel)]="propertyRegister.building_Size_M2" name="BuildingSize"
           id="BuildingSize" [placeholder]="'Building Size (M2)' | translate" 
-           #BuildingSize="ngModel" [ngClass]="{ 'is-invalid': BuildingSize.invalid }" [disabled]="disable"  required >
+           #BuildingSize="ngModel" appNumberOnly [ngClass]="{ 'is-invalid': BuildingSize.invalid }" [disabled]="disable"  required >
       </div>
     </div>
     <div class="form-group row col-md-6">
@@ -51,7 +51,7 @@
           <div class="col-sm-9">
             <input class="form-control" id="Proportional_from_Compound_Size"  #Proportional_from_Compound_Size="ngModel" 
               name="Proportional_from_Compound_Size" [(ngModel)]="propertyRegister.proportional_from_Compound_Size" [placeholder]="'Proportional from Compound Size'|translate"
-               required type="number" [ngClass]="{ 'is-invalid': Proportional_from_Compound_Size.invalid }" [disabled]="disable">
+               required type="number" appNumberOnly [ngClass]="{ 'is-invalid': Proportional_from_Compound_Size.invalid }" [disabled]="disable">
           </div>
         </div>
     <div class="form-group row col-md-6">
@@ -83,7 +83,7 @@
       <div class="col-sm-9">
         <input type="number" class="form-control" [(ngModel)]="propertyRegister.compound_Size_M2" [disabled]="disable"
           name="TotalCompoundSize" id="TotalCompoundSize" [placeholder]="'Total Compound Size'|translate"
-           #TotalCompoundSize="ngModel" [ngClass]="{ 'is-invalid': TotalCompoundSize.invalid }" required>
+           #TotalCompoundSize="ngModel" appNumberOnly [ngClass]="{ 'is-invalid': TotalCompoundSize.invalid }" required>
       </div>
     </div>
       <div class="form-group row col-md-6"><label class="col-sm-3 col-form-label" for="Size_In_Proportional" translate="">Size
@@ -91,7 +91,7 @@
         <div class="col-sm-9">
           <input class="form-control" id="Size_In_Proportional" name="Size_In_Proportional" [disabled]="disable"
             [(ngModel)]="propertyRegister.size_In_Proportional" [placeholder]="'Size In Proportional'|translate" type="number"
-            #Size_In_Proportional="ngModel" [ngClass]="{ 'is-invalid': Size_In_Proportional.invalid }" required>
+            #Size_In_Proportional="ngModel" appNumberOnly [ngClass]="{ 'is-invalid': Size_In_Proportional.invalid }" required>
         </div>
       </div>
     <div class="form-group row col-md-6">
@@ -144,7 +144,7 @@
       <div class="col-sm-9">
         <input type="number" class="form-control" [(ngModel)]="propertyRegister.parking_Area_M2" name="ParkingSize"
           id="ParkingSize" [placeholder]="'Parking size'|translate"
-          #ParkingSize="ngModel" [ngClass]="{ 'is-invalid': ParkingSize.invalid }" [disabled]="disable" required>
+          #ParkingSize="ngModel" appNumberOnly [ngClass]="{ 'is-invalid': ParkingSize.invalid }" [disabled]="disable" required>
       </div>
     </div>
     <div class="form-group row col-md-6">
@@ -157,8 +157,8 @@
     <div class="form-group row col-md-6">
       <label for="EstimatedPrice" class="col-sm-3 col-form-label" translate>Estimated Price</label>
       <div class="col-sm-9">
-        <input type="number" class="form-control" [(ngModel)]="propertyRegister.estimated_Price" name="EstimatedPrice"
-          id="EstimatedPrice" [placeholder]="'Estimated Price'|translate" [disabled]="disable">
+        <input type="text" class="form-control" [(ngModel)]="propertyRegister.estimated_Price" name="EstimatedPrice"
+          id="EstimatedPrice" appNumberOnly [placeholder]="'Estimated Price'|translate" [disabled]="disable">
       </div>
     </div>
   
@@ -218,7 +218,7 @@
 
   </div>
   <button *ngIf="isnew" type="button" [ngClass]="{'blinking': !serviceService.ispropoertylocation}" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
-    (click)="openModall(templattte)">Spatial</button>&nbsp;
+    (click)="ismodaEnable=true">Spatial</button>&nbsp;
     <button *ngIf="isnew && !disable"    type="button" [disabled]="!f.valid" class="btn btn-primary" (click)="save();"
     translate>update</button>
     <span style="color:red;font-weight: bolder;font-size: large;" *ngIf="!serviceService.ispropoertylocation"
@@ -248,14 +248,14 @@
     <button type="button" class="btn btn-primary" (click)="closeModal('pic')" translate>Done</button>
   </div>
  
-</ngx-smart-modal>
+</ngx-smart-modal> 
 
 
 <ngx-smart-modal  #templattte identifier="templattte">
+  <ng-template #templattte >
+  <div class="modal-content" [ngClass]="{ 'minimized-modal': isMinimized, 'maximized-modal': isMaximized }">
 
-<ng-template #templattte >
-
-
+ 
   <!-- Modal Header -->
   <div class="modal-header">
     <!-- <h4 class="modal-title" translate>Spatial</h4>
@@ -374,6 +374,7 @@
   </div>
 
   <!-- Modal footer -->
+</div>
 </ng-template>
 </ngx-smart-modal>
 
@@ -393,5 +394,97 @@
 
 
 
+
+<div class="ngxsmartmodal" *ngIf="ismodaEnable"  >
+  <div class="ngxsmartmodal-dialog" [style.max-width]="maxWidth">
+    <div class="ngxsmartmodal-dialog-content" >
+      <div class="ngxsmartmodal-header">
+        <!-- Modal header content -->
+        <button type="button" class="btn-secondary m-2" (click)="openMiniModal()">-</button>
+        <button type="button" class="btn-secondary m-2" (click)="openFullModal()">+</button>
+        <button type="button" class="close" (click)="ismodaEnable=false">&times;</button>
+      </div>
+   
+      <div class="ngxsmartmodal-body">
+        
+          
+            <app-gis-map [geo]="geo" [changingg]="changingValue"></app-gis-map>
+            <form #location="ngForm" novalidate name="locationForm">
+              <div class="form-row">
+                <div class="form-group row col-md-6">
+                  <label class="col-sm-3 col-form-label" translate>plan Document</label>
+                  <div class="col-sm-9">
+                    <p-fileUpload #form1 customUpload="true" (uploadHandler)="planDocument($event,form1)" maxFileSize="25000000"
+                      accept="image/*"></p-fileUpload>
+          
+      
+                  </div>
+                </div>
+                <div class="form-group row col-md-6">
+                  <label class="col-sm-3 col-form-label" translate>picture North</label>
+                  <div class="col-sm-9">
+                    <p-fileUpload #form2 customUpload="true" (uploadHandler)="pictureNorth($event,form2)" maxFileSize="25000000"
+                      accept="image/*"></p-fileUpload>
+          
+          
+                  </div>
+                </div>
+                <div class="form-group row col-md-6">
+                  <label class="col-sm-3 col-form-label" translate>picture East</label>
+                  <div class="col-sm-9">
+                    <p-fileUpload #form3 customUpload="true" (uploadHandler)="pictureEast($event,form3)" maxFileSize="25000000"
+                      accept="image/*"></p-fileUpload>
+          
+                
+                  </div>
+                </div>
+                <div class="form-group row col-md-6">
+                  <label class="col-sm-3 col-form-label" translate>picture South</label>
+                  <div class="col-sm-9">
+                    <p-fileUpload #form4 customUpload="true" (uploadHandler)="pictureSouth($event,form4)" maxFileSize="25000000"
+                      accept="image/*"></p-fileUpload>
+          
+          
+                 
+                  </div>
+                </div>
+                <div class="form-group row col-md-6">
+                  <label class="col-sm-3 col-form-label" translate>picture West</label>
+                  <div class="col-sm-9">
+                    <p-fileUpload #form5 customUpload="true" (uploadHandler)="pictureWest($event,form5)" maxFileSize="25000000"
+                      accept="image/*"></p-fileUpload>
+          
+                    
+                  </div>
+                </div>
+                <div class="form-group row col-md-6">
+                  <label class="col-sm-3 col-form-label" for="Hight_Meter" translate="">Hight Meter</label>
+                  <div class="col-sm-9">
+                    <input class="form-control" id="Hight_Meter" name="Hight_Meter" [(ngModel)]="propformLocation.hight_Meter"
+                      [placeholder]="'Hight Meter'|translate" type="number" #Hight_Meter="ngModel"
+                      [ngClass]="{ 'is-invalid': Hight_Meter.invalid }" required>
+                  </div>
+                </div>
+              </div>
+            
+            </form>
+          </div>
+   
+      <div class="ngxsmartmodal-footer">
+        <!-- Modal footer content -->
+          <div class="modal-footer">
+            <div *ngIf="Hight_Meter.invalid">
+              <span translate class="text-danger">Requierd</span>
+            </div>
+            <button type="button" class="btn btn-primary" (click)="saveproploc();ismodaEnable=false" *ngIf="!isproplocnew &&  !disable"
+              [disabled]="!location.valid" translate>Save</button>
+            <button type="button" class="btn btn-primary" (click)="updateproploc();ismodaEnable=false"
+              *ngIf="isproplocnew &&  !disable" [disabled]="!location.valid" translate>Update</button>
+            <button type="button" class="btn btn-danger" (click)="ismodaEnable=false" translate>Close</button>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 

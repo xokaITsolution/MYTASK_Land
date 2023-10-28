@@ -56,6 +56,10 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   isconfirmsave: boolean;
   msgs: string;
   totlaizeproportinal: number = 0;
+  isMinimized: boolean;
+  isMaximized: boolean;
+  ismodaEnable: boolean;
+  maxWidth: string = "1400px";
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -341,10 +345,11 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   }
   modalRef: BsModalRef;
   openModall(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(
-      template,
-      Object.assign({}, { class: "gray modal-lg" })
-    );
+    this.ismodaEnable = true;
+    // this.modalRef = this.modalService.show(
+    //   template,
+    //   Object.assign({}, { class: "gray modal-lg" })
+    // );
   }
   getplotlocbyid(Plot_ID) {
     this.serviceService.getPlotloc(Plot_ID).subscribe((response: any) => {
@@ -597,6 +602,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             this.propertyRegisterService.Add(prop).subscribe(
               (deptSuspension) => {
                 console.log("deptSuspension", deptSuspension);
+                if (prop.map_Floor_Plan != null) {
+                  this.serviceService.isNextactive = true;
+                }
                 this.serviceService.insertedProperty =
                   deptSuspension[0].property_ID;
                 this.completed.emit();
@@ -609,6 +617,10 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                   this.serviceService.hide = false;
                 }
                 const toast = this.notificationsService.success("Sucess");
+
+                const toastt = this.notificationsService.warn(
+                  "building or apartment with out minimum one title deed registration for property , you can't add sub property/ህንጻ ወይም አፓርትመንት ቢያንስ አንድ የንብረት ባለቤትነት ማረጋገጫ ለንብረት ምዝገባ, ንዑስ ንብረቱን ማከል አይችሉም"
+                );
                 //this.getproplocbyid(prop.plot_ID);
 
                 // this.serviceService.disablefins = false;
@@ -666,6 +678,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         this.propertyRegisterService.Add(prop).subscribe(
           (deptSuspension) => {
             console.log("deptSuspension", deptSuspension);
+            if (prop.map_Floor_Plan != null) {
+              this.serviceService.isNextactive = true;
+            }
             this.serviceService.insertedProperty =
               deptSuspension[0].property_ID;
             this.completed.emit();
@@ -741,10 +756,10 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                         "this.propformLocation",
                         this.propformLocation
                       );
-                      this.serviceService.isvalidatedPlotGis = true;
+                      this.serviceService.isvalidatedPlotGis = false;
                       this.serviceService.ispropoertylocation = true;
 
-                      this.isproplocnew = true;
+                      this.isproplocnew = false;
                       this.convertPolygonCoordinates(
                         elementeach.geowithzone,
                         element
@@ -755,6 +770,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                   if (element.property_ID == this.selectedpro.property_ID) {
                     console.log("this.propformLocation", element);
                     this.propformLocation = new PropformLocation();
+
                     this.serviceService.ispropoertylocation = false;
                     this.isproplocnew = false;
                   }
@@ -781,7 +797,6 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       )
       .join(", ");
 
-    // const multiPointString = `MULTIPOINT(${multiPointArray})`;
     const multiPointString = `POLYGON((${multiPointArray}))`;
 
     return multiPointString;
@@ -794,10 +809,20 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       .map((point) => `${point.easting} ${point.northing}`)
       .join(", ");
 
-    // const multiPointString = `MULTIPOINT(${multiPointArray})`;
-    const multiPointString = `POLYGON((${multiPointArray}))`;
+    if (this.serviceService.iscircleLatLngs == 0) {
+      const multiPointString = `POLYGON((${multiPointArray}))/0`;
 
-    return multiPointString;
+      return multiPointString;
+    } else {
+      const multiPointCircle = this.serviceService.centerLatLng
+        .map((point) => `${point.easting} ${point.northing}`)
+        .join(", ");
+
+      const multiPoint = `POINT(${multiPointCircle})/${Math.trunc(
+        this.serviceService.iscircleLatLngs
+      )}`;
+      return multiPoint;
+    }
   }
   convertPolygonCoordinates(polygonString: string, data): any[] {
     const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
@@ -955,6 +980,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         let coordinates = this.convertToMultiPoints(
           this.serviceService.coordinate
         );
+
         console.log("coordinatecoordinate", coordinates);
         this.propformLocation.geo = coordinates;
         let coordinate = this.convertToMultiPoint(
@@ -1154,16 +1180,15 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     console.log("closeing.....");
     this.ngxSmartModalService.getModal(modal).close();
   }
-  openMiniModal() {
-    const modal = this.ngxSmartModalService.getModal("templattte");
-    modal.addCustomClass("mini-modal"); // Apply the 'mini-modal' CSS class
-    modal.open();
-  }
 
   openFullModal() {
-    const modal = this.ngxSmartModalService.getModal("templattte");
-    modal.addCustomClass("full-modal"); // Apply the 'full-modal' CSS class
-    modal.open();
+    this.isMaximized = true;
+    this.maxWidth = "1600px"; // Set the max width for full modal
+  }
+
+  openMiniModal() {
+    this.isMaximized = false;
+    this.maxWidth = "800px"; // Set the max width for mini modal
   }
 }
 

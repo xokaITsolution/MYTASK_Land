@@ -14,7 +14,7 @@
 
  /* Mini Size */
  .mini-size {
-   max-width: 300px;
+   max-width: 800px;
    /* Adjust the width as needed */
  }
 
@@ -41,4 +41,14 @@
    animation: blink 1s infinite;
  }
 
+ .minimized-modal {
+   width: 300px;
+   /* Adjust the width as needed */
+ }
+
+ .maximized-modal {
+   width: 100%;
+   /* Full-width, can be adjusted as needed */
+ }
+ /* custom-modal.component.css */
  

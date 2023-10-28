@@ -52,6 +52,8 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   globvarto;
   isconfirmsave: boolean;
   msgs: string;
+  iscustomerdatato: boolean;
+  iscustomerdata: boolean;
   constructor(
     private modalService: BsModalService,
     private ngxSmartModalService: NgxSmartModalService,
@@ -250,6 +252,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
         (deptSuspension) => {
           console.log("deptSuspension", deptSuspension);
           const toast = this.notificationsService.success("Sucess");
+          this.deedform = false;
 
           this.completed.emit();
 
@@ -286,10 +289,19 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
       (deptSuspension) => {
         console.log("deptSuspension", deptSuspension);
         const toast = this.notificationsService.success("Sucess");
+        this.deedform = false;
         this.getdeed(this.selectedpro.property_ID);
-        this.adddeed();
+        //this.adddeed();
 
         this.completed.emit();
+        if (
+          this.serviceService.selectedproperty_Type_ID == 2 ||
+          this.serviceService.selectedproperty_Type_ID == 3
+        ) {
+          const toastt = this.notificationsService.warn(
+            "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
+          );
+        }
 
         // if (!this.Saved) {
         //
@@ -455,19 +467,29 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   }
   getcustomer(globvar) {
     console.log(globvar);
-    this.serviceService.getcustomer(globvar).subscribe((resp: any) => {
+    this.serviceService.getcustomerlease(globvar).subscribe((resp: any) => {
       this.customerdata = resp.procCustomers;
+      if (this.customerdata.length > 0) {
+        this.iscustomerdata = false;
+      } else {
+        this.iscustomerdata = true;
+      }
     });
   }
   getcustomerTO(globvar) {
     console.log(globvar);
-    this.serviceService.getcustomer(globvar).subscribe((resp: any) => {
+    this.serviceService.getcustomerlease(globvar).subscribe((resp: any) => {
       this.customerdataTo = resp.procCustomers;
+      if (this.customerdataTo.length > 0) {
+        this.iscustomerdatato = false;
+      } else {
+        this.iscustomerdatato = true;
+      }
     });
   }
   getcustomerfilter(globvar) {
     console.log(globvar);
-    this.serviceService.getcustomer(globvar).subscribe((resp: any) => {
+    this.serviceService.getcustomerlease(globvar).subscribe((resp: any) => {
       return resp.procCustomers;
     });
   }

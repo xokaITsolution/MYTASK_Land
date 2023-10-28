@@ -62,7 +62,7 @@
               <app-property-register (completed)="EnableFinspro();" (completeddel)="EnabledelFinspro()"
                 [selectedpro]='selectedFile' [disable]="disable" [LicenceData]="LicenceData">
               </app-property-register>
-              <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1" [disabled]="serviceService.propertyISEnable && !serviceService.ispropoertylocation" translate>Next</button></div>
+              <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1" [disabled]="serviceService.propertyISEnable && !serviceService.ispropoertylocation && isNextactive" translate>Next</button></div>
      
             </div>
           </p-tabPanel>
@@ -96,7 +96,7 @@
               [LicenceData]="LicenceData">
             </app-property-register>
               <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1"
-                  [disabled]="serviceService.propertyISEnable && !serviceService.ispropoertylocation" translate>Next</button>
+                  [disabled]="serviceService.propertyISEnable && !serviceService.ispropoertylocation && isNextactive" translate>Next</button>
               </div>
         
             </div>

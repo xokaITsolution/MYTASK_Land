@@ -46,6 +46,7 @@ export class PlotComponent implements OnChanges {
   OnParcle = -1;
   plotId = null;
   Saved = false;
+  ischeckPlotaev: boolean = false;
   language: string;
   plotloc: any;
   public platformLocation: PlatformLocation;
@@ -56,6 +57,10 @@ export class PlotComponent implements OnChanges {
   multipleplotcanbeadd: boolean = true;
   display: boolean = false;
   isfinished: boolean;
+  ismodaEnable = false;
+  maxWidth: string = "1400px";
+  isMaximized: boolean;
+
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -71,6 +76,7 @@ export class PlotComponent implements OnChanges {
     } else {
       this.language = "english";
     }
+
     console.log(
       "emptying list",
       this.PlotManagementList,
@@ -86,6 +92,9 @@ export class PlotComponent implements OnChanges {
 
     this.getPloat();
     this.getPlotStutusLookUP();
+    // this.serviceService.Totalarea = parseInt(
+    //   localStorage.getItem("PolygonAreaname")
+    // );
     // this.isvalidated();
   }
   modalRef: BsModalRef;
@@ -104,12 +113,14 @@ export class PlotComponent implements OnChanges {
   }
 
   getplotlocbyid(plot_ID) {
+    this.serviceService.check = true;
     this.serviceService.getPlotloc(plot_ID).subscribe((response: any) => {
       this.plotloc = response.procPlot_Locations;
 
       if (this.plotloc.length == 0) {
         console.log("plotloc:", this.plotloc);
         this.isfinished = false;
+
         this.platformLocation = new PlatformLocation();
         this.isplotllocnew = true;
       } else {
@@ -209,6 +220,24 @@ export class PlotComponent implements OnChanges {
               "Sucess",
               "Succesfully Upadted"
             );
+            if (
+              this.SelectedPlot.plot_Size_M2 ===
+              parseInt(localStorage.getItem("PolygonAreaname"))
+            ) {
+              this.serviceService.plotsizenotequal = false;
+            } else {
+              this.serviceService.plotsizenotequal = true;
+              const toast = this.notificationsService.warn(
+                `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
+          በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
+           ${Math.abs(
+             this.SelectedPlot.plot_Size_M2 -
+               parseInt(localStorage.getItem("PolygonAreaname"))
+           )}`
+              );
+            }
+            this.ismodaEnable = false;
+
             this.getplotlocbyid(this.platformLocation.ploteId);
           },
           (error) => {
@@ -226,6 +255,7 @@ export class PlotComponent implements OnChanges {
       });
     }
   }
+
   saveplotloc() {
     console.log("coordinatcoordinat", this.serviceService.coordinate);
     if (this.serviceService.coordinate) {
@@ -298,10 +328,20 @@ export class PlotComponent implements OnChanges {
       .map((point) => `${point.easting} ${point.northing}`)
       .join(", ");
 
-    // const multiPointString = `MULTIPOINT(${multiPointArray})`;
-    const multiPointString = `POLYGON((${multiPointArray}))`;
+    if (this.serviceService.iscircleLatLngs == 0) {
+      const multiPointString = `POLYGON((${multiPointArray}))/0`;
 
-    return multiPointString;
+      return multiPointString;
+    } else {
+      const multiPointCircle = this.serviceService.centerLatLng
+        .map((point) => `${point.easting} ${point.northing}`)
+        .join(", ");
+
+      const multiPoint = `POINT(${multiPointCircle})/${Math.trunc(
+        this.serviceService.iscircleLatLngs
+      )}`;
+      return multiPoint;
+    }
   }
   onConfirm(): void {
     // Handle confirm action
@@ -354,6 +394,41 @@ export class PlotComponent implements OnChanges {
       console.log(datenow);
       return datenow.nowTime;
     }
+  }
+  Savetempora() {
+    console.log("ischeckPlotaev", this.serviceService.coordinate);
+    if (this.serviceService.coordinate) {
+      this.storeData();
+      this.AddPLot();
+      this.ischeckPlotaev = false;
+      this.ismodaEnable = false;
+      console.log("ischeckPlotaev", localStorage.getItem("coordinate"));
+    } else {
+      const toast = this.notificationsService.warn(
+        "first you have to draw or import  the plot location በመጀመሪያ የመሬቱን ቦታ መሳል ወይም ማስገባት አለብዎት"
+      );
+    }
+  }
+  openFullModal() {
+    this.isMaximized = true;
+    this.maxWidth = "1600px"; // Set the max width for full modal
+  }
+
+  openMiniModal() {
+    this.isMaximized = false;
+    this.maxWidth = "800px"; // Set the max width for mini modal
+  }
+  // Function to store data in local storage
+  storeData() {
+    localStorage.setItem(
+      "coordinate",
+      JSON.stringify(this.serviceService.coordinate)
+    );
+  }
+
+  // Function to remove data from local storage
+  clearData() {
+    localStorage.removeItem("coordinate");
   }
   getPlotManagement(Licence_Service_ID) {
     let a;
@@ -467,6 +542,24 @@ export class PlotComponent implements OnChanges {
     this.SelectedPlot = plot;
     console.log("dfghgfd", plot);
     this.plot_ID = this.SelectedPlot.plot_ID;
+    this.serviceService.Totalarea = this.SelectedPlot.plot_Size_M2;
+    if (
+      this.SelectedPlot.plot_Size_M2 ===
+      parseInt(localStorage.getItem("PolygonAreaname"))
+    ) {
+      this.serviceService.plotsizenotequal = false;
+    } else {
+      this.serviceService.plotsizenotequal = true;
+      const toast = this.notificationsService.warn(
+        `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
+          በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
+           ${Math.abs(
+             this.SelectedPlot.plot_Size_M2 -
+               parseInt(localStorage.getItem("PolygonAreaname"))
+           )}`
+      );
+    }
+
     this.getplotlocbyid(plot.plot_ID);
     plot.SDP_ID = this.serviceComponent.licenceData.SDP_ID;
     plot.Licence_Service_ID = this.LicenceData.Licence_Service_ID;

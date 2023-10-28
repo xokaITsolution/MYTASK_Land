@@ -142,7 +142,6 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
 
 <form *ngIf="deedform" #f="ngForm" novalidate name="titledeedForm">
   <div class="form-row">
-
     <div class="form-group row col-md-7">
       <label for="Ownership_ID" class="col-sm-3 col-form-label" translate>Transfer id</label>
       <div class="col-sm-9">
@@ -214,18 +213,7 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
       
       </div>
     </div>
-  <!-- <div class="form-group row col-md-7">
-    <label for="ParentDeedID" class="col-sm-3 col-form-label" translate>Parent Deed ID</label>
-    <div class="col-sm-9">
-      <select class="form-control" [disabled]="disable" [(ngModel)]="titleDeedRegistration.Parent_Deed_ID"
-        name="ParentDeedID" id="ParentDeedID" #ParentDeedID="ngModel" [ngClass]="{ 'is-invalid': ParentDeedID.invalid }"
-        required>
-        <option disabled translate>select</option>
-        <option *ngFor="let deed of titleDeedRegistrationList;" [value]="deed.Ownership_ID">{{deed.Ownership_ID}}
-        </option>
-      </select>
-    </div>
-  </div> -->
+
     <div class="form-group row col-md-7">
       <label for="TransferType" class="col-sm-3 col-form-label" translate>Transfer Type</label>
       <div class="col-sm-9">
@@ -260,7 +248,7 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
       <th scope="col" translate>Date</th>
       <th scope="col" translate>isActive</th>
       <th scope="col">
-        <button type="button" class="btn btn-primary" (click)=" adddeed()" *ngIf="!disable" translate>Add New</button>
+        <button type="button"  class="btn btn-primary" (click)=" adddeed()" *ngIf="!disable" translate>Add New</button>
       </th>
     </tr>
   </ng-template>
@@ -334,6 +322,11 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
         </tr>
       </ng-template>
     </p-table>
+    <div *ngIf="iscustomerdata">
+      <p translate>
+        {{"there is no customer" | translate}}
+      </p>
+      </div>
     <div *ngIf="serviceComponent.lode">
       <p-progressBar mode="indeterminate"></p-progressBar>
     </div>
@@ -389,6 +382,11 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
         </tr>
       </ng-template>
     </p-table>
+    <div *ngIf="iscustomerdatato">
+      <p translate>
+        {{"there is no customer" | translate}}
+      </p>
+  </div>
     <div *ngIf="serviceComponent.lode">
       <p-progressBar mode="indeterminate"></p-progressBar>
     </div>

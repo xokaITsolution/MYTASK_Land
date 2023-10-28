@@ -495,9 +495,7 @@
                       Please download!</a>
                   <!-- Add Preview button here -->
                   </div>
-                  <div *ngIf="!RequerdDocpre.File">
-                    <p-progressSpinner [style]="{ width: '50px', height: '50px' }" strokeWidth="4"></p-progressSpinner>
-                  </div>
+              
                    
                   <div *ngIf="mimeExtension[RequerdDocpre.mimeType].extension == 'pdf'">
                   
@@ -506,7 +504,11 @@
                   <p-dialog [(visible)]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
                     [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                       'max-height': '80vh','min-height':'250px'}">
-                    <div class="modal-body">
+                  
+                      <div class="modal-body">
+                            <div *ngIf="!RequerdDocpre.File">
+                              <p-progressSpinner [style]="{ width: '50px', height: '50px' }" strokeWidth="4"></p-progressSpinner>
+                            </div>
                       <iframe width="100%" [src]="RequerdDocpre.File" alt="FileUploaded" class="pdf-iframe"></iframe>
                     </div>
                     <div>
@@ -521,6 +523,9 @@
                       [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                         'max-height': '80vh','min-height':'250px'}">
                   <div class="modal-body">
+                        <div *ngIf="!RequerdDocpre.File">
+                          <p-progressSpinner [style]="{ width: '50px', height: '50px' }" strokeWidth="4"></p-progressSpinner>
+                        </div>
                       <img width="50%" [src]="RequerdDocpre.File" alt="FileUploaded" />
                   </div>
                  <div>

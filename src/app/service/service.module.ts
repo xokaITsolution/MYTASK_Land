@@ -95,6 +95,7 @@ import {
   DynamicDialogComponent,
   DynamicDialogModule,
 } from "primeng/components/dynamicdialog/dynamicdialog";
+import { NumberOnlyDirectiveDirective } from './number-only-directive.directive';
 
 @NgModule({
   imports: [
@@ -193,6 +194,7 @@ import {
     TestgismapComponent,
     TreeComponentComponent,
     FilePreviewDialogComponent,
+    NumberOnlyDirectiveDirective,
   ],
   entryComponents: [
     GisMapComponent,

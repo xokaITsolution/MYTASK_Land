@@ -312,6 +312,28 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     //   console.log('plot id from gis :: ', this.plotManagment.Plot_ID);
     // }
   }
+  convertToMultiPoints(
+    points: { easting: number; northing: number }[]
+  ): string {
+    const multiPointArray = points
+      .map((point) => `${point.easting} ${point.northing}`)
+      .join(", ");
+
+    if (this.serviceService.iscircleLatLngs == 0) {
+      const multiPointString = `POLYGON((${multiPointArray}))/0`;
+
+      return multiPointString;
+    } else {
+      const multiPointCircle = this.serviceService.centerLatLng
+        .map((point) => `${point.easting} ${point.northing}`)
+        .join(", ");
+
+      const multiPoint = `POINT(${multiPointCircle})/${Math.trunc(
+        this.serviceService.iscircleLatLngs
+      )}`;
+      return multiPoint;
+    }
+  }
   convertToMultiPoint(
     points: {
       easting: number;
@@ -332,18 +354,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
 
     return multiPointString;
   }
-  convertToMultiPoints(
-    points: { easting: number; northing: number }[]
-  ): string {
-    const multiPointArray = points
-      .map((point) => `${point.easting} ${point.northing}`)
-      .join(", ");
 
-    // const multiPointString = `MULTIPOINT(${multiPointArray})`;
-    const multiPointString = `POLYGON((${multiPointArray}))`;
-
-    return multiPointString;
-  }
   onConfirm(): void {
     // Handle confirm action
     console.log("Dialog confirmed");
@@ -749,6 +760,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
           "Warning",
           warningMessage
         );
+        this.saveplotlocnew();
         if (this.language === "amharic") {
           this.plotManagment.registration_Date =
             await this.getgregorianToEthiopianDate(
@@ -804,6 +816,44 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     );
 
     console.log("saving....");
+  }
+  saveplotlocnew() {
+    console.log("coordinatcoordinat", localStorage.getItem("coordinate"));
+    const cordinatetemp = JSON.parse(localStorage.getItem("coordinate"));
+    console.log("coordinatcoordinat", cordinatetemp);
+    if (cordinatetemp) {
+      this.serviceService.getUserRole().subscribe((response: any) => {
+        let coordinates = this.convertToMultiPoints(cordinatetemp);
+        console.log("coordinatecoordinate", coordinates);
+        this.platformLocation.geo = coordinates;
+        let coordinate = this.convertToMultiPoint(cordinatetemp);
+        this.platformLocation.geowithzone = coordinate;
+        console.log("responseresponseresponse", response, response[0].RoleId);
+
+        this.platformLocation.ploteId = this.plotManagment.parcel_No;
+        this.platformLocation.created_By = response[0].RoleId;
+        this.platformLocation.created_Date = new Date();
+        this.serviceService.savePlotloc(this.platformLocation).subscribe(
+          (CustID) => {
+            const toast = this.notificationsService.success(
+              "Sucess",
+              "Succesfully saved"
+            );
+          },
+          (error) => {
+            console.log("error");
+            const toast = this.notificationsService.error(
+              "error",
+              `unable to Save ${
+                error["status"] == 0
+                  ? error["message"]
+                  : JSON.stringify(JSON.stringify(error["error"]))
+              }`
+            );
+          }
+        );
+      });
+    }
   }
 }
 

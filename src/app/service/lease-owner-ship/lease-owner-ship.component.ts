@@ -51,6 +51,9 @@ export class LeaseOwnerShipComponent implements OnChanges {
   msgs: any;
   isconfirmupdate: boolean;
   isconfirmsave: boolean;
+  totalsizeoflease: number;
+  totalsizeofleaseeach: number;
+  iscustomerdata: boolean;
   constructor(
     private ngxSmartModalService: NgxSmartModalService,
     private leaseOwnerShipService: LeaseOwnerShipService,
@@ -75,10 +78,16 @@ export class LeaseOwnerShipComponent implements OnChanges {
       if (this.addnew) {
         this.leaseOwnerShip.Plot_ID = this.SelectedPlot.plot_ID;
         console.log("lease select", this.SelectedPlot);
-        console.log("lease plot id", this.leaseOwnerShip.Plot_ID);
+        console.log(
+          "lease plot id",
+          this.leaseOwnerShip.Plot_ID,
+          localStorage.getItem("PolygonAreaname")
+        );
 
-        this.leaseOwnerShip.SDP_ID = this.SelectedPlot.SDP_ID;
-        this.serviceService.Totalarea = this.SelectedPlot.Plot_Size_M2;
+        this.leaseOwnerShip.SDP_ID = this.SelectedPlot.sdP_ID;
+        // this.leaseOwnerShip.Lease_Hold_M2 = parseInt(
+        //   localStorage.getItem("PolygonAreaname")
+        // );
 
         // this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
         // if( this.leaseOwnerShip.SDP_ID!=null || this.leaseOwnerShip.SDP_ID!=undefined ){
@@ -108,12 +117,13 @@ export class LeaseOwnerShipComponent implements OnChanges {
 
     if (value == 2) {
       this.islease = false;
-      this.isfreehole = false;
+      this.isfreehole = true;
+      this.leaseOwnerShip.Lease_Hold_M2 = 0;
     } else if (value == 1) {
       this.islease = true;
       this.isfreehole = false;
       // this.leaseOwnerShip.Lease_Hold_M2 = null;
-      // this.leaseOwnerShip.Free_Hold_M2 = 0;
+      this.leaseOwnerShip.Free_Hold_M2 = 0;
     } else if (value == 3) {
       this.islease = false;
       this.isfreehole = false;
@@ -121,8 +131,13 @@ export class LeaseOwnerShipComponent implements OnChanges {
   }
   getcustomer(globvar) {
     console.log(globvar);
-    this.serviceService.getcustomer(globvar).subscribe((resp: any) => {
+    this.serviceService.getcustomerAll(globvar).subscribe((resp: any) => {
       this.customerdata = resp.procCustomers;
+      if (this.customerdata.length > 0) {
+        this.iscustomerdata = false;
+      } else {
+        this.iscustomerdata = true;
+      }
     });
   }
   async getEthiopianToGregorian(date) {
@@ -151,6 +166,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
   }
   async selectLease(task) {
     console.log("tasktasktasktask", task);
+    this.serviceService.Totalarea = task.Lease_Hold_M2 + task.Free_Hold_M2;
+    task.Lease_Hold_M2 = parseInt(localStorage.getItem("PolygonAreaname"));
     this.addnew = false;
     // this.leaseForm = true;
     if (this.language == "amharic") {
@@ -205,6 +222,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
     this.leaseOwnerShip.Plot_ID = this.SelectedPlot.plot_ID;
     this.leaseOwnerShip.todoid = this.todoid;
     this.leaseOwnerShip.applicationo = this.applicationo;
+    this.leaseOwnerShip.Lease_Hold_M2 = localStorage.getItem("PolygonAreaname");
+
     // this.leaseOwnerShip.SDP_ID = this.LicenceData.SDP_ID;
     this.leaseOwnerShip.SDP_ID =
       this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
@@ -309,65 +328,115 @@ export class LeaseOwnerShipComponent implements OnChanges {
 
       return;
     }
-    if (this.language == "amharic") {
-      this.leaseOwnerShip.Date_of_final_lease_payment =
-        await this.getEthiopianToGregorian(
-          this.leaseOwnerShip.Date_of_final_lease_payment
-        );
-    }
-    this.serviceService.Totalarea =
-      this.leaseOwnerShip.Lease_Hold_M2 + this.leaseOwnerShip.Free_Hold_M2;
-    this.leaseOwnerShipService.save(this.leaseOwnerShip).subscribe(
-      async (deptSuspension) => {
-        console.log("deptSuspension", deptSuspension);
-        const toast = this.notificationsService.success(
-          "Sucess",
-          deptSuspension
-        );
+    let totalsize =
+      parseInt(this.leaseOwnerShip.Free_Hold_M2) +
+      parseInt(this.leaseOwnerShip.Lease_Hold_M2);
 
-        //this.serviceService.disablefins = false;
-        this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
+    console.log("totalsize", totalsize);
 
-        if (this.language == "amharic") {
-          this.leaseOwnerShip.Date_of_final_lease_payment =
-            await this.getgregorianToEthiopianDate(
-              this.leaseOwnerShip.Date_of_final_lease_payment
-            );
-        }
-        if (!this.Saved) {
-          //this.completed.emit();
-          this.Saved = true;
-        }
-      },
-      async (error) => {
-        console.log(error);
+    this.serviceService
+      .getAll(this.leaseOwnerShip.Plot_ID)
+      .subscribe((CertificateVersion) => {
+        this.tasks = CertificateVersion;
+        let tasks = Object.assign([], this.tasks.list);
+        console.log("this.tasks", this.tasks);
 
-        if (error.status == "400") {
-          const toast = this.notificationsService.error(
-            "Error",
-            error.error.InnerException.Errors[0].message
-          );
-          if (this.language == "amharic") {
-            this.leaseOwnerShip.Date_of_final_lease_payment =
-              await this.getgregorianToEthiopianDate(
-                this.leaseOwnerShip.Date_of_final_lease_payment
-              );
-          }
+        console.log("leaselist", tasks);
+        if (tasks.length > 0) {
+          tasks.forEach((element) => {
+            if (element.Plot_ID != this.leaseOwnerShip.Plot_ID) {
+              let totalsizeeach =
+                parseInt(element.Free_Hold_M2) +
+                parseInt(element.Lease_Hold_M2);
+
+              this.totalsizeofleaseeach += totalsizeeach;
+            }
+          });
+          this.totalsizeoflease =
+            parseInt(localStorage.getItem("PolygonAreaname")) -
+            this.totalsizeofleaseeach;
         } else {
-          const toast = this.notificationsService.error(
-            "Error",
-            "SomeThing Went Wrong"
+          this.totalsizeoflease = parseInt(
+            localStorage.getItem("PolygonAreaname")
           );
+        }
+      });
+    if (this.totalsizeoflease < totalsize) {
+      const toast = this.notificationsService.warn(
+        "the sum of Leasehold and Freehold is must not greater than total  plot size/የሊዝ ይዞታ እና ነፃ ይዞታ ድምር ከጠቅላላ የቦታ መጠን መብለጥ የለበትም"
+      );
+      return;
+    } else {
+      if (this.language == "amharic") {
+        this.leaseOwnerShip.Date_of_final_lease_payment =
+          await this.getEthiopianToGregorian(
+            this.leaseOwnerShip.Date_of_final_lease_payment
+          );
+      }
+
+      this.leaseOwnerShipService.save(this.leaseOwnerShip).subscribe(
+        async (deptSuspension) => {
+          console.log("deptSuspension", deptSuspension);
+          const toast = this.notificationsService.success(
+            "Sucess",
+            deptSuspension
+          );
+
+          //this.serviceService.disablefins = false;
+          this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
+          if (totalsize === parseInt(localStorage.getItem("PolygonAreaname"))) {
+            this.serviceService.plotsizenotequal = false;
+          } else {
+            this.serviceService.plotsizenotequal = true;
+            const toast = this.notificationsService.warn(
+              `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
+          በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
+           ${Math.abs(
+             totalsize - parseInt(localStorage.getItem("PolygonAreaname"))
+           )}`
+            );
+          }
           if (this.language == "amharic") {
             this.leaseOwnerShip.Date_of_final_lease_payment =
               await this.getgregorianToEthiopianDate(
                 this.leaseOwnerShip.Date_of_final_lease_payment
               );
           }
+          if (!this.Saved) {
+            //this.completed.emit();
+            this.Saved = true;
+          }
+        },
+        async (error) => {
+          console.log(error);
+
+          if (error.status == "400") {
+            const toast = this.notificationsService.error(
+              "Error",
+              error.error.InnerException.Errors[0].message
+            );
+            if (this.language == "amharic") {
+              this.leaseOwnerShip.Date_of_final_lease_payment =
+                await this.getgregorianToEthiopianDate(
+                  this.leaseOwnerShip.Date_of_final_lease_payment
+                );
+            }
+          } else {
+            const toast = this.notificationsService.error(
+              "Error",
+              "SomeThing Went Wrong"
+            );
+            if (this.language == "amharic") {
+              this.leaseOwnerShip.Date_of_final_lease_payment =
+                await this.getgregorianToEthiopianDate(
+                  this.leaseOwnerShip.Date_of_final_lease_payment
+                );
+            }
+          }
         }
-      }
-    );
-    console.log("saveing....");
+      );
+      console.log("saveing....");
+    }
   }
 
   Delete() {
@@ -417,72 +486,113 @@ export class LeaseOwnerShipComponent implements OnChanges {
       );
       return;
     }
-    if (this.language == "amharic") {
-      this.leaseOwnerShip.Date_of_final_lease_payment =
-        await this.getEthiopianToGregorian(
-          this.leaseOwnerShip.Date_of_final_lease_payment
-        );
-    }
-    this.leaseOwnerShipService.Add(this.leaseOwnerShip).subscribe(
-      async (deptSuspension) => {
-        console.log("deptSuspension", deptSuspension);
-        const toast = this.notificationsService.success(
-          "Sucess",
-          deptSuspension
-        );
+    let totalsize =
+      parseInt(this.leaseOwnerShip.Free_Hold_M2) +
+      parseInt(this.leaseOwnerShip.Lease_Hold_M2);
 
-        this.serviceService.Totalarea =
-          this.leaseOwnerShip.Lease_Hold_M2 + this.leaseOwnerShip.Free_Hold_M2;
-        this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
+    console.log("totalsize", totalsize);
 
-        if (this.language == "amharic") {
-          this.leaseOwnerShip.Date_of_final_lease_payment =
-            await this.getgregorianToEthiopianDate(
-              this.leaseOwnerShip.Date_of_final_lease_payment
-            );
-        }
+    this.serviceService
+      .getAll(this.leaseOwnerShip.Plot_ID)
+      .subscribe((CertificateVersion) => {
+        this.tasks = CertificateVersion;
+        let tasks = Object.assign([], this.tasks.list);
+        console.log("this.tasks", this.tasks);
 
-        //this.serviceService.disablefins = false;
+        console.log("leaselist", tasks);
+        if (tasks.length > 0) {
+          tasks.forEach((element) => {
+            if (element.Plot_ID != this.leaseOwnerShip.Plot_ID) {
+              let totalsizeeach =
+                parseInt(element.Free_Hold_M2) +
+                parseInt(element.Lease_Hold_M2);
 
-        this.leaseForm = false;
-        this.serviceService.isleaseForm = false;
-        if (!this.Saved) {
-          this.addnew = false;
-          //this.completed.emit();
-          this.Saved = true;
-          this.serviceService.isleaseForm = false;
-        }
-        // const warningMessage = "የሊዝ ወይም የነባር ይዞታ መመዝገቡን አረጋግጥ/Check lease or freehold record is active for this plot";
-        // const toastWarning = this.notificationsService.warn(
-        //   "Warning",
-        //   warningMessage
-        // );
-      },
-      async (error) => {
-        console.log(error);
-
-        if (error.status == "400") {
-          const toast = this.notificationsService.error(
-            "Error",
-            error.error.InnerException.Errors[0].message
-          );
-          this.leaseOwnerShip.Date_of_final_lease_payment =
-            await this.getgregorianToEthiopianDate(
-              this.leaseOwnerShip.Date_of_final_lease_payment
-            );
+              this.totalsizeofleaseeach += totalsizeeach;
+            }
+          });
+          this.totalsizeoflease =
+            parseInt(localStorage.getItem("PolygonAreaname")) -
+            this.totalsizeofleaseeach;
         } else {
-          const toast = this.notificationsService.error(
-            "Error",
-            "SomeThing Went Wrong"
+          this.totalsizeoflease = parseInt(
+            localStorage.getItem("PolygonAreaname")
           );
-          this.leaseOwnerShip.Date_of_final_lease_payment =
-            await this.getgregorianToEthiopianDate(
-              this.leaseOwnerShip.Date_of_final_lease_payment
-            );
         }
+      });
+    if (this.totalsizeoflease < totalsize) {
+      const toast = this.notificationsService.warn(
+        "the sum of Leasehold and Freehold is must not greater than total  plot size/የሊዝ ይዞታ እና ነፃ ይዞታ ድምር ከጠቅላላ የቦታ መጠን መብለጥ የለበትም"
+      );
+      return;
+    } else {
+      if (this.language == "amharic") {
+        this.leaseOwnerShip.Date_of_final_lease_payment =
+          await this.getEthiopianToGregorian(
+            this.leaseOwnerShip.Date_of_final_lease_payment
+          );
       }
-    );
-    console.log("saveing....");
+      this.leaseOwnerShipService.Add(this.leaseOwnerShip).subscribe(
+        async (deptSuspension) => {
+          console.log("deptSuspension", deptSuspension);
+          const toast = this.notificationsService.success(
+            "Sucess",
+            deptSuspension
+          );
+
+          this.serviceService.Totalarea =
+            this.leaseOwnerShip.Lease_Hold_M2 +
+            this.leaseOwnerShip.Free_Hold_M2;
+          this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
+
+          if (this.language == "amharic") {
+            this.leaseOwnerShip.Date_of_final_lease_payment =
+              await this.getgregorianToEthiopianDate(
+                this.leaseOwnerShip.Date_of_final_lease_payment
+              );
+          }
+
+          //this.serviceService.disablefins = false;
+
+          this.leaseForm = false;
+          this.serviceService.isleaseForm = false;
+          if (!this.Saved) {
+            this.addnew = false;
+            //this.completed.emit();
+            this.Saved = true;
+            this.serviceService.isleaseForm = false;
+          }
+          // const warningMessage = "የሊዝ ወይም የነባር ይዞታ መመዝገቡን አረጋግጥ/Check lease or freehold record is active for this plot";
+          // const toastWarning = this.notificationsService.warn(
+          //   "Warning",
+          //   warningMessage
+          // );
+        },
+        async (error) => {
+          console.log(error);
+
+          if (error.status == "400") {
+            const toast = this.notificationsService.error(
+              "Error",
+              error.error.InnerException.Errors[0].message
+            );
+            this.leaseOwnerShip.Date_of_final_lease_payment =
+              await this.getgregorianToEthiopianDate(
+                this.leaseOwnerShip.Date_of_final_lease_payment
+              );
+          } else {
+            const toast = this.notificationsService.error(
+              "Error",
+              "SomeThing Went Wrong"
+            );
+            this.leaseOwnerShip.Date_of_final_lease_payment =
+              await this.getgregorianToEthiopianDate(
+                this.leaseOwnerShip.Date_of_final_lease_payment
+              );
+          }
+        }
+      );
+      console.log("saveing....");
+    }
   }
 
   openModal(modal) {

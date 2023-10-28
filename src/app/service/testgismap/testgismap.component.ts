@@ -115,29 +115,31 @@ export class TestgismapComponent implements AfterViewInit, OnInit {
     this.getcapablities();
     this.getGroupLayers();
   }
-
+  ሽ;
   getGroupLayers(): void {
-    this.geoser.fetchGroupLayers().subscribe((data: any) => {
-      // debugger
-      this.groupLayers = data.layerGroups.layerGroup;
-      console.log("Agroup", this.groupLayers);
-      for (let index = 0; index < this.groupLayers.length; index++) {
-        const element = this.groupLayers[index].name;
-        // this.subcities[index].name = element[1];
-        if (element === this.parentGroupName) {
-          if (typeof this.groupLayers[index] === "object") {
-            if (Array.isArray(this.groupLayers[index])) {
-              console.log("Variable is an array");
-            } else {
-              this.groupLayer = this.json2array(this.groupLayers[index]);
-              console.log("parent", this.groupLayer);
+    this.geoser
+      .fetchGroupLayers(environment.SubcityName)
+      .subscribe((data: any) => {
+        //
+        this.groupLayers = data.layerGroups.layerGroup;
+        console.log("Agroup", this.groupLayers);
+        for (let index = 0; index < this.groupLayers.length; index++) {
+          const element = this.groupLayers[index].name;
+          // this.subcities[index].name = element[1];
+          if (element === this.parentGroupName) {
+            if (typeof this.groupLayers[index] === "object") {
+              if (Array.isArray(this.groupLayers[index])) {
+                console.log("Variable is an array");
+              } else {
+                this.groupLayer = this.json2array(this.groupLayers[index]);
+                console.log("parent", this.groupLayer);
+              }
             }
+            console.log("AddisLand", this.groupLayers[index]);
+            this.getTree(this.groupLayer);
           }
-          console.log("AddisLand", this.groupLayers[index]);
-          this.getTree(this.groupLayer);
         }
-      }
-    });
+      });
   }
 
   json2array(json) {
@@ -148,7 +150,7 @@ export class TestgismapComponent implements AfterViewInit, OnInit {
   }
   async getTree(grouplist) {
     this.nodes = [];
-    // debugger
+    //
     console.log("this.groupLayer", this.groupLayer);
 
     for (let i = 0; i < this.groupLayer.length; i++) {
@@ -208,7 +210,7 @@ export class TestgismapComponent implements AfterViewInit, OnInit {
         b["value"] = this.subcities[j].href;
         b.children = [];
         a.children.push(b);
-        // debugger
+        //
         var wor = await this.geoser
           .getLayersFromGeoserver(this.subcities[j].href)
           .toPromise();
@@ -245,7 +247,7 @@ export class TestgismapComponent implements AfterViewInit, OnInit {
           c["value"] = this.woredas[k].href;
           c.children = [];
           b.children.push(c);
-          // debugger
+          //
           var worlay = await this.geoser
             .getLayersFromGeoserver(this.woredas[k].href)
             .toPromise();
@@ -286,7 +288,7 @@ export class TestgismapComponent implements AfterViewInit, OnInit {
             d["value"] = this.woredaLayers[l].href;
             d.children = [];
             c.children.push(d);
-            // debugger
+            //
             var worlayonebyone = await this.geoser
               .getLayersFromGeoserver(this.woredaLayers[l].href)
               .toPromise();
@@ -324,7 +326,7 @@ export class TestgismapComponent implements AfterViewInit, OnInit {
                 label: "",
                 value: "",
               };
-              // debugger
+              //
               const element = this.woredaLayersOneByOne[m].name.split(":");
               this.woredaLayersOneByOne[m].name = element[1];
               e.label = this.woredaLayersOneByOne[m].name;
@@ -376,7 +378,7 @@ export class TestgismapComponent implements AfterViewInit, OnInit {
   }
   SubcitiesSelected(checked: boolean, event: any) {
     if (checked) {
-      //debugger
+      //
       //Call Geoserver API to fetch layers for the selected group layer
       this.geoser.getLayersFromGeoserver(event).subscribe((data: any) => {
         // Handle the fetched layers here
@@ -586,7 +588,7 @@ export class TestgismapComponent implements AfterViewInit, OnInit {
     //     // Create a new vector layer using the fetched GeoJSON data
     this.geoser.fetchStyleLayers(layerName).subscribe((data: any) => {
       //console.log("stryle", data);
-      // debugger
+      //
       this.styleHref = data.layer.defaultStyle;
       if (typeof this.styleHref === "object") {
         if (Array.isArray(this.styleHref)) {
@@ -621,7 +623,6 @@ export class TestgismapComponent implements AfterViewInit, OnInit {
               console.log("vectorlayer", this.vectorLayer);
 
               this.vectorLayerOnClick();
-              debugger;
               // Store the vector layer reference in the newLayer object
               // geojson.features.forEach(feature => {
               //   feature.options = {
@@ -657,7 +658,7 @@ export class TestgismapComponent implements AfterViewInit, OnInit {
               this.fetchTileLayer(layerName, newLayer);
 
               //  if (layerName === 'AddisLand') {
-              //   debugger
+              //
               //    this.toggleLayer(true, 'AddisLand');
               //  }
             });
@@ -669,7 +670,7 @@ export class TestgismapComponent implements AfterViewInit, OnInit {
   }
 
   Bind_Features(geojson, layerName) {
-    // debugger
+    //
     const options = {
       style: function (feature) {
         return {
@@ -861,7 +862,6 @@ export class TestgismapComponent implements AfterViewInit, OnInit {
   }
   toggleLayer(visibility: boolean, layerName: string) {
     const layer = this.layers.find((l) => l.name === layerName);
-    debugger;
     if (layer && layer.vectorLayer) {
       if (visibility) {
         console.log("vectorlayer", layer.vectorLayer);
