@@ -363,7 +363,6 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
       },
     });
   }
-
   getCustomerLookUP() {
     this.serviceService.getcustomerby().subscribe(
       (CustomerLookUP: any) => {

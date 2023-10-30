@@ -107,9 +107,31 @@ export class PlotComponent implements OnChanges {
   }
   tellChild(aa) {
     console.log("value is changing", aa);
+    const coordinatesarea = this.convertCoordinatesformatd(aa);
+
+    let areas = this.calculateUTMPolygonArea(coordinatesarea);
+    localStorage.setItem("PolygonAreaname", "" + areas.toFixed(2));
+
+    console.log("coordinatesarea", coordinatesarea, areas);
     this.geo = aa;
     this.serviceService.check = true;
     this.changingValue.next(aa);
+  }
+  convertCoordinatesformatd(inputData: any[][]): any[] {
+    const outputData = [];
+    for (let i = 1; i < inputData.length; i++) {
+      const northing = parseFloat(inputData[i][0]);
+      const easting = parseFloat(inputData[i][1]);
+      const hemisphere = inputData[i][2];
+      const zone = parseInt(inputData[i][3], 10);
+      outputData.push({
+        northing,
+        easting,
+        hemisphere,
+        zone,
+      });
+    }
+    return outputData;
   }
 
   getplotlocbyid(plot_ID) {
@@ -133,6 +155,25 @@ export class PlotComponent implements OnChanges {
         this.isfinished = true;
       }
     });
+  }
+  calculateUTMPolygonArea(
+    utmPoints: { northing: number; easting: number }[]
+  ): number {
+    const numPoints = utmPoints.length;
+    let area = 0;
+
+    if (numPoints < 3) {
+      return area; // Not a polygon, return zero area
+    }
+
+    for (let i = 0; i < numPoints; i++) {
+      const p1 = utmPoints[i];
+      const p2 = utmPoints[(i + 1) % numPoints]; // Wrap around for the last point
+
+      area += ((p2.easting - p1.easting) * (p2.northing + p1.northing)) / 2;
+    }
+
+    return Math.abs(area); // Take the absolute value to ensure a positive area
   }
   convertPolygonCoordinates(polygonString: string): any[] {
     const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);

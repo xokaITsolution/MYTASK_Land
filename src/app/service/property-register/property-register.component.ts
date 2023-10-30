@@ -8,6 +8,7 @@ import {
   Output,
   Renderer2,
   TemplateRef,
+  ViewChild,
 } from "@angular/core";
 import { ServiceComponent } from "../service.component";
 import { PropertyRegisterService } from "./property-register.service";
@@ -22,6 +23,7 @@ import { environment } from "src/environments/environment";
 import { BsModalRef, BsModalService } from "ngx-bootstrap";
 import { ActivatedRoute } from "@angular/router";
 import { PlatformLocation } from "../plot-managment/plot-managment.component";
+import { NgForm } from "@angular/forms";
 
 @Component({
   selector: "app-property-register",
@@ -602,8 +604,11 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             this.propertyRegisterService.Add(prop).subscribe(
               (deptSuspension) => {
                 console.log("deptSuspension", deptSuspension);
+
                 if (prop.map_Floor_Plan != null) {
                   this.serviceService.isNextactive = true;
+                } else {
+                  this.serviceService.isNextactive = false;
                 }
                 this.serviceService.insertedProperty =
                   deptSuspension[0].property_ID;
@@ -680,6 +685,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             console.log("deptSuspension", deptSuspension);
             if (prop.map_Floor_Plan != null) {
               this.serviceService.isNextactive = true;
+            } else {
+              this.serviceService.isNextactive = false;
             }
             this.serviceService.insertedProperty =
               deptSuspension[0].property_ID;

@@ -60,7 +60,7 @@
       <div class="col-sm-9">
     <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="leaseOwnerShip.Lease_Hold_M2" name="LandHold"
       id="LandHold" [placeholder]="'Lease Hold' | translate" #LandHold="ngModel"
-      [ngClass]="{ 'is-invalid': LandHold.invalid }" appNumberOnly required  [readonly]="islease">
+      [ngClass]="{ 'is-invalid': LandHold.invalid }" appNumberOnly required  [readonly]="iislease">
        <span *ngIf="LandHold.invalid " style="color: red;">accept only numbers and float numbers</span>
         </div>
     </div>

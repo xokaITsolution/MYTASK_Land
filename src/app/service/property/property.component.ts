@@ -241,7 +241,7 @@ export class PropertyComponent implements OnChanges {
   //   );
   // }
 
-  SelectProprty(property) {
+  async SelectProprty(property) {
     this.propertyForm = true;
     this.propertyregForm = false;
     this.SelectedProperty = property;
@@ -250,6 +250,7 @@ export class PropertyComponent implements OnChanges {
     console.log("plotManagment", this.SelectedProperty);
     this.getPropertyList();
     this.getleaseOwnerShip(this.SelectedProperty.plot_ID);
+
     // this.disable=false;
   }
   getleaseOwnerShip(plotID) {
@@ -306,7 +307,7 @@ export class PropertyComponent implements OnChanges {
       );
   }
 
-  getTree(List) {
+  async getTree(List) {
     this.serviceService.files = [];
     for (let i = 0; i < this.PropertyList.length; i++) {
       let a;
@@ -364,6 +365,23 @@ export class PropertyComponent implements OnChanges {
       this.serviceService.totlaizeproportinal
     );
     console.log("this.files", this.serviceService.files);
+    for (let i = 0; i < this.serviceService.files.length; i++) {
+      const element: any = Object.assign([], this.serviceService.files[i]);
+      console.log("sub propertyelement", element);
+
+      if (element.property_ID !== "No Parent") {
+        const isdeedchildren = await this.checkProperty(element);
+
+        if (!isdeedchildren) {
+          // const toast = this.notificationsService.warn(
+          //   `Must add title deed for this property: ${element.property_ID}`
+          // );
+        } else {
+          this.toFixedasset = true;
+          // this.completed.emit();
+        }
+      }
+    }
   }
 
   AddNew() {
@@ -405,6 +423,8 @@ export class PropertyComponent implements OnChanges {
     console.log("selectedFile", this.selectedFile, this.serviceService.files);
     if (this.selectedFile.map_Floor_Plan != null) {
       this.serviceService.isNextactive = true;
+    } else {
+      this.serviceService.isNextactive = false;
     }
     let a: any = await this.getmeasurment(this.selectedFile.property_ID);
     let b = await this.getdeed(this.selectedFile.property_ID);
@@ -466,10 +486,27 @@ export class PropertyComponent implements OnChanges {
           this.serviceService.ismeasurmentList
         ) {
           this.newplot = false;
-          if (this.selectedFile.children.length == 0) {
-            const toast = this.notificationsService.warn(
-              "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
-            );
+          if (this.selectedFile.children.length != 0) {
+            for (let i = 0; i < this.serviceService.files.length; i++) {
+              const element: any = Object.assign(
+                [],
+                this.serviceService.files[i]
+              );
+              console.log("sub property", element);
+
+              if (element.property_ID !== "No Parent") {
+                const isdeedchildren = await this.checkProperty(element);
+
+                if (!isdeedchildren) {
+                  const toast = this.notificationsService.warn(
+                    `Must add  title deed for this property: ${element.property_ID}`
+                  );
+                }
+              }
+            }
+            // const toast = this.notificationsService.warn(
+            //   "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
+            // );
           }
         } else {
           const toast = this.notificationsService.warn(
@@ -581,38 +618,13 @@ export class PropertyComponent implements OnChanges {
       }
     } else {
       if (
-        this.serviceService.ishavetitleDeedRegistrationList &&
-        this.serviceService.ismeasurmentList
+        2 == this.serviceService.selectedproperty_Type_ID ||
+        3 == this.serviceService.selectedproperty_Type_ID
       ) {
-        if (
-          2 == this.serviceService.selectedproperty_Type_ID ||
-          3 == this.serviceService.selectedproperty_Type_ID
-        ) {
-          if (this.selectedFile.children.length == 0) {
-            const toast = this.notificationsService.warn(
-              "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
-            );
-          } else {
-            for (let i = 0; i < this.serviceService.files.length; i++) {
-              const element: any = Object.assign(
-                [],
-                this.serviceService.files[i]
-              );
-              console.log("sub property", element);
-
-              if (element.property_ID !== "No Parent") {
-                const isdeedchildren = await this.checkProperty(element);
-
-                if (!isdeedchildren) {
-                  const toast = this.notificationsService.warn(
-                    `Must add title deed for this property: ${element.property_ID}`
-                  );
-                } else {
-                  this.completed.emit();
-                }
-              }
-            }
-          }
+        if (this.selectedFile.children.length == 0) {
+          const toast = this.notificationsService.warn(
+            "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
+          );
         } else {
           for (let i = 0; i < this.serviceService.files.length; i++) {
             const element: any = Object.assign(
@@ -634,11 +646,28 @@ export class PropertyComponent implements OnChanges {
             }
           }
         }
+      } else {
+        for (let i = 0; i < this.serviceService.files.length; i++) {
+          const element: any = Object.assign([], this.serviceService.files[i]);
+          console.log("sub property", element);
+
+          if (element.property_ID !== "No Parent") {
+            const isdeedchildren = await this.checkProperty(element);
+
+            if (!isdeedchildren) {
+              const toast = this.notificationsService.warn(
+                `Must add title deed for this property: ${element.property_ID}`
+              );
+            } else {
+              this.completed.emit();
+            }
+          }
+        }
       }
     }
     // this.propertyregForm = false;
     console.log("fixed asset");
-    this.toFixedasset = true;
+
     this.getPropertyList();
     this.isvalidated();
   }
@@ -658,38 +687,13 @@ export class PropertyComponent implements OnChanges {
       }
     } else {
       if (
-        this.serviceService.ishavetitleDeedRegistrationList &&
-        this.serviceService.ismeasurmentList
+        2 == this.serviceService.selectedproperty_Type_ID ||
+        3 == this.serviceService.selectedproperty_Type_ID
       ) {
-        if (
-          2 == this.serviceService.selectedproperty_Type_ID ||
-          3 == this.serviceService.selectedproperty_Type_ID
-        ) {
-          if (this.selectedFile.children.length == 0) {
-            const toast = this.notificationsService.warn(
-              "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
-            );
-          } else {
-            for (let i = 0; i < this.serviceService.files.length; i++) {
-              const element: any = Object.assign(
-                [],
-                this.serviceService.files[i]
-              );
-              console.log("sub property", element);
-
-              if (element.property_ID !== "No Parent") {
-                const isdeedchildren = await this.checkProperty(element);
-
-                if (!isdeedchildren) {
-                  const toast = this.notificationsService.warn(
-                    `Must add title deed for this property: ${element.property_ID}`
-                  );
-                } else {
-                  this.completed.emit();
-                }
-              }
-            }
-          }
+        if (this.selectedFile.children.length == 0) {
+          const toast = this.notificationsService.warn(
+            "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
+          );
         } else {
           for (let i = 0; i < this.serviceService.files.length; i++) {
             const element: any = Object.assign(
@@ -708,6 +712,23 @@ export class PropertyComponent implements OnChanges {
               } else {
                 this.completed.emit();
               }
+            }
+          }
+        }
+      } else {
+        for (let i = 0; i < this.serviceService.files.length; i++) {
+          const element: any = Object.assign([], this.serviceService.files[i]);
+          console.log("sub property", element);
+
+          if (element.property_ID !== "No Parent") {
+            const isdeedchildren = await this.checkProperty(element);
+
+            if (!isdeedchildren) {
+              const toast = this.notificationsService.warn(
+                `Must add title deed for this property: ${element.property_ID}`
+              );
+            } else {
+              this.completed.emit();
             }
           }
         }
@@ -736,10 +757,97 @@ export class PropertyComponent implements OnChanges {
     this.totitleDeed = true;
   }
 
-  DoneNew() {
-    this.propertyregForm = false;
+  async DoneNew() {
+    if (this.serviceService.isproportinal == true) {
+      if (
+        this.serviceService.totlaizeproportinal ==
+        this.serviceService.Plot_Size_M2
+      ) {
+        this.completed.emit();
+      } else {
+        const toast = this.notificationsService.warn(
+          "if the lease type is proportional the sum of property built-in size must be equal to lease size/የሊዝ አይነት ተመጣጣኝ ከሆነ አብሮ የተሰራው ንብረት ድምር ከሊዝ መጠን ጋር እኩል መሆን አለበት።"
+        );
+      }
+    } else {
+      if (
+        2 == this.serviceService.selectedproperty_Type_ID ||
+        3 == this.serviceService.selectedproperty_Type_ID
+      ) {
+        if (this.selectedFile.children.length == 0) {
+          const toast = this.notificationsService.warn(
+            "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
+          );
+        } else {
+          for (let i = 0; i < this.serviceService.files.length; i++) {
+            const element: any = Object.assign(
+              [],
+              this.serviceService.files[i]
+            );
+            console.log("sub property", element);
 
-    this.isvalidated();
+            if (element.property_ID !== "No Parent") {
+              const isdeedchildren = await this.checkProperty(element);
+
+              if (!isdeedchildren) {
+                const toast = this.notificationsService.warn(
+                  `Must add title deed for this property: ${element.property_ID}`
+                );
+              } else {
+                this.completed.emit();
+              }
+            }
+          }
+        }
+      } else {
+        console.log(
+          "property_Parent_IDselected",
+          this.selectedFile.property_Parent_ID
+        );
+
+        if (this.selectedFile.property_Parent_ID != "0") {
+          for (let i = 0; i < this.serviceService.files.length; i++) {
+            const element: any = Object.assign(
+              [],
+              this.serviceService.files[i]
+            );
+            console.log("sub property", element);
+
+            if (element.property_ID !== "No Parent") {
+              const isdeedchildren = await this.checkProperty(element);
+
+              if (!isdeedchildren) {
+                const toast = this.notificationsService.warn(
+                  `Must add title deed for this property: ${element.property_ID}`
+                );
+              } else {
+                this.completed.emit();
+              }
+            }
+          }
+        } else {
+          for (let i = 0; i < this.serviceService.files.length; i++) {
+            const element: any = Object.assign(
+              [],
+              this.serviceService.files[i]
+            );
+            console.log("sub property", element);
+
+            if (element.property_ID !== "No Parent") {
+              const isdeedchildren = await this.checkProperty(element);
+
+              if (!isdeedchildren) {
+                const toast = this.notificationsService.warn(
+                  `Must add title deed for this property: ${element.property_ID}`
+                );
+              } else {
+                this.completed.emit();
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
   async EnableFinstitle() {
@@ -758,82 +866,77 @@ export class PropertyComponent implements OnChanges {
       }
     } else {
       if (
-        this.serviceService.ishavetitleDeedRegistrationList &&
-        this.serviceService.ismeasurmentList
+        2 == this.serviceService.selectedproperty_Type_ID ||
+        3 == this.serviceService.selectedproperty_Type_ID
       ) {
-        if (
-          2 == this.serviceService.selectedproperty_Type_ID ||
-          3 == this.serviceService.selectedproperty_Type_ID
-        ) {
-          if (this.selectedFile.children.length == 0) {
-            const toast = this.notificationsService.warn(
-              "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
+        if (this.selectedFile.children.length == 0) {
+          const toast = this.notificationsService.warn(
+            "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
+          );
+        } else {
+          for (let i = 0; i < this.serviceService.files.length; i++) {
+            const element: any = Object.assign(
+              [],
+              this.serviceService.files[i]
             );
-          } else {
-            for (let i = 0; i < this.serviceService.files.length; i++) {
-              const element: any = Object.assign(
-                [],
-                this.serviceService.files[i]
-              );
-              console.log("sub property", element);
+            console.log("sub property", element);
 
-              if (element.property_ID !== "No Parent") {
-                const isdeedchildren = await this.checkProperty(element);
+            if (element.property_ID !== "No Parent") {
+              const isdeedchildren = await this.checkProperty(element);
 
-                if (!isdeedchildren) {
-                  const toast = this.notificationsService.warn(
-                    `Must add title deed for this property: ${element.property_ID}`
-                  );
-                } else {
-                  this.completed.emit();
-                }
+              if (!isdeedchildren) {
+                const toast = this.notificationsService.warn(
+                  `Must add title deed for this property: ${element.property_ID}`
+                );
+              } else {
+                this.completed.emit();
+              }
+            }
+          }
+        }
+      } else {
+        console.log(
+          "property_Parent_IDselected",
+          this.selectedFile.property_Parent_ID
+        );
+
+        if (this.selectedFile.property_Parent_ID != "0") {
+          for (let i = 0; i < this.serviceService.files.length; i++) {
+            const element: any = Object.assign(
+              [],
+              this.serviceService.files[i]
+            );
+            console.log("sub property", element);
+
+            if (element.property_ID !== "No Parent") {
+              const isdeedchildren = await this.checkProperty(element);
+
+              if (!isdeedchildren) {
+                const toast = this.notificationsService.warn(
+                  `Must add title deed for this property: ${element.property_ID}`
+                );
+              } else {
+                this.completed.emit();
               }
             }
           }
         } else {
-          console.log(
-            "property_Parent_IDselected",
-            this.selectedFile.property_Parent_ID
-          );
+          for (let i = 0; i < this.serviceService.files.length; i++) {
+            const element: any = Object.assign(
+              [],
+              this.serviceService.files[i]
+            );
+            console.log("sub property", element);
 
-          if (this.selectedFile.property_Parent_ID != "0") {
-            for (let i = 0; i < this.serviceService.files.length; i++) {
-              const element: any = Object.assign(
-                [],
-                this.serviceService.files[i]
-              );
-              console.log("sub property", element);
+            if (element.property_ID !== "No Parent") {
+              const isdeedchildren = await this.checkProperty(element);
 
-              if (element.property_ID !== "No Parent") {
-                const isdeedchildren = await this.checkProperty(element);
-
-                if (!isdeedchildren) {
-                  const toast = this.notificationsService.warn(
-                    `Must add title deed for this property: ${element.property_ID}`
-                  );
-                } else {
-                  this.completed.emit();
-                }
-              }
-            }
-          } else {
-            for (let i = 0; i < this.serviceService.files.length; i++) {
-              const element: any = Object.assign(
-                [],
-                this.serviceService.files[i]
-              );
-              console.log("sub property", element);
-
-              if (element.property_ID !== "No Parent") {
-                const isdeedchildren = await this.checkProperty(element);
-
-                if (!isdeedchildren) {
-                  const toast = this.notificationsService.warn(
-                    `Must add title deed for this property: ${element.property_ID}`
-                  );
-                } else {
-                  this.completed.emit();
-                }
+              if (!isdeedchildren) {
+                const toast = this.notificationsService.warn(
+                  `Must add title deed for this property: ${element.property_ID}`
+                );
+              } else {
+                this.completed.emit();
               }
             }
           }

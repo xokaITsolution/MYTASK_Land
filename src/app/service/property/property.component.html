@@ -62,7 +62,7 @@
               <app-property-register (completed)="EnableFinspro();" (completeddel)="EnabledelFinspro()"
                 [selectedpro]='selectedFile' [disable]="disable" [LicenceData]="LicenceData">
               </app-property-register>
-              <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1" [disabled]="serviceService.propertyISEnable && !serviceService.ispropoertylocation && isNextactive" translate>Next</button></div>
+              <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1" [disabled]="!serviceService.isNextactive" translate>Next</button></div>
      
             </div>
           </p-tabPanel>
@@ -81,7 +81,12 @@
                 [disable]="disable" [Licence_Service_ID]="Licence_Service_ID" [AppNo]="AppNo" [Service_ID]="Service_ID">
               </app-title-deed-registration>
                 <div style="float: left;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1"
-                    translate>previous</button></div>
+                    translate>previous</button>
+                  </div>
+                  <div style="float: right;">
+                    <button  type="button" class="btn btn-primary mr-1" [disabled]="!toFixedasset" (click)="DoneNew()"
+                      translate>Done</button>
+                  </div>
             </div>
           </p-tabPanel>
         </p-tabView>
@@ -96,7 +101,7 @@
               [LicenceData]="LicenceData">
             </app-property-register>
               <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1"
-                  [disabled]="serviceService.propertyISEnable && !serviceService.ispropoertylocation && isNextactive" translate>Next</button>
+                  [disabled]="serviceService.propertyISEnable && !serviceService.ispropoertylocation && !serviceService.isNextactive" translate>Next</button>
               </div>
         
             </div>
@@ -118,7 +123,12 @@
                   [Service_ID]="Service_ID">
                 </app-title-deed-registration>
               <div style="float: left;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1"
-                  translate>previous</button></div>
+                  translate>previous</button>
+                </div>
+                <div style="float: right;">
+                  <button  type="button" class="btn btn-primary mr-1" [disabled]="!toFixedasset" (click)="DoneNew()"
+                    translate>Done</button>
+                </div>
             </div>
           </p-tabPanel>
         </p-tabView>

@@ -2381,13 +2381,17 @@ export class GisMapComponent implements AfterViewInit {
       }));
 
       let PolygonArea = this.calculateUTMPolygonArea(utmPoints).toFixed(2);
-      this.ServiceService.Totalarea = parseInt(PolygonArea);
       console.log("dataaaa", PolygonArea);
+      if (PolygonArea) {
+        this.ServiceService.Totalarea = parseInt(PolygonArea);
 
-      localStorage.setItem("PolygonAreaname", "" + PolygonArea);
+        localStorage.setItem("PolygonAreaname", "" + PolygonArea);
+      }
     } else {
       let PolygonArea = this.calculateUTMPolygonArea(coordinates).toFixed(2);
-      localStorage.setItem("PolygonAreaname", "" + PolygonArea);
+      if (PolygonArea) {
+        localStorage.setItem("PolygonAreaname", "" + PolygonArea);
+      }
     }
 
     // Map the data to LatLng objects
