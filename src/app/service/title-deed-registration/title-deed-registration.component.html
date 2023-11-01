@@ -323,8 +323,8 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
       </ng-template>
     </p-table>
     <div *ngIf="iscustomerdata">
-      <p translate>
-        {{"there is no customer" | translate}}
+      <p style="color: red;" translate>
+        {{"no record found" | translate}}
       </p>
       </div>
     <div *ngIf="serviceComponent.lode">
@@ -383,8 +383,8 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
       </ng-template>
     </p-table>
     <div *ngIf="iscustomerdatato">
-      <p translate>
-        {{"there is no customer" | translate}}
+      <p style="color: red;" translate>
+        {{"no record found" | translate}}
       </p>
   </div>
     <div *ngIf="serviceComponent.lode">

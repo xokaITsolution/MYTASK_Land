@@ -354,7 +354,7 @@ select {
   display: flex;
   justify-content: center;
   align-items: center;
-
+  
 
 }
 
@@ -368,8 +368,8 @@ select {
   background: #fff;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    max-height: 600px;
-      overflow: auto;
+  max-height: 80%;
+ overflow: auto;
 }
 
 .ngxsmartmodal-dialog-content {
