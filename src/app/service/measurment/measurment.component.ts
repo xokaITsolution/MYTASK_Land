@@ -97,7 +97,13 @@ export class MeasurmentComponent implements OnChanges {
   }
 
   add() {
-    this.measurment.Property_ID = this.selectedpro.property_ID;
+    if (this.measurment.Property_ID == null) {
+      this.measurment.Property_ID =
+        this.ServiceService.insertedProperty === null
+          ? this.selectedpro.property_ID
+          : this.ServiceService.insertedProperty;
+    }
+
     this.measurment.To_Do_ID = this.Licence_Service_ID;
     this.measurment.Application_No = this.Licence_Service_ID;
     console.log("this.measurment", this.measurment);

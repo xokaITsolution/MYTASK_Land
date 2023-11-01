@@ -281,6 +281,10 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
         this.titleDeedRegistration.date
       );
     }
+    if (this.titleDeedRegistration.property_ID == null) {
+      this.titleDeedRegistration.property_ID =
+        this.serviceService.insertedProperty;
+    }
     this.titleDeedRegistration.licence_Service_Id = this.Licence_Service_ID;
     this.titleDeedRegistration.application_No = this.AppNo;
     this.titleDeedRegistration.service_ID = this.Service_ID;

@@ -892,6 +892,8 @@ export class GisMapComponent implements AfterViewInit {
       baseResolutionMeters / 32,
       baseResolutionMeters / 64,
       baseResolutionMeters / 128,
+      baseResolutionMeters / 256,
+      baseResolutionMeters / 512,
       // ... Add more resolutions for finer zoom levels
     ];
 
@@ -913,6 +915,8 @@ export class GisMapComponent implements AfterViewInit {
       crs: this.EPSG20137,
       center: [9.032457, 38.759775],
       zoom: 0, // Set the map CRS to EPSG:20137
+      maxZoom: 18,
+      minZoom: 3,
     }); // Set an appropriate initial view for Ethiopia
     // Define custom zoom levels
 
@@ -2642,6 +2646,8 @@ export class GisMapComponent implements AfterViewInit {
         baseResolutionMeters / 32,
         baseResolutionMeters / 64,
         baseResolutionMeters / 128,
+        baseResolutionMeters / 256,
+        baseResolutionMeters / 512,
         // ... Add more resolutions for finer zoom levels
       ];
 
