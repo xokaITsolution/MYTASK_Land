@@ -1,14 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 /*@import '~bootstrap/dist/css/bootstrap.min.css';*/
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+/* @import "~@angular/material/prebuilt-themes/indigo-pink.css"; */
 @import "~bootstrap/dist/css/bootstrap.min.css";
 @import "~survey-angular/survey.css";
 @import "~primeng/resources/themes/nova-light/theme.css";
 @import "~primeng/resources/primeng.min.css";
 @import "~primeicons/primeicons.css";
-@import "~font-awesome/css/font-awesome.css";
+/* @import "~font-awesome/css/font-awesome.css";
 @import "~material-icons/iconfont/material-icons.css";
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "~@angular/material/prebuilt-themes/indigo-pink.css"; */
 @import "~leaflet/dist/leaflet.css";
 
 tr.green {
@@ -410,4 +410,38 @@ select {
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
   /* Change the color of the scroll bar track */
+}
+.my-custom-icon {
+  text-align: center;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  /* Center the content vertically */
+  color: rgb(0, 0, 0);
+  background-color: #0074D9;
+  /* Set the background color */
+  border: 2px solid #001f3f;
+  /* Add a border */
+  border-radius: 50%;
+  /* Make it a circle */
+  font-size: 16px;
+}
+
+.my-icon-label {
+  font-weight: bold;
+}
+.fit-content-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.fit-content-cell {
+  white-space: nowrap;
+  /* Prevent text from wrapping */
+  overflow: hidden;
+  /* Hide overflowed content */
+  text-overflow: ellipsis;
+  /* Show ellipsis for overflowed text */
+  max-width: 100px;
+  /* Set a max-width for the cell */
 }

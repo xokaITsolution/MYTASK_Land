@@ -14,7 +14,7 @@
     <ng-template pTemplate="body" let-property let-rowData>
       <tr (click)='highlighted = rowData;SelectProprty(property)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
      
-        <td>{{property.plot_ID}}</td>
+        <td class="fit-content-cell">{{property.plot_ID}}</td>
         <select class="form-control" disabled [disabled]="disable" [(ngModel)]="property.plot_Status" name="Status"
           id="Status">
           <option disabled translate>select</option>
@@ -22,9 +22,9 @@
             {{Status.Name}}
           </option>
         </select>
-        <td>{{property.plot_Size_M2}}</td>
-        <td>{{property.registration_Date}}</td>
-        <td>{{property.plot_ID}}</td>
+        <td class="fit-content-cell">{{property.plot_Size_M2}}</td>
+        <td class="fit-content-cell">{{property.registration_Date}}</td>
+        <td class="fit-content-cell">{{property.plot_ID}}</td>
         <td>
           <button type="button" class="btn btn-primary" (click)="SelectProprty(property)" translate>Select</button>
         </td>

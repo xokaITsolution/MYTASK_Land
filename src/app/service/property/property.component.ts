@@ -95,41 +95,38 @@ export class PropertyComponent implements OnChanges {
     }
   }
   getPloat() {
-    if (this.LicenceData.Licence_Service_ID) {
+    if (this.LicenceData.Parcel_ID) {
       //this.completed.emit();
-      console.log(
-        "geting ploat this.Parcel_ID",
-        this.LicenceData.Licence_Service_ID
-      );
-      this.getPlotManagement(this.LicenceData.Licence_Service_ID);
+      console.log("geting ploat this.Parcel_ID", this.LicenceData.Parcel_ID);
+      this.getPlotManagement(this.LicenceData.Parcel_ID);
     }
     if (this.LicenceData.Plot_Merge_1) {
       console.log(
         "geting ploat this.Plot_Merge_1",
         this.LicenceData.Plot_Merge_1
       );
-      this.getPlotManagement(this.LicenceData.Licence_Service_ID);
+      this.getPlotManagement(this.LicenceData.Plot_Merge_1);
     }
     if (this.LicenceData.Plot_Merge_2) {
       console.log(
         "geting ploat this.Plot_Merge_2",
         this.LicenceData.Plot_Merge_2
       );
-      this.getPlotManagement(this.LicenceData.Licence_Service_ID);
+      this.getPlotManagement(this.LicenceData.Plot_Merge_2);
     }
     if (this.LicenceData.Plot_Merge_3) {
       console.log(
         "geting ploat this.Plot_Merge_3",
         this.LicenceData.Plot_Merge_3
       );
-      this.getPlotManagement(this.LicenceData.Licence_Service_ID);
+      this.getPlotManagement(this.LicenceData.Plot_Merge_3);
     }
     if (this.LicenceData.Plot_Merge_4) {
       console.log(
         "geting ploat this.Plot_Merge_4",
         this.LicenceData.Plot_Merge_4
       );
-      this.getPlotManagement(this.LicenceData.Licence_Service_ID);
+      this.getPlotManagement(this.LicenceData.Plot_Merge_4);
     }
   }
   async getEthiopianToGregorian(date) {
@@ -152,7 +149,7 @@ export class PropertyComponent implements OnChanges {
   }
   getPlotManagement(Licence_Service_ID) {
     let a;
-    this.serviceService.getPlotManagementApiLicen(Licence_Service_ID).subscribe(
+    this.serviceService.getPlotManagementApi(Licence_Service_ID).subscribe(
       async (PlotManagementLists: any) => {
         this.PlotManagementList = PlotManagementLists.procPlot_Registrations;
         this.PlotManagementList = this.removeDuplicates(
@@ -347,6 +344,7 @@ export class PropertyComponent implements OnChanges {
       (item, index, self) =>
         self.findIndex((i) => i.property_ID === item.property_ID) === index
     );
+
     this.serviceService.totlaizeproportinal = 0;
     uniqueArray.forEach((element) => {
       console.log("this.serviceService.totlaizeproportinal", element);
@@ -365,6 +363,31 @@ export class PropertyComponent implements OnChanges {
       this.serviceService.totlaizeproportinal
     );
     console.log("this.files", this.serviceService.files);
+    if (this.serviceService.files.length > 0) {
+      // Automatically select the first element
+      // Call the recursive function to find the first tree element
+      // const firstElement = this.findTreeElement(
+      //   this.serviceService.files,
+      //   this.serviceService.insertedProperty
+      // );
+      const selectedChild = this.expandAndSelectChild(
+        this.serviceService.files,
+        this.serviceService.insertedProperty
+      );
+
+      if (selectedChild) {
+        this.selectedFile = selectedChild;
+        this.nodeSelect();
+        console.log("Selected tree element:", selectedChild);
+      } else {
+        console.log("Tree element with property_ID not found.");
+      }
+
+      // Now you can work with the first element, for example, print it to the console
+      console.log("Selected first tree element:", selectedChild);
+
+      // You can perform any additional operations on the first element here.
+    }
     for (let i = 0; i < this.serviceService.files.length; i++) {
       const element: any = Object.assign([], this.serviceService.files[i]);
       console.log("sub propertyelement", element);
@@ -382,6 +405,38 @@ export class PropertyComponent implements OnChanges {
         }
       }
     }
+  }
+  expandAndSelectChild(tree, targetPropertyID) {
+    for (let i = 0; i < tree.length; i++) {
+      if (tree[i].property_ID === targetPropertyID) {
+        // Found the element with the specified property_ID
+        tree[i].expanded = true; // Expand the node
+        return tree[i];
+      } else if (tree[i].children && tree[i].children.length > 0) {
+        const result = this.expandAndSelectChild(
+          tree[i].children,
+          targetPropertyID
+        );
+        if (result) {
+          tree[i].expanded = true; // Expand the parent node
+          return result;
+        }
+      }
+    }
+    return null; // Element not found
+  }
+  findTreeElement(tree, targetPropertyID) {
+    for (let i = 0; i < tree.length; i++) {
+      if (tree[i].property_ID === targetPropertyID) {
+        return tree[i]; // Found the element with the specified property_ID
+      } else if (tree[i].children && tree[i].children.length > 0) {
+        const result = this.findTreeElement(tree[i].children, targetPropertyID);
+        if (result) {
+          return result; // Found the element in a child node
+        }
+      }
+    }
+    return null; // Element not found
   }
 
   AddNew() {

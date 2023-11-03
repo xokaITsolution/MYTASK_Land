@@ -23,6 +23,7 @@ export const environment = {
   SubcityName: window["SubcityName"],
   geoserverUrl: window["geoserverUrl"],
   geoserverUrlwfs: window["geoserverUrlwfs"],
+  parentWorkspace: window["parentWorkspace"],
   geoser: window["geoser"],
   imagepathclock: window["_imagepathclock"],
   imagepath: window["_imagepath"],

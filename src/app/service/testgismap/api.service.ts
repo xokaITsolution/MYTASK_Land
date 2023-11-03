@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, throwError } from "rxjs";
+import { catchError } from "rxjs/operators";
 import { environment } from "src/environments/environment";
 
 @Injectable({
@@ -19,13 +20,15 @@ export class ApiService {
       .set("Content-Type", "application/json")
       .set("Authorization", "Basic " + btoa("admin:geoserver"));
 
-    return this.http.get(url, { headers });
+    //return this.http.get(url, { headers });
+    return this.http.get(url, { headers }).pipe(catchError(this.handleError));
   }
   fetchStyleFile(href: any) {
     const headers = new HttpHeaders()
       .set("Content-Type", "application/json")
       .set("Authorization", "Basic " + btoa("admin:geoserver"));
 
+    //return this.http.get(href, { headers });
     return this.http.get(href, { headers });
   }
   fetchGroupLayers(subcityGroupName): Observable<any> {
@@ -35,16 +38,22 @@ export class ApiService {
       .set("Content-Type", "application/json")
       .set("Authorization", "Basic " + btoa("admin:geoserver"));
 
-    return this.http.get(url, { headers });
+    // return this.http.get(url, { headers });
+    return this.http.get(url, { headers }).pipe(catchError(this.handleError));
+  }
+  handleError(error: any) {
+    // You can customize the error handling logic here.
+    // For example, log the error for debugging purposes.
+    console.error("HTTP Error:", error);
+
+    // Rethrow the error so it can be caught by the component.
+    return throwError(error);
   }
   getLayersFromGeoserver(url: any): Observable<any> {
-    //const basurlemp: string = 'http://192.168.0.104:8080/geoserver/rest/workspaces/Arada_AddisLand/layerGroups.json';
-    //const url = 'http://192.168.0.104:8080/geoserver/rest/layers/child_group_layer.json';
-
-    // const groupUrl = `http://192.168.0.104:8080/geoserver/rest/layers/layer/Lines.json`;
     const headers = new HttpHeaders()
       .set("Content-Type", "application/json")
       .set("Authorization", "Basic " + btoa("admin:geoserver"));
-    return this.http.get<any>(url, { headers });
+    //return this.http.get<any>(url, { headers });
+    return this.http.get(url, { headers }).pipe(catchError(this.handleError));
   }
 }

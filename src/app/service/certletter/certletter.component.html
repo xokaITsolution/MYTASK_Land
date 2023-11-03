@@ -3,19 +3,19 @@
 
 <div class="col-md-12 row">
   <div class="col-md-6">
-    <p-table [value]="BaseTable" [paginator]="true" [rows]="5">
+    <p-table [value]="BaseTable" [paginator]="true" [rows]="5"  class="fit-content-table">
       <ng-template pTemplate="header"><tr>
-          <th scope="col" translate>Title Deed No</th>
-          <th scope="col" translate>Registration Date</th>
-          <th scope="col" translate>Branch</th>
-          <th scope="col"></th>
+          <th  scope="col" translate>Title Deed No</th>
+          <th  scope="col" translate>Registration Date</th>
+          <th  scope="col" translate>Branch</th>
+          <th  scope="col"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-Base let-rowData>
         <tr (click)='highlighted = rowData;SelectBase(Base)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
        
-          <td>{{Base.Title_Deed_No}}</td>
-          <td>{{Base.Registration_Date}}</td>
+          <td class="fit-content-cell">{{Base.Title_Deed_No}}</td>
+          <td class="fit-content-cell" >{{Base.Registration_Date}}</td>
           <td>
             <select disabled class="form-control" [disabled]="disable" [(ngModel)]="Base.SDP_ID" name="SubCity"
                     id="SubCity">
@@ -54,9 +54,9 @@
         <ng-template pTemplate="body" let-version let-rowData>
           <tr (click)='highlighted = rowData;Selectversion(version)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
          
-            <td>{{version.ownership_ID}}</td>
-            <td>{{version.version_ID}}</td>
-            <td>{{version.title_Deed_No}}</td>
+            <td class="fit-content-cell" >{{version.ownership_ID}}</td>
+            <td class="fit-content-cell" >{{version.version_ID}}</td>
+            <td class="fit-content-cell">{{version.title_Deed_No}}</td>
             <td>
               <button type="button" class="btn btn-primary" (click)="Selectversion(version)" translate>select</button>
             </td>
@@ -216,7 +216,7 @@
     <button type="button" class="btn btn-secondary" (click)="closeModal('cert')">Close</button>
   </div>
 </ngx-smart-modal> -->
-<p-dialog header=" Letter Printing Confirmation" [(visible)]="isLetterPrintingConfirmation" [responsive]="true" 
+<!-- <p-dialog header=" Letter Printing Confirmation" [(visible)]="isLetterPrintingConfirmation" [responsive]="true" 
 [width]="1400" [minY]="70"
 [maximizable]="true"
 [contentStyle]="{'overflow-y': 'auto', 
@@ -227,16 +227,14 @@
 <div class="modal-body">
   <iframe class="ng-template" width="100%" height="500px" [src]="LetterReportPath"></iframe>
 
-<!-- <div>
-  <qr-code [value]="yourQRCodeDataLetter" [size]="150"></qr-code>
-  scan the QRCode To get Link
-</div> -->
+
 </div>
     <div class=" float-right">
       <p-button icon="pi pi-check" (click)="isLetterPrintingConfirmation=false;" label="Close" styleClass="p-button-text"></p-button>
     </div>
-    </p-dialog>
-    <p-dialog header="Certifcate Print for Confirmation" [(visible)]="isCertifcatePrintforConfirmation" [responsive]="true" 
+    </p-dialog> -->
+
+    <!-- <p-dialog header="Certifcate Print for Confirmation" [(visible)]="isCertifcatePrintforConfirmation" [responsive]="true" 
     [width]="1400" [minY]="70"
     [maximizable]="true"  
     [contentStyle]="{'overflow-y': 'auto', 
@@ -247,15 +245,67 @@
 
 <div class="modal-body">
   <iframe class="ng-template" width="100%" height="500px" [src]="certReportPath"></iframe>
-<!-- <div>
-  <qr-code [value]="yourQRCodeDatacert" [size]="150"></qr-code>
-    scan the QRCode To get Link
-</div> -->
 </div>
     <div class=" float-right">
       <p-button icon="pi pi-check" (click)="isCertifcatePrintforConfirmation=false;" label="Close" styleClass="p-button-text"></p-button>
     </div>
-    </p-dialog>
+    </p-dialog> -->
+    <div class="ngxsmartmodal" *ngIf="isLetterPrintingConfirmation">
+      <div class="ngxsmartmodal-dialog" [style.max-width]="maxWidth">
+        <div class="ngxsmartmodal-dialog-content">
+          <div class="ngxsmartmodal-header">
+            <!-- Modal header content -->
+            <button type="button" class="btn-secondary m-2" (click)="openMiniModal()">-</button>
+            <button type="button" class="btn-secondary m-2" (click)="openFullModal()">+</button>
+            <button type="button" class="close" (click)="isLetterPrintingConfirmation=false">&times;</button>
+            <h5 style="align-items: center;">Letter Printing Confirmation</h5>
+          </div>
+    
+          <div class="ngxsmartmodal-body">
+    
+            <iframe class="ng-template" width="100%" height="500px" [src]="LetterReportPath"></iframe>
+    
+    
+          </div>
+          <div class="ngxsmartmodal-footer">
+            <!-- Modal footer content -->
+            <div class="modal-footer">
+    
+              <button type="button" class="btn btn-danger" (click)="isLetterPrintingConfirmation=false"
+                translate>Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ngxsmartmodal" *ngIf="isCertifcatePrintforConfirmation">
+      <div class="ngxsmartmodal-dialog" [style.max-width]="maxWidth">
+        <div class="ngxsmartmodal-dialog-content">
+          <div class="ngxsmartmodal-header">
+            <!-- Modal header content -->
+            <button type="button" class="btn-secondary m-2" (click)="openMiniModal()">-</button>
+            <button type="button" class="btn-secondary m-2" (click)="openFullModal()">+</button>
+            <button type="button" class="close" (click)="isCertifcatePrintforConfirmation=false">&times;</button>
+            <h5 style="align-items: center;">Certifcate Print for Confirmation</h5>
+          </div>
+    
+          <div class="ngxsmartmodal-body">
+    
+          <iframe class="ng-template" width="100%" height="500px" [src]="certReportPath"></iframe>
+    
+    
+          </div>
+          <div class="ngxsmartmodal-footer">
+            <!-- Modal footer content -->
+            <div class="modal-footer">
+    
+              <button type="button" class="btn btn-danger" (click)="isCertifcatePrintforConfirmation=false" translate>Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
 
 

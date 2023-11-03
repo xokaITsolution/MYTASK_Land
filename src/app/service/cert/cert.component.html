@@ -20,9 +20,9 @@
 
       <ng-template pTemplate="body" let-Base>
         <tr class="aaaa" [class.active]="Base == SelectedBase">
-          <td>{{Base.Title_Deed_No}}</td>
-          <td>{{Base.Registration_Date}}</td>
-          <td>
+          <td class="fit-content-cell">{{Base.Title_Deed_No}}</td>
+          <td class="fit-content-cell">{{Base.Registration_Date}}</td>
+          <td class="fit-content-cell">
             <select disabled class="form-control" [disabled]="disable" [(ngModel)]="Base.SDP_ID" name="SubCity"
               id="SubCity">
               <option disabled translate>select</option>
@@ -32,7 +32,7 @@
             </select>
           </td>
 
-          <td>
+          <td class="fit-content-cell">
             <button type="button" class="btn btn-primary mr-1 mb-1" (click)="SelectBase(Base)" translate>select</button>
             <button type="button" class="btn btn-primary" *ngIf="!disable"
               (click)="EditBaseView(template, Base)" translate>Edit</button>
@@ -60,22 +60,22 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-version>
-          <tr [class.active]="version == Selectedcert">
-            <td>{{version.ownership_ID}}</td>
-            <td>{{version.version_No}}</td>
-            <td>
+          <tr  [ngClass]="{'aaaa': version === Selectedcert}">
+            <td class="fit-content-cell">{{version.ownership_ID}}</td>
+            <td class="fit-content-cell">{{version.version_No}}</td>
+            <td class="fit-content-cell">
               <p-checkbox [disabled]="true" [(ngModel)]="version.is_Active" name="IsActive1" id="IsActive1"
                 binary="true"></p-checkbox>
             </td>
-            <td>
+            <td class="fit-content-cell">
               <p-checkbox [disabled]="true" [(ngModel)]="version.is_Printed" name="IsActive1" id="IsActive1"
                 binary="true"></p-checkbox>
             </td>
-            <td>
+            <td class="fit-content-cell">
               <p-checkbox [disabled]="true" [(ngModel)]="version.is_Issued" name="IsActive1" id="IsActive1"
                 binary="true"></p-checkbox>
             </td>
-            <td>
+            <td class="fit-content-cell">
               <button type="button" class="btn btn-primary" (click)="Selectversion(version)" translate>select</button>
             </td>
           </tr>

@@ -50,7 +50,6 @@
               <th translate>Applicant_First_Name_AM</th>
               <th translate>Applicant_Middle_Name_AM</th>
               <th translate>Wereda_ID</th>
-              <th translate>Customer phone</th>
               <th translate>TIN</th>
               <th translate>Email</th>
               <th translate>QueueNo</th>
@@ -60,7 +59,6 @@
               <td >{{ licenceData.Applicant_First_Name_AM }}</td>
               <td >{{ licenceData.Applicant_Middle_Name_AM }}</td>
               <td >{{ licenceData.Wereda_ID }}</td>
-              <td >{{ licenceData.Cust_Phone_No }}</td>
               <td >{{ licenceData.Cust_TIN_No }}</td>
               <td >{{ licenceData.Email }}</td>
               <td >{{ licenceData.QueueNo }}</td>
@@ -265,7 +263,7 @@
 
   </div>
   <!--The content below is only a placeholder and can be replaced.-->
-  <div class="p-3 border-secondary border-5 bg-secondary text-white h-100 text-center m-10 mt-10">
+  <div class="p-3 border-secondary border-5 bg-secondary text-white h-10 text-center m-10 mt-10">
     <div class="btn-group">
       <button class="btn btn-primary mr-2" *ngIf="!hideit"  type="button" (click)="showdialogg()" translate>Not Complete</button>
 
@@ -359,7 +357,7 @@
         <select *ngIf="ifAppNo" class="form-control" [(ngModel)]="AppN" (change)="getAppData(AppN)"
           name="CustomerType" id="ApplicationLIst">
           <option disabled>select</option>
-          <option *ngFor="let AppNo of ApplicationNumberlist" [value]="AppNo.application_number">{{AppNo.application_number}} | {{AppNo.service_Name}} | {{AppNo.application_Date}}</option>
+          <option *ngFor="let AppNo of ApplicationNumberlist" [value]="AppNo.application_number">{{AppNo.application_number}} | {{AppNo.title_Deed_No}}| {{AppNo.service_Name}} | {{AppNo.application_Date}}</option>
         </select>
       </div>
     </div>

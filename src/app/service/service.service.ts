@@ -159,7 +159,7 @@ export class ServiceService {
   centerLatLng: any;
   plotsizenotequal: boolean;
   isNextactive: boolean = false;
-  currentplotsize: Number = 0;
+  currentplotsize: any;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);

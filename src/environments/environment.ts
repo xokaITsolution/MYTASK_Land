@@ -29,6 +29,7 @@ export const environment = {
   PaymentReportPath: window["PaymentReportPath"],
   certReportPath: window["certReportPath"],
   LetterReportPath: window["LetterReportPath"],
+  parentWorkspace: window["parentWorkspace"],
 
   resourcePath: "",
   overlayLayer: window["overlayLayer"],

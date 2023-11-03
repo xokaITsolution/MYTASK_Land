@@ -1,3 +1,4 @@
+<simple-notifications></simple-notifications>
 
 <div class="container-fluid">
   <div class="row">
@@ -7,12 +8,6 @@
             <div class="sideTitle">
               <h1>Layers</h1>
             </div>
-          <!-- <div *ngFor="let layer of layers">
-            <label>
-              <input type="checkbox" [value]="layer.name"[checked]="ServiceService.check!=true ? '':layer.name == 'Oromiya_woredas'" (change)="toggleLayer($event.target.checked, layer.name)" />
-              {{ layer.name }}
-            </label>
-          </div> -->
                   <h5 class="sub">Addis Ababa</h5>
                   <p-tree  [value]="nodes" [metaKeySelection]="false" selectionMode="multiple" (onNodeSelect)="toggleLayer_Checked($event)"
                     (onNodeUnselect)="toggleLayer_UnChecked($event)" [style]="{'minWidth':'100%', 'width': 'auto','height': 'auto'}">
@@ -34,8 +29,6 @@
           </select>
 
         </div>
-
-
         <div *ngIf="selectedDatum">
           <!-- Define input boxes based on selected datum -->
           <div
@@ -151,6 +144,10 @@
           <button type="button" class="btn btn-info mb-2" (click)="convertToExcel(utmCoordinates)">
             Convert to Excel
           </button>&nbsp;
+          <h6   *ngIf="ispointadd" >
+
+            Number of Add point: {{numberOFaddpoint}}
+          </h6>
           <!-- <button (click)="mergePolygons()" type="button" class="btn btn-info mb-2">Merge Polygons</button> &nbsp;
           <button (click)="onClick($event)" type="button" class="btn btn-info mb-2">select Polygons</button> -->
         </div>
@@ -174,8 +171,5 @@
   </div>
 
 </div>
-
-<p-toast position="top-right"></p-toast>`
-<simple-notifications></simple-notifications>
 
 <!-- <button (click)="clickto()">testUTM</button> -->

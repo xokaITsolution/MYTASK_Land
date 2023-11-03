@@ -48,6 +48,9 @@ export class PaymentComponent implements OnChanges {
   payment: any;
   el = new E();
   yourQRCodeDataPayment: string;
+  ismodaEnable: boolean = false;
+  isMaximized: boolean;
+  maxWidth: string = "1300px";
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -114,6 +117,15 @@ export class PaymentComponent implements OnChanges {
       }
     );
     // Payment.Date_Paid = Payment.Date_Paid.split('T')[0];
+  }
+  openFullModal() {
+    this.isMaximized = true;
+    this.maxWidth = "1600px"; // Set the max width for full modal
+  }
+
+  openMiniModal() {
+    this.isMaximized = false;
+    this.maxWidth = "800px"; // Set the max width for mini modal
   }
 
   // SaveBoth(payment, PaymentDetail){

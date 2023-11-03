@@ -252,29 +252,25 @@ export class CertComponent implements OnChanges {
       },
       async (error) => {
         console.log(error);
-        if (error.status == "400") {
-          if (this.language == "amharic") {
-            this.Base.Registration_Date =
-              await this.getgregorianToEthiopianDate(
-                this.Base.Registration_Date
-              );
-          }
-          const toast = this.notificationsService.error(
-            "Error",
-            error.error.InnerException.Errors[0].message
-          );
-        } else {
-          if (this.language == "amharic") {
-            this.Base.Registration_Date =
-              await this.getgregorianToEthiopianDate(
-                this.Base.Registration_Date
-              );
-          }
-          const toast = this.notificationsService.error(
-            "Error",
-            "SomeThing Went Wrong"
+        // if (error.status == "400") {
+        if (this.language == "amharic") {
+          this.Base.Registration_Date = await this.getgregorianToEthiopianDate(
+            this.Base.Registration_Date
           );
         }
+        const toast = this.notificationsService.error("Error", error.error);
+        // } else {
+        //   if (this.language == "amharic") {
+        //     this.Base.Registration_Date =
+        //       await this.getgregorianToEthiopianDate(
+        //         this.Base.Registration_Date
+        //       );
+        //   }
+        //   const toast = this.notificationsService.error(
+        //     "Error",
+        //     "SomeThing Went Wrong"
+        //   );
+        // }
       }
     );
   }
@@ -296,29 +292,13 @@ export class CertComponent implements OnChanges {
       },
       async (error) => {
         console.log(error);
-        if (error.status == "400") {
-          if (this.language == "amharic") {
-            this.Base.Registration_Date =
-              await this.getgregorianToEthiopianDate(
-                this.Base.Registration_Date
-              );
-          }
-          const toast = this.notificationsService.error(
-            "Error",
-            error.error.InnerException.Errors[0].message
-          );
-        } else {
-          if (this.language == "amharic") {
-            this.Base.Registration_Date =
-              await this.getgregorianToEthiopianDate(
-                this.Base.Registration_Date
-              );
-          }
-          const toast = this.notificationsService.error(
-            "Error",
-            "you have not permission to edit"
+
+        if (this.language == "amharic") {
+          this.Base.Registration_Date = await this.getgregorianToEthiopianDate(
+            this.Base.Registration_Date
           );
         }
+        const toast = this.notificationsService.error("Error", error);
       }
     );
   }
@@ -335,6 +315,12 @@ export class CertComponent implements OnChanges {
     this.certverForm = true;
     this.disableTab = false;
     this.displayGIS = false;
+    if (certver.is_Active) {
+      this.serviceService.disablefins = false;
+    } else {
+      this.serviceService.disablefins = true;
+    }
+
     console.log("certver", certver);
   }
 

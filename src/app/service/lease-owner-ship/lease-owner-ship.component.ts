@@ -120,14 +120,14 @@ export class LeaseOwnerShipComponent implements OnChanges {
       this.islease = false;
       this.iislease = false;
       this.isfreehole = false;
-      this.leaseOwnerShip.Lease_Hold_M2 = parseInt(
+      this.leaseOwnerShip.Lease_Hold_M2 = parseFloat(
         localStorage.getItem("PolygonAreaname")
       );
     } else if (value == 1) {
       this.iislease = false;
       this.islease = true;
       this.isfreehole = true;
-      this.leaseOwnerShip.Lease_Hold_M2 = parseInt(
+      this.leaseOwnerShip.Lease_Hold_M2 = parseFloat(
         localStorage.getItem("PolygonAreaname")
       );
       this.leaseOwnerShip.Free_Hold_M2 = 0;
@@ -176,11 +176,11 @@ export class LeaseOwnerShipComponent implements OnChanges {
   async selectLease(task) {
     console.log("tasktasktasktask", task);
     this.serviceService.Totalarea = task.Lease_Hold_M2 + task.Free_Hold_M2;
-    this.serviceService.currentplotsize = parseInt(
+    this.serviceService.currentplotsize = parseFloat(
       localStorage.getItem("PolygonAreaname")
     );
-    if (parseInt(localStorage.getItem("PolygonAreaname"))) {
-      task.Lease_Hold_M2 = parseInt(localStorage.getItem("PolygonAreaname"));
+    if (parseFloat(localStorage.getItem("PolygonAreaname"))) {
+      task.Lease_Hold_M2 = parseFloat(localStorage.getItem("PolygonAreaname"));
     }
     this.addnew = false;
     // this.leaseForm = true;
@@ -237,7 +237,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
     this.leaseOwnerShip.todoid = this.todoid;
     this.leaseOwnerShip.applicationo = this.applicationo;
     this.leaseOwnerShip.Lease_Hold_M2 = localStorage.getItem("PolygonAreaname");
-    this.serviceService.currentplotsize = parseInt(
+    this.serviceService.currentplotsize = parseFloat(
       localStorage.getItem("PolygonAreaname")
     );
     // this.leaseOwnerShip.SDP_ID = this.LicenceData.SDP_ID;
@@ -341,11 +341,16 @@ export class LeaseOwnerShipComponent implements OnChanges {
       this.serviceService.currentplotsize,
       this.leaseOwnerShip.Lease_Hold_M2
     );
+    const maxAreaDifference =
+      environment.Totalareatolerance * this.serviceService.currentplotsize;
 
-    if (
-      this.serviceService.currentplotsize !=
-      parseInt(this.leaseOwnerShip.Lease_Hold_M2)
-    ) {
+    const areaDifference = Math.abs(
+      this.leaseOwnerShip.Lease_Hold_M2 -
+        parseFloat(localStorage.getItem("PolygonAreaname"))
+    );
+    console.log(maxAreaDifference, areaDifference);
+
+    if (areaDifference >= maxAreaDifference) {
       const warningMessage =
         "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold Total area :";
       const toastWarning = this.notificationsService.warn(
@@ -354,7 +359,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
       );
       return;
     }
-    if (this.leaseOwnerShip.Lease_Hold_M2 < 75) {
+    if (parseFloat(this.leaseOwnerShip.Lease_Hold_M2) < 75) {
       const toast = this.notificationsService.warn(
         "Lease Hold is not less than 75/የሊዝ ይዞታ ከ 75 መብለጥ የለበትም"
       );
@@ -362,8 +367,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
       return;
     }
     let totalsize =
-      parseInt(this.leaseOwnerShip.Free_Hold_M2) +
-      parseInt(this.leaseOwnerShip.Lease_Hold_M2);
+      parseFloat(this.leaseOwnerShip.Free_Hold_M2) +
+      parseFloat(this.leaseOwnerShip.Lease_Hold_M2);
 
     console.log("totalsize", totalsize);
 
@@ -379,17 +384,17 @@ export class LeaseOwnerShipComponent implements OnChanges {
           tasks.forEach((element) => {
             if (element.Plot_ID != this.leaseOwnerShip.Plot_ID) {
               let totalsizeeach =
-                parseInt(element.Free_Hold_M2) +
-                parseInt(element.Lease_Hold_M2);
+                parseFloat(element.Free_Hold_M2) +
+                parseFloat(element.Lease_Hold_M2);
 
               this.totalsizeofleaseeach += totalsizeeach;
             }
           });
           this.totalsizeoflease =
-            parseInt(localStorage.getItem("PolygonAreaname")) -
+            parseFloat(localStorage.getItem("PolygonAreaname")) -
             this.totalsizeofleaseeach;
         } else {
-          this.totalsizeoflease = parseInt(
+          this.totalsizeoflease = parseFloat(
             localStorage.getItem("PolygonAreaname")
           );
         }
@@ -417,7 +422,14 @@ export class LeaseOwnerShipComponent implements OnChanges {
 
           //this.serviceService.disablefins = false;
           this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
-          if (totalsize === parseInt(localStorage.getItem("PolygonAreaname"))) {
+          const maxAreaDifferences =
+            environment.Totalareatolerance * this.serviceService.Totalarea;
+
+          const areaDifferences = Math.abs(
+            totalsize - parseFloat(localStorage.getItem("PolygonAreaname"))
+          );
+
+          if (areaDifferences <= maxAreaDifferences) {
             this.serviceService.plotsizenotequal = false;
           } else {
             this.serviceService.plotsizenotequal = true;
@@ -513,9 +525,16 @@ export class LeaseOwnerShipComponent implements OnChanges {
   //}
 
   async add() {
-    if (
-      this.serviceService.currentplotsize != this.leaseOwnerShip.Lease_Hold_M2
-    ) {
+    const maxAreaDifferences =
+      environment.Totalareatolerance * this.serviceService.currentplotsize;
+
+    const areaDifferences = Math.abs(
+      this.leaseOwnerShip.Lease_Hold_M2 -
+        parseFloat(localStorage.getItem("PolygonAreaname"))
+    );
+    console.log(maxAreaDifferences, areaDifferences);
+
+    if (areaDifferences >= maxAreaDifferences) {
       const warningMessage =
         "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold Total area :";
       const toastWarning = this.notificationsService.warn(
@@ -524,15 +543,15 @@ export class LeaseOwnerShipComponent implements OnChanges {
       );
       return;
     }
-    if (this.leaseOwnerShip.Lease_Hold_M2 < 75) {
+    if (parseFloat(this.leaseOwnerShip.Lease_Hold_M2) < 75) {
       const toast = this.notificationsService.warn(
         "Lease Hold is not less than 75/የሊዝ ይዞታ ከ 75 መብለጥ የለበትም"
       );
       return;
     }
     let totalsize =
-      parseInt(this.leaseOwnerShip.Free_Hold_M2) +
-      parseInt(this.leaseOwnerShip.Lease_Hold_M2);
+      parseFloat(this.leaseOwnerShip.Free_Hold_M2) +
+      parseFloat(this.leaseOwnerShip.Lease_Hold_M2);
 
     console.log("totalsize", totalsize);
 
@@ -548,17 +567,17 @@ export class LeaseOwnerShipComponent implements OnChanges {
           tasks.forEach((element) => {
             if (element.Plot_ID != this.leaseOwnerShip.Plot_ID) {
               let totalsizeeach =
-                parseInt(element.Free_Hold_M2) +
-                parseInt(element.Lease_Hold_M2);
+                parseFloat(element.Free_Hold_M2) +
+                parseFloat(element.Lease_Hold_M2);
 
               this.totalsizeofleaseeach += totalsizeeach;
             }
           });
           this.totalsizeoflease =
-            parseInt(localStorage.getItem("PolygonAreaname")) -
+            parseFloat(localStorage.getItem("PolygonAreaname")) -
             this.totalsizeofleaseeach;
         } else {
-          this.totalsizeoflease = parseInt(
+          this.totalsizeoflease = parseFloat(
             localStorage.getItem("PolygonAreaname")
           );
         }
@@ -584,9 +603,28 @@ export class LeaseOwnerShipComponent implements OnChanges {
           );
 
           this.serviceService.Totalarea =
-            this.leaseOwnerShip.Lease_Hold_M2 +
-            this.leaseOwnerShip.Free_Hold_M2;
+            parseFloat(this.leaseOwnerShip.Lease_Hold_M2) +
+            parseFloat(this.leaseOwnerShip.Free_Hold_M2);
           this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
+          const maxAreaDifferences =
+            environment.Totalareatolerance * this.serviceService.Totalarea;
+
+          const areaDifferences = Math.abs(
+            totalsize - parseFloat(localStorage.getItem("PolygonAreaname"))
+          );
+
+          if (areaDifferences <= maxAreaDifferences) {
+            this.serviceService.plotsizenotequal = false;
+          } else {
+            this.serviceService.plotsizenotequal = true;
+            const toast = this.notificationsService.warn(
+              `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
+          በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
+           ${Math.abs(
+             totalsize - parseInt(localStorage.getItem("PolygonAreaname"))
+           )}`
+            );
+          }
 
           if (this.language == "amharic") {
             this.leaseOwnerShip.Date_of_final_lease_payment =

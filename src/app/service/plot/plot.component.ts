@@ -261,10 +261,15 @@ export class PlotComponent implements OnChanges {
               "Sucess",
               "Succesfully Upadted"
             );
-            if (
-              this.SelectedPlot.plot_Size_M2 ===
-              parseInt(localStorage.getItem("PolygonAreaname"))
-            ) {
+            const maxAreaDifferences =
+              environment.Totalareatolerance * this.serviceService.Totalarea;
+
+            const areaDifferences = Math.abs(
+              this.SelectedPlot.plot_Size_M2 -
+                parseFloat(localStorage.getItem("PolygonAreaname"))
+            );
+
+            if (areaDifferences <= maxAreaDifferences) {
               this.serviceService.plotsizenotequal = false;
             } else {
               this.serviceService.plotsizenotequal = true;
@@ -399,24 +404,24 @@ export class PlotComponent implements OnChanges {
     this.PlotManagementList = [];
     if (this.LicenceData.Licence_Service_ID) {
       console.log("geting ploat this.Parcel_ID", this.Parcel_ID);
-      this.getPlotManagement(this.LicenceData.Licence_Service_ID);
+      this.getPlotManagement(this.Parcel_ID);
     }
-    // if (this.Parcel_mearge1) {
-    //   console.log("geting ploat this.Parcel_mearge1", this.Parcel_mearge1);
-    //   this.getPlotManagement(this.Parcel_mearge1);
-    // }
-    // if (this.Parcel_mearge2) {
-    //   console.log("geting ploat this.Parcel_mearge2", this.Parcel_mearge2);
-    //   this.getPlotManagement(this.Parcel_mearge2);
-    // }
-    // if (this.Parcel_mearge3) {
-    //   console.log("geting ploat this.Parcel_mearge3", this.Parcel_mearge3);
-    //   this.getPlotManagement(this.Parcel_mearge3);
-    // }
-    // if (this.Parcel_mearge4) {
-    //   console.log("geting ploat this.Parcel_mearge4", this.Parcel_mearge4);
-    //   this.getPlotManagement(this.Parcel_mearge4);
-    // }
+    if (this.Parcel_mearge1) {
+      console.log("geting ploat this.Parcel_mearge1", this.Parcel_mearge1);
+      this.getPlotManagement(this.Parcel_mearge1);
+    }
+    if (this.Parcel_mearge2) {
+      console.log("geting ploat this.Parcel_mearge2", this.Parcel_mearge2);
+      this.getPlotManagement(this.Parcel_mearge2);
+    }
+    if (this.Parcel_mearge3) {
+      console.log("geting ploat this.Parcel_mearge3", this.Parcel_mearge3);
+      this.getPlotManagement(this.Parcel_mearge3);
+    }
+    if (this.Parcel_mearge4) {
+      console.log("geting ploat this.Parcel_mearge4", this.Parcel_mearge4);
+      this.getPlotManagement(this.Parcel_mearge4);
+    }
   }
   async getEthiopianToGregorian(date) {
     if (date) {
@@ -473,7 +478,7 @@ export class PlotComponent implements OnChanges {
   }
   getPlotManagement(Licence_Service_ID) {
     let a;
-    this.serviceService.getPlotManagementApiLicen(Licence_Service_ID).subscribe(
+    this.serviceService.getPlotManagementApi(Licence_Service_ID).subscribe(
       async (PlotManagementLists: any) => {
         this.PlotManagementList = PlotManagementLists.procPlot_Registrations;
         this.PlotManagementList = this.removeDuplicates(
@@ -584,10 +589,16 @@ export class PlotComponent implements OnChanges {
     console.log("dfghgfd", plot);
     this.plot_ID = this.SelectedPlot.plot_ID;
     this.serviceService.Totalarea = this.SelectedPlot.plot_Size_M2;
-    if (
-      this.SelectedPlot.plot_Size_M2 ===
-      parseInt(localStorage.getItem("PolygonAreaname"))
-    ) {
+    const maxAreaDifferences =
+      environment.Totalareatolerance * this.serviceService.Totalarea;
+
+    const areaDifferences = Math.abs(
+      this.SelectedPlot.plot_Size_M2 -
+        parseFloat(localStorage.getItem("PolygonAreaname"))
+    );
+    console.log(maxAreaDifferences, areaDifferences);
+
+    if (areaDifferences <= maxAreaDifferences) {
       this.serviceService.plotsizenotequal = false;
     } else {
       this.serviceService.plotsizenotequal = true;

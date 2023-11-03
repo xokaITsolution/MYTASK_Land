@@ -12,3 +12,18 @@
         color: white;
       }
       
+.fit-content-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.fit-content-cell {
+  white-space: nowrap;
+  /* Prevent text from wrapping */
+  overflow: hidden;
+  /* Hide overflowed content */
+  text-overflow: ellipsis;
+  /* Show ellipsis for overflowed text */
+  max-width: 100px;
+  /* Set a max-width for the cell */
+}

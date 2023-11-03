@@ -61,6 +61,11 @@ export class GisMapComponent implements AfterViewInit {
   central_AddisLand: any;
   subcity = environment.SubcityName;
   fromexcel: boolean;
+  ispointadd: boolean;
+  numberOFaddpoint: number = 0;
+  lastCharacter: string = "A";
+  centralAddis: any;
+  groupLayerss: any;
 
   constructor(
     public ServiceService: ServiceService,
@@ -280,53 +285,32 @@ export class GisMapComponent implements AfterViewInit {
   //   });
   // }
   getGroupLayers(): void {
-    if (this.subcity == "central_AddisLand") {
-      this.geoser.fetchGroupLayers("arada_AddisLand").subscribe((data: any) => {
-        //
-        this.groupLayers = data.layerGroups.layerGroup;
-        console.log("Agroup", this.groupLayers);
-        for (let index = 0; index < this.groupLayers.length; index++) {
-          const element = this.groupLayers[index].name;
-          // this.subcities[index].name = element[1];
-          if (element === this.parentGroupName) {
-            if (typeof this.groupLayers[index] === "object") {
-              if (Array.isArray(this.groupLayers[index])) {
-                // console.log('Variable is an array');
-              } else {
-                this.groupLayer = this.json2array(this.groupLayers[index]);
-                console.log("parent", this.groupLayer);
-              }
-            }
-            // console.log("AddisLand", this.groupLayers[index]);
-            this.getTree(this.groupLayer);
-          }
-        }
-      });
-    } else {
-      this.geoser.fetchGroupLayers(this.subcity).subscribe((data: any) => {
-        //
+    this.geoser
+      .fetchGroupLayers(environment.parentWorkspace)
+      .subscribe((data: any) => {
+        // debugger
         this.groupLayers = data.layerGroups.layerGroup;
         // console.log("Agroup", this.groupLayers);
         for (let index = 0; index < this.groupLayers.length; index++) {
           const element = this.groupLayers[index].name;
           // this.subcities[index].name = element[1];
-          if (element === this.parentGroupName) {
-            if (typeof this.groupLayers[index] === "object") {
-              if (Array.isArray(this.groupLayers[index])) {
-                // console.log('Variable is an array');
-              } else {
-                this.groupLayer = this.json2array(this.groupLayers[index]);
-                // console.log("parent", this.groupLayer);
-              }
+          // if (element === this.parentGroupName) {
+          if (typeof this.groupLayers[index] === "object") {
+            if (Array.isArray(this.groupLayers[index])) {
+              // console.log('Variable is an array');
+              this.groupLayer = this.groupLayers[index];
+            } else {
+              this.groupLayer = this.json2array(this.groupLayers[index]);
+              // console.log("parent", this.groupLayer);
             }
-            // console.log("AddisLand", this.groupLayers[index]);
-            this.getTree(this.groupLayer);
           }
+          // console.log("AddisLand", this.groupLayers[index]);
+          this.getTree(this.groupLayer);
         }
+        // }
       });
-    }
   }
-  async getTree(grouplist) {
+  async getTreebk(grouplist) {
     this.nodes = [];
     //
 
@@ -544,6 +528,274 @@ export class GisMapComponent implements AfterViewInit {
       const layer = this.layers.find((l) => l.name === aradaImageMNode.label);
       this.map.addLayer(layer.tileLayer);
     }
+  }
+  async getTree(parentgroup) {
+    this.nodes = [];
+
+    for (let i = 0; i < parentgroup.length; i++) {
+      let a: AssignedBodyTree = {
+        label: "",
+        workspace: "",
+        value: "",
+        children: "",
+      };
+
+      a["label"] = parentgroup[0].name;
+      a["workspace"] = "";
+      a["value"] = parentgroup[0].href;
+      a.children = [];
+
+      // this.getcapablities(this.subcities[i].workspace);
+      var centralcity = await this.geoser
+        .getLayersFromGeoserver(parentgroup[0].href)
+        .toPromise();
+      let keys = Object.keys(centralcity);
+
+      // debugger
+      if (keys[0] == "layer") {
+        continue;
+      }
+      this.centralAddis = centralcity.layerGroup.publishables.published;
+      if (typeof this.centralAddis === "object") {
+        if (Array.isArray(this.centralAddis)) {
+          // console.log('Variable is an array');
+        } else {
+          this.centralAddis = this.json2array(
+            centralcity.layerGroup.publishables.published
+          );
+          // console.log("subcities", this.subcities);
+        }
+      }
+      const l11 = Object.assign([], this.centralAddis);
+      // console.log("subb", this.subcities.length);
+      for (let n = 0; n < this.centralAddis.length; n++) {
+        let f: AssignedBodyTree = {
+          label: "",
+          workspace: "",
+          value: "",
+          children: "",
+        };
+        // debugger
+        // console.log("hhhe", a)
+        const element = this.centralAddis[n].name.split(":");
+        this.centralAddis[n].name = element[1];
+        this.centralAddis[n].workspace = element[0];
+        f["label"] = this.centralAddis[n].name;
+        f["workspace"] = this.centralAddis[n].workspace;
+        f["value"] = this.centralAddis[n].href;
+        f.children = [];
+        a.children.push(f);
+        this.getcapablities(this.centralAddis[n].workspace);
+        // var sub = await this.geoser.fetchGroupLayers(this.subcity).toPromise();
+        // let keys = Object.keys(sub)
+        // console.log("wor.key", keys);
+        // debugger
+
+        if (keys[0] == "layer") {
+          // console.log("wor.layer.name", sub.layer.name);
+          continue;
+        }
+        if (this.subcity == "central_AddisLand") {
+          // debugger
+          this.subcities = this.central_AddisLand;
+        } else {
+          var sub = await this.geoser
+            .fetchGroupLayers(this.subcity)
+            .toPromise();
+          let keys = Object.keys(sub);
+          this.groupLayerss = sub.layerGroups.layerGroup;
+          // console.log("Agroup", this.groupLayers);
+          for (let index = 0; index < this.groupLayerss.length; index++) {
+            let elements = this.groupLayerss[index].name;
+            // this.subcities[index].name = element[1];
+            if (elements === this.subcity) {
+              if (typeof this.groupLayerss[index] === "object") {
+                if (Array.isArray(this.groupLayerss[index])) {
+                  // console.log('Variable is an array');
+                  this.subcities = this.groupLayerss[index];
+                } else {
+                  this.subcities = this.json2array(this.groupLayerss[index]);
+                  // console.log("parent", this.groupLayer);
+                }
+              }
+            }
+            // console.log("AddisLand", this.groupLayers[index]);
+            // this.getTree(this.groupLayer);
+          }
+          // this.subcities = sub.layerGroup.publishables.published;
+        }
+        // if (typeof this.subcities === 'object') {
+        //   if (Array.isArray(this.subcities)) {
+        //     // console.log('Variable is an array');
+        //   } else {
+        //     this.subcities = this.json2array(sub.layerGroup.publishables.published);
+        //     // console.log("subcities", this.subcities);
+        //   }
+        // }
+        const l11 = Object.assign([], this.subcities);
+        // console.log("subb", this.subcities.length);
+        if (n == this.centralAddis.length - 1) {
+          for (let j = 0; j < this.subcities.length; j++) {
+            let b: AssignedBodyTree = {
+              label: "",
+              workspace: "",
+              value: "",
+              children: "",
+            };
+
+            if (this.subcity == "central_AddisLand") {
+              const element = this.subcities[j].name.split(":");
+              this.subcities[j].name = element[1];
+              this.subcities[j].workspace = element[0];
+            } else {
+              this.subcities[j].workspace = this.subcities[j].name;
+            }
+            b["label"] = this.subcities[j].name;
+            b["workspace"] = this.subcities[j].workspace;
+            b["value"] = this.subcities[j].href;
+            b.children = [];
+            a.children.push(b);
+            // debugger
+            this.getcapablities(this.subcities[j].workspace);
+            var wor = await this.geoser
+              .getLayersFromGeoserver(this.subcities[j].href)
+              .toPromise();
+            let keys = Object.keys(wor);
+            // console.log("wor.key", keys);
+            //debugger;
+            if (keys[0] == "layer") {
+              // console.log("wor.layer.name", wor.layer.name);
+              continue;
+            }
+            this.woredas = wor.layerGroup.publishables.published;
+            if (typeof this.woredas === "object") {
+              if (Array.isArray(this.woredas)) {
+                // console.log('Variable is an array');
+              } else {
+                this.woredas = this.json2array(
+                  wor.layerGroup.publishables.published
+                );
+                // console.log("subcities", this.woredas);
+              }
+            }
+            // console.log("this.files111", this.woredas);
+            const l1 = Object.assign([], this.woredas);
+
+            for (let k = 0; k < this.woredas.length; k++) {
+              let c: AssignedBodyTree = {
+                label: "",
+                workspace: "",
+                value: "",
+                children: "",
+              };
+              const element = this.woredas[k].name.split(":");
+              this.woredas[k].name = element[1];
+              this.woredas[k].workspace = element[0];
+              c["label"] = this.woredas[k].name;
+              c["workspace"] = this.woredas[k].workspace;
+              c["value"] = this.woredas[k].href;
+              c.children = [];
+              b.children.push(c);
+              // debugger
+              var worlay = await this.geoser
+                .getLayersFromGeoserver(this.woredas[k].href)
+                .toPromise();
+              // console.log("worlay",worlay.layer.name);
+              let keys = Object.keys(worlay);
+              // console.log("wor.key", keys);
+
+              if (keys[0] == "layer") {
+                // console.log("wor.layer.name", worlay.layer.name);
+                continue;
+              }
+              // console.log("worlay", worlay.layerGroup.publishables.published);
+              this.woredaLayers = worlay.layerGroup.publishables.published;
+              // console.log('ddd', this.woredaLayers);
+
+              if (typeof this.woredaLayers === "object") {
+                if (Array.isArray(this.woredaLayers)) {
+                  // console.log('Variable is an array');
+                } else {
+                  this.woredaLayers = this.json2array(
+                    worlay.layerGroup.publishables.published
+                  );
+                  // console.log("subcities", this.woredaLayers);
+                }
+              }
+              // console.log("this11", this.woredaLayers);
+              const l1 = Object.assign([], this.woredaLayers);
+
+              for (let l = 0; l < this.woredaLayers.length; l++) {
+                let d: AssignedBodyTree = {
+                  label: "",
+                  workspace: "",
+                  value: "",
+                  children: "",
+                };
+                const element = this.woredaLayers[l].name.split(":");
+                this.woredaLayers[l].name = element[1];
+                this.woredaLayers[l].workspace = element[0];
+                d["label"] = this.woredaLayers[l].name;
+                d["workspace"] = this.woredaLayers[l].workspace;
+                d["value"] = this.woredaLayers[l].href;
+                d.children = [];
+                c.children.push(d);
+                // debugger
+                var worlayonebyone = await this.geoser
+                  .getLayersFromGeoserver(this.woredaLayers[l].href)
+                  .toPromise();
+                // console.log("worlay",worlay.layer.name);
+                let keys = Object.keys(worlayonebyone);
+                // console.log("wor.key", keys);
+
+                if (keys[0] == "layer") {
+                  // console.log("wor.layer.name", worlayonebyone.layer.name);
+                  continue;
+                }
+                // console.log("worlayonebyone", worlayonebyone.layerGroup.publishables.published);
+                this.woredaLayersOneByOne =
+                  worlayonebyone.layerGroup.publishables.published;
+                // console.log('ddd', this.woredaLayersOneByOne);
+
+                if (typeof this.woredaLayersOneByOne === "object") {
+                  if (Array.isArray(this.woredaLayersOneByOne)) {
+                    // console.log('Variable is an array');
+                  } else {
+                    this.woredaLayersOneByOne = this.json2array(
+                      worlayonebyone.layerGroup.publishables.published
+                    );
+                    // console.log("woredaLayersOneByOne", this.woredaLayersOneByOne);
+                  }
+                }
+                // console.log("this11", this.woredaLayersOneByOne);
+                // const l1 = Object.assign([], this.woredaLayersOneByOne);
+
+                for (let m = 0; m < this.woredaLayersOneByOne.length; m++) {
+                  let e: AssignedBodyTree2 = {
+                    label: "",
+                    workspace: "",
+                    value: "",
+                  };
+                  // debugger
+                  const element = this.woredaLayersOneByOne[m].name.split(":");
+                  this.woredaLayersOneByOne[m].name = element[1];
+                  this.woredaLayersOneByOne[m].workspace = element[0];
+                  e["label"] = this.woredaLayersOneByOne[m].name;
+                  e["workspace"] = this.woredaLayersOneByOne[m].workspace;
+                  e.label = this.woredaLayersOneByOne[m].name;
+                  e.value = this.woredaLayersOneByOne[m].href;
+                  this.woredaLayersOneByOne[l].children = [];
+                  d.children.push(e);
+                }
+              }
+            }
+          }
+        }
+      }
+      this.nodes.push(a);
+    }
+
+    console.log("this.files", this.nodes);
   }
 
   // Function to find the "Arada image_M" node in the tree structure
@@ -1156,9 +1408,10 @@ export class GisMapComponent implements AfterViewInit {
         } else {
           this.coordinates = layer.getLatLngs(); // Get the coordinates of the polygon
 
-          const polyline = L.polyline(this.coordinates, {
+          this.drawnShape = L.polyline(this.coordinates, {
             color: "blue",
           }).addTo(this.map);
+          this.drawnShape.addTo(this.map);
           console.log(this.coordinates);
 
           const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
@@ -1178,7 +1431,7 @@ export class GisMapComponent implements AfterViewInit {
 
           this.ServiceService.coordinate = utmCoordinates;
 
-          polyline.bindPopup("This is a polyline!");
+          //this.drawnShape.bindPopup("This is a polyline!");
         }
 
         this.editableLayers.addLayer(layer);
@@ -1334,9 +1587,10 @@ export class GisMapComponent implements AfterViewInit {
         } else if (layer instanceof L.Polyline) {
           this.coordinates = layer.getLatLngs(); // Get the coordinates of the polygon
 
-          const polyline = L.polyline(this.coordinates, {
+          this.drawnShape = L.polyline(this.coordinates, {
             color: "blue",
           }).addTo(this.map);
+          this.drawnShape.addTo(this.map);
           console.log(this.coordinates);
 
           const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
@@ -1356,7 +1610,7 @@ export class GisMapComponent implements AfterViewInit {
 
           this.ServiceService.coordinate = utmCoordinates;
 
-          polyline.bindPopup("This is a polyline!");
+          //polyline.bindPopup("This is a polyline!");
         }
       }
     });
@@ -2055,24 +2309,30 @@ export class GisMapComponent implements AfterViewInit {
 
       this.pinpointedPoints.push(latLng);
       console.log("pinpointedPoints", this.pinpointedPoints);
-
+      if (this.pinpointedPoints.length > 0) {
+        this.ispointadd = true;
+        let count = (this.numberOFaddpoint = 1 + this.numberOFaddpoint);
+      }
       // Remove the previously drawn shape, if any
       if (this.drawnShape) {
         this.map.removeLayer(this.drawnShape);
       }
-      this.addMarkerToMap(latLng.lat, latLng.lng);
-      // Create a marker at the specified coordinates
-      //this.drawnShape = L.marker(latLng).addTo(this.map);
-
-      // Optionally, you can create other types of shapes like circles or polygons
-      // based on the user-entered coordinates
-      // For example:
-      // this.drawnShape = L.circle(latLng, { radius: 100 }).addTo(this.map);
-      // this.drawnShape = L.polygon([latLng1, latLng2, latLng3]).addTo(this.map);
-
-      // Fit the map view to the drawn shape
+      //this.addMarkerToMap(latLng.lat, latLng.lng);
+      const myIcon = L.divIcon({
+        className: "my-custom-icon",
+        html: `<div class="my-icon-label">${this.lastCharacter}</div>`,
+      });
+      const latLngs = L.latLng(latLng.lat, latLng.lng); // Replace with your desired coordinates
+      const marker = L.marker(latLngs, { icon: myIcon });
+      marker.addTo(this.map);
+      this.lastCharacter = String.fromCharCode(
+        this.lastCharacter.charCodeAt(0) + 1
+      );
       if (this.drawnShape instanceof L.Marker) {
-        this.map.setView(this.drawnShape.getLatLng(), this.map.getZoom());
+        this.map.flyTo(this.drawnShape.getLatLng(), 6, {
+          duration: 5,
+        });
+        this.map.fitBounds(this.drawnShape.getBounds());
       } else if (
         this.drawnShape instanceof L.Circle ||
         this.drawnShape instanceof L.Polygon
@@ -2099,19 +2359,21 @@ export class GisMapComponent implements AfterViewInit {
         this.map.removeLayer(this.drawnShape);
         this.removeLayerFromMap();
       }
-
-      // Create a marker at the specified coordinates
-      this.drawnShape = L.marker(latLng).addTo(this.map);
-
-      // Optionally, you can create other types of shapes like circles or polygons
-      // based on the user-entered coordinates
-      // For example:
-      // this.drawnShape = L.circle(latLng, { radius: 100 }).addTo(this.map);
-      // this.drawnShape = L.polygon([latLng1, latLng2, latLng3]).addTo(this.map);
-
-      // Fit the map view to the drawn shape
+      const myIcon = L.divIcon({
+        className: "my-custom-icon",
+        html: `<div class="my-icon-label">${this.lastCharacter}</div>`,
+      });
+      const latLngs = L.latLng(latLng.lat, latLng.lng); // Replace with your desired coordinates
+      const marker = L.marker(latLngs, { icon: myIcon });
+      marker.addTo(this.map);
+      this.lastCharacter = String.fromCharCode(
+        this.lastCharacter.charCodeAt(0) + 1
+      );
       if (this.drawnShape instanceof L.Marker) {
-        this.map.setView(this.drawnShape.getLatLng(), this.map.getZoom());
+        this.map.flyTo(this.drawnShape.getLatLng(), 6, {
+          duration: 5,
+        });
+        this.map.fitBounds(this.drawnShape.getBounds());
       } else if (
         this.drawnShape instanceof L.Circle ||
         this.drawnShape instanceof L.Polygon
@@ -2129,6 +2391,10 @@ export class GisMapComponent implements AfterViewInit {
     this.drawnShape = L.polygon(this.pinpointedPoints).addTo(this.map);
 
     const utmCoordinates = this.convertCoordinatesToUTM(this.pinpointedPoints);
+    const area = this.calculateUTMPolygonArea(utmCoordinates);
+    this.ServiceService.Totalarea = parseInt(area.toFixed(2));
+    // Show the area in a popup
+    localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
     this.utmCoordinates = utmCoordinates;
     utmCoordinates.push(utmCoordinates[0]);
     this.ServiceService.coordinate = utmCoordinates;
@@ -2143,9 +2409,25 @@ export class GisMapComponent implements AfterViewInit {
       this.drawnShape instanceof L.Polygon
     ) {
       this.drawnShape.addTo(this.map);
-      this.sample = this.drawnShape;
+      const drawnShapeBounds = this.drawnShape.getBounds();
+      const center = drawnShapeBounds.getCenter();
+
+      //this.addCenterMarker(center);
+      // marker.addTo(this.map);
+
       this.map.fitBounds(this.drawnShape.getBounds());
       this.onDatumChange();
+      // this.setviewFromDatumchange(center);
+      // Specify the zoom level
+      const zoomLevel = 6; // Adjust this to your desired zoom level
+
+      // Specify the duration of the flyTo animation in seconds
+      const flyToDuration = 5; // 2 seconds
+
+      // Use the flyTo method to animate the map
+      this.map.flyTo(center, zoomLevel, {
+        duration: flyToDuration,
+      });
     }
   }
 
@@ -2417,12 +2699,21 @@ export class GisMapComponent implements AfterViewInit {
 
     this.alllatlong.forEach((shape, index) => {
       let randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
-      // if (Array.isArray(shape) && shape.length > 2) {
-      //   // Check if shape is a valid array of coordinates
+
       this.drawnShape = L.polygon(shape, { color: randomColor }).addTo(
         this.map
       );
       this.editableLayers.addLayer(this.drawnShape);
+
+      shape.forEach((point, pointIndex) => {
+        const markerLatLng = L.latLng(point); // Create a LatLng object for the point
+        // Add a marker with a character label to the polygon
+        this.addMarkerWithCharacter(
+          this.drawnShape,
+          markerLatLng,
+          String.fromCharCode(65 + pointIndex)
+        );
+      });
     });
 
     //this.ServiceService.coordinate.push(latLngs[0])
@@ -2509,6 +2800,17 @@ export class GisMapComponent implements AfterViewInit {
       this.ServiceService.shapes = this.aaa;
       this.sample = this.drawnShape;
     }
+  }
+  addMarkerWithCharacter(drawnShape, markerLatLng, character) {
+    const myIcon = L.divIcon({
+      className: "my-custom-icon",
+      html: `<div class="my-icon-label">${character}</div>`,
+    });
+
+    const marker = L.marker(markerLatLng, { icon: myIcon });
+
+    // Add the marker to the drawn shape (polygon)
+    marker.addTo(this.map);
   }
 
   onClick(event: L.LeafletMouseEvent) {

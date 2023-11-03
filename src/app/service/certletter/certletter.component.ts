@@ -50,6 +50,8 @@ export class CertletterComponent implements OnChanges {
   yourQRCodeDataLetter: string;
   printtasktskID: any;
   isprintedtask: boolean;
+  maxWidth: string = "1300px";
+  isMaximized: boolean;
   constructor(
     private sanitizer: DomSanitizer,
     public serviceService: ServiceService,
@@ -151,10 +153,10 @@ export class CertletterComponent implements OnChanges {
     this.certltrview = true;
     this.getDocmentArcive();
     if (this.Selectedcert) {
-      this.yourQRCodeDatacert =
-        environment.certReportPath + "/" + this.Selectedcert.title_Deed_No;
-      this.yourQRCodeDataLetter =
-        environment.LetterReportPath + "/" + this.Selectedcert.title_Deed_No;
+      // this.yourQRCodeDatacert =
+      //   environment.certReportPath + "/" + this.Selectedcert.title_Deed_No;
+      // this.yourQRCodeDataLetter =
+      //   environment.LetterReportPath + "/" + this.Selectedcert.title_Deed_No;
       this.certReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
         environment.certReportPath + "/" + this.Selectedcert.title_Deed_No
       );
@@ -166,6 +168,15 @@ export class CertletterComponent implements OnChanges {
     console.log("certver", certver);
     console.log("certReportPath", this.certReportPath);
     console.log("certver", this.LetterReportPath);
+  }
+  openFullModal() {
+    this.isMaximized = true;
+    this.maxWidth = "1600px"; // Set the max width for full modal
+  }
+
+  openMiniModal() {
+    this.isMaximized = false;
+    this.maxWidth = "800px"; // Set the max width for mini modal
   }
 
   SelectBase(base) {

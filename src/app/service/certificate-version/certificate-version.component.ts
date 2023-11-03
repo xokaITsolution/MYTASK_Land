@@ -130,17 +130,14 @@ export class CertificateVersionComponent implements OnChanges {
         (error) => {
           console.log(error);
 
-          if (error.status == "400") {
-            const toast = this.notificationsService.error(
-              "Error",
-              error.error.InnerException.Errors[0].message
-            );
-          } else {
-            const toast = this.notificationsService.error(
-              "Error",
-              "SomeThing Went Wrong"
-            );
-          }
+          // if (error.status == "400") {
+          const toast = this.notificationsService.error("Error", error.error);
+          // } else {
+          //   const toast = this.notificationsService.error(
+          //     "Error",
+          //     "SomeThing Went Wrong"
+          //   );
+          // }
         }
       );
     console.log("saveing....");
@@ -167,17 +164,14 @@ export class CertificateVersionComponent implements OnChanges {
         },
         (error) => {
           console.log(error);
-          if (error.status == "400") {
-            const toast = this.notificationsService.error(
-              "Error",
-              error.error.InnerException.Errors[0].message
-            );
-          } else {
-            const toast = this.notificationsService.error(
-              "Error",
-              "SomeThing Went Wrong"
-            );
-          }
+          // if (error.status == "400") {
+          const toast = this.notificationsService.error("Error", error.error);
+          // } else {
+          //   const toast = this.notificationsService.error(
+          //     "Error",
+          //     "SomeThing Went Wrong"
+          //   );
+          // }
         }
       );
     console.log("saveing....");
