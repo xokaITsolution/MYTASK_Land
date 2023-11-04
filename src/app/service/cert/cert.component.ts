@@ -416,8 +416,8 @@ export class CertComponent implements OnChanges {
   }
 
   EnableFins() {
+    this.disableTab = true;
     if (!this.Saved) {
-      this.disableTab = true;
       this.completed.emit();
       this.Saved = true;
     }

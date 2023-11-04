@@ -111,6 +111,9 @@ export class ServiceService {
   private GetApplicationNumberByUserURL =
     environment.rootPathApi +
     "view/View_getUserNameForReviewByApplication/UserName/";
+  private APIForMoreOptionGetCustmerInformationURL =
+    environment.rootPathApi +
+    "view/View_APIForMoreOptionGetCustmerInformation/application_number?application_number=";
   // environment.rootPath + "BPEL/GetApplicationNumberByUser"; // URL to web api
   httpOptions = {
     headers: new HttpHeaders({ "Content-Type": "application/json" }),
@@ -179,6 +182,9 @@ export class ServiceService {
     return this.http.get(
       this.GetApplicationNumberByUserURL + username + "/" + orgcod
     );
+  }
+  GetApplicationNumberByUserInfo(appno) {
+    return this.http.get(this.APIForMoreOptionGetCustmerInformationURL + appno);
   }
   getAppointmentByApp(params): Observable<any> {
     const url = environment.rootPath + "GetAppointementByApp";

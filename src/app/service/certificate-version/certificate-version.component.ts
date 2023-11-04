@@ -131,7 +131,7 @@ export class CertificateVersionComponent implements OnChanges {
           console.log(error);
 
           // if (error.status == "400") {
-          const toast = this.notificationsService.error("Error", error.error);
+          const toast = this.notificationsService.error("Error", error);
           // } else {
           //   const toast = this.notificationsService.error(
           //     "Error",

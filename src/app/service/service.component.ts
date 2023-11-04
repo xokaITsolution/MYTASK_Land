@@ -206,6 +206,7 @@ export class ServiceComponent implements OnInit {
   fileupload: string;
   uploadcontract: boolean;
   updated: any;
+  custmerInformation: any;
   constructor(
     private modalService: BsModalService,
     private activatedRoute: ActivatedRoute,
@@ -1885,6 +1886,11 @@ export class ServiceComponent implements OnInit {
   }
 
   public getAll(AppNo) {
+    this.serviceService
+      .GetApplicationNumberByUserInfo(AppNo)
+      .subscribe((licenceService) => {
+        this.custmerInformation = licenceService[0];
+      });
     this.getuserName(this.AppNo);
     console.log("appppppp", AppNo);
     this.serviceService.getAll(AppNo).subscribe(

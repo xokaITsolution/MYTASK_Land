@@ -829,9 +829,14 @@ export class PropertyComponent implements OnChanges {
         2 == this.serviceService.selectedproperty_Type_ID ||
         3 == this.serviceService.selectedproperty_Type_ID
       ) {
-        if (this.selectedFile.children.length == 0) {
-          const toast = this.notificationsService.warn(
-            "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
+        if (this.selectedFile.children.length === 0) {
+          // const toast = this.notificationsService.warn(
+          //   "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
+          // );
+          this.completed.emit();
+          console.log(
+            "must  add minimum  one sub property",
+            this.selectedFile.children.length
           );
         } else {
           for (let i = 0; i < this.serviceService.files.length; i++) {

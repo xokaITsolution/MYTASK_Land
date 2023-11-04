@@ -46,7 +46,7 @@
       <div class="p-3 bg-success text-white" *ngIf="moreDetail.toggle">
         <table class="table table-bordered table-responsive header-table">
           <thead>
-            <tr *ngIf="licenceData" >
+            <tr *ngIf="custmerInformation" >
               <th translate>Applicant_First_Name_AM</th>
               <th translate>Applicant_Middle_Name_AM</th>
               <th translate>Wereda_ID</th>
@@ -55,13 +55,13 @@
               <th translate>QueueNo</th>
              
             </tr>
-            <tr *ngIf="licenceData">
-              <td >{{ licenceData.Applicant_First_Name_AM }}</td>
-              <td >{{ licenceData.Applicant_Middle_Name_AM }}</td>
-              <td >{{ licenceData.Wereda_ID }}</td>
-              <td >{{ licenceData.Cust_TIN_No }}</td>
-              <td >{{ licenceData.Email }}</td>
-              <td >{{ licenceData.QueueNo }}</td>
+            <tr *ngIf="custmerInformation">
+              <td >{{ custmerInformation.applicant_First_Name_AM }}</td>
+              <td >{{ custmerInformation.applicant_Middle_Name_AM }}</td>
+              <td >{{ custmerInformation.wereda_ID }}</td>
+              <td >{{ custmerInformation.tin }}</td>
+              <td >{{ custmerInformation.email }}</td>
+              <td >{{ custmerInformation.queueNo }}</td>
             </tr>
           </thead>
         </table>
@@ -676,7 +676,8 @@
 </div>
   </div>
  </p-dialog>
-<p-dialog  [(visible)]="showdialoge"  header="Post It Note"  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
+ 
+<!-- <p-dialog  [(visible)]="showdialoge"  header="Post It Note"  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
 [positionTop]="1" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                          'max-height': '80vh','min-height':'250px'}">
                           <div class="modal-body">
@@ -701,20 +702,13 @@
   [disabled]="myInput.value.length==0"
   *ngIf="!this.NoteObj.postit_note_code"
     (click)="addNote()" translate>Save</button>
-  <!-- <button type="button" class="btn btn-primary mx-4" *ngIf="this.NoteObj.postit_note_code"
-    (click)="saveNote()" translate>
-    Update
-  </button> -->
-  <!-- <button type="button" class="btn btn-danger mx-4" *ngIf="this.NoteObj.postit_note_code"
-    (click)="DeleteNote()" translate>
-    Delete
-  </button> -->
+
   <button type="button" class="btn btn-primary" *ngIf="this.NoteObj.postit_note_code"
     (click)="sendNottte()" translate>
     <span class="fa fa-telegram"></span> Send
   </button>
 </div>
    </div>
-  </p-dialog>
+  </p-dialog> -->
 </html>
 
