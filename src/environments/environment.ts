@@ -17,7 +17,6 @@ export const environment = {
   //username: "BL_Tech_Officer",
 
   username: "AR_Data_Encoder",
-  //username: "BL_Data_Encoder",
   //username: "0911565749",
 
   // username: "BL_Cashier",

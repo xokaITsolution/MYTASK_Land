@@ -30,7 +30,7 @@
               Pick
             </button></td>
           <td>
-            <button type="button" class="btn btn-primary" (click)="openModal('empList',task)" translate>assign</button>
+            <button type="button" class="btn btn-primary" (click)="openModal(task)" translate>assign</button>
           </td>
         </tr>
       </ng-template>
@@ -39,7 +39,7 @@
 </div>
 
 
-<ngx-smart-modal #empList identifier="empList">
+<!-- <ngx-smart-modal #empList identifier="empList">
   <div class="modal-header">
     <h4 class="modal-title pull-left" translate>List of Users</h4>
   </div>
@@ -61,7 +61,29 @@
     </div>
 
   </div>
-</ngx-smart-modal>
+</ngx-smart-modal> -->
+
+<p-dialog header="List of Users" [(visible)]="isAccountVisible" [style]="{ width: '30vw' }" [draggable]="false"
+  [resizable]="false" [maximizable]="true" [baseZIndex]="10000">
+
+
+    <div class="col-sm-12 row  m-3">
+      <label for="IssuedBy" class="col-sm-4 col-form-label" translate>Select user</label>
+      <div class="col-sm-8">
+        <select class="form-control" (change)="passdata($event)" [(ngModel)]="selectedUser" NG name="IssuedBy"
+          id="IssuedBy">
+          <option disabled>select</option>
+          <option *ngFor="let User of SuperviedUsers;" [value]="User.UserId">{{User.UserName}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="pull-right">
+        <button type="button" class="btn btn-primary" (click)="assign('empList');" translate>Assign</button>
+      </div>
+    </div>
+
+</p-dialog>
 
 
 <simple-notifications></simple-notifications>

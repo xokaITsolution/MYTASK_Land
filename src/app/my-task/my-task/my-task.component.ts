@@ -159,7 +159,7 @@ export class MyTaskComponent implements OnInit {
                 messages: result,
               });
               this.myTaskService
-                .getViewAspNetUsersWorkInfoDetail()
+                .getViewAspNetUsersWorkInfoDetail(appNo)
                 .subscribe((res) => {
                   this.user = res.filter(
                     (value) =>

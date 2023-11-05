@@ -1,8 +1,10 @@
 <simple-notifications></simple-notifications>
 
+
+
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-2 position-fixed">
       <div class="sidebar">
         <div class="sidebar-content">
           <div class="sideTitle">
@@ -16,7 +18,8 @@
         </div>
       </div>
     </div>
-    <div class="col-md-9">
+    <div class="col-md-10 offset-md-3">
+      <!-- Rest of your content -->
       <div class="col-md-10" *ngIf="!ServiceService.fromPropoperty">
         <h6>Enter Coordinates</h6>
         <div class="form-row">
@@ -107,6 +110,16 @@
                     class="form-control">
                 </div>
               </div>
+            <div class="form-group row">
+              <label for="importt" class="col-sm-4 col-form-label">Import From shape File:</label>
+              <div class="col-sm-8">
+                <input name="import" id="importt" type="file" #fileInputt (change)="onFileSelected($event)" accept=".zip"
+                  class="form-control" required>
+                <span style="color: red;" >
+                  Please upload a zip file containing .shp, .shx, and .dbf files.
+                </span>
+              </div>
+            </div>
               <div>
                 <button type="button" class="btn btn-primary mb-2" (click)="drawShape()">
                   Add Point
@@ -128,14 +141,12 @@
           </div>
         </div>
       </div>
+      <div id="mapp" style="width: 100%; height: 500px;"></div>
+      <div id="coordinateInfo" style="bottom: 10px; background-color: rgba(255, 255, 255, 0.8); border-radius: 5px;"></div>
+      <div *ngFor="let arrayof of arrayFoPolygonarea">
+        <li>{{ arrayof[0].Name}} :&nbsp;{{arrayof[0].area}} &nbsp;{{arrayof[0].mesurment}}</li>
+      </div>
+      Total area: {{ServiceService.Totalarea}}M<sup>2</sup>
     </div>
   </div>
-  <div id="mapp" style="width: 100%; height: 500px;"></div>
-  <div id="coordinateInfo" style="bottom: 10px; background-color: rgba(255, 255, 255, 0.8); border-radius: 5px;"></div>
-  <div *ngFor="let arrayof of arrayFoPolygonarea">
-    <li>{{ arrayof[0].Name}} :&nbsp;{{arrayof[0].area}} &nbsp;{{arrayof[0].mesurment}}</li>
-  </div>
-  Total area: {{ServiceService.Totalarea}}M<sup>2</sup>
 </div>
-
-

@@ -3,7 +3,9 @@ import { Injectable } from "@angular/core";
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { environment } from "src/environments/environment";
-
+import * as JSZip from "jszip";
+//import * as shp from "../../../../node_modules/shapefile/dist/Shapefile.js";
+import * as shp from "shp-write";
 @Injectable({
   providedIn: "root",
 })
@@ -55,5 +57,50 @@ export class ApiService {
       .set("Authorization", "Basic " + btoa("admin:geoserver"));
     //return this.http.get<any>(url, { headers });
     return this.http.get(url, { headers }).pipe(catchError(this.handleError));
+  }
+  async readAndConvertShapefiles(zipFile: Blob): Promise<any> {
+    const zip = new JSZip();
+
+    try {
+      const zipData = await zip.loadAsync(zipFile);
+      console.log(zipData);
+
+      const shpFile = zipData.file("Relocation.shp");
+      const shxFile = zipData.file("Relocation.shx");
+      const dbfFile = zipData.file("Relocation.dbf");
+
+      if (shpFile && shxFile && dbfFile) {
+        const [shpData, shxData, dbfData] = await Promise.all([
+          shpFile.async("arraybuffer"),
+          shxFile.async("arraybuffer"),
+          dbfFile.async("arraybuffer"),
+        ]);
+        console.log(shpData);
+        console.log(shxData);
+        console.log(dbfData);
+
+        const features = await shp.open(shpData, dbfData);
+        console.log(features);
+
+        // Now you can access the GeoJSON features
+        let { value, done } = await features.read();
+        const geoJsonFeatures = [];
+
+        while (!done) {
+          geoJsonFeatures.push(value);
+          const result = await features.read();
+          value = result.value;
+          done = result.done;
+        }
+        console.log(geoJsonFeatures);
+
+        return geoJsonFeatures;
+      } else {
+        throw new Error("Shapefile components not found in the zip archive.");
+      }
+    } catch (error) {
+      console.error("Error reading shapefile:", error);
+      throw error;
+    }
   }
 }

@@ -12,10 +12,9 @@ export class MyTaskService {
     environment.rootPathApi + "view/View_postit_note_user";
   private IsLockedBy_OtherUserUrl =
     environment.rootPath + "BPEL/IsLockedBy_OtherUser";
-    private GetSuperviedUsersUrl = environment.rootPath + 'BPEL/Get_SuperviedUsers';  // URL to web api
-    private AssignToUserUrl = environment.rootPath + 'BPEL/reOpen';  // URL to web api
-    
-   
+  private GetSuperviedUsersUrl =
+    environment.rootPath + "BPEL/Get_SuperviedUsers"; // URL to web api
+  private AssignToUserUrl = environment.rootPath + "BPEL/reOpen"; // URL to web api
 
   constructor(private http: HttpClient) {}
 
@@ -45,36 +44,52 @@ export class MyTaskService {
         "=00000000-0000-0000-0000-000000000000"
     );
   }
-  getViewAspNetUsersWorkInfoDetail() {
+  getViewAspNetUsersWorkInfoDetail(data) {
     // User_ID = this.removeSlash(User_ID);
-    return this.http.get<any>(this.ViewAspNetUsersWorkInfoDetail);
+    return this.http.get<any>(
+      this.ViewAspNetUsersWorkInfoDetail +
+        "/application_number?application_number=" +
+        data
+    );
   }
   getSupervisertasks() {
     return this.http.get(
       this.SupervisertasksUrl +
-      "?username=" +
-      environment.username +
-      "&orgid=60b3b81b-b839-4dc6-a46b-026d470f2dae&lanid=2C2EBBEA-3361-E111-95D5-00E04C05559B"
+        "?username=" +
+        environment.username +
+        "&orgid=60b3b81b-b839-4dc6-a46b-026d470f2dae&lanid=2C2EBBEA-3361-E111-95D5-00E04C05559B"
     );
   }
-  
-  
-  AssignToUser(ApplicationNo,EmpID, todoid,username,status) {
-    return this.http.post(this.AssignToUserUrl + '?ApplicationNo=' + ApplicationNo + '&eid=' + EmpID+ '&todoid=' + todoid
-      + '&userName=' + username  + '&status=' + status,null);
+
+  AssignToUser(ApplicationNo, EmpID, todoid, username, status) {
+    return this.http.post(
+      this.AssignToUserUrl +
+        "?ApplicationNo=" +
+        ApplicationNo +
+        "&eid=" +
+        EmpID +
+        "&todoid=" +
+        todoid +
+        "&userName=" +
+        username +
+        "&status=" +
+        status,
+      null
+    );
   }
   GetSuperviedUsers() {
-    return this.http.get(this.GetSuperviedUsersUrl + '?username=' + environment.username);
-
+    return this.http.get(
+      this.GetSuperviedUsersUrl + "?username=" + environment.username
+    );
   }
 
-   getMytasksbyusername(username) {
+  getMytasksbyusername(username) {
     return this.http.get(
       this.MytasksUrl +
-      "?username=" +
-      username+
-      "&orgid=00000000-0000-0000-0000-000000000000&lanid=2C2EBBEA-3361-E111-95D5-00E04C05559B&userroll" +
-      "=00000000-0000-0000-0000-000000000000"
+        "?username=" +
+        username +
+        "&orgid=00000000-0000-0000-0000-000000000000&lanid=2C2EBBEA-3361-E111-95D5-00E04C05559B&userroll" +
+        "=00000000-0000-0000-0000-000000000000"
     );
   }
   IsLockedBy_OtherUser(todoid) {

@@ -3,7 +3,7 @@
 
   <div>
 
-    <p-table [value]="taskList" [paginator]="true" [rows]="10">
+  <p-table [value]="taskList" [paginator]="true" [rows]="10" sortField="taskList.start_date" sortOrder="-1">
       <ng-template pTemplate="header">
         <tr>
           <th translate>#</th>
