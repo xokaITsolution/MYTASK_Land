@@ -4,8 +4,7 @@ import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { environment } from "src/environments/environment";
 import * as JSZip from "jszip";
-//import * as shp from "../../../../node_modules/shapefile/dist/Shapefile.js";
-import * as shp from "shp-write";
+import * as shp from "../../../../node_modules/shapefile/dist/Shapefile.js";
 @Injectable({
   providedIn: "root",
 })
@@ -79,6 +78,11 @@ export class ApiService {
         console.log(shxData);
         console.log(dbfData);
 
+        // const shpReader = shp.parseShp(shpData);
+        // const shxReader = shp.parseShx(shxData);
+        // const dbfReader = shp.parseDbf(dbfData);
+
+        // const features = shp.combine([shpReader, shxReader, dbfReader]);
         const features = await shp.open(shpData, dbfData);
         console.log(features);
 

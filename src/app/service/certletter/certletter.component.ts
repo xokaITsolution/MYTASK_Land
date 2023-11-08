@@ -219,6 +219,7 @@ export class CertletterComponent implements OnChanges {
         this.printtasktskID.toLowerCase()
     ) {
       this.isprintedtask = true;
+      this.completed.emit();
       //his.serviceService.disablefins = false;
     } else {
       this.serviceService.disablefins = false;

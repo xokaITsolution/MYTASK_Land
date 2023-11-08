@@ -165,8 +165,8 @@ export class MyTaskComponent implements OnInit {
                     (value) =>
                       value.remarks == this.messageObj.messages[0]["remarks"]
                   );
-                  this.user_name = "Massage From: " + this.user[0].firstName_en;
-                  this.messageObj.userName = this.user[0].firstName_en;
+                  this.user_name = "Massage From: " + this.user[0].userName;
+                  this.messageObj.userName = this.user[0].userName;
                   console.log("userrrr", this.messageObj.userName);
                   this.messageObj.currentMessage =
                     this.messageObj.messages[0]["remarks"];

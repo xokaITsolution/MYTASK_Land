@@ -50,7 +50,7 @@ export class PaymentComponent implements OnChanges {
   yourQRCodeDataPayment: string;
   ismodaEnable: boolean = false;
   isMaximized: boolean;
-  maxWidth: string = "1300px";
+  maxWidth: string = "1800px";
 
   constructor(
     private sanitizer: DomSanitizer,
