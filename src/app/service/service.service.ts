@@ -24,6 +24,8 @@ export class ServiceService {
   private getusernameUrl =
     environment.rootPathApi +
     "view/View_getUserNameForReviewByApplication/application_number?application_number=";
+  private gettopostgres =
+    environment.rootPathApi + "Insert_In_toPostgres/procInsert_In_toPostgres/";
   private PlotManagementUrl = environment.rootPath + "Plot_Registration";
   private PlotManagementUrlapi =
     environment.rootPathApi + "Plot_Registration/procPlot_Registration/"; // URL to web api
@@ -178,6 +180,11 @@ export class ServiceService {
   }
   getuserName(Appno) {
     return this.http.get(this.getusernameUrl + Appno);
+  }
+  postplotTopostgres(plotid, propertid) {
+    return this.http.get(
+      this.gettopostgres + plotid + "/Proporty_Id?Proporty_Id=" + propertid
+    );
   }
   GetApplicationNumberByUser(username, orgcod) {
     return this.http.get(

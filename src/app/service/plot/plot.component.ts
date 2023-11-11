@@ -16,6 +16,7 @@ import { NotificationsService } from "angular2-notifications";
 import { environment } from "src/environments/environment";
 import { BsModalRef, BsModalService } from "ngx-bootstrap";
 import { Subject } from "rxjs";
+import { LeaseOwnerShipService } from "../lease-owner-ship/lease-owner-ship.service";
 @Component({
   selector: "app-plot",
   templateUrl: "./plot.component.html",
@@ -66,7 +67,8 @@ export class PlotComponent implements OnChanges {
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private leaseOwnerShipService: LeaseOwnerShipService
   ) {}
   changingValue: Subject<boolean> = new Subject();
   ngOnChanges() {
@@ -485,10 +487,12 @@ export class PlotComponent implements OnChanges {
         this.PlotManagementList = this.removeDuplicates(
           this.PlotManagementList
         );
+
         this.PlotManagementListfinal.push(this.PlotManagementList[0]);
         this.PlotManagementListfinal = this.removeDuplicates(
           this.PlotManagementListfinal
         );
+
         console.log("PlotManagementList", this.PlotManagementListfinal);
         this.isisvalidated(
           this.todoid,
@@ -918,7 +922,39 @@ export class PlotComponent implements OnChanges {
   }
 
   DoneNew() {
-    this.completed.emit();
+    this.leaseOwnerShipService
+      .getAll(this.plot_ID)
+      .subscribe((CertificateVersion: any) => {
+        let tasks = CertificateVersion;
+        tasks = Object.assign([], tasks.list);
+        const totalsize = tasks.reduce((sum, node) => {
+          sum += parseFloat(node.Free_Hold_M2) + parseFloat(node.Lease_Hold_M2);
+
+          return sum;
+        }, 0);
+        console.log(
+          "leaseOwnerShipService",
+          tasks,
+          this.serviceService.Totalarea,
+          totalsize
+        );
+
+        if (tasks.length > 0) {
+          if (totalsize === this.serviceService.Totalarea) {
+            this.completed.emit();
+          } else {
+            const toast = this.notificationsService.warn(
+              `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
+          በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት`
+            );
+          }
+        } else {
+          const toast = this.notificationsService.warn(
+            "before submit the form you have to register lease ownershipቅጹን ከማቅረቡ በፊት የሊዝ ባለቤትነት መመዝገብ አለብዎት"
+          );
+        }
+      });
+
     //this.serviceService.disablefins = false;
     this.plotForm = false;
     this.isvalidated();

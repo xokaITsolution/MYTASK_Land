@@ -421,14 +421,19 @@ export class PropertyComponent implements OnChanges {
       this.serviceService.files,
       this.serviceService.insertedProperty
     );
+    this.selectedFile = selectedChild;
+    if (selectedChild) {
+      this.nodeSelect();
+    }
     console.log(
       "this.serviceService.files",
       this.serviceService.files,
-      sumOfPropertiess[0].compound_Size_M2
+      this.serviceService.insertedProperty,
+      selectedChild
     );
   }
 
-  expandAndSelectChild(tree, targetPropertyID) {
+  expandAndSelectChild(tree, targetPropertyID, depth = 0) {
     for (let i = 0; i < tree.length; i++) {
       if (tree[i].property_ID === targetPropertyID) {
         // Found the element with the specified property_ID
@@ -437,23 +442,33 @@ export class PropertyComponent implements OnChanges {
       } else if (tree[i].children && tree[i].children.length > 0) {
         const result = this.expandAndSelectChild(
           tree[i].children,
-          targetPropertyID
+          targetPropertyID,
+          depth + 1
         );
         if (result) {
-          tree[i].expanded = true; // Expand the parent node
+          if (depth === 0) {
+            // Expand the parent node only if it's the top level
+            tree[i].expanded = true;
+          }
           return result;
         }
       }
     }
     return null; // Element not found
   }
-  findTreeElement(tree, targetPropertyID) {
+
+  findTreeElement(tree, targetPropertyID, depth = 0) {
     for (let i = 0; i < tree.length; i++) {
       if (tree[i].property_ID === targetPropertyID) {
         return tree[i]; // Found the element with the specified property_ID
       } else if (tree[i].children && tree[i].children.length > 0) {
-        const result = this.findTreeElement(tree[i].children, targetPropertyID);
+        const result = this.findTreeElement(
+          tree[i].children,
+          targetPropertyID,
+          depth + 1
+        );
         if (result) {
+          // Optionally, you can handle depth-specific actions here
           return result; // Found the element in a child node
         }
       }

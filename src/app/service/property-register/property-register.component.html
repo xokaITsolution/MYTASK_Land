@@ -82,7 +82,7 @@
       <label for="TotalCompoundSize" class="col-sm-3 col-form-label" translate>Total Compound Size</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [(ngModel)]="propertyRegister.compound_Size_M2" [disabled]="disable"
-          name="TotalCompoundSize" id="TotalCompoundSize" [placeholder]="'Total Compound Size'|translate"
+          name="TotalCompoundSize" id="TotalCompoundSize" [placeholder]="'Total Compound Size'|translate" readonly
            #TotalCompoundSize="ngModel" appNumberOnly [ngClass]="{ 'is-invalid': TotalCompoundSize.invalid }" required>
       </div>
     </div>

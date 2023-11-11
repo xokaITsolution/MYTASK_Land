@@ -178,8 +178,8 @@ export class CertComponent implements OnChanges {
         }
         const uniqueJobMatchIDs = {};
         const uniqueData = this.DeedTable.filter((item) => {
-          if (!uniqueJobMatchIDs[item.Plot_ID]) {
-            uniqueJobMatchIDs[item.Plot_ID] = true;
+          if (!uniqueJobMatchIDs[item.Property_ID]) {
+            uniqueJobMatchIDs[item.Property_ID] = true;
             return true;
           }
           return false;

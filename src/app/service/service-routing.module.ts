@@ -7,17 +7,12 @@ import { CertletterComponent } from "./certletter/certletter.component";
 
 const routes: Routes = [
   {
-    path: "MAP-GIS",
-    component: ExplorationLicenseComponent,
-    pathMatch: "full",
-  },
-  {
     path: "service/:id",
     component: ServiceComponent,
     pathMatch: "prefix",
   },
   {
-    path: "service/:Serviceid/:TaskId/:formcode",
+    path: "service/:id/:AppNo/:TaskId/:formcode",
     component: ServiceComponent,
     pathMatch: "prefix",
   },
