@@ -30,6 +30,7 @@ export class MyTaskComponent implements OnInit {
   user: any;
   user_name: any;
   lanid: string;
+  AppNumber: any;
 
   constructor(
     private myTaskService: MyTaskService,
@@ -64,19 +65,25 @@ export class MyTaskComponent implements OnInit {
   }
 
   navigateMessage(direction) {
+ 
     if (
       this.messageObj.messages ? this.messageObj.messages.length > 0 : false
     ) {
       if (
         direction == this.direction.NEXT &&
         this.messageObj.currentMessageIndex <
-          this.messageObj.messages.length - 1
+          this.messageObj.messages.length
       ) {
         this.messageObj.currentMessageIndex += 1;
         this.messageObj.currentMessage =
           this.messageObj.messages[this.messageObj.currentMessageIndex][
             "remarks"
           ];
+          console.log('this.messageObj.currentMessageIndex',this.messageObj.currentMessageIndex);
+          
+       
+          this.user_name = "Massage From: " + this.user[this.messageObj.currentMessageIndex].userName;
+          this.messageObj.userName = this.user[this.messageObj.currentMessageIndex].userName;
       } else if (
         direction == this.direction.PREV &&
         this.messageObj.currentMessageIndex > 0
@@ -86,6 +93,9 @@ export class MyTaskComponent implements OnInit {
           this.messageObj.messages[this.messageObj.currentMessageIndex][
             "remarks"
           ];
+         
+          this.user_name = "Massage From: " + this.user[this.messageObj.currentMessageIndex].userName;
+          this.messageObj.userName = this.user[this.messageObj.currentMessageIndex].userName;
       }
     }
   }
@@ -158,13 +168,13 @@ export class MyTaskComponent implements OnInit {
                 appNo: this.messageAppNo,
                 messages: result,
               });
+              this.AppNumber=appNo
               this.myTaskService
                 .getViewAspNetUsersWorkInfoDetail(appNo)
                 .subscribe((res) => {
-                  this.user = res.filter(
-                    (value) =>
-                      value.remarks == this.messageObj.messages[0]["remarks"]
-                  );
+                console.log('this.messageObj.userName+i',res);
+                
+                  this.user = res
                   this.user_name = "Massage From: " + this.user[0].userName;
                   this.messageObj.userName = this.user[0].userName;
                   console.log("userrrr", this.messageObj.userName);
