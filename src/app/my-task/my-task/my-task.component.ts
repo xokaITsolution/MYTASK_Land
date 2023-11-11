@@ -82,7 +82,7 @@ export class MyTaskComponent implements OnInit {
           console.log('this.messageObj.currentMessageIndex',this.messageObj.currentMessageIndex);
           
        
-          this.user_name = "Massage From: " + this.user[this.messageObj.currentMessageIndex].userName;
+          this.user_name = "Massage From: " + this.user[this.messageObj.currentMessageIndex].userName+" "+this.messageObj.currentMessageIndex;
           this.messageObj.userName = this.user[this.messageObj.currentMessageIndex].userName;
       } else if (
         direction == this.direction.PREV &&
@@ -94,7 +94,7 @@ export class MyTaskComponent implements OnInit {
             "remarks"
           ];
          
-          this.user_name = "Massage From: " + this.user[this.messageObj.currentMessageIndex].userName;
+          this.user_name = "Massage From: " + this.user[this.messageObj.currentMessageIndex].userName+" "+this.messageObj.currentMessageIndex;
           this.messageObj.userName = this.user[this.messageObj.currentMessageIndex].userName;
       }
     }
