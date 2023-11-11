@@ -120,12 +120,12 @@ export class PaymentComponent implements OnChanges {
   }
   openFullModal() {
     this.isMaximized = true;
-    this.maxWidth = "1600px"; // Set the max width for full modal
+    this.maxWidth = "2000px"; // Set the max width for full modal
   }
 
   openMiniModal() {
     this.isMaximized = false;
-    this.maxWidth = "800px"; // Set the max width for mini modal
+    this.maxWidth = "1000px"; // Set the max width for mini modal
   }
 
   // SaveBoth(payment, PaymentDetail){

@@ -60,6 +60,7 @@ export class PlotComponent implements OnChanges {
   ismodaEnable = false;
   maxWidth: string = "1400px";
   isMaximized: boolean;
+  PlotManagementListfinal = [];
 
   constructor(
     public serviceService: ServiceService,
@@ -79,14 +80,14 @@ export class PlotComponent implements OnChanges {
 
     console.log(
       "emptying list",
-      this.PlotManagementList,
+      this.PlotManagementListfinal,
       this.serviceService.Service_ID
     );
-    this.PlotManagementList = [];
+    this.PlotManagementListfinal = [];
     this.noinvalidplot = 0;
     console.log(
       "emptedlist",
-      this.PlotManagementList,
+      this.PlotManagementListfinal,
       this.LicenceData.Licence_Service_ID
     );
 
@@ -401,7 +402,7 @@ export class PlotComponent implements OnChanges {
   }
 
   getPloat() {
-    this.PlotManagementList = [];
+    this.PlotManagementListfinal = [];
     if (this.LicenceData.Licence_Service_ID) {
       console.log("geting ploat this.Parcel_ID", this.Parcel_ID);
       this.getPlotManagement(this.Parcel_ID);
@@ -484,16 +485,20 @@ export class PlotComponent implements OnChanges {
         this.PlotManagementList = this.removeDuplicates(
           this.PlotManagementList
         );
-        console.log("PlotManagementList", this.PlotManagementList);
+        this.PlotManagementListfinal.push(this.PlotManagementList[0]);
+        this.PlotManagementListfinal = this.removeDuplicates(
+          this.PlotManagementListfinal
+        );
+        console.log("PlotManagementList", this.PlotManagementListfinal);
         this.isisvalidated(
           this.todoid,
           this.tskID,
-          this.PlotManagementList[0].plot_ID,
+          this.PlotManagementListfinal[0].plot_ID,
           "00000000-0000-0000-0000-000000000000",
           this.DocID
         );
 
-        console.log("PlotManagementList", PlotManagementLists);
+        console.log("PlotManagementList", this.PlotManagementListfinal);
         console.log(
           "this.PlotManagementList",
           this.PlotManagementList,
@@ -578,8 +583,7 @@ export class PlotComponent implements OnChanges {
   removeDuplicates(data) {
     const uniqueArray = data.filter(
       (item, index, self) =>
-        self.findIndex((i) => i.Application_No === item.Application_No) ===
-        index
+        self.findIndex((i) => i.plot_ID === item.plot_ID) === index
     );
 
     return uniqueArray;
@@ -596,9 +600,20 @@ export class PlotComponent implements OnChanges {
       this.SelectedPlot.plot_Size_M2 -
         parseFloat(localStorage.getItem("PolygonAreaname"))
     );
-    console.log(maxAreaDifferences, areaDifferences);
-
-    if (areaDifferences <= maxAreaDifferences) {
+    console.log(
+      maxAreaDifferences,
+      areaDifferences,
+      this.serviceService.leaselist
+    );
+    this.getplotlocbyid(plot.plot_ID);
+    let totalleas = 0;
+    this.serviceService.leaselist[0].Lease_Hold_M2 +
+      this.serviceService.leaselist[0].Free_Hold_M2;
+    this.serviceService.leaselist.forEach((element) => {
+      let totalleaseach = element.Lease_Hold_M2 + element.Free_Hold_M2;
+      totalleas = totalleaseach + totalleas;
+    });
+    if (this.SelectedPlot.plot_Size_M2 <= totalleas) {
       this.serviceService.plotsizenotequal = false;
     } else {
       this.serviceService.plotsizenotequal = true;
@@ -612,7 +627,6 @@ export class PlotComponent implements OnChanges {
       );
     }
 
-    this.getplotlocbyid(plot.plot_ID);
     plot.SDP_ID = this.serviceComponent.licenceData.SDP_ID;
     plot.Licence_Service_ID = this.LicenceData.Licence_Service_ID;
     plot.Application_No = this.AppNo;
@@ -671,31 +685,31 @@ export class PlotComponent implements OnChanges {
 
     plot.application_No = this.AppNo;
     if (this.Parcel_ID) {
-      if (this.PlotManagementList.length == 0) {
+      if (this.PlotManagementListfinal.length == 0) {
         plot.plot_ID = this.Parcel_ID;
         if (!this.Parcel_ID) {
           this.OnParcle = 0;
         }
         this.SelectedPlot = plot;
-      } else if (this.PlotManagementList.length == 1) {
+      } else if (this.PlotManagementListfinal.length == 1) {
         plot.plot_ID = this.Parcel_mearge1;
         if (!this.Parcel_mearge1) {
           this.OnParcle = 1;
         }
         this.SelectedPlot = plot;
-      } else if (this.PlotManagementList.length == 2) {
+      } else if (this.PlotManagementListfinal.length == 2) {
         plot.plot_ID = this.Parcel_mearge2;
         if (!this.Parcel_mearge2) {
           this.OnParcle = 2;
         }
         this.SelectedPlot = plot;
-      } else if (this.PlotManagementList.length == 3) {
+      } else if (this.PlotManagementListfinal.length == 3) {
         plot.plot_ID = this.Parcel_mearge3;
         if (!this.Parcel_mearge3) {
           this.OnParcle = 3;
         }
         this.SelectedPlot = plot;
-      } else if (this.PlotManagementList.length == 4) {
+      } else if (this.PlotManagementListfinal.length == 4) {
         plot.plot_ID = this.Parcel_mearge4;
         if (!this.Parcel_mearge4) {
           this.OnParcle = 4;
@@ -704,31 +718,31 @@ export class PlotComponent implements OnChanges {
       } else {
       }
     } else if (this.Parcel_mearge1) {
-      if (this.PlotManagementList.length == 0) {
+      if (this.PlotManagementListfinal.length == 0) {
         plot.plot_ID = this.Parcel_mearge1;
         this.SelectedPlot = plot;
         if (!this.Parcel_mearge1) {
           this.OnParcle = 1;
         }
-      } else if (this.PlotManagementList.length == 1) {
+      } else if (this.PlotManagementListfinal.length == 1) {
         plot.plot_ID = this.Parcel_mearge2;
         if (!this.Parcel_mearge2) {
           this.OnParcle = 2;
         }
         this.SelectedPlot = plot;
-      } else if (this.PlotManagementList.length == 2) {
+      } else if (this.PlotManagementListfinal.length == 2) {
         plot.plot_ID = this.Parcel_mearge3;
         if (!this.Parcel_mearge3) {
           this.OnParcle = 3;
         }
         this.SelectedPlot = plot;
-      } else if (this.PlotManagementList.length == 3) {
+      } else if (this.PlotManagementListfinal.length == 3) {
         plot.plot_ID = this.Parcel_mearge4;
         if (!this.Parcel_mearge4) {
           this.OnParcle = 4;
         }
         this.SelectedPlot = plot;
-      } else if (this.PlotManagementList.length == 4) {
+      } else if (this.PlotManagementListfinal.length == 4) {
         plot.plot_ID = this.Parcel_ID;
         if (!this.Parcel_ID) {
           this.OnParcle = 0;
@@ -899,7 +913,7 @@ export class PlotComponent implements OnChanges {
         const toast = this.notificationsService.error("Error", error.error);
       }
     );
-    this.PlotManagementList = [];
+    this.PlotManagementListfinal = [];
     // this.getPloat();
   }
 

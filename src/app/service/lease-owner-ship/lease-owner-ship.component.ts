@@ -19,6 +19,7 @@ import { environment } from "src/environments/environment";
 
 import { BehaviorSubject } from "rxjs";
 import { tasks } from "knockout";
+import { ActivatedRoute, Params } from "@angular/router";
 @Component({
   selector: "app-lease-owner-ship",
   templateUrl: "./lease-owner-ship.component.html",
@@ -55,19 +56,26 @@ export class LeaseOwnerShipComponent implements OnChanges {
   totalsizeofleaseeach: number;
   iscustomerdata: boolean;
   iislease: boolean;
+  todoidcurrent: any;
+  iscanEdite: boolean;
   constructor(
     private ngxSmartModalService: NgxSmartModalService,
     private leaseOwnerShipService: LeaseOwnerShipService,
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService,
     private confirmationService: ConfirmationService,
-    public serviceService: ServiceService
+    public serviceService: ServiceService,
+    private activatedRoute: ActivatedRoute
   ) {
     this.leaseOwnerShip = new LeaseOwnerShip();
     this.leaseOwnerShip.ID = Guid.create().toString();
   }
   highlighted;
   ngOnChanges() {
+    this.activatedRoute.params.subscribe((params: Params) => {
+      console.log("leaseappppppp", params.todoID);
+      this.todoidcurrent = params.todoID;
+    });
     if (environment.Lang_code === "am-et") {
       this.language = "amharic";
     } else {
@@ -273,13 +281,18 @@ export class LeaseOwnerShipComponent implements OnChanges {
         this.tasks = CertificateVersion;
         this.tasks = Object.assign([], this.tasks.list);
         console.log("this.tasks", this.tasks);
-
+        this.serviceService.leaselist = this.tasks;
         if (this.tasks.length > 0) {
           this.serviceService.toMess = false;
           if (parseInt(this.tasks[0].Type_ID) === 1) {
             this.islease = true;
           } else {
             this.islease = false;
+          }
+          if (this.todoidcurrent == this.tasks[0].To_Do_ID) {
+            this.iscanEdite = true;
+          } else {
+            this.iscanEdite = false;
           }
         } else {
           this.serviceService.toMess = true;
@@ -537,7 +550,12 @@ export class LeaseOwnerShipComponent implements OnChanges {
       totalpoltsize - parseFloat(localStorage.getItem("PolygonAreaname"))
     );
     console.log(maxAreaDifferences, areaDifferences);
-
+    if (
+      this.leaseOwnerShip.todoid == null ||
+      this.leaseOwnerShip.todoid == undefined
+    ) {
+      this.leaseOwnerShip.todoid = this.todoidcurrent;
+    }
     // if (areaDifferences >= maxAreaDifferences) {
     //   const warningMessage =
     //     "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold Total area :";
