@@ -1,5 +1,5 @@
 <div class="m-3">
-  <p-table [value]="PlotManagementList" [paginator]="true" [rows]="5">
+  <p-table [value]="PlotManagementListfinal" [paginator]="true" [rows]="5">
     <ng-template pTemplate="header">
       <tr>
         <th scope="col" translate>{{Fields.FIELD_ONE}}</th>
@@ -9,7 +9,7 @@
         <th scope="col" *ngIf="multipleplotcanbeadd">
 
           <button type="button" class="btn btn-primary" (click)="ischeckPlotaev=true;ismodaEnable=true;serviceService.check = true"
-            *ngIf="!disable && PlotManagementList.length < 5" translate>Add New</button>
+            *ngIf="!disable && PlotManagementListfinal.length < 5" translate>Add New</button>
         </th>
       </tr>
     </ng-template>

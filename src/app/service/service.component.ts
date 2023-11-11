@@ -370,7 +370,7 @@ export class ServiceComponent implements OnInit {
 
     console.log("Servicesssssssss");
     this.activatedRoute.params.subscribe((params: Params) => {
-      console.log("appppppp", params);
+      console.log("leaseappppppp", params.todoID);
       // this.ID = params['id'];
       this.formcode = params["formcode"];
       this.AppNo = params["AppNo"];

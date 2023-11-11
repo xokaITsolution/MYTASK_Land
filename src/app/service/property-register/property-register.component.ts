@@ -126,7 +126,15 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     if (this.LicenceData !== undefined && this.LicenceData !== null) {
       if (!this.propertyRegister.property_ID) {
         this.propertyRegister.property_ID = this.LicenceData.Property_ID;
-        this.propertyRegister.property_Type_ID = 1;
+        //   if (
+        //     this.propertyRegister.property_Parent_ID != null ||
+        //     this.propertyRegister.property_Parent_ID != 0
+        //   )
+        //     this.propertyRegister.property_Type_ID = 2;
+        // }
+        // else {
+        //   this.propertyRegister.property_Type_ID = 1;
+        // }
       }
     }
     if (this.propertyRegister.registration_Date) {
@@ -245,7 +253,12 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
 
             return;
           } else {
-            const prop = Object.assign({}, this.propertyRegister);
+            const prop = { ...this.propertyRegister };
+
+            // Exclude the 'parent' property
+            if ("parent" in prop) {
+              delete prop.parent;
+            }
             if (prop.children) {
               prop.children = null;
             }
@@ -279,24 +292,22 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
               (error) => {
                 console.log(error);
 
-                if (error.status == "400") {
-                  const toast = this.notificationsService.error(
-                    "Error",
-                    error.error.InnerException.Errors[0].message
-                  );
-                } else {
-                  const toast = this.notificationsService.error(
-                    "Error",
-                    "SomeThing Went Wrong"
-                  );
-                }
+                const toast = this.notificationsService.error(
+                  "Error",
+                  error.error
+                );
               }
             );
             console.log("saveing....");
           }
         });
     } else {
-      const prop = Object.assign({}, this.propertyRegister);
+      const prop = { ...this.propertyRegister };
+
+      // Exclude the 'parent' property
+      if ("parent" in prop) {
+        delete prop.parent;
+      }
       if (prop.children) {
         prop.children = null;
       }
@@ -317,7 +328,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       this.propertyRegisterService.save(prop).subscribe(
         (property) => {
           console.log("property", property);
-          this.getPropertyList(prop.plot_ID);
+          //this.getPropertyList(prop.plot_ID);
           if (!this.Saved) {
             this.completed.emit();
             this.Saved = true;
@@ -329,17 +340,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         (error) => {
           console.log(error);
 
-          if (error.status == "400") {
-            const toast = this.notificationsService.error(
-              "Error",
-              error.error.InnerException.Errors[0].message
-            );
-          } else {
-            const toast = this.notificationsService.error(
-              "Error",
-              "SomeThing Went Wrong"
-            );
-          }
+          const toast = this.notificationsService.error("Error", error.error);
         }
       );
       console.log("saveing....");
@@ -481,6 +482,103 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       }
     );
   }
+  async getTree(PropertyList) {
+    this.serviceService.files = [];
+
+    const addLevelToNode = (node, level) => {
+      node.level = level;
+
+      if (node.children && node.children.length > 0) {
+        node.children.forEach((child) => {
+          addLevelToNode(child, level + 1);
+        });
+      }
+    };
+
+    for (let i = 0; i < PropertyList.length; i++) {
+      let a;
+
+      if (
+        PropertyList[i].property_Parent_ID == null ||
+        PropertyList[i].property_Parent_ID == 0
+      ) {
+        a = { ...PropertyList[i] };
+        a.label = a.property_ID;
+        a.children = [];
+        a.level = 0;
+
+        const l1 = [...PropertyList];
+
+        for (let j = 0; j < l1.length; j++) {
+          let b;
+
+          if (l1[j].property_Parent_ID == a.property_ID) {
+            b = { ...l1[j] };
+            b.label = b.property_ID;
+            b.children = [];
+            b.level = 1;
+            a.children.push(b);
+
+            const l2 = [...PropertyList];
+
+            for (let k = 0; k < l2.length; k++) {
+              let c;
+
+              if (l2[k].property_Parent_ID == b.property_ID) {
+                c = { ...l2[k] };
+                c.label = c.property_ID;
+                c.children = [];
+                c.level = 2;
+                b.children.push(c);
+              }
+            }
+          }
+        }
+
+        addLevelToNode(a, 0);
+        this.serviceService.files.push(a);
+      }
+    }
+
+    const selectedChild = this.expandAndSelectChild(
+      this.serviceService.files,
+      this.serviceService.insertedProperty
+    );
+    console.log("this.serviceService.files", this.serviceService.files);
+  }
+
+  expandAndSelectChild(tree, targetPropertyID) {
+    for (let i = 0; i < tree.length; i++) {
+      if (tree[i].property_ID === targetPropertyID) {
+        // Found the element with the specified property_ID
+        tree[i].expanded = true; // Expand the node
+        return tree[i];
+      } else if (tree[i].children && tree[i].children.length > 0) {
+        const result = this.expandAndSelectChild(
+          tree[i].children,
+          targetPropertyID
+        );
+        if (result) {
+          tree[i].expanded = true; // Expand the parent node
+          return result;
+        }
+      }
+    }
+    return null; // Element not found
+  }
+  findTreeElement(tree, targetPropertyID) {
+    for (let i = 0; i < tree.length; i++) {
+      if (tree[i].property_ID === targetPropertyID) {
+        return tree[i]; // Found the element with the specified property_ID
+      } else if (tree[i].children && tree[i].children.length > 0) {
+        const result = this.findTreeElement(tree[i].children, targetPropertyID);
+        if (result) {
+          return result; // Found the element in a child node
+        }
+      }
+    }
+    return null; // Element not found
+  }
   getPropertyTypeLookUP() {
     this.serviceService.getPropertyTypeLookUP().subscribe(
       (PropertyTypeLookUP) => {
@@ -496,44 +594,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       }
     );
   }
-  getTree(List) {
-    this.serviceService.files = [];
-    for (let i = 0; i < this.PropertyList.length; i++) {
-      let a;
-      if (
-        this.PropertyList[i].property_Parent_ID == null ||
-        this.PropertyList[i].property_Parent_ID == 0
-      ) {
-        a = Object.assign({}, this.PropertyList[i]);
-        a.label = Object.assign(this.PropertyList[i].property_ID);
-        a.children = [];
-        const l1 = Object.assign([], this.PropertyList);
-        for (let j = 0; j < l1.length; j++) {
-          let b;
-          if (l1[j].property_Parent_ID == a.property_ID) {
-            b = Object.assign({}, l1[j]);
-            b.label = Object.assign(l1[j].property_ID);
-            b.children = [];
-            a.children.push(b);
-            l1[j].children = [];
 
-            const l2 = Object.assign([], this.PropertyList);
-            for (let k = 0; k < l2.length; k++) {
-              let c;
-              if (l2[k].Property_Parent_ID == b.property_ID) {
-                c = Object.assign({}, l2[k]);
-                c.label = Object.assign(l2[k].property_ID);
-                c.children = [];
-                b.children.push(c);
-              }
-            }
-          }
-        }
-        this.serviceService.files.push(a);
-      }
-    }
-    console.log("this.files", this.serviceService.files);
-  }
   async add() {
     if (this.serviceService.isproportinal == true) {
       let totalsize =

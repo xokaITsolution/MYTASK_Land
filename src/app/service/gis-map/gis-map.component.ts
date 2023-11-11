@@ -2918,8 +2918,8 @@ export class GisMapComponent implements AfterViewInit {
     const latLngCoords = utm.toLatLon(easting, northing, zone, hemisphere);
     console.log("Latitude, Longitude:", latLngCoords);
     return {
-      lat: latLngCoords.latitude + 0.001876,
-      lng: latLngCoords.longitude + 0.0008668,
+      lat: latLngCoords.latitude,
+      lng: latLngCoords.longitude,
     };
   }
 

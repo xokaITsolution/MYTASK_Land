@@ -828,7 +828,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         this.platformLocation.geo = coordinates;
         let coordinate = this.convertToMultiPoint(cordinatetemp);
         this.platformLocation.geowithzone = coordinate;
-        console.log("responseresponseresponse", response, response[0].RoleId);
+        console.log("responseresponseresponse", response, response[0]);
 
         this.platformLocation.ploteId = this.plotManagment.parcel_No;
         this.platformLocation.created_By = response[0].RoleId;
