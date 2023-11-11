@@ -197,7 +197,7 @@ export class CertComponent implements OnChanges {
 
   getBase(ploat) {
     this.serviceService.getBaseTable(ploat).subscribe(
-      async (BaseTable) => {
+      async (BaseTable: any) => {
         if (BaseTable) {
           if (this.language == "amharic") {
             BaseTable[0].Registration_Date =
@@ -205,11 +205,10 @@ export class CertComponent implements OnChanges {
                 BaseTable[0].Registration_Date
               );
           }
-          this.BaseTable.push(BaseTable[0]);
         }
         // this.BaseTable = (Object.assign([], this.BaseTable));
         const uniqueJobMatchIDs = {};
-        const uniqueData = this.BaseTable.filter((item) => {
+        const uniqueData = BaseTable.filter((item) => {
           if (!uniqueJobMatchIDs[item.Title_Deed_No]) {
             uniqueJobMatchIDs[item.Title_Deed_No] = true;
             return true;
@@ -258,7 +257,10 @@ export class CertComponent implements OnChanges {
             this.Base.Registration_Date
           );
         }
-        const toast = this.notificationsService.error("Error", error.error);
+        const toast = this.notificationsService.error(
+          "Error",
+          error.error.InnerException.Errors[0].message
+        );
         // } else {
         //   if (this.language == "amharic") {
         //     this.Base.Registration_Date =
