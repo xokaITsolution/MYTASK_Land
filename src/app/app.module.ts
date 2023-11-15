@@ -35,7 +35,7 @@ import { environment } from "src/environments/environment";
 import { LoadingBarComponent } from "./loading-bar/loading-bar.component";
 import { LoadingBarService } from "./loading-bar/loading-bar.service";
 import { LoadingBarInterceptor } from "./loading-bar/loading-bar-interceptor";
-
+import { CookieService } from "ngx-cookie-service/cookie-service/cookie.service";
 @NgModule({
   declarations: [
     AppComponent,
@@ -82,6 +82,7 @@ import { LoadingBarInterceptor } from "./loading-bar/loading-bar-interceptor";
       multi: true,
     },
     LoadingBarService,
+    CookieService,
   ],
   bootstrap: [AppComponent],
 })

@@ -12,9 +12,11 @@
 
 
     <div class="form-group row col-md-7">
-      <label for="ThemCustomerID" class="col-sm-3 col-form-label" translate>Them Customer ID</label>
+      <label for="fullname" class="col-sm-3 col-form-label" translate>Customer Full Name</label>
       <div class="col-sm-9">
-        <select  disabled class="form-control"
+        <input type="text" [disabled]="disable" class="form-control" [(ngModel)]="themCertificateVersion.Them_Customer_ID" name="fullname"
+          id="fullname" placeholder="full name">
+        <!-- <select  disabled class="form-control"
                 [(ngModel)]="themCertificateVersion.Them_Customer_ID" name="ThemCustomerID" id="ThemCustomerID">
           <option disabled translate>select</option>
           <option *ngFor="let Customer of customerdata" [value]="Customer.customer_ID">
@@ -22,7 +24,7 @@
             Customer.applicant_Last_Name_AM : Customer.applicant_First_Name_EN + ' '+ Customer.applicant_Middle_Name_En + ' '+
             Customer.applicant_Last_Name_EN}}
           </option>
-        </select>
+        </select> -->
       </div>
 
       <div class="col-sm-2">

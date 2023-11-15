@@ -67,6 +67,11 @@ label {
   display: inline-block;
   /* Make labels appear inline */
 }
-
-
-
+.north-arrow-control {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  width: 50px;
+    height: 60px;
+  padding: 5px;
+  cursor: pointer;
+}

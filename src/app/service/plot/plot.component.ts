@@ -597,39 +597,39 @@ export class PlotComponent implements OnChanges {
     console.log("dfghgfd", plot);
     this.plot_ID = this.SelectedPlot.plot_ID;
     this.serviceService.Totalarea = this.SelectedPlot.plot_Size_M2;
-    const maxAreaDifferences =
-      environment.Totalareatolerance * this.serviceService.Totalarea;
+    // const maxAreaDifferences =
+    //   environment.Totalareatolerance * this.serviceService.Totalarea;
 
-    const areaDifferences = Math.abs(
-      this.SelectedPlot.plot_Size_M2 -
-        parseFloat(localStorage.getItem("PolygonAreaname"))
-    );
-    console.log(
-      maxAreaDifferences,
-      areaDifferences,
-      this.serviceService.leaselist
-    );
+    // const areaDifferences = Math.abs(
+    //   this.SelectedPlot.plot_Size_M2 -
+    //     parseFloat(localStorage.getItem("PolygonAreaname"))
+    // );
+    // console.log(
+    //   maxAreaDifferences,
+    //   areaDifferences,
+    //   this.serviceService.leaselist
+    // );
     this.getplotlocbyid(plot.plot_ID);
     let totalleas = 0;
-    this.serviceService.leaselist[0].Lease_Hold_M2 +
-      this.serviceService.leaselist[0].Free_Hold_M2;
-    this.serviceService.leaselist.forEach((element) => {
-      let totalleaseach = element.Lease_Hold_M2 + element.Free_Hold_M2;
-      totalleas = totalleaseach + totalleas;
-    });
-    if (this.SelectedPlot.plot_Size_M2 <= totalleas) {
-      this.serviceService.plotsizenotequal = false;
-    } else {
-      this.serviceService.plotsizenotequal = true;
-      const toast = this.notificationsService.warn(
-        `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
-          በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
-           ${Math.abs(
-             this.SelectedPlot.plot_Size_M2 -
-               parseInt(localStorage.getItem("PolygonAreaname"))
-           )}`
-      );
-    }
+    // this.serviceService.leaselist[0].Lease_Hold_M2 +
+    //   this.serviceService.leaselist[0].Free_Hold_M2;
+    // this.serviceService.leaselist.forEach((element) => {
+    //   let totalleaseach = element.Lease_Hold_M2 + element.Free_Hold_M2;
+    //   totalleas = totalleaseach + totalleas;
+    // });
+    // if (this.SelectedPlot.plot_Size_M2 <= totalleas) {
+    //   this.serviceService.plotsizenotequal = false;
+    // } else {
+    //   this.serviceService.plotsizenotequal = true;
+    //   const toast = this.notificationsService.warn(
+    //     `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
+    //       በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
+    //        ${Math.abs(
+    //          this.SelectedPlot.plot_Size_M2 -
+    //            parseInt(localStorage.getItem("PolygonAreaname"))
+    //        )}`
+    //   );
+    //}
 
     plot.SDP_ID = this.serviceComponent.licenceData.SDP_ID;
     plot.Licence_Service_ID = this.LicenceData.Licence_Service_ID;
@@ -927,11 +927,14 @@ export class PlotComponent implements OnChanges {
       .subscribe((CertificateVersion: any) => {
         let tasks = CertificateVersion;
         tasks = Object.assign([], tasks.list);
-        const totalsize = tasks.reduce((sum, node) => {
-          sum += parseFloat(node.Free_Hold_M2) + parseFloat(node.Lease_Hold_M2);
+        const totalsize = tasks
+          .filter((x) => parseInt(x.Status) === 1)
+          .reduce((sum, node) => {
+            sum +=
+              parseFloat(node.Free_Hold_M2) + parseFloat(node.Lease_Hold_M2);
 
-          return sum;
-        }, 0);
+            return sum;
+          }, 0);
         console.log(
           "leaseOwnerShipService",
           tasks,

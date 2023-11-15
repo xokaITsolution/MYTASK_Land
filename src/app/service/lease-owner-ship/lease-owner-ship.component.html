@@ -188,7 +188,7 @@
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-lease let-rowData>
-  <tr (click)='highlighted = rowData;selectLease(lease)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
+  <tr (click)='highlighted = rowData;' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
     
       <td>{{lease.ID}}</td>
       <td>{{lease.Plot_ID}}</td>
