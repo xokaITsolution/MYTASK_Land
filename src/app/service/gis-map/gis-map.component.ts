@@ -22,6 +22,8 @@ import { CustomAlertComponent } from "./CustomAlertComponent";
 import { NotificationsService } from "angular2-notifications";
 import { MessageService, TreeNode } from "primeng/api";
 import { ApiService } from "../testgismap/api.service";
+import * as flatted from "flatted";
+import { CookieService } from "ngx-cookie-service/cookie-service/cookie.service";
 interface AssignedBodyTree {
   label: string;
   workspace: string;
@@ -74,7 +76,8 @@ export class GisMapComponent implements AfterViewInit {
     private notificationsService: NotificationsService,
     private modalService: BsModalService,
     private cdr: ChangeDetectorRef,
-    private geoser: ApiService
+    private geoser: ApiService,
+    private cookieService: CookieService
   ) {
     this.defaultLayer = this.layers[0];
   }
@@ -251,6 +254,11 @@ export class GisMapComponent implements AfterViewInit {
   }
 
   getGroupLayers(): void {
+    const storedTreeDataString = localStorage.getItem("treeformap");
+    const storedtreedatalayerString = localStorage.getItem("treedatalayer");
+
+    console.log("treeformap", storedtreedatalayerString);
+
     this.geoser
       .fetchGroupLayers(environment.parentWorkspace)
       .subscribe((data: any) => {
@@ -271,7 +279,14 @@ export class GisMapComponent implements AfterViewInit {
             }
           }
           // console.log("AddisLand", this.groupLayers[index]);
-          this.getTree(this.groupLayer);
+          if (storedTreeDataString != null) {
+            this.nodes = JSON.parse(storedTreeDataString);
+            this.getcapablities(environment.parentWorkspace);
+            this.getcapablities(environment.SubcityName);
+            // this.layers = JSON.parse(storedtreedatalayerString);
+          } else {
+            this.getTree(this.groupLayer);
+          }
         }
         // }
       });
@@ -759,9 +774,15 @@ export class GisMapComponent implements AfterViewInit {
         }
       }
       this.nodes.push(a);
-    }
+      const treedata = JSON.stringify(this.nodes);
+      localStorage.setItem("treeformap", treedata);
+      // console.log("treeformap", treedata);
+      // const treedatalayer = [];
+      // treedatalayer.push(this.layers);
 
-    console.log("this.files", this.nodes);
+      // localStorage.setItem("treedatalayer", JSON.stringify(treedatalayer));
+      // console.log("treeformap", localStorage.getItem("treedatalayer"));
+    }
   }
 
   // Function to find the "Arada image_M" node in the tree structure
@@ -840,7 +861,12 @@ export class GisMapComponent implements AfterViewInit {
         for (let i = 0; i < layers.length; i++) {
           const layer = layers[i];
           let layerName = layer.getElementsByTagName("Name")[0].textContent;
-
+          if (
+            layerName == "AddisLand" ||
+            layerName == environment.SubcityName
+          ) {
+            continue;
+          }
           const newLayer: Layer = {
             name: layerName,
             vectorLayer: null,
@@ -851,6 +877,7 @@ export class GisMapComponent implements AfterViewInit {
           // console.log("gwc", newLayer)
           // push all changes on layers
           this.layers.push(newLayer);
+          console.log("this.layersall", this.layers);
         }
       })
       .catch((error) => {
@@ -923,14 +950,43 @@ export class GisMapComponent implements AfterViewInit {
   }
 
   Bind_Features(geojson, layerName) {
-    if (layerName === "Relocation") {
-      // const MultiPolygonLayer = geojson.features.find(feature => feature.geometry.type === "MultiPolygon");
-
-      //   if (MultiPolygonLayer && MultiPolygonLayer.geometry.type === "MultiPolygon") {
-      //  // console.log("The fetched layer is a MultiPolygon.",layerName);
-
-      //   if (layerName==="Relocation"){
-      //     //
+    if (layerName === "Plot_Locations") {
+      const randomColor =
+        "#" + Math.floor(Math.random() * 16777215).toString(16);
+      const options = {
+        style: function (feature) {
+          return {
+            color: null,
+            fillColor: randomColor,
+          };
+        },
+      };
+      // console.log("hhh", geojson)
+      (this.vectorLayer = L.Proj.geoJson(geojson, options)), {};
+      console.log(
+        "The fetched layer is a multipolygon.",
+        this.vectorLayer,
+        layerName
+      );
+    } else if (layerName === "Property_locations") {
+      const randomColor =
+        "#" + Math.floor(Math.random() * 16777215).toString(16);
+      const options = {
+        style: function (feature) {
+          return {
+            color: null,
+            fillColor: randomColor,
+          };
+        },
+      };
+      // console.log("hhh", geojson)
+      (this.vectorLayer = L.Proj.geoJson(geojson, options)), {};
+      console.log(
+        "The fetched layer is a multipolygon.",
+        this.vectorLayer,
+        layerName
+      );
+    } else if (layerName === "Relocation") {
       const options = {
         style: function (feature) {
           return {
@@ -1015,30 +1071,6 @@ export class GisMapComponent implements AfterViewInit {
           },
         };
 
-        //
-        (this.vectorLayer = L.Proj.geoJson(geojson, options)),
-          {
-            //     onEachFeature: (feature, layer) => {
-            //       const properties = feature.properties; // Access the properties of the feature
-            //       let popupContent = `Layer: ${layerName}<br>Feature ID: ${feature.id}<br>`;
-            //       // Dynamically add the properties to the popup content
-            //       for (const propertyName in properties) {
-            //         if (properties.hasOwnProperty(propertyName)) {
-            //           popupContent += `${propertyName}: ${properties[propertyName]}<br>`;
-            //         }
-            //       }
-            //       // Bind the customized popup content to the layer
-            //       layer.bindPopup(popupContent);
-            //     },
-            //     coordsToLatLng: (coords: [number, number] | [number, number, number]) => {
-            //       if (coords.length >= 2) {
-            //         // Ignore the z-coordinate and use only the x and y coordinates for LatLng
-            //         return L.CRS.EPSG4326.unproject(L.point(coords[0], coords[1]));
-            //       }
-            //       throw new Error('Invalid coordinate format');
-            //     },
-            //     attribution: layerName
-          };
         console.log("other", layerName);
       }
     }
@@ -1148,6 +1180,30 @@ export class GisMapComponent implements AfterViewInit {
     // });
     // // Define the tile layers
     // console.log(googleSatelliteLayer);
+    // Custom control for North arrow
+    var northArrowControl = L.Control.extend({
+      options: {
+        position: "topright",
+      },
+
+      onAdd: function (map) {
+        // Create a container for the control
+        var container = L.DomUtil.create("div", "north-arrow-control");
+
+        // Add HTML content for the North arrow
+        container.innerHTML =
+          '<img src="http://job.xokait.com.et/datepicker/img/northarow.png" alt="North Arrow">';
+
+        // Set up a click event on the container to rotate the map to north
+        container.onclick = function () {
+          map.setBearing(0); // You may need to use map.setRotationAngle(0) or other methods based on the Leaflet version and plugins you're using
+        };
+
+        return container;
+      },
+    });
+
+    // Add the North arrow control to the map
 
     const osmLayer = L.tileLayer(
       "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -1164,7 +1220,7 @@ export class GisMapComponent implements AfterViewInit {
     // Create a layers control with checkboxes
     const layersControl = L.control.layers(baseLayers).addTo(this.map);
     // Add an event listener to handle the removal of all layers when "None" is selected
-
+    this.map.addControl(new northArrowControl());
     // Create a map event listener to track mouse movements
     this.markerLayer = L.layerGroup().addTo(this.map);
     this.map.on("mousemove", (event) => {
@@ -1184,39 +1240,6 @@ export class GisMapComponent implements AfterViewInit {
         6
       )} &nbsp;&nbsp; Northing: ${UTMvalue.northing.toFixed(6)} `;
     });
-    // Add a tile layer to the map (e.g., OpenStreetMap)
-    // const tileLayerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    // L.tileLayer(tileLayerUrl).addTo(this.map);
-    // Add base tile layer
-    // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //   attribution: 'OpenStreetMap'
-    // }).addTo(this.map);
-    // Configure drawing controls
-    // this.drawControl = new L.Control.Draw({
-    //   draw: {
-    //     marker: false, // Disable marker drawing
-    //     polyline: false, // Disable polyline drawing
-    //     circle: false, // Disable circle drawing
-    //     circlemarker: false, // Disable circlemarker drawing
-    //     polygon: {
-    //       allowIntersection: false, // Prevents intersecting polygons
-    //       drawError: {
-    //         color: "#de3214", // Error color
-    //         timeout: 1000, // Error message display duration in milliseconds
-    //       },
-    //       shapeOptions: {
-    //         color: "#de3214", // Outline color
-    //         fillColor: "#ff0000", // Fill color of the polygon (change this to the desired color)
-    //         fillOpacity: 0.6, // Opacity of the fill color (0 to 1)
-    //       },
-    //       showArea: true, // Display polygon area while drawing
-    //     },
-    //   },
-    //   edit: {
-    //     featureGroup: L.featureGroup(), // Create a feature group for drawn items
-    //   },
-    // });
-
     // this.map.addControl(this.drawControl);
     L.control.scale().addTo(this.map);
     this.map.addLayer(this.editableLayers);
@@ -1829,22 +1852,6 @@ export class GisMapComponent implements AfterViewInit {
       lng,
     };
   }
-
-  // toggleLayer(visibility: boolean, layerName: string) {
-  //   const layer = this.layers.find((l) => l.name === layerName);
-  //   console.log(layer);
-
-  //   if (layer && layer.vectorLayer) {
-  //     if (visibility) {
-  //       console.log(layer.vectorLayer);
-  //       this.map.addLayer(layer.vectorLayer);
-  //     } else {
-  //       console.log(layer.vectorLayer);
-
-  //       this.map.removeLayer(layer.vectorLayer);
-  //     }
-  //   }
-  // }
 
   toggleLayer(visibility: boolean, layerName: string) {
     console.log("layerName", layerName);

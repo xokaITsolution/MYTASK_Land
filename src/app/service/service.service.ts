@@ -100,6 +100,8 @@ export class ServiceService {
     environment.rootPath3 + "gregorianToEthiopianDate";
   private propertreg =
     environment.rootPath3 + "Property_Registration/procProperty_Registration";
+  private propertregis =
+    environment.rootPath3 + "Proporty_Location/procProporty_Location/";
 
   private saveCustomerLookUP = environment.rootPath + "Customer"; // URL to web api
   userRoleUrl = environment.rootPath + "BPEL/GetUserRole";
@@ -643,6 +645,10 @@ export class ServiceService {
   }
   getPropertyLists(plotid) {
     return this.http.get(this.propertreg + "/" + plotid);
+  }
+
+  getPropertyListsfromcenteral(propert) {
+    return this.http.get(this.propertregis + propert + "/Proporty_Id");
   }
 
   getDeedTable(propertyID) {

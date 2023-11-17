@@ -12,12 +12,12 @@ const routes: Routes = [
     pathMatch: "prefix",
   },
   {
-    path: "service/:id/:AppNo/:TaskId/:formcode",
+    path: "service/:id/:SDP_ID/:tskID/:formcode",
     component: ServiceComponent,
     pathMatch: "prefix",
   },
   {
-    path: "service/:formcode/:AppNo/:TaskId/:DocId/:todoid/:TaskStatus",
+    path: "service/:formcode/:AppNo/:tskID/:DocId/:todoid/:TaskStatus",
     component: ServiceComponent,
     pathMatch: "prefix",
   },

@@ -207,6 +207,7 @@ export class ServiceComponent implements OnInit {
   uploadcontract: boolean;
   updated: any;
   custmerInformation: any;
+  issucess: boolean;
   constructor(
     private modalService: BsModalService,
     private activatedRoute: ActivatedRoute,
@@ -422,29 +423,16 @@ export class ServiceComponent implements OnInit {
       this.ID = 10;
     } else {
       this.ID = 0;
+      console.log("Servicesssssssss", this.formcode);
       this.se.on(this.eventTypes.JSONFOUND, () => {
-        console.log("display form");
-        console.log("ddd", this.formcode);
         this.serviceService.getFormData(this.formcode).subscribe(
           (success) => (this.ID = 1),
           (error) => (this.ID = 404)
         );
+        console.log("display form");
+        console.log("ddd", this.formcode);
       });
     }
-
-    // this.se.on(
-    //   this.eventTypes.ALREADYAPPLIED,
-    //   (eventData) => {
-    //     console.log('%cevent data :: ', 'color:green', eventData);
-    //     let alertMessage = 'you already have gone through this task!';
-    //     this.showOverlay = true;
-    //     console.warn(alertMessage);
-    //     this.warnMessage = eventData['message'];
-    //     this.countDown(5);
-    //   }
-    // );
-
-    //  this.RequerdDocs
     if (this.RequerdDocs) {
       for (let i = 0; i < this.RequerdDocs.length; i++) {
         console.log(
@@ -1522,13 +1510,20 @@ export class ServiceComponent implements OnInit {
                 (x) => parseInt(x.property_Parent_ID) === 0
               );
               console.log(parentproperty);
-
-              this.serviceService
-                .postplotTopostgres(
-                  this.licenceData.Parcel_ID,
-                  parentproperty[0].property_ID
-                )
-                .subscribe((res) => {});
+              parentproperty.forEach((element) => {
+                this.serviceService
+                  .getPropertyListsfromcenteral(element.property_ID)
+                  .subscribe((ress: any) => {
+                    if (ress.procProporty_Locations) {
+                      this.serviceService
+                        .postplotTopostgres(
+                          this.licenceData.Parcel_ID,
+                          element.property_ID
+                        )
+                        .subscribe((res) => {});
+                    }
+                  });
+              });
             }
           });
       }
@@ -1589,6 +1584,7 @@ export class ServiceComponent implements OnInit {
               "Sucess",
               "sucesss"
             );
+            this.issucess = true;
           } else {
             const toast = this.notificationsService.error(
               "Error",
@@ -1686,7 +1682,15 @@ export class ServiceComponent implements OnInit {
         });
 
         //this.AppNoList;
-
+        const uniqueJobMatchIDs = {};
+        const uniqueData = this.ApplicationNumberlist.filter((item) => {
+          if (!uniqueJobMatchIDs[item.application_number]) {
+            uniqueJobMatchIDs[item.application_number] = true;
+            return true;
+          }
+          return false;
+        });
+        this.ApplicationNumberlist = uniqueData;
         console.log("finalystatuslist", this.ApplicationNumberlist);
       });
   }

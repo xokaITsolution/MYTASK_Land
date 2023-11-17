@@ -19,16 +19,16 @@
     <table class="table">
       <thead>
         <tr *ngIf="licenceData">
-          <th scope="col" translate>
-            <label translate>Application No:</label>
+          <th id="Applicationno" scope="col" translate>
+            <span for="Applicationno" translate>Application No:</span>
             {{ licenceData.Application_No }}
           </th>
-          <th scope="col" translate>
-            <label translate> Plot ID :</label>
+          <th id="serviceName" scope="col" translate>
+            <span for="serviceName" translate> Plot ID :</span>
             {{ licenceData.Service_Name }}
           </th>
-          <th scope="col" translate>
-            <label translate> Plot ID:</label>
+          <th id="parcel" scope="col" translate>
+            <span for="parcel" translate> Plot ID:</span>
             {{ licenceData.Parcel_ID }}
           </th>
     
@@ -85,7 +85,7 @@
 
                     <form #f="ngForm" novalidate name="proform">
                       <div class="form-group row col-md-12" *ngFor="let RequiredDoc of RequerdDocs; let i = index;">
-                        <label for="File" class="col-md-4 col-form-label">
+                        <label  class="col-md-4 col-form-label">
                           {{ language === 'amharic' ? RequiredDoc.description_Local :RequiredDoc.description_en }}
                         </label>
                         <div class="col-md-8">
@@ -93,7 +93,7 @@
 
                           </div>
                           <div *ngIf="!RequiredDoc.File">
-                            <p-fileUpload [hidden]="disable" #fild id="File" name="demo[]" customUpload="true"
+                            <p-fileUpload [hidden]="disable" #fild id="File{{i}}" name="demo[]" customUpload="true"
                             (uploadHandler)="upload($event,RequiredDoc,fild)" [auto]="true"
                             [accept]="RequiredDoc.type" [chooseLabel]="'Upload' | translate"
                            [maxFileSize]="RequiredDoc.size">
@@ -110,7 +110,7 @@
                           </div>
                           <div *ngIf="RequiredDoc.required">
                             <input type="hidden" class="form-control" #file="ngModel" [(ngModel)]="RequiredDoc.File"
-                              [name]="RequiredDoc.description_en" id="NumberOfLift" placeholder="Number of Lift"
+                              [name]="RequiredDoc.description_en" id="NumberOfLift{{i}}" placeholder="Number of Lift"
                               required>
                             <div *ngIf="file.invalid">
                               <span class="text-danger" translate>REQUIRED</span>
@@ -145,14 +145,14 @@
               </div>
               <div class="col-md-12">
                 <div *ngIf="!validated">
-                  <label class="text-primary" translate>Need to save first, to upload files and write post in
-                    notes</label>
+                  <span  class="text-primary" translate>Need to save first, to upload files and write post in
+                    notes</span>
                 </div>
               </div>
 
               <div class="form-group row col-sm-10 m-0" *ngIf="validated">
                 <label translate>post in note</label>
-                <textarea class="form-control mx-2 mb-2 border-primary" rows="4" style="background: rgb(202, 236, 255)"
+                <textarea class="form-control mx-2 mb-2 border-primary" id="note" rows="4" style="background: rgb(202, 236, 255)"
                   [(ngModel)]="NoteObj.remarks" placeholder="write post in note here ...">
                                 </textarea>
                 <button type="button" class="btn btn-primary mx-2" *ngIf="!this.NoteObj.postit_note_code"
