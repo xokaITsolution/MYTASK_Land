@@ -12,8 +12,8 @@
         <p-tree [value]="nodes" [metaKeySelection]="false" selectionMode="multiple" [(selection)]="selectedNode"
           (onNodeSelect)="toggleLayer_Checked($event);" (onNodeUnselect)="toggleLayer_UnChecked($event)">
           <ng-template let-node pTemplate="default">
-            <span  [ngClass]="{'ui-state-highlight': node.styleClass === 'custom-selected-node'?custom-selected-node:''}"
-              [style.background-color]="node.styleClass === 'custom-selected-node'  ? randomColor : ''">
+            <span (click)="activeNode=node" [ngClass]="{'ui-state-highlight': node.styleClass === 'custom-selected-node'?custom-selected-node:''}"
+              [style.background-color]="node.styleClass === 'custom-selected-node' && activeNode.label == node.label ? randomColor : ''">
               {{node.label}}
             </span>
           </ng-template>
