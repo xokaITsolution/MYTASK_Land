@@ -483,39 +483,43 @@ export class PlotComponent implements OnChanges {
     let a;
     this.serviceService.getPlotManagementApi(Licence_Service_ID).subscribe(
       async (PlotManagementLists: any) => {
-        this.PlotManagementList = PlotManagementLists.procPlot_Registrations;
-        this.PlotManagementList = this.removeDuplicates(
-          this.PlotManagementList
-        );
-
-        this.PlotManagementListfinal.push(this.PlotManagementList[0]);
-        this.PlotManagementListfinal = this.removeDuplicates(
-          this.PlotManagementListfinal
-        );
+        let PlotManagementList = PlotManagementLists.procPlot_Registrations;
+        if (PlotManagementList.length > 0) {
+          this.PlotManagementList = this.removeDuplicates(PlotManagementList);
+        }
+        console.log("PlotManagementList", this.PlotManagementList);
+        if (this.PlotManagementList.length > 0) {
+          this.PlotManagementListfinal.push(this.PlotManagementList[0]);
+          this.PlotManagementListfinal = this.removeDuplicates(
+            this.PlotManagementListfinal
+          );
+        }
 
         console.log("PlotManagementList", this.PlotManagementListfinal);
-        this.isisvalidated(
-          this.todoid,
-          this.tskID,
-          this.PlotManagementListfinal[0].plot_ID,
-          "00000000-0000-0000-0000-000000000000",
-          this.DocID
-        );
+        // this.isisvalidated(
+        //   this.todoid,
+        //   this.tskID,
+        //   this.PlotManagementListfinal[0].plot_ID,
+        //   "00000000-0000-0000-0000-000000000000",
+        //   this.DocID
+        // );
 
         console.log("PlotManagementList", this.PlotManagementListfinal);
         console.log(
           "this.PlotManagementList",
           this.PlotManagementList,
-          this.LicenceData
+          this.serviceService.Service_ID
         );
-        if (this.serviceService.multipleplotcanbeadd) {
-          let filterservice = this.serviceService.multipleplotcanbeadd.filter(
-            (x) => x.id === this.serviceService.Service_ID
-          );
-          if (filterservice.length > 0) {
-            this.multipleplotcanbeadd = true;
-          } else {
-            this.multipleplotcanbeadd = false;
+        if (this.PlotManagementListfinal.length > 0) {
+          if (this.serviceService.multipleplotcanbeadd) {
+            let filterservice = this.serviceService.multipleplotcanbeadd.filter(
+              (x) => x.id === this.serviceService.Service_ID
+            );
+            if (filterservice.length > 0) {
+              this.multipleplotcanbeadd = true;
+            } else {
+              this.multipleplotcanbeadd = false;
+            }
           }
         }
       },

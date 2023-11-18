@@ -423,15 +423,22 @@ export class ServiceComponent implements OnInit {
       this.ID = 10;
     } else {
       this.ID = 0;
-      console.log("Servicesssssssss", this.formcode);
-      this.se.on(this.eventTypes.JSONFOUND, () => {
+
+      if (this.AppNo != undefined || this.AppNo != null) {
+        this.se.on(this.eventTypes.JSONFOUND, () => {
+          this.serviceService.getFormData(this.formcode).subscribe(
+            (success) => (this.ID = 1),
+            (error) => (this.ID = 404)
+          );
+          console.log("display form");
+          console.log("ddd", this.formcode);
+        });
+      } else {
         this.serviceService.getFormData(this.formcode).subscribe(
           (success) => (this.ID = 1),
           (error) => (this.ID = 404)
         );
-        console.log("display form");
-        console.log("ddd", this.formcode);
-      });
+      }
     }
     if (this.RequerdDocs) {
       for (let i = 0; i < this.RequerdDocs.length; i++) {

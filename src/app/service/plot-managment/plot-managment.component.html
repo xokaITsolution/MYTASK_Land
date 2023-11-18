@@ -412,7 +412,7 @@
     </ng-template>
     <ng-template pTemplate="body" let-Plot let-rowData>
       <tr (click)='highlighted = rowData;SelectPLot(Plot);showform()' class="some-class" tabindex="1"
-        [class.ui-state-highlight]="rowData === highlighted">
+        [class.uistatehighlight]="rowData === highlighted">
   
         <td>{{Plot.Plot_ID}} </td>
         <td>

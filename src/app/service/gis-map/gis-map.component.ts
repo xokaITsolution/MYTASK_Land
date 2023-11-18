@@ -69,6 +69,9 @@ export class GisMapComponent implements AfterViewInit {
   lastCharacter: string = "A";
   centralAddis: any;
   groupLayerss: any;
+  randomColor: string;
+  selectedNode: any;
+  activeNode: any;
 
   constructor(
     public ServiceService: ServiceService,
@@ -174,8 +177,18 @@ export class GisMapComponent implements AfterViewInit {
       }
     }
   }
+  isSelectedNode(node: TreeNode): boolean {
+    return this.activeNode.includes(node);
+  }
   toggleLayer_Checked(event) {
-    //;
+    console.log("event", event);
+
+    // Generate a random color
+    this.randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+
+    // Apply styles only to the selected node
+    event.node.styleClass = "custom-selected-node";
+    this.activeNode = [event.node];
     if (event.node.children) {
       // Deselect all the children nodes
       event.node.children.forEach((child) => {
@@ -218,6 +231,12 @@ export class GisMapComponent implements AfterViewInit {
     }
   }
   toggleLayer_UnChecked(event) {
+    // Remove styles for unselected node
+    event.node.styleClass = "";
+    event.node.style = {};
+
+    // Remove the unselected node from the array
+    this.activeNode = this.activeNode.filter((node) => node !== event.node);
     // const visibility = event;
     console.log("event", event.node.label);
 

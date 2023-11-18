@@ -75,3 +75,11 @@ label {
   padding: 5px;
   cursor: pointer;
 }
+
+.ui-state-highlight {
+
+  background-color: #d90000;
+
+  color: #ffffff;
+
+}

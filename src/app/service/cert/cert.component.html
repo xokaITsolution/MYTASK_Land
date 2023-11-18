@@ -249,12 +249,12 @@
 
 
 
-<p-dialog [(visible)]="displayDeed"  [responsive]="true"
-  [style]="{'minHeight':'10%','height':'800px','minWidth':'10%','width':'80%' }" [maximizable]="true"
-  [baseZIndex]="10000">
-  <p-header translate>
-    Select Deed
-  </p-header>
+
+  <p-dialog [(visible)]="displayDeed" header="select deed" [responsive]="true" [width]="900" [minY]="70"
+    [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                          'max-height': '80vh','min-height':'250px'}">
+  
+
 
   <div class="modal-body">
 

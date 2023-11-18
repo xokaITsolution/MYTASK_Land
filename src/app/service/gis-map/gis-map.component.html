@@ -2,21 +2,27 @@
 
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-2 position-fixed">
+    <div class="col-md-2">
       <div class="sidebar">
         <div class="sidebar-content">
           <div class="sideTitle">
             <h1>Layers</h1>
           </div>
           <h5 class="sub">Addis Ababa</h5>
-          <p-tree [value]="nodes" [metaKeySelection]="false" selectionMode="multiple"
-            (onNodeSelect)="toggleLayer_Checked($event)" (onNodeUnselect)="toggleLayer_UnChecked($event)"
-            [style]="{ minWidth: '100%', width: 'auto', height: 'auto' }">
-          </p-tree>
+        <p-tree [value]="nodes" [metaKeySelection]="false" selectionMode="multiple" [(selection)]="selectedNode"
+          (onNodeSelect)="toggleLayer_Checked($event);" (onNodeUnselect)="toggleLayer_UnChecked($event)">
+          <ng-template let-node pTemplate="default">
+            <span  [ngClass]="{'ui-state-highlight': node.styleClass === 'custom-selected-node'?custom-selected-node:''}"
+              [style.background-color]="node.styleClass === 'custom-selected-node'  ? randomColor : ''">
+              {{node.label}}
+            </span>
+          </ng-template>
+        </p-tree>
+
         </div>
       </div>
     </div>
-    <div class="col-md-10 offset-md-3">
+    <div class="col-md-10">
       <div class="form-row">
     
         <div class="form-group row col-md-6">
@@ -162,4 +168,3 @@
   </div>
 </div>
 </div>
-<img src="/src/assets/northarow.png" alt="North Arrow">
