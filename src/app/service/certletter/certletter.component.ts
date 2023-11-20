@@ -52,6 +52,7 @@ export class CertletterComponent implements OnChanges {
   isprintedtask: boolean;
   maxWidth: string = "1800px";
   isMaximized: boolean;
+  basefinal;
   constructor(
     private sanitizer: DomSanitizer,
     public serviceService: ServiceService,
@@ -118,6 +119,7 @@ export class CertletterComponent implements OnChanges {
       }
     });
     this.BaseTable = [];
+    this.basefinal = [];
     if (this.licenceData.Parcel_ID) {
       this.getBase(this.licenceData.Parcel_ID);
     }
@@ -137,7 +139,7 @@ export class CertletterComponent implements OnChanges {
 
   getBase(ploat) {
     this.serviceService.getBaseTable(ploat).subscribe(
-      async (BaseTable) => {
+      async (BaseTable: any) => {
         if (BaseTable) {
           if (this.language == "amharic") {
             BaseTable[0].Registration_Date =
@@ -145,15 +147,32 @@ export class CertletterComponent implements OnChanges {
                 BaseTable[0].Registration_Date
               );
           }
-          this.BaseTable.push(BaseTable[0]);
+
+          if (BaseTable.length > 0) {
+            this.BaseTable.push(BaseTable[0]);
+          }
+
+          console.log("BaseTable", this.BaseTable);
+          if (this.BaseTable.length > 0) {
+            this.basefinal.push(this.BaseTable[0]);
+            this.basefinal = this.removeDuplicates(this.basefinal);
+            console.log("BaseTable", this.BaseTable[0]);
+          }
         }
         // this.BaseTable = (Object.assign([], this.BaseTable));
-        console.log("BaseTable", BaseTable);
       },
       (error) => {
         console.log("error");
       }
     );
+  }
+  removeDuplicates(data) {
+    const uniqueArray = data.filter(
+      (item, index, self) =>
+        self.findIndex((i) => i.Title_Deed_No === item.Title_Deed_No) === index
+    );
+
+    return uniqueArray;
   }
   async getEthiopianToGregorian(date) {
     if (date) {

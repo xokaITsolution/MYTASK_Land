@@ -1360,6 +1360,14 @@ export class GisMapComponent implements AfterViewInit {
               this.coordinates
             );
             this.utmCoordinates = utmCoordinates;
+
+            const utmTocoor = this.utmCoordinates.map((row) =>
+              this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
+            );
+
+            const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
+            this.utmCoordinates = utmCoordinateslast;
+
             console.log(utmCoordinates);
             // Convert each L.LatLng object to [x, y] point
             // Assuming this.coordinates is an array of L.LatLng objects
@@ -1422,6 +1430,12 @@ export class GisMapComponent implements AfterViewInit {
             console.log("Circle LatLngs:", circleLatLngs);
             const utmCoordinates = this.convertCoordinatesToUTM(circleLatLngs);
             this.utmCoordinates = utmCoordinates;
+            const utmTocoor = this.utmCoordinates.map((row) =>
+              this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
+            );
+
+            const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
+            this.utmCoordinates = utmCoordinateslast;
             console.log(utmCoordinates);
             // Convert each L.LatLng object to [x, y] point
             // Assuming this.coordinates is an array of L.LatLng objects
@@ -1468,6 +1482,12 @@ export class GisMapComponent implements AfterViewInit {
 
           const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
           this.utmCoordinates = utmCoordinates;
+          const utmTocoor = this.utmCoordinates.map((row) =>
+            this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
+          );
+
+          const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
+          this.utmCoordinates = utmCoordinateslast;
           console.log(utmCoordinates);
 
           // const geojson = layer.toGeoJSON();
@@ -1496,6 +1516,12 @@ export class GisMapComponent implements AfterViewInit {
           // Assuming you already have the 'points' array from the previous code
           const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
           this.utmCoordinates = utmCoordinates;
+          const utmTocoor = this.utmCoordinates.map((row) =>
+            this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
+          );
+
+          const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
+          this.utmCoordinates = utmCoordinateslast;
           if (this.drawnShape) {
             this.map.removeLayer(this.drawnShape);
             this.map.removeLayer(layer);
@@ -1583,6 +1609,12 @@ export class GisMapComponent implements AfterViewInit {
           console.log("Circle LatLngs:", circleLatLngs);
           const utmCoordinates = this.convertCoordinatesToUTM(circleLatLngs);
           this.utmCoordinates = utmCoordinates;
+          const utmTocoor = this.utmCoordinates.map((row) =>
+            this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
+          );
+
+          const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
+          this.utmCoordinates = utmCoordinateslast;
           const area = this.calculateUTMPolygonArea(utmCoordinates);
           this.ServiceService.Totalarea = parseInt(area.toFixed(2));
           localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
@@ -1647,6 +1679,12 @@ export class GisMapComponent implements AfterViewInit {
 
           const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
           this.utmCoordinates = utmCoordinates;
+          const utmTocoor = this.utmCoordinates.map((row) =>
+            this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
+          );
+
+          const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
+          this.utmCoordinates = utmCoordinateslast;
           console.log(utmCoordinates);
 
           // const geojson = layer.toGeoJSON();
@@ -1973,7 +2011,7 @@ export class GisMapComponent implements AfterViewInit {
       console.log(this.longitude, this.latitude);
       let isNorthernHemisphere: any = "N";
       let zone = 37;
-      const latLng = this.conveUTMToLatLng(
+      const latLng = this.conveUTMToLatLngWrite(
         this.longitude,
         this.latitude,
         zone,
@@ -2992,7 +3030,21 @@ export class GisMapComponent implements AfterViewInit {
       lng: latLngCoords.longitude,
     };
   }
+  conveUTMToLatLngWrite(
+    northing: number,
+    easting: number,
+    zone: number,
+    hemisphere: boolean
+  ): { lat: number; lng: number } {
+    console.log(easting, northing, zone, hemisphere);
 
+    const latLngCoords = utm.toLatLon(easting, northing, zone, hemisphere);
+    console.log("Latitude, Longitude:", latLngCoords);
+    return {
+      lat: latLngCoords.latitude + 0.001876,
+      lng: latLngCoords.longitude + 0.0008668,
+    };
+  }
   conveUTMToLatLngforshapefile(
     northing: number,
     easting: number,

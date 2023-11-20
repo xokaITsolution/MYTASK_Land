@@ -570,6 +570,10 @@ export class PropertyComponent implements OnChanges {
         this.serviceService.ishavetitleDeedRegistrationList = false;
       }
     } else {
+      if (this.selectedFile.property_ID === "No Parent") {
+        this.propertyregForm = false;
+        return;
+      }
       // Handle actions for nodes with level > 0
       this.propertyregForm = true;
       this.isnew = false;
