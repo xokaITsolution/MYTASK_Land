@@ -29,12 +29,14 @@ interface AssignedBodyTree {
   workspace: string;
   value: string;
   children: any;
+  randomColor: any;
 }
 
 interface AssignedBodyTree2 {
   label: string;
   workspace: string;
   value: string;
+  randomColor: any;
 }
 @Component({
   selector: "app-gis-map",
@@ -177,16 +179,21 @@ export class GisMapComponent implements AfterViewInit {
       }
     }
   }
+  generateRandomColor(): string {
+    // Implement your logic to generate a random color here
+    return "#" + Math.floor(Math.random() * 16777215).toString(16);
+  }
 
   toggleLayer_Checked(event) {
     console.log("event", event, this.activeNode);
 
     // Generate a random color
-    this.randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+    // this.randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
 
-    // Apply styles only to the selected node
+    // // Apply styles only to the selected node
     event.node.styleClass = "custom-selected-node";
-    // this.activeNode = [event.node];
+    // // this.activeNode = [event.node];
+
     if (event.node.children) {
       // Deselect all the children nodes
       event.node.children.forEach((child) => {
@@ -199,13 +206,22 @@ export class GisMapComponent implements AfterViewInit {
 
     const layerName = event.node.label;
     const layer = this.layers.find((l) => l.name === layerName);
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:209 ~ GisMapComponent ~ toggleLayer_Checked ~ layer:",
+      layer
+    );
     //
+
     if (layer && layer.vectorLayer) {
+      event.node.randomColor =
+        layer.vectorLayer.options.style.color === null
+          ? this.generateRandomColor()
+          : layer.vectorLayer.options.style.color;
       // if (visibility) {
-      console.log("vectorlayer", layer.vectorLayer);
 
       this.map.addLayer(layer.vectorLayer);
-      this.map.addLayer(layer.tileLayer);
+      // this.map.addLayer(layer.tileLayer);
+      console.log("vectorlayer", layer.vectorLayer);
       //this.onDatumChange()
 
       // } else {
@@ -215,6 +231,8 @@ export class GisMapComponent implements AfterViewInit {
       //   this.map.removeLayer(layer.tileLayer);
       // }
     } else if (layer && layer.tileLayer) {
+      event.node.randomColor = this.generateRandomColor();
+
       // if (visibility) {
       console.log("tilelayer", layer.tileLayer);
       this.map.addLayer(layer.tileLayer);
@@ -320,6 +338,7 @@ export class GisMapComponent implements AfterViewInit {
         workspace: "",
         value: "",
         children: "",
+        randomColor: "",
       };
       //
       // console.log("hhhe", a)
@@ -364,6 +383,7 @@ export class GisMapComponent implements AfterViewInit {
           workspace: "",
           value: "",
           children: "",
+          randomColor: "",
         };
         const element = this.subcities[j].name.split(":");
         this.subcities[j].name = element[1];
@@ -405,6 +425,7 @@ export class GisMapComponent implements AfterViewInit {
             workspace: "",
             value: "",
             children: "",
+            randomColor: "",
           };
           const element = this.woredas[k].name.split(":");
           this.woredas[k].name = element[1];
@@ -449,6 +470,7 @@ export class GisMapComponent implements AfterViewInit {
               workspace: "",
               value: "",
               children: "",
+              randomColor: "",
             };
             const element = this.woredaLayers[l].name.split(":");
             this.woredaLayers[l].name = element[1];
@@ -493,6 +515,7 @@ export class GisMapComponent implements AfterViewInit {
                 label: "",
                 workspace: "",
                 value: "",
+                randomColor: "",
               };
               //
               const element = this.woredaLayersOneByOne[m].name.split(":");
@@ -536,6 +559,7 @@ export class GisMapComponent implements AfterViewInit {
         workspace: "",
         value: "",
         children: "",
+        randomColor: "",
       };
 
       a["label"] = parentgroup[0].name;
@@ -572,6 +596,7 @@ export class GisMapComponent implements AfterViewInit {
           workspace: "",
           value: "",
           children: "",
+          randomColor: "",
         };
         // debugger
         // console.log("hhhe", a)
@@ -639,6 +664,7 @@ export class GisMapComponent implements AfterViewInit {
               workspace: "",
               value: "",
               children: "",
+              randomColor: "",
             };
 
             if (this.subcity == "central_AddisLand") {
@@ -685,6 +711,7 @@ export class GisMapComponent implements AfterViewInit {
                 workspace: "",
                 value: "",
                 children: "",
+                randomColor: "",
               };
               const element = this.woredas[k].name.split(":");
               this.woredas[k].name = element[1];
@@ -729,6 +756,7 @@ export class GisMapComponent implements AfterViewInit {
                   workspace: "",
                   value: "",
                   children: "",
+                  randomColor: "",
                 };
                 const element = this.woredaLayers[l].name.split(":");
                 this.woredaLayers[l].name = element[1];
@@ -773,6 +801,7 @@ export class GisMapComponent implements AfterViewInit {
                     label: "",
                     workspace: "",
                     value: "",
+                    randomColor: "",
                   };
                   // debugger
                   const element = this.woredaLayersOneByOne[m].name.split(":");
@@ -968,26 +997,27 @@ export class GisMapComponent implements AfterViewInit {
 
   Bind_Features(geojson, layerName) {
     if (layerName === "Plot_Locations") {
-      const randomColor =
-        "#" + Math.floor(Math.random() * 16777215).toString(16);
+      const randomColor = "#490000";
       const options = {
         style: function (feature) {
           return {
-            color: null,
+            color: randomColor,
             fillColor: randomColor,
           };
         },
       };
+      this.vectorLayer = L.Proj.geoJson(geojson, {
+        style: { color: randomColor },
+      });
       // console.log("hhh", geojson)
-      (this.vectorLayer = L.Proj.geoJson(geojson, options)), {};
-      console.log(
-        "The fetched layer is a multipolygon.",
-        this.vectorLayer,
-        layerName
-      );
+      // (this.vectorLayer = L.Proj.geoJson(geojson, options)), {};
+      // console.log(
+      //   "The fetched layer is a multipolygon.",
+      //   this.vectorLayer,
+      //   layerName
+      // );
     } else if (layerName === "Property_locations") {
-      const randomColor =
-        "#" + Math.floor(Math.random() * 16777215).toString(16);
+      const randomColor = "#ffcc41";
       const options = {
         style: function (feature) {
           return {
@@ -996,14 +1026,18 @@ export class GisMapComponent implements AfterViewInit {
           };
         },
       };
+      this.vectorLayer = L.Proj.geoJson(geojson, {
+        style: { color: randomColor },
+      });
       // console.log("hhh", geojson)
-      (this.vectorLayer = L.Proj.geoJson(geojson, options)), {};
-      console.log(
-        "The fetched layer is a multipolygon.",
-        this.vectorLayer,
-        layerName
-      );
+      // (this.vectorLayer = L.Proj.geoJson(geojson, options)), {};
+      // console.log(
+      //   "The fetched layer is a multipolygon.",
+      //   this.vectorLayer,
+      //   layerName
+      // );
     } else if (layerName === "Relocation") {
+      const randomColor = "#ff0000";
       const options = {
         style: function (feature) {
           return {
@@ -1011,13 +1045,23 @@ export class GisMapComponent implements AfterViewInit {
           };
         },
       };
-      // console.log("hhh", geojson)
-      (this.vectorLayer = L.Proj.geoJson(geojson, options)), {};
-      console.log(
-        "The fetched layer is a multipolygon.",
-        this.vectorLayer,
-        layerName
-      );
+
+      this.vectorLayer = L.Proj.geoJson(geojson, {
+        style: { color: randomColor },
+      });
+    } else if (layerName === "Greenary") {
+      const randomColor = "#53DA0D";
+      const options = {
+        style: function (feature) {
+          return {
+            color: null,
+          };
+        },
+      };
+
+      this.vectorLayer = L.Proj.geoJson(geojson, {
+        style: { color: randomColor },
+      });
     }
     // if (pointslayer && pointslayer.geometry.type === "point") {
     else {
@@ -1039,7 +1083,9 @@ export class GisMapComponent implements AfterViewInit {
         (LineStringLayer && LineStringLayer.geometry.type === "LineString")
       ) {
         // console.log("gg", geojson);
-        this.vectorLayer = L.Proj.geoJson(geojson, {});
+        this.vectorLayer = L.Proj.geoJson(geojson, {
+          style: { color: this.generateRandomColor() },
+        });
         console.log("gg", this.vectorLayer, layerName);
       } else if (Points && Points.geometry.type === "Point") {
         this.newpointLayer = layerName;
