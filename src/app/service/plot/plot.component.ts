@@ -926,6 +926,16 @@ export class PlotComponent implements OnChanges {
   }
 
   DoneNew() {
+    this.serviceService.getPlotloc(this.plot_ID).subscribe((response: any) => {
+      let plotloc = response.procPlot_Locations;
+      if (plotloc.length > 0) {
+      } else {
+        const toast = this.notificationsService.warn(
+          `must save the plot location on the map  first / በቅድሚያ በካርታው ላይ ያለውን ቦታ ማስቀመጥ አለበት`
+        );
+        return;
+      }
+    });
     this.leaseOwnerShipService
       .getAll(this.plot_ID)
       .subscribe((CertificateVersion: any) => {
@@ -954,11 +964,13 @@ export class PlotComponent implements OnChanges {
               `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
           በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት`
             );
+            return;
           }
         } else {
           const toast = this.notificationsService.warn(
             "before submit the form you have to register lease ownershipቅጹን ከማቅረቡ በፊት የሊዝ ባለቤትነት መመዝገብ አለብዎት"
           );
+          return;
         }
       });
 
