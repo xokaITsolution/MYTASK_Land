@@ -57,7 +57,7 @@ export class PropertyComponent implements OnChanges {
   tasksCertificate: any;
   isNextactive: boolean;
   PlotManagementListfinal = [];
-
+  randomColor = "#006ab5";
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -368,6 +368,7 @@ export class PropertyComponent implements OnChanges {
         a.label = a.property_ID;
         a.children = [];
         a.level = 0;
+        a.randomColor = "#006ab5";
 
         const l1 = [...PropertyList];
 
@@ -379,6 +380,7 @@ export class PropertyComponent implements OnChanges {
             b.label = b.property_ID;
             b.children = [];
             b.level = 1;
+            b.randomColor = "#d0ff00";
             a.children.push(b);
 
             const l2 = [...PropertyList];
@@ -391,6 +393,8 @@ export class PropertyComponent implements OnChanges {
                 c.label = c.property_ID;
                 c.children = [];
                 c.level = 2;
+                c.randomColor = "#ff3a43";
+                //c.styleClass = "custom-selected-node";
                 b.children.push(c);
               }
             }
@@ -425,7 +429,8 @@ export class PropertyComponent implements OnChanges {
     );
     this.selectedFile = selectedChild;
     if (selectedChild) {
-      this.nodeSelect();
+      this.nodeSelect("1");
+      this.selectedFile.styleClass = "custom-selected-node";
     }
     console.log(
       "this.serviceService.files",
@@ -516,9 +521,18 @@ export class PropertyComponent implements OnChanges {
       this.tab2 = true;
     }
   }
+  nodeUnselecte(data) {
+    data.node.styleClass = "";
+    this.selectedFile = data.node;
+    this.propertyregForm = false;
+  }
 
-  async nodeSelect() {
-    console.log("selectedFile", this.selectedFile);
+  async nodeSelect(data) {
+    if (data != "1") {
+      data.node.styleClass = "custom-selected-node";
+      this.selectedFile = data.node;
+    }
+    console.log("selectedFile", data);
     if (this.selectedFile.map_Floor_Plan != null) {
       this.serviceService.isNextactive = true;
     } else {
@@ -529,7 +543,12 @@ export class PropertyComponent implements OnChanges {
     let b = await this.getdeed(this.selectedFile.property_ID);
 
     // Add conditions based on the level of the selected node
-    if (this.selectedFile.level === 0 || this.selectedFile.level === 1) {
+    if (
+      (this.selectedFile.level === 0 &&
+        this.selectedFile.property_ID != "No Parent") ||
+      (this.selectedFile.level === 1 &&
+        this.selectedFile.property_ID != "No Parent")
+    ) {
       // Handle actions for level 0 nodes
       this.getpro.emit();
       if (this.tasksCertificate.length > 0) {
@@ -572,6 +591,7 @@ export class PropertyComponent implements OnChanges {
     } else {
       if (this.selectedFile.property_ID === "No Parent") {
         this.propertyregForm = false;
+        this.newplot = false;
         return;
       }
       // Handle actions for nodes with level > 0

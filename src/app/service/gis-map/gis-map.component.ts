@@ -1090,41 +1090,36 @@ export class GisMapComponent implements AfterViewInit {
       } else if (Points && Points.geometry.type === "Point") {
         this.newpointLayer = layerName;
         const colorMap = {}; // Map to store generated colors for each layer
+        let fillColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+        // let labelfill:any //default fill color
         const options = {
-          style: function (feature) {
-            return {
-              color: null,
-            };
-          },
+          style: { color: fillColor },
           pointToLayer: function (feature, latlng) {
-            let fillColor = "#ff0000"; //default fill color
-
             // Generate dynamic color for other point type layers
             //fillColor =  "#" + Math.floor(Math.random() * 16777215).toString(16);
             if (colorMap[layerName]) {
               fillColor = colorMap[layerName];
+              // this.fill = colorMap[layerName];
             } else {
               // Generate a new color for the layer
-              fillColor =
-                "#" + Math.floor(Math.random() * 16777215).toString(16);
+              // fillColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
               colorMap[layerName] = fillColor;
             }
-            // }
-
             return L.circleMarker(latlng, {
               radius: 5, // Set your desired radius
               fillColor: fillColor, // Set your desired fill color
-
-              color: "#000000", // Set your desired border color
+              color: fillColor, // Set your desired border color
               weight: 1, // Set your desired border weight
               opacity: 1, // Set your desired opacity
               fillOpacity: 0.8, // Set your desired fill opacity
             });
           },
+
+          // style: function (feature) {
+          //   return { color: feature.properties.fillColor };
+          // },
         };
-        //
         (this.vectorLayer = L.Proj.geoJson(geojson, options)), {};
-        console.log("points", layerName);
       } else {
         const options = {
           style: function (feature) {
@@ -1134,7 +1129,10 @@ export class GisMapComponent implements AfterViewInit {
           },
         };
 
-        console.log("other", layerName);
+        //debugger
+        this.vectorLayer = L.Proj.geoJson(geojson, {
+          style: { color: this.generateRandomColor() },
+        });
       }
     }
   }
@@ -1360,13 +1358,17 @@ export class GisMapComponent implements AfterViewInit {
               this.coordinates
             );
             this.utmCoordinates = utmCoordinates;
-
-            const utmTocoor = this.utmCoordinates.map((row) =>
-              this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
+            console.log(
+              "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
+              utmCoordinates
             );
 
-            const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
-            this.utmCoordinates = utmCoordinateslast;
+            // const utmToCoor = this.utmCoordinates.map((row) =>
+            //   this.conveUTMToLatLngWrite(row.lat, row.lng, row.z)
+            // );
+
+            // const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
+            // this.utmCoordinates = utmCoordinateslast;
 
             console.log(utmCoordinates);
             // Convert each L.LatLng object to [x, y] point
@@ -1430,12 +1432,12 @@ export class GisMapComponent implements AfterViewInit {
             console.log("Circle LatLngs:", circleLatLngs);
             const utmCoordinates = this.convertCoordinatesToUTM(circleLatLngs);
             this.utmCoordinates = utmCoordinates;
-            const utmTocoor = this.utmCoordinates.map((row) =>
-              this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
-            );
+            // const utmTocoor = this.utmCoordinates.map((row) =>
+            //   this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
+            // );
 
-            const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
-            this.utmCoordinates = utmCoordinateslast;
+            // const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
+            // this.utmCoordinates = utmCoordinateslast;
             console.log(utmCoordinates);
             // Convert each L.LatLng object to [x, y] point
             // Assuming this.coordinates is an array of L.LatLng objects
@@ -1482,12 +1484,12 @@ export class GisMapComponent implements AfterViewInit {
 
           const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
           this.utmCoordinates = utmCoordinates;
-          const utmTocoor = this.utmCoordinates.map((row) =>
-            this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
-          );
+          // const utmTocoor = this.utmCoordinates.map((row) =>
+          //   this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
+          // );
 
-          const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
-          this.utmCoordinates = utmCoordinateslast;
+          // const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
+          // this.utmCoordinates = utmCoordinateslast;
           console.log(utmCoordinates);
 
           // const geojson = layer.toGeoJSON();
@@ -1516,12 +1518,12 @@ export class GisMapComponent implements AfterViewInit {
           // Assuming you already have the 'points' array from the previous code
           const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
           this.utmCoordinates = utmCoordinates;
-          const utmTocoor = this.utmCoordinates.map((row) =>
-            this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
-          );
+          // const utmTocoor = this.utmCoordinates.map((row) =>
+          //   this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
+          // );
 
-          const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
-          this.utmCoordinates = utmCoordinateslast;
+          // const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
+          // this.utmCoordinates = utmCoordinateslast;
           if (this.drawnShape) {
             this.map.removeLayer(this.drawnShape);
             this.map.removeLayer(layer);
@@ -1609,12 +1611,12 @@ export class GisMapComponent implements AfterViewInit {
           console.log("Circle LatLngs:", circleLatLngs);
           const utmCoordinates = this.convertCoordinatesToUTM(circleLatLngs);
           this.utmCoordinates = utmCoordinates;
-          const utmTocoor = this.utmCoordinates.map((row) =>
-            this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
-          );
+          // const utmTocoor = this.utmCoordinates.map((row) =>
+          //   this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
+          // );
 
-          const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
-          this.utmCoordinates = utmCoordinateslast;
+          // const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
+          // this.utmCoordinates = utmCoordinateslast;
           const area = this.calculateUTMPolygonArea(utmCoordinates);
           this.ServiceService.Totalarea = parseInt(area.toFixed(2));
           localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
@@ -1679,12 +1681,12 @@ export class GisMapComponent implements AfterViewInit {
 
           const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
           this.utmCoordinates = utmCoordinates;
-          const utmTocoor = this.utmCoordinates.map((row) =>
-            this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
-          );
+          // const utmTocoor = this.utmCoordinates.map((row) =>
+          //   this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
+          // );
 
-          const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
-          this.utmCoordinates = utmCoordinateslast;
+          // const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
+          // this.utmCoordinates = utmCoordinateslast;
           console.log(utmCoordinates);
 
           // const geojson = layer.toGeoJSON();

@@ -18,13 +18,14 @@
     </li>  <li
       class="nav-item"
       (click)="tab = 'Customer'"
-      [class.active]="tab == 'Customer'"
+      [class.active]="tab == 'Customer'" 
+      [hidden]="showcustomer"
     >
       <a class="nav-link"   [routerLink]="['/task/Customer']" translate
         >Customer</a
       >
     </li>
-    <li
+    <!-- <li
       class="nav-item"
       (click)="tab = 'Archive'"
       [class.active]="tab == 'Archive'"
@@ -32,7 +33,7 @@
       <a class="nav-link"  [routerLink]="['/task/Archive']" translate
         >Archive</a
       >
-    </li>
+    </li> -->
     <!-- <li class="nav-item" (click)="tab = 'Gis'" [class.active]="tab == 'Gis'">
       <a class="nav-link" [routerLink]="['/task/Gis']" translate>Gis</a>
     </li>
