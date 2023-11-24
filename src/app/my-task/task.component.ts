@@ -15,9 +15,11 @@ export class TaskComponent implements OnInit {
   ngOnInit() {
     this.serviceService.getUserRole().subscribe((response: any) => {
       console.log("responseresponseresponse", response, response[0].RoleId);
-      if (response[0].RoleId == "f8dda85e-f967-4ac5-bf79-4d989ecfb863") {
-        this.showcustomer = false;
-      }
+      response.forEach((element) => {
+        if (element.RoleId == "f8dda85e-f967-4ac5-bf79-4d989ecfb863") {
+          this.showcustomer = false;
+        }
+      });
     });
   }
 }

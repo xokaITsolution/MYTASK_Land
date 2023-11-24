@@ -526,4 +526,8 @@ export class TitleDeedRegistration {
   public licence_Service_Id;
   public application_No;
   public service_ID;
+  public estimate_Value;
+  public transferd_Value;
+  public capital_Gain_Value;
+  public pay_Capital_Gain;
 }

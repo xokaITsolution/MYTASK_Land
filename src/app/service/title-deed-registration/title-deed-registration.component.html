@@ -170,7 +170,31 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
               appDatepickerEthiopian (dateEmitter)="selectedDateTime($event,1)">
           </div>
         </div>
-
+          <div class="form-group row col-md-7">
+            <label for="Transferd_Value" class="col-sm-3 col-form-label" translate>Transferd Value</label>
+            <div class="col-sm-9">
+              <input type="Transferd_Value" class="form-control" [(ngModel)]="titleDeedRegistration.transferd_Value" name="Transferd_Value"
+                id="Transferd_Value" [placeholder]="'Transferd Value' | translate" #Transferd_Value="ngModel" appNumberOnly
+                [ngClass]="{ 'is-invalid': Transferd_Value.invalid }" [disabled]="disable" required>
+            </div>
+          </div>
+  <div class="form-group row col-md-7">
+    <label for="Estimate_Value" class="col-sm-3 col-form-label" translate>Estimate Value</label>
+    <div class="col-sm-9">
+      <input type="Estimate_Value" class="form-control" [(ngModel)]="titleDeedRegistration.estimate_Value"
+        name="Estimate_Value" id="Estimate_Value" [placeholder]="'Estimate Value' | translate"
+        #Estimate_Value="ngModel" appNumberOnly [ngClass]="{ 'is-invalid': Estimate_Value.invalid }"
+        [disabled]="disable" required>
+    </div>
+  </div>
+    <div class="form-group row col-md-7">
+      <label for="Capital_Gain_Value" class="col-sm-3 col-form-label" translate>Capital Gain Value</label>
+      <div class="col-sm-9">
+        <input type="Capital_Gain_Value" class="form-control" [(ngModel)]="titleDeedRegistration.capital_Gain_Value"
+          name="Capital_Gain_Value" id="Capital_Gain_Value" [placeholder]="'Capital Gain Value' | translate" #Capital_Gain_Value="ngModel"
+          appNumberOnly [ngClass]="{ 'is-invalid': Capital_Gain_Value.invalid }" [disabled]="disable" required>
+      </div>
+    </div>
     <div class="form-group row col-md-7">
       <label for="TransferredFrom" class="col-sm-3 col-form-label" translate>Transferred From</label>
       <div class="col-sm-9">
@@ -227,12 +251,20 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
     </div>
     <div class="form-group row col-md-7">
       <label for="IsActive" class="col-sm-3 col-form-label" translate>Is Active</label>
-      <div class="col-sm-8">
+      <div class="col-sm-9">
         <p-checkbox [(ngModel)]="titleDeedRegistration.is_Active" name="IsActive" id="IsActive"
           binary="true"></p-checkbox>
       </div>
     </div>
   </div>
+    <div class="form-group row col-md-7">
+      <label for="Pay_Capital_Gain" class="col-sm-3 col-form-label" translate="">Pay_Capital_Gain</label>
+      <div class="col-sm-9">
+    
+        <p-checkbox [(ngModel)]="titleDeedRegistration.pay_Capital_Gain" name="Pay_Capital_Gain" id="IsActive1"
+          binary="true"></p-checkbox>
+      </div>
+    </div>
     <button type="button" class="btn btn-primary" *ngIf="!isnew && !disable" (click)="save();" [disabled]="!f.valid"
       translate>update</button>
     <button type="button" class="btn btn-primary" *ngIf="isnew && !disable" (click)="confirmsave();" [disabled]="!f.valid"

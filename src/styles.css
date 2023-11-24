@@ -364,6 +364,7 @@ select {
 
 .ngxsmartmodal-dialog {
   width: 100%;
+  object-fit: contain;
   max-width: 1300px;
   background: #fff;
   border-radius: 4px;

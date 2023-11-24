@@ -74,6 +74,7 @@ export class GisMapComponent implements AfterViewInit {
   randomColor: string;
   selectedNode: any;
   activeNode: any;
+  centermap: any;
 
   constructor(
     public ServiceService: ServiceService,
@@ -185,6 +186,29 @@ export class GisMapComponent implements AfterViewInit {
   }
 
   toggleLayer_Checked(event) {
+    if (this.subcity == "bole_AddisLand") {
+      this.map.flyTo([8.967201, 38.797822], 0);
+    } else if (this.subcity == "yeka_AddisLand") {
+      this.map.flyTo([9.060803, 38.804322], 0);
+    } else if (this.subcity == "addisk_AddisLand") {
+      this.map.flyTo([9.051497, 38.723454], 0);
+    } else if (this.subcity == "akakyk_AddisLand") {
+      this.map.flyTo([8.859807, 38.798065], 0);
+    } else if (this.subcity == "kolfek_AddisLand") {
+      this.map.flyTo([8.998647, 38.691922], 0);
+    } else if (this.subcity == "kirkos_AddisLand") {
+      this.map.flyTo([9.004158, 38.772317], 0);
+    } else if (this.subcity == "lemik_AddisLand") {
+      this.map.flyTo([9.004772, 38.884051], 0);
+    } else if (this.subcity == "lideta_AddisLand") {
+      this.map.flyTo([9.003426, 38.731568], 0);
+    } else if (this.subcity == "gullele_AddisLand") {
+      this.map.flyTo([9.02497, 38.74689], 0);
+    } else if (this.subcity == "nifass_AddisLand") {
+      this.map.flyTo([8.949258, 38.728618], 0);
+    } else if (this.subcity == "arada_AddisLand") {
+      this.map.flyTo([9.02497, 38.74689], 0);
+    }
     console.log("event", event, this.activeNode);
 
     // Generate a random color
@@ -291,6 +315,8 @@ export class GisMapComponent implements AfterViewInit {
   getGroupLayers(): void {
     const storedTreeDataString = localStorage.getItem("treeformap");
     const storedtreedatalayerString = localStorage.getItem("treedatalayer");
+    const storedtreedatalayersubString =
+      localStorage.getItem("treeformapsubcity");
 
     console.log("treeformap", storedtreedatalayerString);
 
@@ -314,7 +340,10 @@ export class GisMapComponent implements AfterViewInit {
             }
           }
           // console.log("AddisLand", this.groupLayers[index]);
-          if (storedTreeDataString != null) {
+          if (
+            storedTreeDataString != null &&
+            environment.SubcityName === storedtreedatalayersubString
+          ) {
             this.nodes = JSON.parse(storedTreeDataString);
             this.getcapablities(environment.parentWorkspace);
             this.getcapablities(environment.SubcityName);
@@ -551,6 +580,7 @@ export class GisMapComponent implements AfterViewInit {
     }
   }
   async getTree(parentgroup) {
+    const storedtreedatalayerString = localStorage.getItem("treedatalayer");
     this.nodes = [];
 
     for (let i = 0; i < parentgroup.length; i++) {
@@ -811,7 +841,7 @@ export class GisMapComponent implements AfterViewInit {
                   e["workspace"] = this.woredaLayersOneByOne[m].workspace;
                   e.label = this.woredaLayersOneByOne[m].name;
                   e.value = this.woredaLayersOneByOne[m].href;
-                  this.woredaLayersOneByOne[l].children = [];
+                  //this.woredaLayersOneByOne[l].children = [];
                   d.children.push(e);
                 }
               }
@@ -822,6 +852,7 @@ export class GisMapComponent implements AfterViewInit {
       this.nodes.push(a);
       const treedata = JSON.stringify(this.nodes);
       localStorage.setItem("treeformap", treedata);
+      localStorage.setItem("treeformapsubcity", this.subcity);
       // console.log("treeformap", treedata);
       // const treedatalayer = [];
       // treedatalayer.push(this.layers);
@@ -1222,15 +1253,38 @@ export class GisMapComponent implements AfterViewInit {
     if (!mapContainer) {
       return;
     }
+
+    if (this.subcity == "bole_AddisLand") {
+      this.centermap = [8.967201, 38.797822];
+    } else if (this.subcity == "yeka_AddisLand") {
+      this.centermap = [9.060803, 38.804322];
+    } else if (this.subcity == "addisk_AddisLand") {
+      this.centermap = [9.051497, 38.723454];
+    } else if (this.subcity == "akakyk_AddisLand") {
+      this.centermap = [8.859807, 38.798065];
+    } else if (this.subcity == "kolfek_AddisLand") {
+      this.centermap = [8.998647, 38.691922];
+    } else if (this.subcity == "kirkos_AddisLand") {
+      this.centermap = [9.004158, 38.772317];
+    } else if (this.subcity == "lemik_AddisLand") {
+      this.centermap = [9.004772, 38.884051];
+    } else if (this.subcity == "lideta_AddisLand") {
+      this.centermap = [9.003426, 38.731568];
+    } else if (this.subcity == "gullele_AddisLand") {
+      this.centermap = [9.02497, 38.74689];
+    } else if (this.subcity == "nifass_AddisLand") {
+      this.centermap = [8.949258, 38.728618];
+    } else if (this.subcity == "arada_AddisLand") {
+      this.centermap = [9.02497, 38.74689];
+    }
     this.map = L.map("mapp", {
       crs: this.EPSG20137,
-      center: [9.032457, 38.759775],
+      center: this.centermap,
       zoom: 0, // Set the map CRS to EPSG:20137
       maxZoom: 18,
-      minZoom: 3,
+      minZoom: 1,
     }); // Set an appropriate initial view for Ethiopia
     // Define custom zoom levels
-
     // this.map = L.map("mapp", {
     //   center: [9.032457, 38.759775],
     //   zoom: 15, // Set an initial zoom level (1 corresponds to a 1:1 scale)
@@ -1358,17 +1412,26 @@ export class GisMapComponent implements AfterViewInit {
               this.coordinates
             );
             this.utmCoordinates = utmCoordinates;
+            let isNorthernHemisphere: any = "N";
+            const utmToCoor = this.utmCoordinates.map((row) =>
+              this.conveUTMToLatLngWrite(
+                row.northing,
+                row.easting,
+                37,
+                isNorthernHemisphere
+              )
+            );
             console.log(
-              "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
-              utmCoordinates
+              "🚀 ~ file: gis-map.component.ts:1569 ~ this.map.on ~ utmToCoor:",
+              utmToCoor
             );
 
-            // const utmToCoor = this.utmCoordinates.map((row) =>
-            //   this.conveUTMToLatLngWrite(row.lat, row.lng, row.z)
-            // );
-
-            // const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
-            // this.utmCoordinates = utmCoordinateslast;
+            const utmCoordinateslast = this.convertCoordinatesToUTM(utmToCoor);
+            this.utmCoordinates = utmCoordinateslast;
+            console.log(
+              "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
+              this.utmCoordinates
+            );
 
             console.log(utmCoordinates);
             // Convert each L.LatLng object to [x, y] point
@@ -1384,7 +1447,7 @@ export class GisMapComponent implements AfterViewInit {
             // Add the transformed GeoJSON layer to the map
 
             this.drawnShape.addTo(this.map);
-            utmCoordinates.push(utmCoordinates[0]);
+            this.utmCoordinates.push(this.utmCoordinates[0]);
             //points.push(points[0])
             this.sample = this.drawnShape;
             console.log("utmCoordinates", utmCoordinates);
@@ -1393,7 +1456,7 @@ export class GisMapComponent implements AfterViewInit {
 
             // Do something with the coordinates, such as displaying or processing them
 
-            this.ServiceService.coordinate = utmCoordinates;
+            this.ServiceService.coordinate = this.utmCoordinates;
             //  this.ServiceService.shapes = this.aaa.push(this.drawnShape);
             // Transform GeoJSON to EPSG:20137 CRS
           } else {
@@ -1432,12 +1495,27 @@ export class GisMapComponent implements AfterViewInit {
             console.log("Circle LatLngs:", circleLatLngs);
             const utmCoordinates = this.convertCoordinatesToUTM(circleLatLngs);
             this.utmCoordinates = utmCoordinates;
-            // const utmTocoor = this.utmCoordinates.map((row) =>
-            //   this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
-            // );
 
-            // const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
-            // this.utmCoordinates = utmCoordinateslast;
+            let isNorthernHemisphere: any = "N";
+            const utmToCoor = this.utmCoordinates.map((row) =>
+              this.conveUTMToLatLngWrite(
+                row.northing,
+                row.easting,
+                37,
+                isNorthernHemisphere
+              )
+            );
+            console.log(
+              "🚀 ~ file: gis-map.component.ts:1569 ~ this.map.on ~ utmToCoor:",
+              utmToCoor
+            );
+
+            const utmCoordinateslast = this.convertCoordinatesToUTM(utmToCoor);
+            this.utmCoordinates = utmCoordinateslast;
+            console.log(
+              "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
+              this.utmCoordinates
+            );
             console.log(utmCoordinates);
             // Convert each L.LatLng object to [x, y] point
             // Assuming this.coordinates is an array of L.LatLng objects
@@ -1452,14 +1530,18 @@ export class GisMapComponent implements AfterViewInit {
             // Add the transformed GeoJSON layer to the map
 
             this.drawnShape.addTo(this.map);
-            utmCoordinates.push(utmCoordinates[0]);
+            this.utmCoordinates.push(this.utmCoordinates[0]);
             //points.push(points[0])
             this.sample = this.drawnShape;
             this.ServiceService.centerLatLng =
               this.convertCoordinatesToUTM(coordinatesArray);
-            console.log("utmCoordinates", this.ServiceService.centerLatLng);
+            console.log(
+              "centerLatLng",
+              this.ServiceService.centerLatLng,
+              this.ServiceService.iscircleLatLngs
+            );
 
-            this.ServiceService.coordinate = utmCoordinates;
+            this.ServiceService.coordinate = this.utmCoordinates;
             // Now you can use circleLatLngs as needed
           } else {
             const toast = this.messageService.add({
@@ -1469,7 +1551,7 @@ export class GisMapComponent implements AfterViewInit {
                 "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡",
             });
             this.map.removeLayer(layer);
-            this.editableLayers.removeLayer(layer);
+            //this.editableLayers.removeLayer(layer);
             this.removeShape();
             this.ServiceService.disablebutton = false;
           }
@@ -1484,6 +1566,27 @@ export class GisMapComponent implements AfterViewInit {
 
           const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
           this.utmCoordinates = utmCoordinates;
+          let isNorthernHemisphere: any = "N";
+          const utmToCoor = this.utmCoordinates.map((row) =>
+            this.conveUTMToLatLngWrite(
+              row.northing,
+              row.easting,
+              37,
+              isNorthernHemisphere
+            )
+          );
+          console.log(
+            "🚀 ~ file: gis-map.component.ts:1569 ~ this.map.on ~ utmToCoor:",
+            utmToCoor
+          );
+
+          const utmCoordinateslast = this.convertCoordinatesToUTM(utmToCoor);
+          this.utmCoordinates = utmCoordinateslast;
+          console.log(
+            "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
+            this.utmCoordinates
+          );
+
           // const utmTocoor = this.utmCoordinates.map((row) =>
           //   this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
           // );
@@ -1498,12 +1601,12 @@ export class GisMapComponent implements AfterViewInit {
           // console.log(this.drawnShape);
 
           // this.drawnShape.addTo(this.map);
-          utmCoordinates.push(utmCoordinates[0]);
+          this.utmCoordinates.push(this.utmCoordinates[0]);
 
           this.sample = this.drawnShape;
           console.log("utmCoordinates", utmCoordinates);
 
-          this.ServiceService.coordinate = utmCoordinates;
+          this.ServiceService.coordinate = this.utmCoordinates;
 
           //this.drawnShape.bindPopup("This is a polyline!");
         }
@@ -1518,12 +1621,28 @@ export class GisMapComponent implements AfterViewInit {
           // Assuming you already have the 'points' array from the previous code
           const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
           this.utmCoordinates = utmCoordinates;
-          // const utmTocoor = this.utmCoordinates.map((row) =>
-          //   this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
-          // );
 
-          // const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
-          // this.utmCoordinates = utmCoordinateslast;
+          let isNorthernHemisphere: any = "N";
+
+          const utmToCoor = this.utmCoordinates.map((row) =>
+            this.conveUTMToLatLngWrite(
+              row.northing,
+              row.easting,
+              37,
+              isNorthernHemisphere
+            )
+          );
+          console.log(
+            "🚀 ~ file: gis-map.component.ts:1569 ~ this.map.on ~ utmToCoor:",
+            utmToCoor
+          );
+
+          const utmCoordinateslast = this.convertCoordinatesToUTM(utmToCoor);
+          this.utmCoordinates = utmCoordinateslast;
+          console.log(
+            "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
+            this.utmCoordinates
+          );
           if (this.drawnShape) {
             this.map.removeLayer(this.drawnShape);
             this.map.removeLayer(layer);
@@ -1581,16 +1700,16 @@ export class GisMapComponent implements AfterViewInit {
             // Add the transformed GeoJSON layer to the map
 
             this.drawnShape.addTo(this.map);
-            utmCoordinates.push(utmCoordinates[0]);
+            this.utmCoordinates.push(this.utmCoordinates[0]);
             //points.push(points[0])
             this.sample = this.drawnShape;
-            console.log("utmCoordinates", utmCoordinates);
+            console.log("utmCoordinates", this.utmCoordinates);
             // Add the coordinates to the array
             //this.drawnShapes.push(this.coordinates);
 
             // Do something with the coordinates, such as displaying or processing them
 
-            this.ServiceService.coordinate = utmCoordinates;
+            this.ServiceService.coordinate = this.utmCoordinates;
             //  this.ServiceService.shapes = this.aaa.push(this.drawnShape);
             // Transform GeoJSON to EPSG:20137 CRS
             this.editableLayers.addLayer(layer);
@@ -1598,7 +1717,9 @@ export class GisMapComponent implements AfterViewInit {
         } else if (layer instanceof L.Circle) {
           // Get the center LatLng of the circle
           const centerLatLng = layer.getLatLng();
-
+          const coordinatesArray = [
+            { lat: centerLatLng.lat, lng: centerLatLng.lng },
+          ];
           // Get the radius of the circle in meters
           const radiusMeters = layer.getRadius();
 
@@ -1607,16 +1728,33 @@ export class GisMapComponent implements AfterViewInit {
             centerLatLng,
             radiusMeters
           );
+          this.ServiceService.centerLatLng =
+            this.convertCoordinatesToUTM(coordinatesArray);
+          this.ServiceService.iscircleLatLngs = radiusMeters;
 
           console.log("Circle LatLngs:", circleLatLngs);
           const utmCoordinates = this.convertCoordinatesToUTM(circleLatLngs);
           this.utmCoordinates = utmCoordinates;
-          // const utmTocoor = this.utmCoordinates.map((row) =>
-          //   this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
-          // );
+          let isNorthernHemisphere: any = "N";
+          const utmToCoor = this.utmCoordinates.map((row) =>
+            this.conveUTMToLatLngWrite(
+              row.northing,
+              row.easting,
+              37,
+              isNorthernHemisphere
+            )
+          );
+          console.log(
+            "🚀 ~ file: gis-map.component.ts:1569 ~ this.map.on ~ utmToCoor:",
+            utmToCoor
+          );
 
-          // const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
-          // this.utmCoordinates = utmCoordinateslast;
+          const utmCoordinateslast = this.convertCoordinatesToUTM(utmToCoor);
+          this.utmCoordinates = utmCoordinateslast;
+          console.log(
+            "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
+            this.utmCoordinates
+          );
           const area = this.calculateUTMPolygonArea(utmCoordinates);
           this.ServiceService.Totalarea = parseInt(area.toFixed(2));
           localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
@@ -1653,12 +1791,17 @@ export class GisMapComponent implements AfterViewInit {
               color: "blue",
             });
 
+            console.log(
+              "centerLatLng",
+              this.ServiceService.centerLatLng,
+              this.ServiceService.iscircleLatLngs
+            );
             console.log(this.drawnShape);
 
             // Add the transformed GeoJSON layer to the map
 
             this.drawnShape.addTo(this.map);
-            utmCoordinates.push(utmCoordinates[0]);
+            this.utmCoordinates.push(this.utmCoordinates[0]);
             //points.push(points[0])
             this.sample = this.drawnShape;
             console.log("utmCoordinates", utmCoordinates);
@@ -1666,8 +1809,8 @@ export class GisMapComponent implements AfterViewInit {
             //this.drawnShapes.push(this.coordinates);
 
             // Do something with the coordinates, such as displaying or processing them
-            this.editableLayers.addLayer(layer);
-            this.ServiceService.coordinate = utmCoordinates;
+            //this.editableLayers.addLayer(layer);
+            this.ServiceService.coordinate = this.utmCoordinates;
           }
           // Now you can use circleLatLngs as needed
         } else if (layer instanceof L.Polyline) {
@@ -1681,12 +1824,26 @@ export class GisMapComponent implements AfterViewInit {
 
           const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
           this.utmCoordinates = utmCoordinates;
-          // const utmTocoor = this.utmCoordinates.map((row) =>
-          //   this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
-          // );
+          let isNorthernHemisphere: any = "N";
+          const utmToCoor = this.utmCoordinates.map((row) =>
+            this.conveUTMToLatLngWrite(
+              row.northing,
+              row.easting,
+              37,
+              isNorthernHemisphere
+            )
+          );
+          console.log(
+            "🚀 ~ file: gis-map.component.ts:1569 ~ this.map.on ~ utmToCoor:",
+            utmToCoor
+          );
 
-          // const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
-          // this.utmCoordinates = utmCoordinateslast;
+          const utmCoordinateslast = this.convertCoordinatesToUTM(utmToCoor);
+          this.utmCoordinates = utmCoordinateslast;
+          console.log(
+            "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
+            this.utmCoordinates
+          );
           console.log(utmCoordinates);
 
           // const geojson = layer.toGeoJSON();
@@ -1695,12 +1852,12 @@ export class GisMapComponent implements AfterViewInit {
           // console.log(this.drawnShape);
 
           this.drawnShape.addTo(this.map);
-          utmCoordinates.push(utmCoordinates[0]);
+          this.utmCoordinates.push(this.utmCoordinates[0]);
 
           this.sample = this.drawnShape;
           // console.log("utmCoordinates", utmCoordinates);
 
-          this.ServiceService.coordinate = utmCoordinates;
+          this.ServiceService.coordinate = this.utmCoordinates;
 
           //polyline.bindPopup("This is a polyline!");
         }
@@ -1718,8 +1875,29 @@ export class GisMapComponent implements AfterViewInit {
 
           // Assuming you have a function to convert coordinates to UTM
           const utmCoordinates = this.convertCoordinatesToUTM(coordinates);
+          this.utmCoordinates = utmCoordinates;
           console.log("UTM Coordinates:", utmCoordinates);
-          const area = this.calculateUTMPolygonArea(utmCoordinates);
+          let isNorthernHemisphere: any = "N";
+          const utmToCoor = this.utmCoordinates.map((row) =>
+            this.conveUTMToLatLngWrite(
+              row.northing,
+              row.easting,
+              37,
+              isNorthernHemisphere
+            )
+          );
+          console.log(
+            "🚀 ~ file: gis-map.component.ts:1569 ~ this.map.on ~ utmToCoor:",
+            utmToCoor
+          );
+
+          const utmCoordinateslast = this.convertCoordinatesToUTM(utmToCoor);
+          this.utmCoordinates = utmCoordinateslast;
+          console.log(
+            "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
+            this.utmCoordinates
+          );
+          const area = this.calculateUTMPolygonArea(this.utmCoordinates);
           localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
           // Show the area in a popup
           console.log("Totalarea", area, utmCoordinates);
@@ -1749,7 +1927,7 @@ export class GisMapComponent implements AfterViewInit {
               this.ServiceService.areaVerified = false;
             } else {
               this.ServiceService.areaVerified = true;
-              utmCoordinates.push(utmCoordinates[0]);
+              this.utmCoordinates.push(this.utmCoordinates[0]);
               // Convert the edited polygon to GeoJSON
               const geojson = layer.toGeoJSON();
 
@@ -1761,7 +1939,7 @@ export class GisMapComponent implements AfterViewInit {
               // this.editableLayers.addLayer(this.drawnShape);
               // Do something with the coordinates, such as displaying or processing them
               // For example, you can set them in a service or perform other actions
-              this.ServiceService.coordinate = utmCoordinates;
+              this.ServiceService.coordinate = this.utmCoordinates;
               console.log("utmCoordinates", utmCoordinates);
               // this.ServiceService.shapes.push(drawnShape);
 
@@ -1772,7 +1950,28 @@ export class GisMapComponent implements AfterViewInit {
 
             // Assuming you have a function to convert coordinates to UTM
             const utmCoordinates = this.convertCoordinatesToUTM(coordinates);
-            utmCoordinates.push(utmCoordinates[0]);
+            this.utmCoordinates = utmCoordinates;
+            let isNorthernHemisphere: any = "N";
+            const utmToCoor = this.utmCoordinates.map((row) =>
+              this.conveUTMToLatLngWrite(
+                row.northing,
+                row.easting,
+                37,
+                isNorthernHemisphere
+              )
+            );
+            console.log(
+              "🚀 ~ file: gis-map.component.ts:1569 ~ this.map.on ~ utmToCoor:",
+              utmToCoor
+            );
+
+            const utmCoordinateslast = this.convertCoordinatesToUTM(utmToCoor);
+            this.utmCoordinates = utmCoordinateslast;
+            console.log(
+              "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
+              this.utmCoordinates
+            );
+            this.utmCoordinates.push(this.utmCoordinates[0]);
             // Convert the edited polygon to GeoJSON
             const geojson = layer.toGeoJSON();
 
@@ -1785,7 +1984,7 @@ export class GisMapComponent implements AfterViewInit {
             // this.editableLayers.addLayer(this.drawnShape);
             // Do something with the coordinates, such as displaying or processing them
             // For example, you can set them in a service or perform other actions
-            this.ServiceService.coordinate = utmCoordinates;
+            this.ServiceService.coordinate = this.utmCoordinates;
             // this.ServiceService.shapes.push(drawnShape);
 
             // Transform GeoJSON to EPSG:20137 CRS if needed
@@ -2109,7 +2308,7 @@ export class GisMapComponent implements AfterViewInit {
     // Show the area in a popup
     localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
     this.utmCoordinates = utmCoordinates;
-    utmCoordinates.push(utmCoordinates[0]);
+    //utmCoordinates.push(utmCoordinates[0]);
     this.ServiceService.coordinate = utmCoordinates;
     console.log(utmCoordinates);
 
@@ -2530,6 +2729,7 @@ export class GisMapComponent implements AfterViewInit {
       this.drawnShape = L.polygon(shape, { color: randomColor }).addTo(
         this.map
       );
+
       this.editableLayers.addLayer(this.drawnShape);
 
       shape.forEach((point, pointIndex) => {
@@ -2547,6 +2747,7 @@ export class GisMapComponent implements AfterViewInit {
     console.log("alllatlong", latLngs);
 
     const utmCoordinates = this.convertCoordinatesToUTM(latLngs);
+
     utmCoordinates.push(utmCoordinates[0]);
     this.ServiceService.coordinate = utmCoordinates;
     console.log(utmCoordinates);

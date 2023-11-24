@@ -223,7 +223,7 @@ export class PlotComponent implements OnChanges {
   }
   closeModall() {
     // console.log('closeing.....');
-    this.modalRef.hide();
+    //this.modalRef.hide();
   }
   updateplotloc() {
     console.log("coordinatcoordinat", this.serviceService.coordinate);
