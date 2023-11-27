@@ -450,7 +450,7 @@ select {
 
 body .ui-table .ui-table-tbody>tr>td {
   background-color: inherit;
-  color:  rgb(255, 255, 255);
+  color:  rgb(0, 0, 0);
   border: 1px solid #c8c8c8;
 }
 

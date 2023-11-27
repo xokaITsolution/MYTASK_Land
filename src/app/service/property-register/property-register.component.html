@@ -491,3 +491,85 @@
 </div>
 
 
+<!-- <dialog #dialogg>
+
+
+  <div class="ngxsmartmodal-header">
+    <button type="button" class="btn-secondary m-2" (click)="openMiniModal()">-</button>
+    <button type="button" class="btn-secondary m-2" (click)="openFullModal()">+</button>
+    <button type="button" class="close" (click)="dialogg.close()">&times;</button>
+  </div>
+  <div>
+    <app-gis-map [geo]="geo" [changingg]="changingValue"></app-gis-map>
+    <form #location="ngForm" novalidate name="locationForm">
+      <div class="form-row">
+        <div class="form-group row col-md-6">
+          <label class="col-sm-3 col-form-label" translate>plan Document</label>
+          <div class="col-sm-9">
+            <p-fileUpload #form1 customUpload="true" (uploadHandler)="planDocument($event,form1)" maxFileSize="25000000"
+              accept="image/*"></p-fileUpload>
+
+
+          </div>
+        </div>
+        <div class="form-group row col-md-6">
+          <label class="col-sm-3 col-form-label" translate>picture North</label>
+          <div class="col-sm-9">
+            <p-fileUpload #form2 customUpload="true" (uploadHandler)="pictureNorth($event,form2)" maxFileSize="25000000"
+              accept="image/*"></p-fileUpload>
+
+
+          </div>
+        </div>
+        <div class="form-group row col-md-6">
+          <label class="col-sm-3 col-form-label" translate>picture East</label>
+          <div class="col-sm-9">
+            <p-fileUpload #form3 customUpload="true" (uploadHandler)="pictureEast($event,form3)" maxFileSize="25000000"
+              accept="image/*"></p-fileUpload>
+
+
+          </div>
+        </div>
+        <div class="form-group row col-md-6">
+          <label class="col-sm-3 col-form-label" translate>picture South</label>
+          <div class="col-sm-9">
+            <p-fileUpload #form4 customUpload="true" (uploadHandler)="pictureSouth($event,form4)" maxFileSize="25000000"
+              accept="image/*"></p-fileUpload>
+
+
+
+          </div>
+        </div>
+        <div class="form-group row col-md-6">
+          <label class="col-sm-3 col-form-label" translate>picture West</label>
+          <div class="col-sm-9">
+            <p-fileUpload #form5 customUpload="true" (uploadHandler)="pictureWest($event,form5)" maxFileSize="25000000"
+              accept="image/*"></p-fileUpload>
+
+
+          </div>
+        </div>
+        <div class="form-group row col-md-6">
+          <label class="col-sm-3 col-form-label" for="Hight_Meter" translate="">Hight Meter</label>
+          <div class="col-sm-9">
+            <input class="form-control" id="Hight_Meter" name="Hight_Meter" [(ngModel)]="propformLocation.hight_Meter"
+              [placeholder]="'Hight Meter'|translate" type="number" #Hight_Meter="ngModel"
+              [ngClass]="{ 'is-invalid': Hight_Meter.invalid }" required>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <div *ngIf="Hight_Meter.invalid">
+      <span translate class="text-danger">Requierd</span>
+    </div>
+    <button type="button" class="btn btn-primary" (click)="saveproploc();dialogg.close()"
+      *ngIf="!isproplocnew &&  !disable" [disabled]="!location.valid" translate>Save</button>
+    <button type="button" class="btn btn-primary" (click)="updateproploc();dialogg.close()"
+      *ngIf="isproplocnew &&  !disable" [disabled]="!location.valid" translate>Update</button>
+    <button type="button" class="btn btn-danger" (click)="dialogg.close()" translate>Close</button>
+  </div>
+
+</dialog> -->

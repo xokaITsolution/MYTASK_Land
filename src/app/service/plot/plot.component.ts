@@ -16,7 +16,9 @@ import { NotificationsService } from "angular2-notifications";
 import { environment } from "src/environments/environment";
 import { BsModalRef, BsModalService } from "ngx-bootstrap";
 import { Subject } from "rxjs";
+
 import { LeaseOwnerShipService } from "../lease-owner-ship/lease-owner-ship.service";
+import { GisMapComponent } from "../gis-map/gis-map.component";
 @Component({
   selector: "app-plot",
   templateUrl: "./plot.component.html",
@@ -68,6 +70,7 @@ export class PlotComponent implements OnChanges {
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService,
     private modalService: BsModalService,
+
     private leaseOwnerShipService: LeaseOwnerShipService
   ) {}
   changingValue: Subject<boolean> = new Subject();
@@ -108,6 +111,7 @@ export class PlotComponent implements OnChanges {
       Object.assign({}, { class: "gray modal-lg" })
     );
   }
+
   tellChild(aa) {
     console.log("value is changing", aa);
     const coordinatesarea = this.convertCoordinatesformatd(aa);
