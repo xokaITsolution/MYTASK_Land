@@ -209,7 +209,7 @@ export class GisMapComponent implements AfterViewInit {
     } else if (this.subcity == "arada_AddisLand") {
       this.map.flyTo([9.02497, 38.74689], 0);
     }
-    console.log("event", event, this.activeNode);
+    console.log("event", event);
 
     // Generate a random color
     // this.randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
@@ -217,58 +217,65 @@ export class GisMapComponent implements AfterViewInit {
     // // Apply styles only to the selected node
     event.node.styleClass = "custom-selected-node";
     // // this.activeNode = [event.node];
+    if (event.parent != undefined) {
+      if (event.node.children) {
+        // Deselect all the children nodes
+        event.node.children.forEach((child) => {
+          console.log("child", child);
+          this.toggleLayer_UnChecked(child);
+        });
+      }
+      // const visibility = event;
+      console.log("event", event.node.label);
 
-    if (event.node.children) {
-      // Deselect all the children nodes
-      event.node.children.forEach((child) => {
-        console.log("child", child);
-        this.toggleLayer_UnChecked(child);
-      });
+      const layerName = event.node.label;
+      const layer = this.layers.find((l) => l.name === layerName);
+      console.log(
+        "🚀 ~ file: gis-map.component.ts:209 ~ GisMapComponent ~ toggleLayer_Checked ~ layer:",
+        layer
+      );
+      //
+
+      if (layer && layer.vectorLayer) {
+        event.node.randomColor =
+          layer.vectorLayer.options.style.color === null
+            ? this.generateRandomColor()
+            : layer.vectorLayer.options.style.color;
+        // if (visibility) {
+
+        this.map.addLayer(layer.vectorLayer);
+        // this.map.addLayer(layer.tileLayer);
+        console.log("vectorlayer", layer.vectorLayer);
+        //this.onDatumChange()
+
+        // } else {
+        //   console.log("vectorlayer", layer.vectorLayer);
+
+        //   this.map.removeLayer(layer.vectorLayer);
+        //   this.map.removeLayer(layer.tileLayer);
+        // }
+      } else if (layer && layer.tileLayer) {
+        event.node.randomColor = this.generateRandomColor();
+
+        // if (visibility) {
+        console.log("tilelayer", layer.tileLayer);
+        this.map.addLayer(layer.tileLayer);
+        //this.onDatumChange();
+
+        // }
+        // else {
+        //   console.log("tilelayer", layer.tileLayer);
+        //   this.map.removeLayer(layer.tileLayer);
+
+        // }
+      }
+    } else {
+      event.node.randomColor = "#85cc18";
     }
-    // const visibility = event;
-    console.log("event", event.node.label);
+  }
 
-    const layerName = event.node.label;
-    const layer = this.layers.find((l) => l.name === layerName);
-    console.log(
-      "🚀 ~ file: gis-map.component.ts:209 ~ GisMapComponent ~ toggleLayer_Checked ~ layer:",
-      layer
-    );
-    //
-
-    if (layer && layer.vectorLayer) {
-      event.node.randomColor =
-        layer.vectorLayer.options.style.color === null
-          ? this.generateRandomColor()
-          : layer.vectorLayer.options.style.color;
-      // if (visibility) {
-
-      this.map.addLayer(layer.vectorLayer);
-      // this.map.addLayer(layer.tileLayer);
-      console.log("vectorlayer", layer.vectorLayer);
-      //this.onDatumChange()
-
-      // } else {
-      //   console.log("vectorlayer", layer.vectorLayer);
-
-      //   this.map.removeLayer(layer.vectorLayer);
-      //   this.map.removeLayer(layer.tileLayer);
-      // }
-    } else if (layer && layer.tileLayer) {
-      event.node.randomColor = this.generateRandomColor();
-
-      // if (visibility) {
-      console.log("tilelayer", layer.tileLayer);
-      this.map.addLayer(layer.tileLayer);
-      //this.onDatumChange();
-
-      // }
-      // else {
-      //   console.log("tilelayer", layer.tileLayer);
-      //   this.map.removeLayer(layer.tileLayer);
-
-      // }
-    }
+  onLabelClick(event) {
+    console.log("lableselected", event);
   }
   toggleLayer_UnChecked(event) {
     // Remove styles for unselected node
@@ -589,7 +596,7 @@ export class GisMapComponent implements AfterViewInit {
         workspace: "",
         value: "",
         children: "",
-        randomColor: "",
+        randomColor: "#85cc18",
       };
 
       a["label"] = parentgroup[0].name;
@@ -626,7 +633,7 @@ export class GisMapComponent implements AfterViewInit {
           workspace: "",
           value: "",
           children: "",
-          randomColor: "",
+          randomColor: "#85cc18",
         };
         // debugger
         // console.log("hhhe", a)
@@ -694,7 +701,7 @@ export class GisMapComponent implements AfterViewInit {
               workspace: "",
               value: "",
               children: "",
-              randomColor: "",
+              randomColor: "#85cc18",
             };
 
             if (this.subcity == "central_AddisLand") {
@@ -741,7 +748,7 @@ export class GisMapComponent implements AfterViewInit {
                 workspace: "",
                 value: "",
                 children: "",
-                randomColor: "",
+                randomColor: "#85cc18",
               };
               const element = this.woredas[k].name.split(":");
               this.woredas[k].name = element[1];
@@ -786,7 +793,7 @@ export class GisMapComponent implements AfterViewInit {
                   workspace: "",
                   value: "",
                   children: "",
-                  randomColor: "",
+                  randomColor: "#85cc18",
                 };
                 const element = this.woredaLayers[l].name.split(":");
                 this.woredaLayers[l].name = element[1];
@@ -831,7 +838,7 @@ export class GisMapComponent implements AfterViewInit {
                     label: "",
                     workspace: "",
                     value: "",
-                    randomColor: "",
+                    randomColor: "#85cc18",
                   };
                   // debugger
                   const element = this.woredaLayersOneByOne[m].name.split(":");

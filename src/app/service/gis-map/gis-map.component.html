@@ -13,7 +13,8 @@
           (onNodeSelect)="toggleLayer_Checked($event);" (onNodeUnselect)="toggleLayer_UnChecked($event)">
           <ng-template let-node pTemplate="default">
             <span [ngClass]="{'custom-selected-node': node.styleClass === 'custom-selected-node'?custom-selected-node:''}"
-              [style.background-color]="node.styleClass === 'custom-selected-node' ? node.randomColor : ''">
+              [style.background-color]="node.styleClass === 'custom-selected-node' ? node.randomColor : ''"
+              (click)="onLabelClick(node)">
               {{node.label}}
             </span>
           </ng-template>
