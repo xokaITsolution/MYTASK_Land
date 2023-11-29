@@ -36,6 +36,7 @@ interface AssignedBodyTree2 {
   label: string;
   workspace: string;
   value: string;
+
   randomColor: any;
 }
 @Component({
@@ -217,7 +218,7 @@ export class GisMapComponent implements AfterViewInit {
     // // Apply styles only to the selected node
     event.node.styleClass = "custom-selected-node";
     // // this.activeNode = [event.node];
-    if (event.parent != undefined) {
+    if (event.node.children.length == 0 && event.node.children != undefined) {
       if (event.node.children) {
         // Deselect all the children nodes
         event.node.children.forEach((child) => {
@@ -834,10 +835,11 @@ export class GisMapComponent implements AfterViewInit {
                 // const l1 = Object.assign([], this.woredaLayersOneByOne);
 
                 for (let m = 0; m < this.woredaLayersOneByOne.length; m++) {
-                  let e: AssignedBodyTree2 = {
+                  let e: AssignedBodyTree = {
                     label: "",
                     workspace: "",
                     value: "",
+                    children: "",
                     randomColor: "#85cc18",
                   };
                   // debugger
@@ -848,6 +850,7 @@ export class GisMapComponent implements AfterViewInit {
                   e["workspace"] = this.woredaLayersOneByOne[m].workspace;
                   e.label = this.woredaLayersOneByOne[m].name;
                   e.value = this.woredaLayersOneByOne[m].href;
+                  e.children = [];
                   //this.woredaLayersOneByOne[l].children = [];
                   d.children.push(e);
                 }
@@ -3236,8 +3239,8 @@ export class GisMapComponent implements AfterViewInit {
     const latLngCoords = utm.toLatLon(easting, northing, zone, hemisphere);
     console.log("Latitude, Longitude:", latLngCoords);
     return {
-      lat: latLngCoords.latitude,
-      lng: latLngCoords.longitude,
+      lat: latLngCoords.latitude - 0.001876,
+      lng: latLngCoords.longitude - 0.0008668,
     };
   }
   conveUTMToLatLngWrite(
