@@ -411,10 +411,10 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-Plot let-rowData>
-      <tr (click)='highlighted = rowData;SelectPLot(Plot);showform()' class="some-class" tabindex="1"
+      <tr  (click)='highlighted = rowData;SelectPLot(Plot);showform()' class="some-class" tabindex="1"
         [class.uistatehighlight]="rowData === highlighted">
   
-        <td>{{Plot.Plot_ID}} </td>
+        <td >{{Plot.Plot_ID}} </td>
         <td>
           <select class="form-control" disabled [(ngModel)]="Plot.Plot_Status" name="Statuss" id="Statuss">
             <option disabled translate>select</option>

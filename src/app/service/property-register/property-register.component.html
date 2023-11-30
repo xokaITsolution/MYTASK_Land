@@ -155,7 +155,7 @@
           [placeholder]="'House No'|translate" [disabled]="disable">
       </div>
     </div>
-    <div class="form-group row col-md-6">
+    <!-- <div class="form-group row col-md-6">
       <label for="estimatedPrice" class="col-sm-3 col-form-label" translate>Estimated Price</label>
       <div class="col-sm-9">
         <input type="text" class="form-control" name="estimatedPrice" id="estimatedPrice"  [(ngModel)]="propertyRegister.estimated_Price" 
@@ -164,7 +164,7 @@
           [ngClass]="{ 'is-invalid': estimatedPrice.invalid }" required>
           <span *ngIf="estimatedPrice.invalid" style="color: red;">required</span>
       </div>
-    </div>
+    </div> -->
   
             <div class="form-group row col-md-6" *ngIf="language !== 'amharic'">
               <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>

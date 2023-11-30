@@ -16,6 +16,7 @@ import { BehaviorSubject } from "rxjs";
 import { LeaseOwnerShipService } from "../lease-owner-ship/lease-owner-ship.service";
 import { TitleDeedRegistrationService } from "../title-deed-registration/title-deed-registration.service";
 import { MeasurmentService } from "../measurment/measurment.service";
+import { PropformLocation } from "../property-register/property-register.component";
 @Component({
   selector: "app-property",
   templateUrl: "./property.component.html",
@@ -627,6 +628,7 @@ export class PropertyComponent implements OnChanges {
   }
   async getProploc(propertyid) {
     var s = await this.serviceService.getProploc(propertyid).toPromise();
+
     return s;
   }
   async getdeed(propertyid) {
@@ -776,51 +778,52 @@ export class PropertyComponent implements OnChanges {
 
   async EnableFinspronew(Property) {
     this.getPropertyList();
-    const sumOfPropertiess: any = this.serviceService.files.filter(
-      (node: ExtendedTreeNode) => node.level === 0 && node.label != "No Parent"
-    );
-    const sumOfProperties = this.serviceService.files
-      .filter(
-        (node: ExtendedTreeNode) =>
-          node.level === 0 && node.label != "No Parent"
-      )
-      .reduce((sum, node: ExtendedTreeNode) => {
-        sum +=
-          parseFloat(node.building_Size_M2) +
-          parseFloat(node.proportional_from_Compound_Size) +
-          parseFloat(node.parking_Area_M2) +
-          parseFloat(node.size_In_Proportional);
-        return sum;
-      }, 0);
+    this.DoneNew();
+    // const sumOfPropertiess: any = this.serviceService.files.filter(
+    //   (node: ExtendedTreeNode) => node.level === 0 && node.label != "No Parent"
+    // );
+    // const sumOfProperties = this.serviceService.files
+    //   .filter(
+    //     (node: ExtendedTreeNode) =>
+    //       node.level === 0 && node.label != "No Parent"
+    //   )
+    //   .reduce((sum, node: ExtendedTreeNode) => {
+    //     sum +=
+    //       parseFloat(node.building_Size_M2) +
+    //       parseFloat(node.proportional_from_Compound_Size) +
+    //       parseFloat(node.parking_Area_M2) +
+    //       parseFloat(node.size_In_Proportional);
+    //     return sum;
+    //   }, 0);
 
-    console.log("this.serviceService.files", sumOfProperties);
-    const sumOfPropertiesfinal = sumOfProperties.toFixed(2);
-    // Check if the sum is equal to compound_Size_M2
-    if (
-      parseFloat(sumOfPropertiesfinal) ===
-      parseFloat(sumOfPropertiess[0].compound_Size_M2)
-    ) {
-      for (let i = 0; i < this.serviceService.files.length; i++) {
-        const element: any = Object.assign([], this.serviceService.files[i]);
-        console.log("sub property", element);
+    // console.log("this.serviceService.files", sumOfProperties);
+    // const sumOfPropertiesfinal = sumOfProperties.toFixed(2);
+    // // Check if the sum is equal to compound_Size_M2
+    // if (
+    //   parseFloat(sumOfPropertiesfinal) ===
+    //   parseFloat(sumOfPropertiess[0].compound_Size_M2)
+    // ) {
+    //   for (let i = 0; i < this.serviceService.files.length; i++) {
+    //     const element: any = Object.assign([], this.serviceService.files[i]);
+    //     console.log("sub property", element);
 
-        if (element.property_ID !== "No Parent") {
-          const isdeedchildren = await this.checkProperty(element);
+    //     if (element.property_ID !== "No Parent") {
+    //       const isdeedchildren = await this.checkProperty(element);
 
-          if (!isdeedchildren) {
-            const toast = this.notificationsService.warn(
-              `Must add title deed for this property: ${element.property_ID}`
-            );
-          } else {
-            this.completed.emit();
-          }
-        }
-      }
-    } else {
-      const toast = this.notificationsService.warn(
-        "built-in size must be equal to lease size/ ንብረት ድምር ከሊዝ መጠን ጋር እኩል መሆን አለበት።"
-      );
-    }
+    //       if (!isdeedchildren) {
+    //         const toast = this.notificationsService.warn(
+    //           `Must add title deed for this property: ${element.property_ID}`
+    //         );
+    //       } else {
+    //         this.completed.emit();
+    //       }
+    //     }
+    //   }
+    // } else {
+    //   const toast = this.notificationsService.warn(
+    //     "built-in size must be equal to lease size/ ንብረት ድምር ከሊዝ መጠን ጋር እኩል መሆን አለበት።"
+    //   );
+    // }
 
     // if (this.serviceService.isproportinal == true) {
     //   if (
@@ -943,6 +946,7 @@ export class PropertyComponent implements OnChanges {
             const toast = this.notificationsService.warn(
               `Must add property location  for this property: ${element.property_ID}`
             );
+            return;
           } else {
             this.completed.emit();
           }
@@ -952,6 +956,7 @@ export class PropertyComponent implements OnChanges {
       const toast = this.notificationsService.warn(
         "all property must have location on the map /ሁሉም ንብረቶች በካርታው ላይ ቦታ ሊኖራቸው ይገባል"
       );
+      return;
     }
     if (
       parseFloat(sumOfPropertiesfinal) ===
@@ -968,6 +973,7 @@ export class PropertyComponent implements OnChanges {
             const toast = this.notificationsService.warn(
               `Must add title deed for this property: ${element.property_ID}`
             );
+            return;
           } else {
             this.completed.emit();
           }
@@ -977,6 +983,7 @@ export class PropertyComponent implements OnChanges {
       const toast = this.notificationsService.warn(
         "built-in size must be equal to lease size/ ንብረት ድምር ከሊዝ መጠን ጋር እኩል መሆን አለበት።"
       );
+      return;
     }
     // if (this.serviceService.isproportinal == true) {
     //   if (
@@ -1252,9 +1259,14 @@ export class PropertyComponent implements OnChanges {
   async checkPropertylocation(element) {
     if (element.property_ID != "No Parent") {
       const b: any = await this.getProploc(element.property_ID);
-      const blocation = b.procProporty_Locations.filter(
-        (x) => x.property_ID === element.property_ID
+      const e = Object.assign([], b);
+
+      console.log("propertylocation", e, element.property_ID);
+
+      const blocation = e.procProporty_Locations.find(
+        (x) => x.proporty_Id === element.property_ID
       );
+      console.log("propertylocation", blocation);
       if (element.children.length == 0) {
         if (blocation.length === 0) {
           return false;
@@ -1264,8 +1276,9 @@ export class PropertyComponent implements OnChanges {
       } else {
         for (const elementchildren of element.children) {
           const d: any = await this.getProploc(elementchildren.property_ID);
-          const dlocation = d.procProporty_Locations.filter(
-            (x) => x.property_ID === elementchildren.property_ID
+          const f = Object.assign([], d);
+          const dlocation = f.procProporty_Locations.find(
+            (x) => x.Proporty_Id === elementchildren.property_ID
           );
           if (dlocation.length === 0) {
             // const toast = this.notificationsService.warn(

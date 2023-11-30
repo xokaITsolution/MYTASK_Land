@@ -524,7 +524,10 @@ user agent stylesheet td {
   display: table-cell;
   vertical-align: inherit;
 }
-
+.uistatehighlight {
+  background: rgb(13, 34, 75) !important;
+  color: white !important;
+}
 /* 
 .uistatehighlight.ui-table .ui-table-tbody>tr {
   background: rgb(20, 62, 146) !important;

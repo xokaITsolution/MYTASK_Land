@@ -122,7 +122,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
     console.log(value);
 
     if (value == 2) {
-      this.islease = false;
+      this.islease = true;
       this.iislease = false;
       this.isfreehole = false;
       this.leaseOwnerShip.Free_Hold_M2 = 0;
@@ -211,7 +211,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
       console.log(task.To_Do_ID, task.Status, task.Type_ID);
 
       if (parseInt(task.Type_ID) == 2) {
-        this.islease = false;
+        this.islease = true;
         this.iislease = false;
         this.isfreehole = false;
         task.Free_Hold_M2 = 0;
@@ -309,11 +309,11 @@ export class LeaseOwnerShipComponent implements OnChanges {
           this.serviceService.toMess = false;
 
           if (parseInt(this.tasks[0].Type_ID) === 1) {
-            this.islease = false;
+            this.islease = true;
             this.iislease = false;
             this.isfreehole = false;
           } else if (parseInt(this.tasks[0].Type_ID) === 2) {
-            this.islease = false;
+            this.islease = true;
             this.iislease = true;
             this.isfreehole = false;
           } else {

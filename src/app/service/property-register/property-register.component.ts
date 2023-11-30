@@ -989,6 +989,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       this.propformLocation.geo = coordinate2;
       this.propformLocation.geowithzone = coordinate;
       this.propformLocation.proporty_Id = this.selectedpro.property_ID;
+      this.propformLocation.geoForwgs84 =
+        this.serviceService.coordinateForwgs84;
       this.serviceService.getUserRole().subscribe((response: any) => {
         console.log("responseresponseresponse", response, response[0].RoleId);
         this.propformLocation.updated_By = response[0].UserId;
@@ -1055,6 +1057,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
           this.serviceService.coordinate
         );
         this.propformLocation.geowithzone = coordinate;
+        this.propformLocation.geoForwgs84 =
+          this.serviceService.coordinateForwgs84;
         console.log("responseresponseresponse", response, response[0].RoleId);
         this.propformLocation.proporty_Id =
           this.serviceService.insertedProperty;
@@ -1319,4 +1323,5 @@ export class PropformLocation {
   public geowithzone: any;
   public imageType: any;
   public hight_Meter: any;
+  public geoForwgs84: any;
 }

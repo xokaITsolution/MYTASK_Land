@@ -76,6 +76,7 @@ export class GisMapComponent implements AfterViewInit {
   selectedNode: any;
   activeNode: any;
   centermap: any;
+  plot_locations_gejon: L.Proj.GeoJSON;
 
   constructor(
     public ServiceService: ServiceService,
@@ -187,14 +188,21 @@ export class GisMapComponent implements AfterViewInit {
   }
 
   toggleLayer_Checked(event) {
+    const zoomLevel = 6; // Adjust this to your desired zoom level
+
+    // Specify the duration of the flyTo animation in seconds
+    const flyToDuration = 5; // 2 seconds
+
+    // Use the flyTo method to animate the map
+
     if (this.subcity == "bole_AddisLand") {
-      this.map.flyTo([8.967201, 38.797822], 0);
+      this.map.flyTo([8.967201, 38.797822], 2);
     } else if (this.subcity == "yeka_AddisLand") {
-      this.map.flyTo([9.060803, 38.804322], 0);
+      this.map.flyTo([9.060803, 38.804322], 2);
     } else if (this.subcity == "addisk_AddisLand") {
-      this.map.flyTo([9.051497, 38.723454], 0);
+      this.map.flyTo([9.051497, 38.723454], 2);
     } else if (this.subcity == "akakyk_AddisLand") {
-      this.map.flyTo([8.859807, 38.798065], 0);
+      this.map.flyTo([8.859807, 38.798065], 2);
     } else if (this.subcity == "kolfek_AddisLand") {
       this.map.flyTo([8.998647, 38.691922], 0);
     } else if (this.subcity == "kirkos_AddisLand") {
@@ -208,7 +216,9 @@ export class GisMapComponent implements AfterViewInit {
     } else if (this.subcity == "nifass_AddisLand") {
       this.map.flyTo([8.949258, 38.728618], 0);
     } else if (this.subcity == "arada_AddisLand") {
-      this.map.flyTo([9.02497, 38.74689], 0);
+      this.map.flyTo([9.02497, 38.74689], zoomLevel, {
+        duration: flyToDuration,
+      });
     }
     console.log("event", event);
 
@@ -216,20 +226,21 @@ export class GisMapComponent implements AfterViewInit {
     // this.randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
 
     // // Apply styles only to the selected node
-    event.node.styleClass = "custom-selected-node";
+    event.styleClass = "custom-selected-node";
     // // this.activeNode = [event.node];
-    if (event.node.children.length == 0 && event.node.children != undefined) {
-      if (event.node.children) {
+    if (event.children.length == 0 && event.children != undefined) {
+      if (event.children) {
         // Deselect all the children nodes
-        event.node.children.forEach((child) => {
+        event.children.forEach((child) => {
           console.log("child", child);
           this.toggleLayer_UnChecked(child);
         });
       }
-      // const visibility = event;
-      console.log("event", event.node.label);
 
-      const layerName = event.node.label;
+      // const visibility = event;
+      console.log("event", event.label);
+
+      const layerName = event.label;
       const layer = this.layers.find((l) => l.name === layerName);
       console.log(
         "🚀 ~ file: gis-map.component.ts:209 ~ GisMapComponent ~ toggleLayer_Checked ~ layer:",
@@ -238,7 +249,7 @@ export class GisMapComponent implements AfterViewInit {
       //
 
       if (layer && layer.vectorLayer) {
-        event.node.randomColor =
+        event.randomColor =
           layer.vectorLayer.options.style.color === null
             ? this.generateRandomColor()
             : layer.vectorLayer.options.style.color;
@@ -256,7 +267,7 @@ export class GisMapComponent implements AfterViewInit {
         //   this.map.removeLayer(layer.tileLayer);
         // }
       } else if (layer && layer.tileLayer) {
-        event.node.randomColor = this.generateRandomColor();
+        event.randomColor = this.generateRandomColor();
 
         // if (visibility) {
         console.log("tilelayer", layer.tileLayer);
@@ -271,7 +282,7 @@ export class GisMapComponent implements AfterViewInit {
         // }
       }
     } else {
-      event.node.randomColor = "#85cc18";
+      event.randomColor = "#85cc18";
     }
   }
 
@@ -860,6 +871,8 @@ export class GisMapComponent implements AfterViewInit {
         }
       }
       this.nodes.push(a);
+      console.log("fdgd", this.nodes);
+
       const treedata = JSON.stringify(this.nodes);
       localStorage.setItem("treeformap", treedata);
       localStorage.setItem("treeformapsubcity", this.subcity);
@@ -873,11 +886,11 @@ export class GisMapComponent implements AfterViewInit {
   }
 
   // Function to find the "Arada image_M" node in the tree structure
-  findAradaImageMNode(nodes: CustomTreeNode[]): CustomTreeNode | undefined {
+  findAradaImageMNode(nodes): AssignedBodyTree {
     for (const topLevelNode of nodes) {
       for (const aradaAddisLandNode of topLevelNode.children) {
         for (const aradaImageMNode of aradaAddisLandNode.children) {
-          if (aradaImageMNode.label === "Arada image_M") {
+          if (aradaImageMNode.label === "Plot_Locations") {
             aradaImageMNode.expanded = true;
             return aradaImageMNode;
           }
@@ -1047,9 +1060,16 @@ export class GisMapComponent implements AfterViewInit {
           };
         },
       };
+
       this.vectorLayer = L.Proj.geoJson(geojson, {
         style: { color: randomColor },
       });
+      this.plot_locations_gejon = geojson;
+      console.log(
+        "🚀 ~ file: gis-map.component.ts:1066 ~ Bind_Features ~ vectorLayer:",
+        geojson
+      );
+
       // console.log("hhh", geojson)
       // (this.vectorLayer = L.Proj.geoJson(geojson, options)), {};
       // console.log(
@@ -1412,7 +1432,13 @@ export class GisMapComponent implements AfterViewInit {
             // Convert the drawn polygon to GeoJSON
             // Convert the drawn polygon to GeoJSON
             // Assuming this.coordinates is an array of L.LatLng objects
-
+            this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(
+              this.coordinates
+            );
+            console.log(
+              "🚀 ~ file: gis-map.component.ts:1630 ~ this.map.on ~ tempcord:",
+              this.ServiceService.coordinateForwgs84
+            );
             console.log(this.coordinates);
             // Convert each L.LatLng object to [x, y] point
             //this.convertLatLngToUTM(this.coordinates)
@@ -1467,6 +1493,7 @@ export class GisMapComponent implements AfterViewInit {
             // Do something with the coordinates, such as displaying or processing them
 
             this.ServiceService.coordinate = this.utmCoordinates;
+            // this.ServiceService.coordinateForwgs84 =
             //  this.ServiceService.shapes = this.aaa.push(this.drawnShape);
             // Transform GeoJSON to EPSG:20137 CRS
           } else {
@@ -1625,7 +1652,13 @@ export class GisMapComponent implements AfterViewInit {
       } else {
         if (layer instanceof L.Polygon) {
           this.coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the polygon
-          let tempcord = this.coordinates;
+          this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(
+            this.coordinates
+          );
+          console.log(
+            "🚀 ~ file: gis-map.component.ts:1630 ~ this.map.on ~ tempcord:",
+            this.ServiceService.coordinateForwgs84
+          );
           // tempcord.push(tempcord[0]);
 
           // Assuming you already have the 'points' array from the previous code
@@ -1882,7 +1915,13 @@ export class GisMapComponent implements AfterViewInit {
       editedLayers.eachLayer((layer) => {
         if (layer instanceof L.Polygon) {
           const coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the edited polygon
-
+          this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(
+            this.coordinates
+          );
+          console.log(
+            "🚀 ~ file: gis-map.component.ts:1630 ~ this.map.on ~ tempcord:",
+            this.ServiceService.coordinateForwgs84
+          );
           // Assuming you have a function to convert coordinates to UTM
           const utmCoordinates = this.convertCoordinatesToUTM(coordinates);
           this.utmCoordinates = utmCoordinates;
@@ -2004,6 +2043,43 @@ export class GisMapComponent implements AfterViewInit {
     });
   }
 
+  mapToPolygonFormat(coordinates: { lat: number; lng: number }[]): string {
+    // Ensure there are at least 3 coordinates to form a polygon
+    if (coordinates.length < 3) {
+      throw new Error("At least 3 coordinates are required to form a polygon.");
+    }
+
+    // Sort the coordinates in counter-clockwise order
+    const sortedCoordinates = this.sortCoordinatesCounterClockwise(coordinates);
+
+    // Map the sorted coordinates to the desired format
+    const polygonString = `POLYGON((${sortedCoordinates
+      .map((coord) => `${coord.lat} ${coord.lng}`)
+      .join(", ")}, ${sortedCoordinates[0].lat} ${sortedCoordinates[0].lng}))`;
+
+    return polygonString;
+  }
+
+  sortCoordinatesCounterClockwise(
+    coordinates: { lat: number; lng: number }[]
+  ): { lat: number; lng: number }[] {
+    // Calculate the centroid of the coordinates
+    const centroid = coordinates.reduce(
+      (acc, coord) => ({ lat: acc.lat + coord.lat, lng: acc.lng + coord.lng }),
+      { lat: 0, lng: 0 }
+    );
+    centroid.lat /= coordinates.length;
+    centroid.lng /= coordinates.length;
+
+    // Sort coordinates based on polar angle from the centroid
+    const sortedCoordinates = coordinates.sort((a, b) => {
+      const angleA = Math.atan2(a.lng - centroid.lng, a.lat - centroid.lat);
+      const angleB = Math.atan2(b.lng - centroid.lng, b.lat - centroid.lat);
+      return angleA - angleB;
+    });
+
+    return sortedCoordinates;
+  }
   calculateCircleCoordinates(center, radius) {
     const points = [];
     const radiusKilometers = radius / 1000; // Convert meters to kilometers
@@ -2375,8 +2451,8 @@ export class GisMapComponent implements AfterViewInit {
       console.log("jsonData", jsonData);
 
       // Process the imported shapes and add them to the map
-      this.processImportedShapes(jsonData);
       this.fromexcel = true;
+      this.processImportedShapes(jsonData);
     };
     fileReader.readAsArrayBuffer(file);
   }
@@ -2716,10 +2792,22 @@ export class GisMapComponent implements AfterViewInit {
     // Remove the header row from the data
     const coordinates = data.slice(1);
     console.log("coordinates", coordinates);
-    // Map the data to LatLng objects
     const latLngs = coordinates.map((row) =>
       this.conveUTMToLatLng(row[0], row[1], row[3], row[2])
     );
+
+    if (this.fromexcel === true) {
+      let filtertheshape = this.findShapeFromGeoJSON(
+        this.plot_locations_gejon,
+        coordinates
+      );
+      console.log(
+        "🚀 ~ file: gis-map.component.ts:2800 ~ processImportedShapes ~ filtertheshape:",
+        filtertheshape
+      );
+    }
+
+    // Map the data to LatLng objects
 
     console.log("latLngs", latLngs);
     this.alllatlong.push(latLngs);
@@ -2792,6 +2880,13 @@ export class GisMapComponent implements AfterViewInit {
       this.onDatumChange();
       // this.setviewFromDatumchange(center);
       // Specify the zoom level
+      let selectednode = this.findNode(this.nodes[0], "Plot_Locations");
+      console.log(
+        "🚀 ~ file: gis-map.component.ts:2813 ~ shape.forEach ~ findAradaImageMNode:",
+        selectednode
+      );
+
+      this.toggleLayer_Checked(selectednode);
       const zoomLevel = 6; // Adjust this to your desired zoom level
 
       // Specify the duration of the flyTo animation in seconds
@@ -2801,8 +2896,8 @@ export class GisMapComponent implements AfterViewInit {
       this.map.flyTo(center, zoomLevel, {
         duration: flyToDuration,
       });
-      // this.map.setView(center, 15);
 
+      // this.map.setView(center, 15);
       if (this.ServiceService.check != true) {
         this.map.on(L.Draw.Event.CREATED, (e: any) => {
           const layer = e.layer;
@@ -2839,6 +2934,27 @@ export class GisMapComponent implements AfterViewInit {
       this.sample = this.drawnShape;
     }
   }
+  findNode(tree: any, label: string): any {
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:2908 ~ findNode ~ tree:",
+      tree
+    );
+
+    if (tree.label === label) {
+      return tree;
+    }
+    for (const child of tree.children || []) {
+      const result = this.findNode(child, label);
+      console.log(
+        "🚀 ~ file: gis-map.component.ts:2913 ~ findNode ~ result:",
+        result
+      );
+
+      if (result) {
+        return result;
+      }
+    }
+  }
 
   addMarkerWithCharacter(drawnShape, markerLatLng, character) {
     const myIcon = L.divIcon({
@@ -2860,7 +2976,6 @@ export class GisMapComponent implements AfterViewInit {
     const selectedShape = this.ServiceService.shapes[randomIndex];
 
     // Do something with the selected shape (e.g., change its style)
-    selectedShape.setStyle({ fillColor: "red" });
 
     // You can also select multiple shapes if needed
     // Just loop through the array and apply changes to each selected shape
@@ -3239,8 +3354,8 @@ export class GisMapComponent implements AfterViewInit {
     const latLngCoords = utm.toLatLon(easting, northing, zone, hemisphere);
     console.log("Latitude, Longitude:", latLngCoords);
     return {
-      lat: latLngCoords.latitude - 0.001876,
-      lng: latLngCoords.longitude - 0.0008668,
+      lat: latLngCoords.latitude,
+      lng: latLngCoords.longitude,
     };
   }
   conveUTMToLatLngWrite(
@@ -3254,8 +3369,8 @@ export class GisMapComponent implements AfterViewInit {
     const latLngCoords = utm.toLatLon(easting, northing, zone, hemisphere);
     console.log("Latitude, Longitude:", latLngCoords);
     return {
-      lat: latLngCoords.latitude + 0.001876,
-      lng: latLngCoords.longitude + 0.0008668,
+      lat: latLngCoords.latitude,
+      lng: latLngCoords.longitude,
     };
   }
   conveUTMToLatLngforshapefile(
@@ -3274,6 +3389,105 @@ export class GisMapComponent implements AfterViewInit {
       latLngCoords.latitude + 0.001876,
       0,
     ];
+  }
+  findShapeFromGeoJSON(geoJSON, coordinates) {
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:3392 ~ findShapeFromGeoJSON ~ coordinates:",
+      coordinates
+    );
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:3392 ~ findShapeFromGeoJSON ~ geoJSON:",
+      geoJSON
+    );
+
+    // Ensure the GeoJSON has features
+    if (geoJSON && geoJSON.features && geoJSON.features.length > 0) {
+      for (const feature of geoJSON.features) {
+        const polygonCoordinates = feature.geometry.coordinates[0];
+        console.log(
+          "🚀 ~ file: gis-map.component.ts:3398 ~ findShapeFromGeoJSON ~ feature:",
+          polygonCoordinates
+        );
+        let insides = this.isPointInPolygon(coordinates, polygonCoordinates);
+        console.log(
+          "🚀 ~ file: gis-map.component.ts:3410 ~ findShapeFromGeoJSON ~ insides:",
+          insides
+        );
+
+        if (this.isPointInPolygon(coordinates, polygonCoordinates)) {
+          return feature;
+        }
+      }
+    }
+
+    return null;
+  }
+  isPointInPolygon(point, polygon) {
+    const proximityThreshold = 5; // Adjust this threshold based on your requirements
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:3422 ~ isPointInPolygon ~ polygon:",
+      polygon
+    );
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:3422 ~ isPointInPolygon ~ point:",
+      point
+    );
+
+    let inside = false;
+    let x = point[1];
+    let y = point[0];
+
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      let xi = polygon[i][0];
+      let yi = polygon[i][1];
+      let xj = polygon[j][0];
+      let yj = polygon[j][1];
+
+      // Check if the point is close to the line segment defined by (xi, yi) and (xj, yj)
+      const distance = this.pointToLineDistance(
+        parseFloat(x[1]).toFixed(2),
+        parseFloat(y[0]).toFixed(2),
+        parseFloat(xi[0]).toFixed(2),
+        parseFloat(yi[1]).toFixed(2),
+        parseFloat(xj[0]).toFixed(2),
+        parseFloat(yj[1]).toFixed(2)
+      );
+      console.log(
+        "🚀 ~ file: gis-map.component.ts:3445 ~ isPointInPolygon ~ distance:",
+        distance
+      );
+
+      if (distance <= proximityThreshold) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+  pointToLineDistance(x, y, x1, y1, x2, y2) {
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:3445 ~ isPointInPolygon ~ distance:",
+      x,
+      y,
+      x1,
+      y1,
+      x2,
+      y2
+    );
+    const numerator = Math.abs(
+      (y2 - y1) * x - (x2 - x1) * y + x2 * y1 - y2 * x1
+    );
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:3477 ~ pointToLineDistance ~ numerator:",
+      numerator
+    );
+
+    const denominator = Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:3480 ~ pointToLineDistance ~ denominator:",
+      denominator
+    );
+    return numerator / denominator;
   }
 }
 // Define the Layer interface
