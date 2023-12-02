@@ -147,7 +147,7 @@
      
       <div class="ngxsmartmodal-body" height="500px">
       
-        <app-gis-map [geo]="geo" [changingg]="changingValue"></app-gis-map>
+        <app-gis-map [geo]="geo" [changingg]="changingValue" (completed)="updateplotandlicense($event)"></app-gis-map>
       
        
       </div>
@@ -167,6 +167,8 @@
     </div>
   </div>
 </div>
+
+
 
 
 

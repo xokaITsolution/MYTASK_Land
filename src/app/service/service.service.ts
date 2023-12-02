@@ -169,6 +169,7 @@ export class ServiceService {
   currentplotsize: any;
   leaselist: any;
   coordinateForwgs84: any;
+  isconfirmsave: boolean;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);

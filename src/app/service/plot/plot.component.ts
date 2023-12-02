@@ -238,6 +238,8 @@ export class PlotComponent implements OnChanges {
       );
       this.platformLocation.geo = coordinate2;
       this.platformLocation.geowithzone = coordinate;
+      this.platformLocation.geoForwgs84 =
+        this.serviceService.coordinateForwgs84;
       this.platformLocation.ploteId = this.Parcel_ID;
       this.serviceService.getUserRole().subscribe((response: any) => {
         console.log("responseresponseresponse", response, response[0].RoleId);
@@ -322,6 +324,8 @@ export class PlotComponent implements OnChanges {
           this.serviceService.coordinate
         );
         this.platformLocation.geowithzone = coordinate;
+        this.platformLocation.geoForwgs84 =
+          this.serviceService.coordinateForwgs84;
         console.log("responseresponseresponse", response, response[0].RoleId);
 
         this.platformLocation.ploteId = this.Parcel_ID;
@@ -406,6 +410,19 @@ export class PlotComponent implements OnChanges {
     }
     this.displayGIS = false;
   }
+  updateplotandlicense(event) {
+    this.Parcel_ID = event.Plot_Ids;
+    this.getPloat();
+
+    console.log(
+      "🚀 ~ file: plot.component.ts:414 ~ PlotComponent ~ updateplotandlicense ~ event:",
+      event,
+      this.PlotManagementListfinal
+    );
+    if (this.PlotManagementListfinal.length > 0) {
+      this.EnableFinsPloat(this.Parcel_ID);
+    }
+  }
 
   getPloat() {
     this.PlotManagementListfinal = [];
@@ -449,17 +466,20 @@ export class PlotComponent implements OnChanges {
     }
   }
   Savetempora() {
-    console.log("ischeckPlotaev", this.serviceService.coordinate);
-    if (this.serviceService.coordinate) {
-      this.storeData();
-      this.AddPLot();
-      this.ischeckPlotaev = false;
-      this.ismodaEnable = false;
-      console.log("ischeckPlotaev", localStorage.getItem("coordinate"));
+    if (!this.serviceService.isconfirmsave) {
+      console.log("ischeckPlotaev", this.serviceService.coordinate);
+      if (this.serviceService.coordinate) {
+        this.storeData();
+        this.AddPLot();
+        this.ischeckPlotaev = false;
+        this.ismodaEnable = false;
+        console.log("ischeckPlotaev", localStorage.getItem("coordinate"));
+      } else {
+        const toast = this.notificationsService.warn(
+          "first you have to draw or import  the plot location በመጀመሪያ የመሬቱን ቦታ መሳል ወይም ማስገባት አለብዎት"
+        );
+      }
     } else {
-      const toast = this.notificationsService.warn(
-        "first you have to draw or import  the plot location በመጀመሪያ የመሬቱን ቦታ መሳል ወይም ማስገባት አለብዎት"
-      );
     }
   }
   openFullModal() {

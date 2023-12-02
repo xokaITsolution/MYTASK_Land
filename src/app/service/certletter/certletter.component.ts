@@ -256,6 +256,7 @@ export class CertletterComponent implements OnChanges {
       this.certReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
         environment.certReportPath + "/" + this.Selectedcert.title_Deed_No
       );
+
       this.LetterReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
         environment.LetterReportPath + "/" + this.Selectedcert.title_Deed_No
       );

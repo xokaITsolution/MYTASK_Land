@@ -826,6 +826,8 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         let coordinates = this.convertToMultiPoints(cordinatetemp);
         console.log("coordinatecoordinate", coordinates);
         this.platformLocation.geo = coordinates;
+        this.platformLocation.geoForwgs84 =
+          this.serviceService.coordinateForwgs84;
         let coordinate = this.convertToMultiPoint(cordinatetemp);
         this.platformLocation.geowithzone = coordinate;
         console.log("responseresponseresponse", response, response[0]);
@@ -913,4 +915,5 @@ export class PlatformLocation {
   public team_Leader_Approved: any;
   public team_Leader_Approved_By: any;
   public geowithzone: any;
+  public geoForwgs84: any;
 }

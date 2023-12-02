@@ -3,8 +3,10 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  EventEmitter,
   Input,
   OnInit,
+  Output,
   ViewChild,
 } from "@angular/core";
 import * as L from "../../../../node_modules/leaflet";
@@ -23,6 +25,7 @@ import { NotificationsService } from "angular2-notifications";
 import { MessageService, TreeNode } from "primeng/api";
 import { ApiService } from "../testgismap/api.service";
 import * as flatted from "flatted";
+import * as turf from "@turf/turf";
 import { CookieService } from "ngx-cookie-service/cookie-service/cookie.service";
 interface AssignedBodyTree {
   label: string;
@@ -45,6 +48,7 @@ interface AssignedBodyTree2 {
   styleUrls: ["./gis-map.component.css"],
 })
 export class GisMapComponent implements AfterViewInit {
+  @Output() completed = new EventEmitter();
   @ViewChild("tree", { static: false }) tree: any; // Replace 'any' with the actual type of your tree if available
   @ViewChild("fileInputt", { static: false }) fileInputt: ElementRef;
   nodes: CustomTreeNode[];
@@ -77,6 +81,9 @@ export class GisMapComponent implements AfterViewInit {
   activeNode: any;
   centermap: any;
   plot_locations_gejon: L.Proj.GeoJSON;
+  isconfirmsave: boolean;
+  message: string;
+  arrayproporty: any;
 
   constructor(
     public ServiceService: ServiceService,
@@ -1686,13 +1693,32 @@ export class GisMapComponent implements AfterViewInit {
             "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
             this.utmCoordinates
           );
-          if (this.drawnShape) {
-            this.map.removeLayer(this.drawnShape);
-            this.map.removeLayer(layer);
-            this.editableLayers.removeLayer(layer);
-            this.removeShape();
-          }
+          // if (this.drawnShape) {
+          //   this.map.removeLayer(this.drawnShape);
+          //   this.map.removeLayer(layer);
+          //   this.editableLayers.removeLayer(layer);
+          //   this.removeShape();
+          // }
           console.log("utmCoordinatescreate", utmCoordinates);
+          const geojson = layer.toGeoJSON();
+
+          // Create a layer with the transformed GeoJSON
+          this.drawnShape = L.Proj.geoJson(geojson);
+          console.log(this.drawnShape);
+
+          // Add the transformed GeoJSON layer to the map
+
+          this.drawnShape.addTo(this.map);
+          this.utmCoordinates.push(this.utmCoordinates[0]);
+          //points.push(points[0])
+          this.sample = this.drawnShape;
+          console.log("utmCoordinates", this.utmCoordinates);
+          // Add the coordinates to the array
+          //this.drawnShapes.push(this.coordinates);
+
+          // Do something with the coordinates, such as displaying or processing them
+
+          this.ServiceService.coordinate = this.utmCoordinates;
 
           const area = this.calculateUTMPolygonArea(utmCoordinates);
           this.ServiceService.Totalarea = parseInt(area.toFixed(2));
@@ -2792,25 +2818,40 @@ export class GisMapComponent implements AfterViewInit {
     // Remove the header row from the data
     const coordinates = data.slice(1);
     console.log("coordinates", coordinates);
+
     const latLngs = coordinates.map((row) =>
+      this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
+    );
+    const latLngss = coordinates.map((row) =>
       this.conveUTMToLatLng(row[0], row[1], row[3], row[2])
     );
-
-    if (this.fromexcel === true) {
-      let filtertheshape = this.findShapeFromGeoJSON(
-        this.plot_locations_gejon,
-        coordinates
-      );
-      console.log(
-        "🚀 ~ file: gis-map.component.ts:2800 ~ processImportedShapes ~ filtertheshape:",
-        filtertheshape
-      );
-    }
 
     // Map the data to LatLng objects
 
     console.log("latLngs", latLngs);
     this.alllatlong.push(latLngs);
+    if (this.fromexcel === true) {
+      let filtertheshape = this.findShapeFromGeoJSON(
+        this.plot_locations_gejon,
+        latLngss
+      );
+      console.log(
+        "🚀 ~ file: gis-map.component.ts:2800 ~ processImportedShapes ~ filtertheshape:",
+        filtertheshape
+      );
+      if (filtertheshape != null) {
+        this.arrayproporty = Object.assign([], filtertheshape.properties);
+        console.log(
+          "🚀 ~ file: gis-map.component.ts:2836 ~ processImportedShapes ~ arrayproporty:",
+          this.arrayproporty
+        );
+        this.ServiceService.isconfirmsave = true;
+        this.message =
+          `the enter plot location already exists so you must edit the exists if agree click yes? this the plotId:` +
+          this.arrayproporty.Plot_Ids;
+        //this.updateplote(filtertheshape);
+      }
+    }
 
     // Remove the previously drawn shape, if any
     if (this.drawnShape) {
@@ -2845,7 +2886,7 @@ export class GisMapComponent implements AfterViewInit {
     console.log("alllatlong", latLngs);
 
     const utmCoordinates = this.convertCoordinatesToUTM(latLngs);
-
+    this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(latLngs);
     utmCoordinates.push(utmCoordinates[0]);
     this.ServiceService.coordinate = utmCoordinates;
     console.log(utmCoordinates);
@@ -2880,14 +2921,17 @@ export class GisMapComponent implements AfterViewInit {
       this.onDatumChange();
       // this.setviewFromDatumchange(center);
       // Specify the zoom level
-      let selectednode = this.findNode(this.nodes[0], "Plot_Locations");
-      console.log(
-        "🚀 ~ file: gis-map.component.ts:2813 ~ shape.forEach ~ findAradaImageMNode:",
-        selectednode
-      );
+      if (this.nodes) {
+        let selectednode = this.findNode(this.nodes[0], "Plot_Locations");
+        console.log(
+          "🚀 ~ file: gis-map.component.ts:2813 ~ shape.forEach ~ findAradaImageMNode:",
+          selectednode
+        );
 
-      this.toggleLayer_Checked(selectednode);
-      const zoomLevel = 6; // Adjust this to your desired zoom level
+        this.toggleLayer_Checked(selectednode);
+      }
+
+      const zoomLevel = 3; // Adjust this to your desired zoom level
 
       // Specify the duration of the flyTo animation in seconds
       const flyToDuration = 5; // 2 seconds
@@ -2933,6 +2977,13 @@ export class GisMapComponent implements AfterViewInit {
       this.ServiceService.shapes = this.aaa;
       this.sample = this.drawnShape;
     }
+  }
+  updateplote(filtertheshape: any) {
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:2965 ~ updateplote ~ filtertheshape:",
+      filtertheshape
+    );
+    this.completed.emit(filtertheshape);
   }
   findNode(tree: any, label: string): any {
     console.log(
@@ -3368,9 +3419,13 @@ export class GisMapComponent implements AfterViewInit {
 
     const latLngCoords = utm.toLatLon(easting, northing, zone, hemisphere);
     console.log("Latitude, Longitude:", latLngCoords);
+    // return {
+    //   lat: latLngCoords.latitude,
+    //   lng: latLngCoords.longitude,
+    // };
     return {
-      lat: latLngCoords.latitude,
-      lng: latLngCoords.longitude,
+      lat: latLngCoords.latitude - 0.001876,
+      lng: latLngCoords.longitude - 0.0008668,
     };
   }
   conveUTMToLatLngforshapefile(
@@ -3391,103 +3446,123 @@ export class GisMapComponent implements AfterViewInit {
     ];
   }
   findShapeFromGeoJSON(geoJSON, coordinates) {
-    console.log(
-      "🚀 ~ file: gis-map.component.ts:3392 ~ findShapeFromGeoJSON ~ coordinates:",
-      coordinates
-    );
-    console.log(
-      "🚀 ~ file: gis-map.component.ts:3392 ~ findShapeFromGeoJSON ~ geoJSON:",
-      geoJSON
-    );
-
     // Ensure the GeoJSON has features
     if (geoJSON && geoJSON.features && geoJSON.features.length > 0) {
       for (const feature of geoJSON.features) {
         const polygonCoordinates = feature.geometry.coordinates[0];
-        console.log(
-          "🚀 ~ file: gis-map.component.ts:3398 ~ findShapeFromGeoJSON ~ feature:",
-          polygonCoordinates
+
+        const isNorthernHemisphere: any = "N";
+        const latLngs = polygonCoordinates.map((row) =>
+          row.map((coordinate) =>
+            this.conveUTMToLatLng(
+              coordinate[1],
+              coordinate[0],
+              37,
+              isNorthernHemisphere
+            )
+          )
         );
-        let insides = this.isPointInPolygon(coordinates, polygonCoordinates);
+        const limitedAreaBounds = L.latLngBounds(coordinates);
         console.log(
-          "🚀 ~ file: gis-map.component.ts:3410 ~ findShapeFromGeoJSON ~ insides:",
-          insides
+          "🚀 ~ file: gis-map.component.ts:3460 ~ findShapeFromGeoJSON ~ limitedAreaBounds:",
+          limitedAreaBounds
         );
 
-        if (this.isPointInPolygon(coordinates, polygonCoordinates)) {
+        const featurelatlong = L.latLngBounds(latLngs);
+        console.log(
+          "🚀 ~ file: gis-map.component.ts:3463 ~ findShapeFromGeoJSON ~ featurelatlong:",
+          featurelatlong
+        );
+
+        const intersection = this.intersect(limitedAreaBounds, featurelatlong);
+        const unionResult = this.union(limitedAreaBounds, featurelatlong);
+
+        console.log("Intersection:", intersection);
+        console.log("Union:", unionResult);
+
+        // Calculate intersection area
+        const intersectionArea = intersection
+          ? this.calculateArea(intersection)
+          : 0;
+        console.log("intersectionArea:", intersectionArea);
+        // Calculate union area
+        const unionArea = this.calculateArea(unionResult);
+        console.log("unionArea:", unionArea);
+        // Calculate Jaccard similarity index
+        // const jaccardSimilarity =
+        //   unionArea === 0 ? 0 : intersectionArea / unionArea;
+        // Calculate Jaccard similarity index
+        const jaccardSimilarity = intersectionArea / unionArea;
+        console.log("jaccardSimilarity:", jaccardSimilarity);
+        const limitedAreaPolygon = L.polygon([
+          limitedAreaBounds.getSouthWest(),
+          limitedAreaBounds.getSouthEast(),
+          limitedAreaBounds.getNorthEast(),
+          limitedAreaBounds.getNorthWest(),
+        ]);
+        console.log("Limited Area Polygon:", limitedAreaPolygon);
+
+        const featurePolygon = L.polygon([
+          featurelatlong.getSouthWest(),
+          featurelatlong.getSouthEast(),
+          featurelatlong.getNorthEast(),
+          featurelatlong.getNorthWest(),
+        ]);
+        let isconten = featurePolygon
+          .getBounds()
+          .contains(limitedAreaPolygon.getBounds());
+        console.log("Feature Polygon:", featurePolygon, isconten);
+
+        // Check if the polygons are at least 80% similar
+        // if (
+        //   limitedAreaPolygon.getBounds().contains(featurePolygon.getBounds())
+        // ) {
+        if (jaccardSimilarity >= 0.8) {
+          console.log("Polygons are at least 80% similar.");
+          // Return the feature or perform further actions as needed
           return feature;
         }
       }
     }
-
     return null;
   }
-  isPointInPolygon(point, polygon) {
-    const proximityThreshold = 5; // Adjust this threshold based on your requirements
-    console.log(
-      "🚀 ~ file: gis-map.component.ts:3422 ~ isPointInPolygon ~ polygon:",
-      polygon
-    );
-    console.log(
-      "🚀 ~ file: gis-map.component.ts:3422 ~ isPointInPolygon ~ point:",
-      point
-    );
-
-    let inside = false;
-    let x = point[1];
-    let y = point[0];
-
-    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-      let xi = polygon[i][0];
-      let yi = polygon[i][1];
-      let xj = polygon[j][0];
-      let yj = polygon[j][1];
-
-      // Check if the point is close to the line segment defined by (xi, yi) and (xj, yj)
-      const distance = this.pointToLineDistance(
-        parseFloat(x[1]).toFixed(2),
-        parseFloat(y[0]).toFixed(2),
-        parseFloat(xi[0]).toFixed(2),
-        parseFloat(yi[1]).toFixed(2),
-        parseFloat(xj[0]).toFixed(2),
-        parseFloat(yj[1]).toFixed(2)
-      );
-      console.log(
-        "🚀 ~ file: gis-map.component.ts:3445 ~ isPointInPolygon ~ distance:",
-        distance
-      );
-
-      if (distance <= proximityThreshold) {
-        return true;
-      }
+  // Function to calculate intersection of two bounding boxes
+  intersect(bounds1, bounds2) {
+    const southWest = {
+      lat: Math.max(bounds1._southWest.lat, bounds2._southWest.lat),
+      lng: Math.max(bounds1._southWest.lng, bounds2._southWest.lng),
+    };
+    const northEast = {
+      lat: Math.min(bounds1._northEast.lat, bounds2._northEast.lat),
+      lng: Math.min(bounds1._northEast.lng, bounds2._northEast.lng),
+    };
+    console.log("intersectofboth:", southWest, northEast);
+    // Check if the intersection is valid
+    if (southWest.lat <= northEast.lat && southWest.lng <= northEast.lng) {
+      return { _southWest: southWest, _northEast: northEast };
+    } else {
+      return null;
     }
-
-    return false;
   }
-  pointToLineDistance(x, y, x1, y1, x2, y2) {
-    console.log(
-      "🚀 ~ file: gis-map.component.ts:3445 ~ isPointInPolygon ~ distance:",
-      x,
-      y,
-      x1,
-      y1,
-      x2,
-      y2
-    );
-    const numerator = Math.abs(
-      (y2 - y1) * x - (x2 - x1) * y + x2 * y1 - y2 * x1
-    );
-    console.log(
-      "🚀 ~ file: gis-map.component.ts:3477 ~ pointToLineDistance ~ numerator:",
-      numerator
-    );
 
-    const denominator = Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
-    console.log(
-      "🚀 ~ file: gis-map.component.ts:3480 ~ pointToLineDistance ~ denominator:",
-      denominator
+  // Function to calculate union of two bounding boxes
+  union(bounds1, bounds2) {
+    const southWest = {
+      lat: Math.min(bounds1._southWest.lat, bounds2._southWest.lat),
+      lng: Math.min(bounds1._southWest.lng, bounds2._southWest.lng),
+    };
+    const northEast = {
+      lat: Math.max(bounds1._northEast.lat, bounds2._northEast.lat),
+      lng: Math.max(bounds1._northEast.lng, bounds2._northEast.lng),
+    };
+
+    return { _southWest: southWest, _northEast: northEast };
+  }
+  calculateArea(bounds) {
+    return (
+      (bounds._northEast.lat - bounds._southWest.lat) *
+      (bounds._northEast.lng - bounds._southWest.lng)
     );
-    return numerator / denominator;
   }
 }
 // Define the Layer interface

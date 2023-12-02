@@ -95,14 +95,15 @@ import {
   DynamicDialogComponent,
   DynamicDialogModule,
 } from "primeng/components/dynamicdialog/dynamicdialog";
-import { NumberOnlyDirectiveDirective } from './number-only-directive.directive';
-
+import { NumberOnlyDirectiveDirective } from "./number-only-directive.directive";
+import { BlockUIModule } from "primeng/blockui";
 @NgModule({
   imports: [
     QRCodeModule,
     //BackButtonDisableModule.forRoot({
     //  preserveScrollPosition: true
     // }),
+    BlockUIModule,
     DynamicDialogModule,
     RadioButtonModule,
     ConfirmDialogModule,
