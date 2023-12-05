@@ -412,16 +412,34 @@ export class PlotComponent implements OnChanges {
   }
   updateplotandlicense(event) {
     this.Parcel_ID = event.Plot_Ids;
-    this.getPloat();
+    this.serviceService
+      .getPlotManagementApi(this.Parcel_ID)
+      .subscribe(async (PlotManagementLists: any) => {
+        let PlotManagementList = PlotManagementLists.procPlot_Registrations;
 
-    console.log(
-      "🚀 ~ file: plot.component.ts:414 ~ PlotComponent ~ updateplotandlicense ~ event:",
-      event,
-      this.PlotManagementListfinal
-    );
-    if (this.PlotManagementListfinal.length > 0) {
-      this.EnableFinsPloat(this.Parcel_ID);
-    }
+        console.log(
+          "🚀 ~ file: plot.component.ts:414 ~ PlotComponent ~ updateplotandlicense ~ event:",
+          event,
+          PlotManagementList
+        );
+        if (PlotManagementList.length > 0) {
+          this.LicenceData.Parcel_ID = this.Parcel_ID;
+          this.serviceService.UpdateLicence(this.LicenceData).subscribe(
+            (Licence) => {
+              this.SelectedPlot = PlotManagementList[0];
+              this.ismodaEnable = false;
+            },
+            (error) => {
+              const toast = this.notificationsService.error(
+                "Error",
+                error.error
+              );
+            }
+          );
+        } else {
+          this.Savetempora();
+        }
+      });
   }
 
   getPloat() {
@@ -466,20 +484,17 @@ export class PlotComponent implements OnChanges {
     }
   }
   Savetempora() {
-    if (!this.serviceService.isconfirmsave) {
-      console.log("ischeckPlotaev", this.serviceService.coordinate);
-      if (this.serviceService.coordinate) {
-        this.storeData();
-        this.AddPLot();
-        this.ischeckPlotaev = false;
-        this.ismodaEnable = false;
-        console.log("ischeckPlotaev", localStorage.getItem("coordinate"));
-      } else {
-        const toast = this.notificationsService.warn(
-          "first you have to draw or import  the plot location በመጀመሪያ የመሬቱን ቦታ መሳል ወይም ማስገባት አለብዎት"
-        );
-      }
+    console.log("ischeckPlotaev", this.serviceService.coordinate);
+    if (this.serviceService.coordinate) {
+      this.storeData();
+      this.AddPLot();
+      this.ischeckPlotaev = false;
+      this.ismodaEnable = false;
+      console.log("ischeckPlotaev", localStorage.getItem("coordinate"));
     } else {
+      const toast = this.notificationsService.warn(
+        "first you have to draw or import  the plot location በመጀመሪያ የመሬቱን ቦታ መሳል ወይም ማስገባት አለብዎት"
+      );
     }
   }
   openFullModal() {
@@ -930,9 +945,9 @@ export class PlotComponent implements OnChanges {
       this.LicenceData.Parcel_ID = Parcel.plot_ID;
     }
 
+    console.log("Licence", this.LicenceData);
     this.serviceService.UpdateLicence(this.LicenceData).subscribe(
       (Licence) => {
-        console.log("Licence");
         if (this.isnew) {
           this.SelectedPlot = Parcel;
           // this.SelectedPlot.Parcel_ID = Parcel_ID;

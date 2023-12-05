@@ -71,22 +71,36 @@ export class CertComponent implements OnChanges {
   ) {}
 
   ngOnChanges() {
+    console.log(
+      "🚀 ~ file: cert.component.ts:82 ~ CertComponent ~ ngOnChanges ~ Service_ID:",
+      this.serviceService.Service_ID
+    );
     if (
       this.serviceService.Service_ID ==
         "7d256139-858b-48e7-a298-cae5438e526c" ||
-      this.serviceService.Service_ID == "d1a3b83a-aa39-4269-90e4-da551715baef"
+      this.serviceService.Service_ID ==
+        "d1a3b83a-aa39-4269-90e4-da551715baef" ||
+      this.serviceService.Service_ID ===
+        "05DB54FC-E388-4E5E-AAAA-BD6141C8E533".toLocaleLowerCase()
     ) {
       this.isThem = true;
     } else {
       this.isThem = false;
     }
+
     if (
-      this.serviceService.Service_ID == "1c3d5a79-350e-4214-a343-d79e92a86e0f"
+      this.serviceService.Service_ID ==
+        "1c3d5a79-350e-4214-a343-d79e92a86e0f" ||
+      this.serviceService.Service_ID ===
+        "05DB54FC-E388-4E5E-AAAA-BD6141C8E533".toLocaleLowerCase() ||
+      this.serviceService.Service_ID ===
+        "7d256139-858b-48e7-a298-cae5438e526c".toLocaleLowerCase()
     ) {
       this.isdept = true;
     } else {
       this.isdept = false;
     }
+
     if (environment.Lang_code === "am-et") {
       this.language = "amharic";
     } else {

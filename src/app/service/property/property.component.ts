@@ -534,11 +534,11 @@ export class PropertyComponent implements OnChanges {
       this.selectedFile = data.node;
     }
     console.log("selectedFile", data);
-    if (this.selectedFile.map_Floor_Plan != null) {
-      this.serviceService.isNextactive = true;
-    } else {
-      this.serviceService.isNextactive = false;
-    }
+    // if (this.selectedFile.map_Floor_Plan != null) {
+    //   this.serviceService.isNextactive = true;
+    // } else {
+    //   this.serviceService.isNextactive = false;
+    // }
 
     let a: any = await this.getmeasurment(this.selectedFile.property_ID);
     let b = await this.getdeed(this.selectedFile.property_ID);

@@ -134,7 +134,9 @@
   </div>
 
 </ng-template>
-
+<!-- <p-blockUI [target]="pnl" [blocked]="ServiceService.isconfirmsave">
+  <i class="fa fa-lock fa-5x" style="position:absolute;top:25%;left:50% ; z-index: autoZIndex;"></i>
+</p-blockUI> -->
 <div class="ngxsmartmodal" *ngIf="ismodaEnable">
   <div class="ngxsmartmodal-dialog" [style.max-width]="maxWidth">
     <div class="ngxsmartmodal-dialog-content">
@@ -151,7 +153,7 @@
       
        
       </div>
-      <div class="ngxsmartmodal-footer">
+      <div class="ngxsmartmodal-footer" *ngIf="!serviceService.isconfirmsave">
         <!-- Modal footer content -->
         <div class="modal-footer">
           <button type="button" *ngIf="ischeckPlotaev" class="btn btn-primary" (click)="Savetempora()" translate>Save</button>

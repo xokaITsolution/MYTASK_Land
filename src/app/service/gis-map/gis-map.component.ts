@@ -195,38 +195,38 @@ export class GisMapComponent implements AfterViewInit {
   }
 
   toggleLayer_Checked(event) {
-    const zoomLevel = 6; // Adjust this to your desired zoom level
+    const zoomLevel = 3; // Adjust this to your desired zoom level
 
     // Specify the duration of the flyTo animation in seconds
     const flyToDuration = 5; // 2 seconds
 
     // Use the flyTo method to animate the map
 
-    if (this.subcity == "bole_AddisLand") {
-      this.map.flyTo([8.967201, 38.797822], 2);
-    } else if (this.subcity == "yeka_AddisLand") {
-      this.map.flyTo([9.060803, 38.804322], 2);
-    } else if (this.subcity == "addisk_AddisLand") {
-      this.map.flyTo([9.051497, 38.723454], 2);
-    } else if (this.subcity == "akakyk_AddisLand") {
-      this.map.flyTo([8.859807, 38.798065], 2);
-    } else if (this.subcity == "kolfek_AddisLand") {
-      this.map.flyTo([8.998647, 38.691922], 0);
-    } else if (this.subcity == "kirkos_AddisLand") {
-      this.map.flyTo([9.004158, 38.772317], 0);
-    } else if (this.subcity == "lemik_AddisLand") {
-      this.map.flyTo([9.004772, 38.884051], 0);
-    } else if (this.subcity == "lideta_AddisLand") {
-      this.map.flyTo([9.003426, 38.731568], 0);
-    } else if (this.subcity == "gullele_AddisLand") {
-      this.map.flyTo([9.02497, 38.74689], 0);
-    } else if (this.subcity == "nifass_AddisLand") {
-      this.map.flyTo([8.949258, 38.728618], 0);
-    } else if (this.subcity == "arada_AddisLand") {
-      this.map.flyTo([9.02497, 38.74689], zoomLevel, {
-        duration: flyToDuration,
-      });
-    }
+    // if (this.subcity == "bole_AddisLand") {
+    //   this.map.flyTo([8.967201, 38.797822], 2);
+    // } else if (this.subcity == "yeka_AddisLand") {
+    //   this.map.flyTo([9.060803, 38.804322], 2);
+    // } else if (this.subcity == "addisk_AddisLand") {
+    //   this.map.flyTo([9.051497, 38.723454], 2);
+    // } else if (this.subcity == "akakyk_AddisLand") {
+    //   this.map.flyTo([8.859807, 38.798065], 2);
+    // } else if (this.subcity == "kolfek_AddisLand") {
+    //   this.map.flyTo([8.998647, 38.691922], 0);
+    // } else if (this.subcity == "kirkos_AddisLand") {
+    //   this.map.flyTo([9.004158, 38.772317], 0);
+    // } else if (this.subcity == "lemik_AddisLand") {
+    //   this.map.flyTo([9.004772, 38.884051], 0);
+    // } else if (this.subcity == "lideta_AddisLand") {
+    //   this.map.flyTo([9.003426, 38.731568], 0);
+    // } else if (this.subcity == "gullele_AddisLand") {
+    //   this.map.flyTo([9.02497, 38.74689], 0);
+    // } else if (this.subcity == "nifass_AddisLand") {
+    //   this.map.flyTo([8.949258, 38.728618], 0);
+    // } else if (this.subcity == "arada_AddisLand") {
+    //   this.map.flyTo([9.02497, 38.74689], zoomLevel, {
+    //     duration: flyToDuration,
+    //   });
+    // }
     console.log("event", event);
 
     // Generate a random color
@@ -1667,7 +1667,6 @@ export class GisMapComponent implements AfterViewInit {
             this.ServiceService.coordinateForwgs84
           );
           // tempcord.push(tempcord[0]);
-
           // Assuming you already have the 'points' array from the previous code
           const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
           this.utmCoordinates = utmCoordinates;
@@ -1686,6 +1685,9 @@ export class GisMapComponent implements AfterViewInit {
             "🚀 ~ file: gis-map.component.ts:1569 ~ this.map.on ~ utmToCoor:",
             utmToCoor
           );
+          const finallatlong = utmToCoor;
+          finallatlong.push(finallatlong[0]);
+          this.checktheshapeexistans(finallatlong);
 
           const utmCoordinateslast = this.convertCoordinatesToUTM(utmToCoor);
           this.utmCoordinates = utmCoordinateslast;
@@ -2412,6 +2414,10 @@ export class GisMapComponent implements AfterViewInit {
     console.log(this.pinpointedPoints);
     this.coordinates = this.pinpointedPoints;
     this.coordinates.push(this.coordinates[0]);
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:2417 ~ drawPolygon ~ coordinates:",
+      this.coordinates
+    );
     this.drawnShape = L.polygon(this.pinpointedPoints).addTo(this.map);
 
     const utmCoordinates = this.convertCoordinatesToUTM(this.pinpointedPoints);
@@ -2424,6 +2430,7 @@ export class GisMapComponent implements AfterViewInit {
     this.ServiceService.coordinate = utmCoordinates;
     console.log(utmCoordinates);
 
+    this.checktheshapeexistans(this.coordinates);
     //   this.pinpointedPoints.push(this.pinpointedPoints[0])
     //  this.ServiceService.coordinate=this.pinpointedPoints
     if (this.drawnShape instanceof L.Marker) {
@@ -2810,7 +2817,53 @@ export class GisMapComponent implements AfterViewInit {
     });
     return result;
   }
+  checkvalidetion() {
+    const toast = this.notificationsService.warn(
+      "the drawing or imported shape of plot location already exists on map you so can only update/የቦታው ሥዕል ወይም ከውጪ የመጣ ቅርጽ አስቀድሞ በካርታው ላይ ስላለ ማዘመን ብቻ ይችላሉ።"
+    );
+  }
+  public checktheshapeexistans(latLngss) {
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:2821 ~ checktheshapeexistans ~ latLngss:",
+      latLngss
+    );
+    let filtertheshape = this.findShapeFromGeoJSON(
+      this.plot_locations_gejon,
+      latLngss
+    );
+    if (this.nodes) {
+      let selectednode = this.findNode(this.nodes[0], "Plot_Locations");
+      console.log(
+        "🚀 ~ file: gis-map.component.ts:2813 ~ shape.forEach ~ findAradaImageMNode:",
+        selectednode
+      );
 
+      this.toggleLayer_Checked(selectednode);
+    }
+    const zoomLevel = 5; // Adjust this to your desired zoom level
+
+    // Specify the duration of the flyTo animation in seconds
+    const flyToDuration = 5; // 2 seconds
+    this.map.flyTo(latLngss[0], zoomLevel, {
+      duration: flyToDuration,
+    });
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:2800 ~ processImportedShapes ~ filtertheshape:",
+      filtertheshape
+    );
+    if (filtertheshape != null) {
+      this.arrayproporty = Object.assign([], filtertheshape.properties);
+      console.log(
+        "🚀 ~ file: gis-map.component.ts:2836 ~ processImportedShapes ~ arrayproporty:",
+        this.arrayproporty
+      );
+      this.ServiceService.isconfirmsave = true;
+      this.message =
+        `the plot location you import already exists so you can only update the exists record if it agree click yes` +
+        this.arrayproporty.Plot_Ids;
+      //this.updateplote(filtertheshape);
+    }
+  }
   public processImportedShapes(data: any[]): void {
     // Event handler for when a shape is drawn
 
@@ -2829,28 +2882,19 @@ export class GisMapComponent implements AfterViewInit {
     // Map the data to LatLng objects
 
     console.log("latLngs", latLngs);
-    this.alllatlong.push(latLngs);
-    if (this.fromexcel === true) {
-      let filtertheshape = this.findShapeFromGeoJSON(
-        this.plot_locations_gejon,
-        latLngss
-      );
-      console.log(
-        "🚀 ~ file: gis-map.component.ts:2800 ~ processImportedShapes ~ filtertheshape:",
-        filtertheshape
-      );
-      if (filtertheshape != null) {
-        this.arrayproporty = Object.assign([], filtertheshape.properties);
-        console.log(
-          "🚀 ~ file: gis-map.component.ts:2836 ~ processImportedShapes ~ arrayproporty:",
-          this.arrayproporty
-        );
-        this.ServiceService.isconfirmsave = true;
-        this.message =
-          `the enter plot location already exists so you must edit the exists if agree click yes? this the plotId:` +
-          this.arrayproporty.Plot_Ids;
-        //this.updateplote(filtertheshape);
-      }
+    if (!this.ServiceService.check) {
+      this.alllatlong = [];
+      this.alllatlong.push(latLngs);
+    } else {
+      this.alllatlong.push(latLngs);
+    }
+    if (this.fromexcel === true && this.alllatlong.length == 1) {
+      this.checktheshapeexistans(latLngss);
+      const utmCoordinates = this.convertCoordinatesToUTM(latLngs);
+      this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(latLngs);
+      utmCoordinates.push(utmCoordinates[0]);
+      this.ServiceService.coordinate = utmCoordinates;
+      console.log(utmCoordinates);
     }
 
     // Remove the previously drawn shape, if any
@@ -2859,8 +2903,6 @@ export class GisMapComponent implements AfterViewInit {
     }
 
     console.log("alllatlong", this.alllatlong);
-    // Create a polygon shape with the mapped LatLng objects
-    //this.drawnShape = L.polygon(this.alllatlong[0]).addTo(this.map);
 
     this.alllatlong.forEach((shape, index) => {
       let randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
@@ -2884,12 +2926,6 @@ export class GisMapComponent implements AfterViewInit {
 
     //this.ServiceService.coordinate.push(latLngs[0])
     console.log("alllatlong", latLngs);
-
-    const utmCoordinates = this.convertCoordinatesToUTM(latLngs);
-    this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(latLngs);
-    utmCoordinates.push(utmCoordinates[0]);
-    this.ServiceService.coordinate = utmCoordinates;
-    console.log(utmCoordinates);
 
     //this.ServiceService.coordinate=latLngs
     // Fit the map view to the drawn shape
@@ -2921,15 +2957,6 @@ export class GisMapComponent implements AfterViewInit {
       this.onDatumChange();
       // this.setviewFromDatumchange(center);
       // Specify the zoom level
-      if (this.nodes) {
-        let selectednode = this.findNode(this.nodes[0], "Plot_Locations");
-        console.log(
-          "🚀 ~ file: gis-map.component.ts:2813 ~ shape.forEach ~ findAradaImageMNode:",
-          selectednode
-        );
-
-        this.toggleLayer_Checked(selectednode);
-      }
 
       const zoomLevel = 3; // Adjust this to your desired zoom level
 

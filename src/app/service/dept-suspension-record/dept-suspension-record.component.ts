@@ -157,13 +157,27 @@ export class DeptSuspensionRecordComponent implements OnChanges {
   }
 
   selectdeed(dept) {
+    console.log("deptdept", dept);
+
     this.deptSuspensionRecord = dept;
-    this.deptSuspensionRecord.Letter_Ref_Date =
-      this.deptSuspensionRecord.Letter_Ref_Date.split("T")[0];
-    this.deptSuspensionRecord.Suspend_End_Date =
-      this.deptSuspensionRecord.Suspend_End_Date.split("T")[0];
-    this.deptSuspensionRecord.Suspend_Start_Date =
-      this.deptSuspensionRecord.Suspend_Start_Date.split("T")[0];
+    if (this.deptSuspensionRecord.Suspend_Start_Date != null) {
+      this.deptSuspensionRecord.Suspend_Start_Date =
+        this.deptSuspensionRecord.Suspend_Start_Date.split("T")[0];
+    }
+    if (this.deptSuspensionRecord.Is_Suspended) {
+      this.selectOption("suspended");
+    }
+    if (this.deptSuspensionRecord.Is_Released) {
+      this.selectOption("released");
+    }
+    //  if(){
+    //    this.deptSuspensionRecord.Letter_Ref_Date =
+    //     this.deptSuspensionRecord.Letter_Ref_Date.split("T")[0];
+    //   this.deptSuspensionRecord.Suspend_End_Date =
+    //     this.deptSuspensionRecord.Suspend_End_Date.split("T")[0];
+    //   this.deptSuspensionRecord.Suspend_Start_Date =
+    //     this.deptSuspensionRecord.Suspend_Start_Date.split("T")[0];
+    //  }
     this.deptForm = true;
   }
 

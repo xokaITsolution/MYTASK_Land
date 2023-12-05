@@ -44,7 +44,7 @@
       <div class="col-sm-9">
         <input type="Date" class="form-control"  [disabled]="disable" [(ngModel)]="deptSuspensionRecord.Suspend_Start_Date" name="StartDate"
                id="StartDate" placeholder="Start Date"
-               #StartDate="ngModel" [ngClass]="{ 'is-invalid': StartDate.invalid }" [min]= "currntDate">
+               #StartDate="ngModel" [ngClass]="{ 'is-invalid': StartDate.invalid }" [min]= "currntDate" required>
       </div>
     </div>
 
@@ -52,20 +52,21 @@
       <label for="EndDate" class="col-sm-3 col-form-label" translate>End Date</label>
       <div class="col-sm-9">
         <input type="Date" class="form-control"  [disabled]="disable" [(ngModel)]="deptSuspensionRecord.Suspend_End_Date" name="EndDate"
-               id="EndDate" placeholder="End Date" #EndDate="ngModel" [ngClass]="{ 'is-invalid': EndDate.invalid }" [min]="deptSuspensionRecord.Suspend_Start_Date">
+               id="EndDate" placeholder="End Date" #EndDate="ngModel" [ngClass]="{ 'is-invalid': EndDate.invalid }" [min]="deptSuspensionRecord.Suspend_Start_Date" >
       </div>
     </div>
 
     <div class="form-group row col-md-7">
       <label for="SuspendedReason" class="col-sm-3 col-form-label" translate>Suspended Reason</label>
       <div class="col-sm-9">
-        <select class="form-control" required   [disabled]="disable" [(ngModel)]="deptSuspensionRecord.Suspend_Reason" name="SuspendedReason"
+        <select class="form-control"  #SuspendedReason="ngModel" [ngClass]="{ 'is-invalid': SuspendedReason.invalid }" required   [disabled]="disable" [(ngModel)]="deptSuspensionRecord.Suspend_Reason" name="SuspendedReason"
                 id="SuspendedReason">
           <option  translate>select</option>
           <option *ngFor="let SuspendedReason of serviceComponent.SuspendedReasonLookUP;" [value]="SuspendedReason.ID">
             {{SuspendedReason.Suspension_Reason}}
           </option>
         </select>
+       
       </div>
     </div>
 
@@ -73,7 +74,8 @@
       <label for="LetterRefNo" class="col-sm-3 col-form-label" translate>Letter Ref No</label>
       <div class="col-sm-9">
         <input type="text" class="form-control"  [disabled]="disable" [(ngModel)]="deptSuspensionRecord.Letter_Ref_No" name="LetterRefNo"
-               id="LetterRefNo"  [placeholder]="'Letter Ref No' | translate">
+               id="LetterRefNo"  [placeholder]="'Letter Ref No' | translate"
+             #LetterRefNo="ngModel" [ngClass]="{ 'is-invalid': LetterRefNo.invalid }"  required >
       </div>
     </div>
     <div class="form-group row col-md-7">
@@ -94,47 +96,43 @@
       </div>
     </div>
 
-  <!-- <div class="form-group row col-md-7">
+<div class="form-group row col-md-7">
     <label class="col-sm-3 col-form-label" for="IsReleased" translate>Is Released</label>
     <div class="col-sm-9">
-      <p-radioButton name="group2" [value]="deptSuspensionRecord.Is_Released" [(ngModel)]="deptSuspensionRecord.Is_Released"
-        (click)="selectOption('released')" [ngModelOptions]="{standalone: true}"
-        inputId="preopt2">
-      </p-radioButton>
+      <p-checkbox [(ngModel)]="deptSuspensionRecord.Is_Released" (click)="selectOption('released')" [disabled]="true" name="Is_Released" id="Is_Released"
+        binary="true"></p-checkbox>
     </div>
   </div>
   
   <div class="form-group row col-md-7">
     <label class="col-sm-3 col-form-label" for="IsSuspended" translate>Is Suspended</label>
     <div class="col-sm-9">
-      <p-radioButton name="IsSuspended" [value]="deptSuspensionRecord.Is_Suspended" [(ngModel)]="deptSuspensionRecord.Is_Suspended"
-        (click)="selectOption('suspended')" [ngModelOptions]="{standalone: true}"
-       inputId="preopt1">
-      </p-radioButton>
+    <p-checkbox [(ngModel)]="deptSuspensionRecord.Is_Suspended" (click)="selectOption('suspended')" [disabled]="true" name="Is_Suspended" id="Is_Suspended"
+      binary="true"></p-checkbox>
     </div>
-  </div> -->
-  <!-- Default radio -->
+  </div> 
+<!-- 
 <div class="form-group row col-md-7">
   <label class="col-sm-3 col-form-label" for="IsReleased" translate>Is Released</label>
   <div class="col-sm-9">
-    <input class="form-check-input" (change)="selectOption('released')" type="radio" name="radioNoLabel"
-      id="radioNoLabel1" value="" aria-label="..." />
+    <input class="form-check-input" (change)="selectOption('released')" [value]="deptSuspensionRecord.Is_Released" type="radio" name="radioNoLabel"
+      id="radioNoLabel1"  aria-label="..." />
   </div>
 </div>
 
 <div class="form-group row col-md-7">
   <label class="col-sm-3 col-form-label" for="IsSuspended" translate>Is Suspended</label>
   <div class="col-sm-9">
-    <input class="form-check-input" (change)="selectOption('suspended')" type="radio" name="radioNoLabel"
-      id="radioNoLabel2" value="" aria-label="..." />
+    <input class="form-check-input" (change)="selectOption('suspended')" [value]="deptSuspensionRecord.Is_Suspended" type="radio" name="radioNoLabel"
+      id="radioNoLabel2"  aria-label="..." />
   </div>
-</div>
+</div> -->
 
 
   </div>
   <div class="btn-toolbar" *ngIf="deptSuspensionRecord.ID  && !disable"><!--
     <button  type="button" class="btn btn-primary mr-2" (click)="add()">New Version</button>-->
-    <button type="button" [disabled]="f.invalid"  class="btn btn-primary" (click)="save()" translate>Save</button>
+    <button type="button" [disabled]="f.invalid"  class="btn btn-primary" (click)="save()" translate>update</button>
   </div>
   <div class="btn-toolbar" *ngIf="!deptSuspensionRecord.ID  && !disable">
     <button type="button" class="btn btn-primary" (click)="add()" translate>Save</button>

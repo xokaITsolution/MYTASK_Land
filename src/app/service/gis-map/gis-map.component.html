@@ -170,9 +170,7 @@
   </div>
 </div>
 
-<p-blockUI [target]="pnl" [blocked]="ServiceService.isconfirmsave">
-  <i class="fa fa-lock fa-5x" style="position:absolute;top:25%;left:50% ; z-index: autoZIndex;"></i>
-</p-blockUI>
+
 <p-dialog [header]="'Confirmation' | translate" [(visible)]="ServiceService.isconfirmsave " [responsive]="true" [width]="300"
   [minY]="40" [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                          'max-height': '80vh','min-height':'50px'}">
@@ -183,7 +181,7 @@
   <p-footer>
     <button type="button" pButton icon="pi pi-check" (click)="ServiceService.isconfirmsave =false;updateplote(arrayproporty)"
       [label]="'yes' | translate"></button>
-    <button type="button" pButton icon="pi pi-close" (click)="ServiceService.isconfirmsave =false" [label]="'no'| translate "
+    <button type="button" pButton icon="pi pi-close" (click)="ServiceService.isconfirmsave =true;checkvalidetion()" [label]="'no'| translate "
       class="ui-button-secondary"></button>
   </p-footer>
 </p-dialog>

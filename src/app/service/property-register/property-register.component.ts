@@ -666,11 +666,11 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
               (deptSuspension) => {
                 console.log("deptSuspension", deptSuspension);
 
-                if (prop.map_Floor_Plan != null) {
-                  this.serviceService.isNextactive = true;
-                } else {
-                  this.serviceService.isNextactive = false;
-                }
+                // if (prop.map_Floor_Plan != null) {
+                //   this.serviceService.isNextactive = true;
+                // } else {
+                //   this.serviceService.isNextactive = false;
+                // }
                 this.serviceService.insertedProperty =
                   deptSuspension[0].property_ID;
                 this.completed.emit();
@@ -744,11 +744,11 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         this.propertyRegisterService.Add(prop).subscribe(
           (deptSuspension) => {
             console.log("deptSuspension", deptSuspension);
-            if (prop.map_Floor_Plan != null) {
-              this.serviceService.isNextactive = true;
-            } else {
-              this.serviceService.isNextactive = false;
-            }
+            // if (prop.map_Floor_Plan != null) {
+            //   this.serviceService.isNextactive = true;
+            // } else {
+            //   this.serviceService.isNextactive = false;
+            // }
             this.serviceService.insertedProperty =
               deptSuspension[0].property_ID;
             this.completed.emit();

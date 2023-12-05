@@ -130,10 +130,10 @@
           maxFileSize="25000000" accept="image/*"></p-fileUpload>
 
         <input type="hidden" class="form-control" [(ngModel)]="propertyRegister.map_Floor_Plan" name="MapFloorPlan"
-          id="MapFloorPlan" [placeholder]="'Map Floor Plan' | translate" #MapFloorPlan="ngModel" required>
-        <div *ngIf="MapFloorPlan.invalid">
+          id="MapFloorPlan" [placeholder]="'Map Floor Plan' | translate"  >
+        <!-- <div *ngIf="MapFloorPlan.invalid">
           <span translate class="text-danger">Requierd</span>
-        </div>
+        </div> -->
         <div *ngIf="pictoShow">
           <button type="button" class="btn btn-primary" (click)="openModal('pic')" translate>Show</button>
         </div>
