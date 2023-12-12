@@ -969,6 +969,57 @@ export class PlotComponent implements OnChanges {
     // this.getPloat();
   }
 
+  EnableFinsPloatuupdate(Parcel) {
+    // console.log("FinalPLoat", Parcel);
+    // //console.log("FinalPLoat ID", Parcel.plot_ID);
+    // // this.plotForm = false;
+    // this.plotId = Parcel.plot_ID;
+
+    // if (this.OnParcle !== -1) {
+    //   if (this.OnParcle == 0) {
+    //     this.Parcel_ID = Parcel.plot_ID;
+    //     this.LicenceData.Parcel_ID = Parcel.plot_ID;
+    //   }
+    //   if (this.OnParcle == 1) {
+    //     this.Parcel_mearge1 = Parcel.plot_ID;
+    //     this.LicenceData.Plot_Merge_1 = Parcel.plot_ID;
+    //   }
+    //   if (this.OnParcle == 2) {
+    //     this.Parcel_mearge2 = Parcel.plot_ID;
+    //     this.LicenceData.Plot_Merge_2 = Parcel.plot_ID;
+    //   }
+    //   if (this.OnParcle == 3) {
+    //     this.Parcel_mearge3 = Parcel.plot_ID;
+    //     this.LicenceData.Plot_Merge_3 = Parcel.plot_ID;
+    //   }
+    //   if (this.OnParcle == 4) {
+    //     this.Parcel_mearge4 = Parcel.plot_ID;
+    //     this.LicenceData.Plot_Merge_4 = Parcel.plot_ID;
+    //   }
+    // } else {
+    //   this.Parcel_ID = Parcel.plot_ID;
+    //   this.LicenceData.Parcel_ID = Parcel.plot_ID;
+    // }
+
+    console.log("Licence", this.LicenceData);
+    this.serviceService.UpdateLicence(this.LicenceData).subscribe(
+      (Licence) => {
+        if (this.isnew) {
+          this.SelectedPlot = Parcel;
+          // this.SelectedPlot.Parcel_ID = Parcel_ID;
+          this.toLease = true;
+        } else {
+          this.isvalidated();
+        }
+      },
+      (error) => {
+        const toast = this.notificationsService.error("Error", error.error);
+      }
+    );
+    this.PlotManagementListfinal = [];
+    // this.getPloat();
+  }
+
   DoneNew() {
     this.serviceService.getPlotloc(this.plot_ID).subscribe((response: any) => {
       let plotloc = response.procPlot_Locations;
