@@ -170,6 +170,7 @@ export class ServiceService {
   leaselist: any;
   coordinateForwgs84: any;
   isconfirmsave: boolean;
+  allLicenceData: any;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);

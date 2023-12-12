@@ -75,6 +75,11 @@ export class PlotComponent implements OnChanges {
   ) {}
   changingValue: Subject<boolean> = new Subject();
   ngOnChanges() {
+    this.serviceService.allLicenceData = this.LicenceData;
+    console.log(
+      "🚀 ~ file: plot.component.ts:79 ~ PlotComponent ~ ngOnChanges ~ allLicenceData:",
+      this.serviceService.allLicenceData
+    );
     //this.serviceService.disablefins = true;
     this.serviceService.toMes = true;
     if (environment.Lang_code === "am-et") {

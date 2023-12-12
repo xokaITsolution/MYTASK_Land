@@ -56,7 +56,7 @@ export class PropertyComponent implements OnChanges {
   language: string;
   newplot: boolean = true;
   tasksCertificate: any;
-  isNextactive: boolean;
+  isNextactive: boolean = true;
   PlotManagementListfinal = [];
   randomColor = "#006ab5";
   constructor(
@@ -931,33 +931,7 @@ export class PropertyComponent implements OnChanges {
     console.log("this.serviceService.files", sumOfProperties);
     const sumOfPropertiesfinal = sumOfProperties.toFixed(2);
     // Check if the sum is equal to compound_Size_M2
-    if (
-      parseFloat(sumOfPropertiesfinal) ===
-      parseFloat(sumOfPropertiess[0].compound_Size_M2)
-    ) {
-      for (let i = 0; i < this.serviceService.files.length; i++) {
-        const element: any = Object.assign([], this.serviceService.files[i]);
-        console.log("sub property", element);
 
-        if (element.property_ID !== "No Parent") {
-          const isdeedchildren = await this.checkPropertylocation(element);
-
-          if (!isdeedchildren) {
-            const toast = this.notificationsService.warn(
-              `Must add property location  for this property: ${element.property_ID}`
-            );
-            return;
-          } else {
-            this.completed.emit();
-          }
-        }
-      }
-    } else {
-      const toast = this.notificationsService.warn(
-        "all property must have location on the map /ሁሉም ንብረቶች በካርታው ላይ ቦታ ሊኖራቸው ይገባል"
-      );
-      return;
-    }
     if (
       parseFloat(sumOfPropertiesfinal) ===
       parseFloat(sumOfPropertiess[0].compound_Size_M2)
@@ -975,7 +949,38 @@ export class PropertyComponent implements OnChanges {
             );
             return;
           } else {
-            this.completed.emit();
+            if (
+              parseFloat(sumOfPropertiesfinal) ===
+              parseFloat(sumOfPropertiess[0].compound_Size_M2)
+            ) {
+              for (let i = 0; i < this.serviceService.files.length; i++) {
+                const element: any = Object.assign(
+                  [],
+                  this.serviceService.files[i]
+                );
+                console.log("sub property", element);
+
+                if (element.property_ID !== "No Parent") {
+                  const isdeedchildren = await this.checkPropertylocation(
+                    element
+                  );
+
+                  if (!isdeedchildren) {
+                    const toast = this.notificationsService.warn(
+                      `Must add property location  for this property: ${element.property_ID}`
+                    );
+                    return;
+                  } else {
+                    this.completed.emit();
+                  }
+                }
+              }
+            } else {
+              const toast = this.notificationsService.warn(
+                "all property must have location on the map /ሁሉም ንብረቶች በካርታው ላይ ቦታ ሊኖራቸው ይገባል"
+              );
+              return;
+            }
           }
         }
       }
@@ -1120,7 +1125,38 @@ export class PropertyComponent implements OnChanges {
               `Must add title deed for this property: ${element.property_ID}`
             );
           } else {
-            this.completed.emit();
+            if (
+              parseFloat(sumOfPropertiesfinal) ===
+              parseFloat(sumOfPropertiess[0].compound_Size_M2)
+            ) {
+              for (let i = 0; i < this.serviceService.files.length; i++) {
+                const element: any = Object.assign(
+                  [],
+                  this.serviceService.files[i]
+                );
+                console.log("sub property", element);
+
+                if (element.property_ID !== "No Parent") {
+                  const isdeedchildren = await this.checkPropertylocation(
+                    element
+                  );
+
+                  if (!isdeedchildren) {
+                    const toast = this.notificationsService.warn(
+                      `Must add property location  for this property: ${element.property_ID}`
+                    );
+                    return;
+                  } else {
+                    this.completed.emit();
+                  }
+                }
+              }
+            } else {
+              const toast = this.notificationsService.warn(
+                "all property must have location on the map /ሁሉም ንብረቶች በካርታው ላይ ቦታ ሊኖራቸው ይገባል"
+              );
+              return;
+            }
           }
         }
       }
@@ -1129,96 +1165,6 @@ export class PropertyComponent implements OnChanges {
         "built-in size must be equal to lease size/ ንብረት ድምር ከሊዝ መጠን ጋር እኩል መሆን አለበት።"
       );
     }
-    // if (this.serviceService.isproportinal == true) {
-    //   if (
-    //     this.serviceService.totlaizeproportinal ==
-    //     this.serviceService.Plot_Size_M2
-    //   ) {
-    //     this.completed.emit();
-    //   } else {
-    //     const toast = this.notificationsService.warn(
-    //       "if the lease type is proportional the sum of property built-in size must be equal to lease size/የሊዝ አይነት ተመጣጣኝ ከሆነ አብሮ የተሰራው ንብረት ድምር ከሊዝ መጠን ጋር እኩል መሆን አለበት።"
-    //     );
-    //   }
-    // } else {
-    //   if (
-    //     2 == this.serviceService.selectedproperty_Type_ID ||
-    //     3 == this.serviceService.selectedproperty_Type_ID
-    //   ) {
-    //     if (this.selectedFile.children.length == 0) {
-    //       const toast = this.notificationsService.warn(
-    //         "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
-    //       );
-    //     } else {
-    //       for (let i = 0; i < this.serviceService.files.length; i++) {
-    //         const element: any = Object.assign(
-    //           [],
-    //           this.serviceService.files[i]
-    //         );
-    //         console.log("sub property", element);
-
-    //         if (element.property_ID !== "No Parent") {
-    //           const isdeedchildren = await this.checkProperty(element);
-
-    //           if (!isdeedchildren) {
-    //             const toast = this.notificationsService.warn(
-    //               `Must add title deed for this property: ${element.property_ID}`
-    //             );
-    //           } else {
-    //             this.completed.emit();
-    //           }
-    //         }
-    //       }
-    //     }
-    //   } else {
-    //     console.log(
-    //       "property_Parent_IDselected",
-    //       this.selectedFile.property_Parent_ID
-    //     );
-
-    //     if (this.selectedFile.property_Parent_ID != "0") {
-    //       for (let i = 0; i < this.serviceService.files.length; i++) {
-    //         const element: any = Object.assign(
-    //           [],
-    //           this.serviceService.files[i]
-    //         );
-    //         console.log("sub property", element);
-
-    //         if (element.property_ID !== "No Parent") {
-    //           const isdeedchildren = await this.checkProperty(element);
-
-    //           if (!isdeedchildren) {
-    //             const toast = this.notificationsService.warn(
-    //               `Must add title deed for this property: ${element.property_ID}`
-    //             );
-    //           } else {
-    //             this.completed.emit();
-    //           }
-    //         }
-    //       }
-    //     } else {
-    //       for (let i = 0; i < this.serviceService.files.length; i++) {
-    //         const element: any = Object.assign(
-    //           [],
-    //           this.serviceService.files[i]
-    //         );
-    //         console.log("sub property", element);
-
-    //         if (element.property_ID !== "No Parent") {
-    //           const isdeedchildren = await this.checkProperty(element);
-
-    //           if (!isdeedchildren) {
-    //             const toast = this.notificationsService.warn(
-    //               `Must add title deed for this property: ${element.property_ID}`
-    //             );
-    //           } else {
-    //             this.completed.emit();
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
 
     this.CanDone = true;
   }
@@ -1267,27 +1213,29 @@ export class PropertyComponent implements OnChanges {
         (x) => x.proporty_Id === element.property_ID
       );
       console.log("propertylocation", blocation);
-      if (element.children.length == 0) {
-        if (blocation.length === 0) {
-          return false;
+      if (blocation != undefined || blocation != null) {
+        if (element.children.length == 0) {
+          if (blocation.length === 0) {
+            return false;
+          } else {
+            return true;
+          }
         } else {
+          for (const elementchildren of element.children) {
+            const d: any = await this.getProploc(elementchildren.property_ID);
+            const f = Object.assign([], d);
+            const dlocation = f.procProporty_Locations.find(
+              (x) => x.Proporty_Id === elementchildren.property_ID
+            );
+            if (dlocation.length === 0) {
+              // const toast = this.notificationsService.warn(
+              //   `Must add title deed for this property: ${elementchildren.property_ID}`
+              // );
+              return false;
+            }
+          }
           return true;
         }
-      } else {
-        for (const elementchildren of element.children) {
-          const d: any = await this.getProploc(elementchildren.property_ID);
-          const f = Object.assign([], d);
-          const dlocation = f.procProporty_Locations.find(
-            (x) => x.Proporty_Id === elementchildren.property_ID
-          );
-          if (dlocation.length === 0) {
-            // const toast = this.notificationsService.warn(
-            //   `Must add title deed for this property: ${elementchildren.property_ID}`
-            // );
-            return false;
-          }
-        }
-        return true;
       }
     }
   }

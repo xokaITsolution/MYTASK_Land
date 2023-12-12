@@ -444,10 +444,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         console.log(error);
 
         if (error.status == "400") {
-          const toast = this.notificationsService.error(
-            "Error",
-            error.error.InnerException.Errors[0].message
-          );
+          const toast = this.notificationsService.error("Error", error.error);
         } else {
           const toast = this.notificationsService.error(
             "Error",
@@ -716,10 +713,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
                 this.plotManagment.registration_Date
               );
           }
-          const toast = this.notificationsService.error(
-            "Error",
-            error.error.InnerException.Errors[0].message
-          );
+          const toast = this.notificationsService.error("Error", error.error);
         } else {
           if (this.language === "amharic") {
             this.plotManagment.registration_Date =
@@ -796,10 +790,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
                 this.plotManagment.registration_Date
               );
           }
-          const toast = this.notificationsService.error(
-            "Error",
-            error.error.InnerException.Errors[0].message
-          );
+          const toast = this.notificationsService.error("Error", error.error);
         } else {
           if (this.language === "amharic") {
             this.plotManagment.registration_Date =
@@ -807,10 +798,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
                 this.plotManagment.registration_Date
               );
           }
-          const toast = this.notificationsService.error(
-            "Error",
-            "Something Went Wrong"
-          );
+          const toast = this.notificationsService.error("Error", error.error);
         }
       }
     );

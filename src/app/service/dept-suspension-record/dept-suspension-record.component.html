@@ -44,7 +44,7 @@
       <div class="col-sm-9">
         <input type="Date" class="form-control"  [disabled]="disable" [(ngModel)]="deptSuspensionRecord.Suspend_Start_Date" name="StartDate"
                id="StartDate" placeholder="Start Date"
-               #StartDate="ngModel" [ngClass]="{ 'is-invalid': StartDate.invalid }" [min]= "currntDate" required>
+               #StartDate="ngModel" [ngClass]="{ 'is-invalid': StartDate.invalid }"  required>
       </div>
     </div>
 

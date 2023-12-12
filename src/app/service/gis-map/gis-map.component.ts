@@ -1424,7 +1424,12 @@ export class GisMapComponent implements AfterViewInit {
 
       if (!this.ServiceService.check) {
         console.log("Shape created:alllatlong", this.alllatlong);
-
+        if (this.alllatlong.length === 0) {
+          const toast = this.notificationsService.warn(
+            "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡"
+          );
+          return;
+        }
         // Assuming limited area bounds as a polygon
         const limitedAreaBounds = L.polygon(this.alllatlong[0][0]).addTo(
           this.map
@@ -1504,16 +1509,15 @@ export class GisMapComponent implements AfterViewInit {
             //  this.ServiceService.shapes = this.aaa.push(this.drawnShape);
             // Transform GeoJSON to EPSG:20137 CRS
           } else {
-            const toast = this.messageService.add({
-              severity: "warn",
-              summary: "Warn",
-              detail:
-                "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡",
-            });
+            const toast = this.notificationsService.warn(
+              "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡"
+            );
+
             this.map.removeLayer(layer);
             this.editableLayers.removeLayer(layer);
             this.removeShape();
             this.ServiceService.disablebutton = false;
+            return;
           }
         } else if (layer instanceof L.Circle) {
           // Get the center LatLng of the circle
@@ -1588,12 +1592,10 @@ export class GisMapComponent implements AfterViewInit {
             this.ServiceService.coordinate = this.utmCoordinates;
             // Now you can use circleLatLngs as needed
           } else {
-            const toast = this.messageService.add({
-              severity: "warn",
-              summary: "Warn",
-              detail:
-                "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡",
-            });
+            const toast = this.notificationsService.warn(
+              "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡"
+            );
+
             this.map.removeLayer(layer);
             //this.editableLayers.removeLayer(layer);
             this.removeShape();
@@ -1683,11 +1685,24 @@ export class GisMapComponent implements AfterViewInit {
           );
           console.log(
             "🚀 ~ file: gis-map.component.ts:1569 ~ this.map.on ~ utmToCoor:",
-            utmToCoor
+            this.ServiceService.allLicenceData.Parcel_ID
           );
           const finallatlong = utmToCoor;
           finallatlong.push(finallatlong[0]);
-          this.checktheshapeexistans(finallatlong);
+          if (
+            this.ServiceService.allLicenceData.Parcel_ID == null &&
+            this.ServiceService.allLicenceData.Plot_Merge_1 == null &&
+            this.ServiceService.allLicenceData.Plot_Merge_2 == null &&
+            this.ServiceService.allLicenceData.Plot_Merge_3 == null &&
+            this.ServiceService.allLicenceData.Plot_Merge_4 == null
+          ) {
+            console.log(
+              "🚀 ~ file: gis-map.component.ts:1691 ~ this.map.on ~ ServiceService:",
+              this.ServiceService.allLicenceData
+            );
+
+            this.checktheshapeexistans(this.coordinates);
+          }
 
           const utmCoordinateslast = this.convertCoordinatesToUTM(utmToCoor);
           this.utmCoordinates = utmCoordinateslast;
@@ -2430,7 +2445,20 @@ export class GisMapComponent implements AfterViewInit {
     this.ServiceService.coordinate = utmCoordinates;
     console.log(utmCoordinates);
 
-    this.checktheshapeexistans(this.coordinates);
+    if (
+      this.ServiceService.allLicenceData.Parcel_ID == null &&
+      this.ServiceService.allLicenceData.Plot_Merge_1 == null &&
+      this.ServiceService.allLicenceData.Plot_Merge_2 == null &&
+      this.ServiceService.allLicenceData.Plot_Merge_3 == null &&
+      this.ServiceService.allLicenceData.Plot_Merge_4 == null
+    ) {
+      console.log(
+        "🚀 ~ file: gis-map.component.ts:1691 ~ this.map.on ~ ServiceService:",
+        this.ServiceService.allLicenceData
+      );
+
+      this.checktheshapeexistans(this.coordinates);
+    }
     //   this.pinpointedPoints.push(this.pinpointedPoints[0])
     //  this.ServiceService.coordinate=this.pinpointedPoints
     if (this.drawnShape instanceof L.Marker) {
@@ -2657,7 +2685,7 @@ export class GisMapComponent implements AfterViewInit {
     const combinedData = [];
 
     const latLngs = coordinates.map((row) =>
-      this.conveUTMToLatLng(row[0], row[1], row[3], row[2])
+      this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
     );
     const shapeProperties = coordinates.map((row) => row.pop());
     combinedData.push(latLngs);
@@ -2871,6 +2899,7 @@ export class GisMapComponent implements AfterViewInit {
     // Remove the header row from the data
     const coordinates = data.slice(1);
     console.log("coordinates", coordinates);
+    this.utmCoordinates = coordinates;
 
     const latLngs = coordinates.map((row) =>
       this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
@@ -2889,7 +2918,20 @@ export class GisMapComponent implements AfterViewInit {
       this.alllatlong.push(latLngs);
     }
     if (this.fromexcel === true && this.alllatlong.length == 1) {
-      this.checktheshapeexistans(latLngss);
+      if (
+        this.ServiceService.allLicenceData.Parcel_ID == null &&
+        this.ServiceService.allLicenceData.Plot_Merge_1 == null &&
+        this.ServiceService.allLicenceData.Plot_Merge_2 == null &&
+        this.ServiceService.allLicenceData.Plot_Merge_3 == null &&
+        this.ServiceService.allLicenceData.Plot_Merge_4 == null
+      ) {
+        console.log(
+          "🚀 ~ file: gis-map.component.ts:1691 ~ this.map.on ~ ServiceService:",
+          this.ServiceService.allLicenceData
+        );
+
+        this.checktheshapeexistans(latLngss);
+      }
       const utmCoordinates = this.convertCoordinatesToUTM(latLngs);
       this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(latLngs);
       utmCoordinates.push(utmCoordinates[0]);
@@ -2912,16 +2954,17 @@ export class GisMapComponent implements AfterViewInit {
       );
 
       this.editableLayers.addLayer(this.drawnShape);
-
-      shape.forEach((point, pointIndex) => {
-        const markerLatLng = L.latLng(point); // Create a LatLng object for the point
-        // Add a marker with a character label to the polygon
-        this.addMarkerWithCharacter(
-          this.drawnShape,
-          markerLatLng,
-          String.fromCharCode(65 + pointIndex)
-        );
-      });
+      if (shape.length < 26) {
+        shape.forEach((point, pointIndex) => {
+          const markerLatLng = L.latLng(point); // Create a LatLng object for the point
+          // Add a marker with a character label to the polygon
+          this.addMarkerWithCharacter(
+            this.drawnShape,
+            markerLatLng,
+            String.fromCharCode(65 + pointIndex)
+          );
+        });
+      }
     });
 
     //this.ServiceService.coordinate.push(latLngs[0])
@@ -3059,6 +3102,10 @@ export class GisMapComponent implements AfterViewInit {
     // Just loop through the array and apply changes to each selected shape
   }
   convertToExcel(data: any[]): void {
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:3111 ~ convertToExcel ~ data:",
+      data
+    );
     // Create a new workbook and worksheet
     const workbook = XLSX.utils.book_new();
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
@@ -3451,8 +3498,8 @@ export class GisMapComponent implements AfterViewInit {
     //   lng: latLngCoords.longitude,
     // };
     return {
-      lat: latLngCoords.latitude - 0.001876,
-      lng: latLngCoords.longitude - 0.0008668,
+      lat: latLngCoords.latitude,
+      lng: latLngCoords.longitude,
     };
   }
   conveUTMToLatLngforshapefile(
@@ -3466,11 +3513,7 @@ export class GisMapComponent implements AfterViewInit {
     const latLngCoords = utm.toLatLon(easting, northing, zone, hemisphere);
     console.log("Latitude, Longitude:", latLngCoords);
 
-    return [
-      latLngCoords.longitude + 0.0008668,
-      latLngCoords.latitude + 0.001876,
-      0,
-    ];
+    return [latLngCoords.longitude, latLngCoords.latitude, 0];
   }
   findShapeFromGeoJSON(geoJSON, coordinates) {
     // Ensure the GeoJSON has features

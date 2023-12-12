@@ -10,6 +10,8 @@ import { ServiceComponent } from "../service.component";
 import { NotificationsService } from "angular2-notifications";
 import { NgxSmartModalService } from "ngx-smart-modal";
 import { ServiceService } from "../service.service";
+import { DateFormatter } from "ngx-bootstrap";
+import { formatDate } from "@angular/common";
 
 @Component({
   selector: "app-dept-suspension-record",
@@ -153,7 +155,15 @@ export class DeptSuspensionRecordComponent implements OnChanges {
       this.Selectedcert.version_ID;
 
     this.deptSuspensionRecord.SDP_ID = this.licenceData.SDP_ID;
-    this.deptSuspensionRecord.Suspend_Start_Date = new Date().toDateString();
+    // this.deptSuspensionRecord.Suspend_Start_Date = formatDate(
+    //   new Date(),
+    //   "MM/dd/yyyy",
+    //   "en"
+    // );
+    // console.log(
+    //   "🚀 ~ file: dept-suspension-record.component.ts:157 ~ DeptSuspensionRecordComponent ~ adddeed ~ this.deptSuspensionRecord.Suspend_Start_Date:",
+    //   this.deptSuspensionRecord.Suspend_Start_Date
+    // );
   }
 
   selectdeed(dept) {
@@ -197,11 +207,11 @@ class DeptSuspensionRecord {
   public ID: string;
   public Certificate_Version_No: string;
   public Suspended_By: string;
-  public Suspend_Start_Date: string;
-  public Suspend_End_Date: string;
+  public Suspend_Start_Date: any;
+  public Suspend_End_Date: any;
   public Suspend_Reason: string;
   public Letter_Ref_No: string;
-  public Letter_Ref_Date: string;
+  public Letter_Ref_Date: any;
   public Remark: string;
   public Is_Suspended: boolean;
   public Is_Released: boolean;

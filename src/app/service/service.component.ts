@@ -1482,31 +1482,45 @@ export class ServiceComponent implements OnInit {
       this.showdialoge = true;
     } else {
       this.SubmitAR(data);
+      // "08552bdb-3ee6-4203-8bc3-02547cc47cc7".toLowerCase() === this.tskID ||
+      //         "e3902a1f-794d-4c99-af1d-0b0086354fbd".toLowerCase() === this.tskID ||
+      //         "6c0c914d-8225-4ef5-acf6-33749fcf5778".toLowerCase() === this.tskID ||
+      //         "8cc26c5c-e6ce-4656-b17c-3d1ce1cd5aa8".toLowerCase() === this.tskID ||
+      //         "c867ba9c-44e3-428d-b236-437e2a0e455e".toLowerCase() === this.tskID ||
+      //         "d422da4b-8180-4c87-b52a-67c0f2203f7a".toLowerCase() === this.tskID ||
+      //         "8d1509ee-790a-433d-81f3-6e6e5290453f".toLowerCase() === this.tskID ||
+      //         "b931d99e-6820-4991-bf16-7c3988a9b9ae".toLowerCase() === this.tskID ||
+      //         "26279fdf-0e41-4a1d-b910-84eaabb9f346".toLowerCase() === this.tskID ||
+      //         "42ada796-627e-4b44-a4cb-85381e007a8f".toLowerCase() === this.tskID ||
+      //         "b81f0f1d-7c7f-4d9f-aa86-a6c6578d14b8".toLowerCase() === this.tskID ||
+      //         "50b839f7-83af-467c-a741-b89b7816f08a".toLowerCase() === this.tskID ||
+      //         "6800efb2-7318-4f1a-8257-6fdd13ba9e79".toLowerCase() === this.tskID ||
+      //         "16655bb7-8fae-40b5-a9b1-87fc2f1dc62a".toLowerCase() === this.tskID ||
+      //         "ea5ceb46-d46c-4975-aee9-d03b73c8b65a".toLowerCase() === this.tskID ||
+      //         "a681ce06-b0bd-4a12-98b4-d0b84f689438".toLowerCase() === this.tskID ||
+      //         "b0761882-17d5-46c3-b27f-0330ca665269".toLowerCase() === this.tskID ||
+      //         "1ef2e844-96d6-469d-9dc5-2e96e70e8a1d".toLowerCase() === this.tskID ||
+      //         "936cfab8-143f-4b02-835e-324bb2d7b288".toLowerCase() === this.tskID ||
+      //         "61587e8d-6007-4954-b0bf-46f209b3dfa4".toLowerCase() === this.tskID ||
+      //         "7ce88820-3a2b-4717-9eb8-4da6658222de".toLowerCase() === this.tskID ||
+      //         "72c313d3-b840-4346-8f62-541b8b96a112".toLowerCase() === this.tskID ||
+      //         "403478b4-ff36-463d-86fd-76a137fc47c3".toLowerCase() === this.tskID ||
+      //         "22fdd5db-1740-45ef-af50-ce56e2da6103".toLowerCase() === this.tskID
       if (
-        "08552bdb-3ee6-4203-8bc3-02547cc47cc7".toLowerCase() === this.tskID ||
-        "e3902a1f-794d-4c99-af1d-0b0086354fbd".toLowerCase() === this.tskID ||
-        "6c0c914d-8225-4ef5-acf6-33749fcf5778".toLowerCase() === this.tskID ||
-        "8cc26c5c-e6ce-4656-b17c-3d1ce1cd5aa8".toLowerCase() === this.tskID ||
-        "c867ba9c-44e3-428d-b236-437e2a0e455e".toLowerCase() === this.tskID ||
-        "d422da4b-8180-4c87-b52a-67c0f2203f7a".toLowerCase() === this.tskID ||
-        "8d1509ee-790a-433d-81f3-6e6e5290453f".toLowerCase() === this.tskID ||
-        "b931d99e-6820-4991-bf16-7c3988a9b9ae".toLowerCase() === this.tskID ||
-        "26279fdf-0e41-4a1d-b910-84eaabb9f346".toLowerCase() === this.tskID ||
-        "42ada796-627e-4b44-a4cb-85381e007a8f".toLowerCase() === this.tskID ||
-        "b81f0f1d-7c7f-4d9f-aa86-a6c6578d14b8".toLowerCase() === this.tskID ||
-        "50b839f7-83af-467c-a741-b89b7816f08a".toLowerCase() === this.tskID ||
-        "6800efb2-7318-4f1a-8257-6fdd13ba9e79".toLowerCase() === this.tskID ||
-        "16655bb7-8fae-40b5-a9b1-87fc2f1dc62a".toLowerCase() === this.tskID ||
-        "ea5ceb46-d46c-4975-aee9-d03b73c8b65a".toLowerCase() === this.tskID ||
-        "a681ce06-b0bd-4a12-98b4-d0b84f689438".toLowerCase() === this.tskID ||
-        "b0761882-17d5-46c3-b27f-0330ca665269".toLowerCase() === this.tskID ||
-        "1ef2e844-96d6-469d-9dc5-2e96e70e8a1d".toLowerCase() === this.tskID ||
-        "936cfab8-143f-4b02-835e-324bb2d7b288".toLowerCase() === this.tskID ||
-        "61587e8d-6007-4954-b0bf-46f209b3dfa4".toLowerCase() === this.tskID ||
-        "7ce88820-3a2b-4717-9eb8-4da6658222de".toLowerCase() === this.tskID ||
-        "72c313d3-b840-4346-8f62-541b8b96a112".toLowerCase() === this.tskID ||
-        "403478b4-ff36-463d-86fd-76a137fc47c3".toLowerCase() === this.tskID ||
-        "22fdd5db-1740-45ef-af50-ce56e2da6103".toLowerCase() === this.tskID
+        "466A3ADF-CCE5-4FF4-A466-16425D6FBE5E".toLowerCase() === this.tskID ||
+        "6036FB05-FFCD-4724-9FED-07893ABCF7D7".toLowerCase() === this.tskID ||
+        "1923579E-1E4C-456B-A988-3ACC5FEC5D23".toLowerCase() === this.tskID ||
+        "41A08235-8C74-4DC0-918F-353316117B28".toLowerCase() === this.tskID ||
+        "EC01C6AF-DE39-4CBB-A20E-28A727C6C4D4".toLowerCase() === this.tskID ||
+        "416ED07E-4D3C-4786-A982-44498BCB0768".toLowerCase() === this.tskID ||
+        "266365D1-00D4-4843-9AFB-4013CC309047".toLowerCase() === this.tskID ||
+        "F515DAB5-45CD-43EB-8967-A5F072A49938".toLowerCase() === this.tskID ||
+        "269CBEDA-9357-4930-82F6-9CEF39F54AC1".toLowerCase() === this.tskID ||
+        "A8F34D89-7FA1-41E2-9D91-A20941E24C4B".toLowerCase() === this.tskID ||
+        "41F3777B-4525-4CA7-A5D1-DF8CEABB232A".toLowerCase() === this.tskID ||
+        "83EE7239-D109-4036-8B50-D34093AAA500".toLowerCase() === this.tskID ||
+        "E9DC66E7-DD83-46F3-9C48-BB4FD29C7748".toLowerCase() === this.tskID ||
+        "A4E830F1-AB5F-47A6-BE56-CCDBB649C45C".toLowerCase() === this.tskID
       ) {
         this.serviceService
           .getPropertyLists(this.licenceData.Parcel_ID)
