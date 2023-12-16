@@ -1104,6 +1104,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       base64file = base64file.replace(re, "");
       this.propertyRegister.imageType = base64file.split(";")[0].split(":")[1];
       base64file = base64file.split(";")[1];
+
       this.propertyRegister.map_Floor_Plan = base64file;
       console.log(
         "this.propertyRegister.map_Floor_Plan",

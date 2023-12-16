@@ -32,8 +32,8 @@ import { ActivatedRoute } from "@angular/router";
   encapsulation: ViewEncapsulation.None,
 })
 export class PlotManagmentComponent implements OnInit, OnChanges {
-  @Output() completed = new EventEmitter<PlotManagment>();
-  @Output() completeddel = new EventEmitter<PlotManagment>();
+  @Output() completed = new EventEmitter<any>();
+  @Output() completeddel = new EventEmitter<any>();
   @Input() LicenceData;
   public plotManagment: PlotManagment;
   public platformLocation: PlatformLocation;

@@ -53,6 +53,8 @@ export class CertletterComponent implements OnChanges {
   maxWidth: string = "1800px";
   isMaximized: boolean;
   basefinal;
+  PlotManagementList = [];
+  PlotManagementListfinal = [];
   constructor(
     private sanitizer: DomSanitizer,
     public serviceService: ServiceService,
@@ -77,6 +79,8 @@ export class CertletterComponent implements OnChanges {
       this.urlParams = params;
       console.log("this.urlParams", this.urlParams);
       this.printtasktskID = this.urlParams.tskID;
+      console.log("PlotManagementList", this.licenceData);
+
       if (
         "EFCDA235-2B2B-4B77-AFDD-1443FEF7D823".toLowerCase() ===
           this.printtasktskID.toLowerCase() ||
@@ -121,20 +125,44 @@ export class CertletterComponent implements OnChanges {
     this.BaseTable = [];
     this.basefinal = [];
     if (this.licenceData.Parcel_ID) {
-      this.getBase(this.licenceData.Parcel_ID);
+      this.getplotlist(this.licenceData.Parcel_ID);
     }
-    if (this.licenceData.Parcel_mearge1) {
-      this.getBase(this.licenceData.Parcel_mearge1);
+    if (this.licenceData.Plot_Merge_1) {
+      this.getplotlist(this.licenceData.Plot_Merge_1);
     }
-    if (this.licenceData.Parcel_mearge2) {
-      this.getBase(this.licenceData.Parcel_mearge2);
+    if (this.licenceData.Plot_Merge_2) {
+      this.getplotlist(this.licenceData.Plot_Merge_2);
     }
-    if (this.licenceData.Parcel_mearge3) {
-      this.getBase(this.licenceData.Parcel_mearge3);
+    if (this.licenceData.Plot_Merge_3) {
+      this.getplotlist(this.licenceData.Plot_Merge_3);
     }
     if (this.licenceData.Plot_Merge_4) {
-      this.getBase(this.licenceData.Plot_Merge_4);
+      this.getplotlist(this.licenceData.Plot_Merge_4);
     }
+  }
+  getplotlist(plotid) {
+    console.log("PlotManagementList", plotid);
+    this.serviceService.getPlotManagementApi(plotid).subscribe(
+      async (PlotManagementLists: any) => {
+        let PlotManagementList = PlotManagementLists.procPlot_Registrations;
+        if (PlotManagementList.length > 0) {
+          this.getBase(plotid);
+          this.PlotManagementList =
+            this.removeDuplicatesplot(PlotManagementList);
+        }
+        console.log("PlotManagementList", this.PlotManagementList);
+        if (this.PlotManagementList.length > 0) {
+          this.PlotManagementListfinal.push(this.PlotManagementList[0]);
+          this.PlotManagementListfinal = this.removeDuplicatesplot(
+            this.PlotManagementListfinal
+          );
+          console.log("PlotManagementList", this.PlotManagementListfinal);
+        }
+      },
+      (error) => {
+        console.log("error");
+      }
+    );
   }
 
   getBase(ploat) {
@@ -149,14 +177,15 @@ export class CertletterComponent implements OnChanges {
           }
 
           if (BaseTable.length > 0) {
-            this.BaseTable.push(BaseTable[0]);
+            this.BaseTable = BaseTable;
+            this.BaseTable = this.removeDuplicates(this.BaseTable);
           }
 
           console.log("BaseTable", this.BaseTable);
           if (this.BaseTable.length > 0) {
             this.basefinal.push(this.BaseTable[0]);
             this.basefinal = this.removeDuplicates(this.basefinal);
-            console.log("BaseTable", this.BaseTable[0]);
+            console.log("BaseTablefinal", this.basefinal);
           }
         }
         // this.BaseTable = (Object.assign([], this.BaseTable));
@@ -165,6 +194,14 @@ export class CertletterComponent implements OnChanges {
         console.log("error");
       }
     );
+  }
+  removeDuplicatesplot(data) {
+    const uniqueArray = data.filter(
+      (item, index, self) =>
+        self.findIndex((i) => i.plot_ID === item.plot_ID) === index
+    );
+
+    return uniqueArray;
   }
   removeDuplicates(data) {
     const uniqueArray = data.filter(

@@ -18,15 +18,12 @@ import "proj4leaflet";
 import { environment } from "../../../environments/environment";
 import { ServiceService } from "../../service/service.service";
 import * as utm from "utm";
-import { BehaviorSubject, Subject } from "rxjs";
 import { BsModalService } from "ngx-bootstrap";
-import { CustomAlertComponent } from "./CustomAlertComponent";
 import { NotificationsService } from "angular2-notifications";
 import { MessageService, TreeNode } from "primeng/api";
 import { ApiService } from "../testgismap/api.service";
-import * as flatted from "flatted";
-import * as turf from "@turf/turf";
 import { CookieService } from "ngx-cookie-service/cookie-service/cookie.service";
+import { Subject } from "rxjs";
 interface AssignedBodyTree {
   label: string;
   workspace: string;
@@ -34,7 +31,6 @@ interface AssignedBodyTree {
   children: any;
   randomColor: any;
 }
-
 interface AssignedBodyTree2 {
   label: string;
   workspace: string;
@@ -132,9 +128,7 @@ export class GisMapComponent implements AfterViewInit {
   // Add your event handlers and other component logic here
 
   vectorLayer: L.Proj.GeoJSON;
-  private geoserverUrl = environment.geoserverUrl;
-  private parentGroupName = environment.parentGroupName;
-  private geoserverUrlwfs = environment.geoserverUrlwfs;
+
   customZoomLevels: Record<number, number> = {
     1: 2, // 1 meter on the map is 1 meter in the real world
     2: 4, // 1 meter on the map is 2 meters in the real world
@@ -148,10 +142,6 @@ export class GisMapComponent implements AfterViewInit {
   @Input() geo;
   ngOnInit() {
     console.log("value is changing", this.geo);
-    // this.changingg.subscribe((v: any) => {
-    //   console.log("value is changing", v);
-    //   this.processImportedShapes(v);
-    // });
   }
   ngAfterViewInit() {
     const iconRetinaUrl = "assets/marker-icon-2x.png";
@@ -2178,111 +2168,111 @@ export class GisMapComponent implements AfterViewInit {
     return utmCoordinates;
   }
 
-  convertUTMToLatLng(
-    northing: number,
-    easting: number,
-    zone: number,
-    hemisphere: string
-  ): { lat: number; lng: number } {
-    // Constants for WGS84 datum
-    const WGS84_A = 6378137.0; // WGS 84 semi-major axis
-    const WGS84_E = 0.08181919104281579; // WGS 84 first eccentricity
+  // convertUTMToLatLng(
+  //   northing: number,
+  //   easting: number,
+  //   zone: number,
+  //   hemisphere: string
+  // ): { lat: number; lng: number } {
+  //   // Constants for WGS84 datum
+  //   const WGS84_A = 6378137.0; // WGS 84 semi-major axis
+  //   const WGS84_E = 0.08181919104281579; // WGS 84 first eccentricity
 
-    // Constants for UTM
-    const UTM_K0 = 0.9996; // UTM scale factor for most zones
-    const UTM_FE = 500000.0; // False easting for UTM
-    const UTM_FN_N = 0.0; // False northing for northern hemisphere
-    const UTM_FN_S = 10000000.0; // False northing for southern hemisphere
+  //   // Constants for UTM
+  //   const UTM_K0 = 0.9996; // UTM scale factor for most zones
+  //   const UTM_FE = 500000.0; // False easting for UTM
+  //   const UTM_FN_N = 0.0; // False northing for northern hemisphere
+  //   const UTM_FN_S = 10000000.0; // False northing for southern hemisphere
 
-    // Check if the hemisphere is southern (negative northing) and adjust northing accordingly
-    if (hemisphere === "S" || hemisphere === "s") {
-      northing -= UTM_FN_S; // Southern hemisphere offset
-    } else {
-      northing -= UTM_FN_N; // Northern hemisphere offset
-    }
+  //   // Check if the hemisphere is southern (negative northing) and adjust northing accordingly
+  //   if (hemisphere === "S" || hemisphere === "s") {
+  //     northing -= UTM_FN_S; // Southern hemisphere offset
+  //   } else {
+  //     northing -= UTM_FN_N; // Northern hemisphere offset
+  //   }
 
-    const eccPrimeSquared = (WGS84_E * WGS84_E) / (1 - WGS84_E * WGS84_E);
-    const M = northing / UTM_K0;
+  //   const eccPrimeSquared = (WGS84_E * WGS84_E) / (1 - WGS84_E * WGS84_E);
+  //   const M = northing / UTM_K0;
 
-    const mu =
-      M /
-      (WGS84_A *
-        (1 -
-          WGS84_E / 4 -
-          (3 * WGS84_E * WGS84_E) / 64 -
-          (5 * WGS84_E * WGS84_E * WGS84_E) / 256));
-    const phi1Rad =
-      mu +
-      ((3 * WGS84_E) / 2 - (27 * WGS84_E * WGS84_E * WGS84_E) / 32) *
-        Math.sin(2 * mu) +
-      ((21 * WGS84_E * WGS84_E) / 16 -
-        (55 * WGS84_E * WGS84_E * WGS84_E * WGS84_E) / 32) *
-        Math.sin(4 * mu) +
-      ((151 * WGS84_E * WGS84_E * WGS84_E) / 96) * Math.sin(6 * mu) +
-      ((1097 * WGS84_E * WGS84_E * WGS84_E * WGS84_E) / 512) * Math.sin(8 * mu);
-    const phi1 = (phi1Rad * 180) / Math.PI;
+  //   const mu =
+  //     M /
+  //     (WGS84_A *
+  //       (1 -
+  //         WGS84_E / 4 -
+  //         (3 * WGS84_E * WGS84_E) / 64 -
+  //         (5 * WGS84_E * WGS84_E * WGS84_E) / 256));
+  //   const phi1Rad =
+  //     mu +
+  //     ((3 * WGS84_E) / 2 - (27 * WGS84_E * WGS84_E * WGS84_E) / 32) *
+  //       Math.sin(2 * mu) +
+  //     ((21 * WGS84_E * WGS84_E) / 16 -
+  //       (55 * WGS84_E * WGS84_E * WGS84_E * WGS84_E) / 32) *
+  //       Math.sin(4 * mu) +
+  //     ((151 * WGS84_E * WGS84_E * WGS84_E) / 96) * Math.sin(6 * mu) +
+  //     ((1097 * WGS84_E * WGS84_E * WGS84_E * WGS84_E) / 512) * Math.sin(8 * mu);
+  //   const phi1 = (phi1Rad * 180) / Math.PI;
 
-    const N1 =
-      WGS84_A /
-      Math.sqrt(1 - WGS84_E * WGS84_E * Math.sin(phi1Rad) * Math.sin(phi1Rad));
-    const T1 = Math.tan(phi1Rad) * Math.tan(phi1Rad);
-    const C1 = eccPrimeSquared * Math.cos(phi1Rad) * Math.cos(phi1Rad);
-    const R1 =
-      (WGS84_A * (1 - WGS84_E * WGS84_E)) /
-      Math.pow(
-        1 - WGS84_E * WGS84_E * Math.sin(phi1Rad) * Math.sin(phi1Rad),
-        1.5
-      );
-    const D = (easting - UTM_FE) / (N1 * UTM_K0);
+  //   const N1 =
+  //     WGS84_A /
+  //     Math.sqrt(1 - WGS84_E * WGS84_E * Math.sin(phi1Rad) * Math.sin(phi1Rad));
+  //   const T1 = Math.tan(phi1Rad) * Math.tan(phi1Rad);
+  //   const C1 = eccPrimeSquared * Math.cos(phi1Rad) * Math.cos(phi1Rad);
+  //   const R1 =
+  //     (WGS84_A * (1 - WGS84_E * WGS84_E)) /
+  //     Math.pow(
+  //       1 - WGS84_E * WGS84_E * Math.sin(phi1Rad) * Math.sin(phi1Rad),
+  //       1.5
+  //     );
+  //   const D = (easting - UTM_FE) / (N1 * UTM_K0);
 
-    const latRad =
-      phi1Rad -
-      ((N1 * Math.tan(phi1Rad)) / R1) *
-        ((D * D) / 2 -
-          ((5 + 3 * T1 + 10 * C1 - 4 * C1 * C1 - 9 * eccPrimeSquared) *
-            D *
-            D *
-            D *
-            D) /
-            24 +
-          ((61 +
-            90 * T1 +
-            298 * C1 +
-            45 * T1 * T1 -
-            252 * eccPrimeSquared -
-            3 * C1 * C1) *
-            D *
-            D *
-            D *
-            D *
-            D *
-            D) /
-            720);
-    const lat = (latRad * 180) / Math.PI;
+  //   const latRad =
+  //     phi1Rad -
+  //     ((N1 * Math.tan(phi1Rad)) / R1) *
+  //       ((D * D) / 2 -
+  //         ((5 + 3 * T1 + 10 * C1 - 4 * C1 * C1 - 9 * eccPrimeSquared) *
+  //           D *
+  //           D *
+  //           D *
+  //           D) /
+  //           24 +
+  //         ((61 +
+  //           90 * T1 +
+  //           298 * C1 +
+  //           45 * T1 * T1 -
+  //           252 * eccPrimeSquared -
+  //           3 * C1 * C1) *
+  //           D *
+  //           D *
+  //           D *
+  //           D *
+  //           D *
+  //           D) /
+  //           720);
+  //   const lat = (latRad * 180) / Math.PI;
 
-    let lng =
-      (D -
-        ((1 + 2 * T1 + C1) * D * D * D) / 6 +
-        ((5 -
-          2 * C1 +
-          28 * T1 -
-          3 * C1 * C1 +
-          8 * eccPrimeSquared +
-          24 * T1 * T1) *
-          D *
-          D *
-          D *
-          D *
-          D) /
-          120) /
-      Math.cos(phi1Rad);
-    lng = zone * 6 - 183.0 + lng;
+  //   let lng =
+  //     (D -
+  //       ((1 + 2 * T1 + C1) * D * D * D) / 6 +
+  //       ((5 -
+  //         2 * C1 +
+  //         28 * T1 -
+  //         3 * C1 * C1 +
+  //         8 * eccPrimeSquared +
+  //         24 * T1 * T1) *
+  //         D *
+  //         D *
+  //         D *
+  //         D *
+  //         D) /
+  //         120) /
+  //     Math.cos(phi1Rad);
+  //   lng = zone * 6 - 183.0 + lng;
 
-    return {
-      lat,
-      lng,
-    };
-  }
+  //   return {
+  //     lat,
+  //     lng,
+  //   };
+  // }
 
   toggleLayer(visibility: boolean, layerName: string) {
     console.log("layerName", layerName);
@@ -3432,21 +3422,6 @@ export class GisMapComponent implements AfterViewInit {
     // Other actions to perform when the datum changes
   }
 
-  clickto() {
-    const utmEasting = 514703;
-    const utmNorthing = 1013516;
-    const utmZone = 37;
-    const isNorthernHemisphere = "n";
-
-    const latLngCoords = this.convertUTMToLatLng(
-      utmNorthing,
-      utmEasting,
-      utmZone,
-      isNorthernHemisphere
-    );
-    console.log("Latitude, Longitude:", latLngCoords);
-  }
-
   conveLatLngToUTM(
     latitude: number,
     longitude: number
@@ -3458,13 +3433,13 @@ export class GisMapComponent implements AfterViewInit {
     const zone = Math.floor((longitude + 180) / 6) + 1;
 
     // Convert latitude and longitude to UTM coordinates
-    const utmCoords = utm.fromLatLon(latitude, longitude, zone, hemisphere);
+    const utmCoords = utm.fromLatLon(latitude, longitude, 37, hemisphere);
 
     return {
       northing: utmCoords.northing,
       easting: utmCoords.easting,
-      hemisphere: hemisphere,
-      zone: zone,
+      hemisphere: utmCoords.zoneLetter,
+      zone: utmCoords.zoneNum,
     };
   }
 
@@ -3483,6 +3458,7 @@ export class GisMapComponent implements AfterViewInit {
       lng: latLngCoords.longitude,
     };
   }
+
   conveUTMToLatLngWrite(
     northing: number,
     easting: number,
@@ -3497,6 +3473,27 @@ export class GisMapComponent implements AfterViewInit {
     //   lat: latLngCoords.latitude,
     //   lng: latLngCoords.longitude,
     // };
+    return {
+      lat: latLngCoords.latitude,
+      lng: latLngCoords.longitude,
+    };
+  }
+  checkUTMtolatlong() {
+    const latLngCoords = utm.toLatLon("425304.62", "1020351.60", 37, "N");
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:3509 ~ checkUTMtolatlong ~ utmCoords:",
+      latLngCoords
+    );
+    const utmCoords = utm.fromLatLon(
+      latLngCoords.latitude,
+      latLngCoords.longitude,
+      37,
+      "N"
+    );
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:3509 ~ checkUTMtolatlong ~ utmCoords:",
+      utmCoords
+    );
     return {
       lat: latLngCoords.latitude,
       lng: latLngCoords.longitude,

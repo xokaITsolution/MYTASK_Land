@@ -60,6 +60,9 @@ export class CertComponent implements OnChanges {
   language: string;
   isThem: boolean;
   isdept: boolean;
+  PlotManagementList = [];
+  PlotManagementListfinal = [];
+  BaseTablefinal = [];
 
   constructor(
     private serviceService: ServiceService,
@@ -111,36 +114,44 @@ export class CertComponent implements OnChanges {
     this.BaseTable = [];
     this.noadds = 0;
     this.plotList = [];
+    this.PlotManagementList = [];
+    this.PlotManagementListfinal = [];
     if (this.licenceData.Parcel_ID) {
       this.noadds++;
-      this.plotList.push({ ID: this.licenceData.Parcel_ID });
+      this.getplotlist(this.licenceData.Parcel_ID);
+      //  this.plotList.push({ ID: this.licenceData.Parcel_ID });
       console.log("this.plotList", this.plotList);
-      this.getBase(this.licenceData.Parcel_ID);
+      //this.getBase(this.licenceData.Parcel_ID);
     }
     if (this.licenceData.Plot_Merge_1) {
       this.noadds++;
-      this.plotList.push({ ID: this.licenceData.Plot_Merge_1 });
+      this.getplotlist(this.licenceData.Plot_Merge_1);
+      //  this.plotList.push({ ID: this.licenceData.Plot_Merge_1 });
       console.log("this.plotList", this.plotList);
-      this.getBase(this.licenceData.Plot_Merge_1);
+      //this.getBase(this.licenceData.Plot_Merge_1);
     }
     if (this.licenceData.Plot_Merge_2) {
       this.noadds++;
-      this.plotList.push({ ID: this.licenceData.Plot_Merge_2 });
+      this.getplotlist(this.licenceData.Plot_Merge_2);
+      // this.plotList.push({ ID: this.licenceData.Plot_Merge_2 });
       console.log("this.plotList", this.plotList);
-      this.getBase(this.licenceData.Plot_Merge_2);
+      //this.getBase(this.licenceData.Plot_Merge_2);
     }
     if (this.licenceData.Plot_Merge_3) {
       this.noadds++;
-      this.plotList.push({ ID: this.licenceData.Plot_Merge_3 });
+      this.getplotlist(this.licenceData.Plot_Merge_3);
+      //this.plotList.push({ ID: this.licenceData.Plot_Merge_3 });
       console.log("this.plotList", this.plotList);
-      this.getBase(this.licenceData.Plot_Merge_3);
+      //this.getBase(this.licenceData.Plot_Merge_3);
     }
     if (this.licenceData.Plot_Merge_4) {
       this.noadds++;
-      this.plotList.push({ ID: this.licenceData.Plot_Merge_4 });
+      this.getplotlist(this.licenceData.Plot_Merge_4);
+      //this.plotList.push({ ID: this.licenceData.Plot_Merge_4 });
       console.log("this.plotList", this.plotList);
-      this.getBase(this.licenceData.Plot_Merge_4);
+      //this.getBase(this.licenceData.Plot_Merge_4);
     }
+
     //this.getDeed();
   }
   async getEthiopianToGregorian(date) {
@@ -160,6 +171,36 @@ export class CertComponent implements OnChanges {
       console.log(datenow);
       return datenow.nowTime;
     }
+  }
+  getplotlist(plotid) {
+    this.serviceService.getPlotManagementApi(plotid).subscribe(
+      async (PlotManagementLists: any) => {
+        let PlotManagementList = PlotManagementLists.procPlot_Registrations;
+        if (PlotManagementList.length > 0) {
+          this.getBase(plotid);
+          this.PlotManagementList = this.removeDuplicates(PlotManagementList);
+        }
+        console.log("PlotManagementList", this.PlotManagementListfinal);
+        if (this.PlotManagementList.length > 0) {
+          this.PlotManagementListfinal.push(this.PlotManagementList[0]);
+          this.PlotManagementListfinal = this.removeDuplicates(
+            this.PlotManagementListfinal
+          );
+          console.log("PlotManagementList", this.PlotManagementListfinal);
+        }
+      },
+      (error) => {
+        console.log("error");
+      }
+    );
+  }
+  removeDuplicates(data) {
+    const uniqueArray = data.filter(
+      (item, index, self) =>
+        self.findIndex((i) => i.plot_ID === item.plot_ID) === index
+    );
+
+    return uniqueArray;
   }
   selectedDateTime(dates: any, selecter) {
     if (selecter == 1) {
@@ -230,7 +271,15 @@ export class CertComponent implements OnChanges {
           return false;
         });
         this.BaseTable = uniqueData;
-        console.log("BaseTable", BaseTable);
+        if (this.BaseTable.length > 0) {
+          this.BaseTablefinal.push(this.BaseTable[0]);
+          this.BaseTablefinal = this.BaseTablefinal.filter(
+            (item, index, self) =>
+              self.findIndex((i) => i.Title_Deed_No === item.Title_Deed_No) ===
+              index
+          );
+          console.log("BaseTable", this.BaseTablefinal);
+        }
       },
       (error) => {
         console.log("error");
@@ -353,8 +402,8 @@ export class CertComponent implements OnChanges {
   }
 
   SelectBase(base) {
-    this.DeedTableview = true;
     this.SelectedBase = base;
+    this.DeedTableview = true;
     this.getCertificateVersion(base);
     console.log("base", base);
   }

@@ -18,7 +18,7 @@ import { BsModalRef, BsModalService } from "ngx-bootstrap";
 import { Subject } from "rxjs";
 
 import { LeaseOwnerShipService } from "../lease-owner-ship/lease-owner-ship.service";
-import { GisMapComponent } from "../gis-map/gis-map.component";
+
 @Component({
   selector: "app-plot",
   templateUrl: "./plot.component.html",

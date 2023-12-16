@@ -187,27 +187,28 @@ export class PropertyComponent implements OnChanges {
   }
   getPlotManagement(Licence_Service_ID) {
     let a;
+
     this.serviceService.getPlotManagementApi(Licence_Service_ID).subscribe(
       async (PlotManagementLists: any) => {
-        this.PlotManagementList = PlotManagementLists.procPlot_Registrations;
-        this.PlotManagementListfinal.push(this.PlotManagementList[0]);
-        this.PlotManagementListfinal = this.removeDuplicates(
-          this.PlotManagementListfinal
-        );
+        let PlotManagementList = PlotManagementLists.procPlot_Registrations;
+        if (PlotManagementList.length > 0) {
+          this.PlotManagementList = this.removeDuplicates(PlotManagementList);
+        }
         console.log("PlotManagementList", this.PlotManagementList);
-        this.isisvalidated(
-          this.todoid,
-          this.tskID,
-          this.PlotManagementList[0].plot_ID,
-          "00000000-0000-0000-0000-000000000000",
-          this.DocID
-        );
+        if (this.PlotManagementList.length > 0) {
+          this.PlotManagementListfinal.push(this.PlotManagementList[0]);
+          this.PlotManagementListfinal = this.removeDuplicates(
+            this.PlotManagementListfinal
+          );
+        }
 
-        console.log("PlotManagementList", PlotManagementLists);
+        console.log("PlotManagementList", this.PlotManagementListfinal);
+
+        console.log("PlotManagementList", this.PlotManagementListfinal);
         console.log(
           "this.PlotManagementList",
           this.PlotManagementList,
-          this.LicenceData
+          this.serviceService.Service_ID
         );
       },
       (error) => {
@@ -441,6 +442,70 @@ export class PropertyComponent implements OnChanges {
     );
   }
 
+  async getTreeForeach(PropertyList) {
+    const files = [];
+
+    const addLevelToNode = (node, level) => {
+      node.level = level;
+
+      if (node.children && node.children.length > 0) {
+        node.children.forEach((child) => {
+          addLevelToNode(child, level + 1);
+        });
+      }
+    };
+
+    for (let i = 0; i < PropertyList.length; i++) {
+      let a;
+
+      if (
+        PropertyList[i].property_Parent_ID == null ||
+        PropertyList[i].property_Parent_ID == 0
+      ) {
+        a = { ...PropertyList[i] };
+        a.label = a.property_ID;
+        a.children = [];
+        a.level = 0;
+        a.randomColor = "#006ab5";
+
+        const l1 = [...PropertyList];
+
+        for (let j = 0; j < l1.length; j++) {
+          let b;
+
+          if (l1[j].property_Parent_ID == a.property_ID) {
+            b = { ...l1[j] };
+            b.label = b.property_ID;
+            b.children = [];
+            b.level = 1;
+            b.randomColor = "#d0ff00";
+            a.children.push(b);
+
+            const l2 = [...PropertyList];
+
+            for (let k = 0; k < l2.length; k++) {
+              let c;
+
+              if (l2[k].property_Parent_ID == b.property_ID) {
+                c = { ...l2[k] };
+                c.label = c.property_ID;
+                c.children = [];
+                c.level = 2;
+                c.randomColor = "#ff3a43";
+                //c.styleClass = "custom-selected-node";
+                b.children.push(c);
+              }
+            }
+          }
+        }
+
+        addLevelToNode(a, 0);
+        files.push(a);
+      }
+    }
+
+    return files;
+  }
   expandAndSelectChild(tree, targetPropertyID, depth = 0) {
     for (let i = 0; i < tree.length; i++) {
       if (tree[i].property_ID === targetPropertyID) {
@@ -944,6 +1009,7 @@ export class PropertyComponent implements OnChanges {
           const isdeedchildren = await this.checkProperty(element);
 
           if (!isdeedchildren) {
+            this.checkPropertylocationAll();
             const toast = this.notificationsService.warn(
               `Must add title deed for this property: ${element.property_ID}`
             );
@@ -953,28 +1019,29 @@ export class PropertyComponent implements OnChanges {
               parseFloat(sumOfPropertiesfinal) ===
               parseFloat(sumOfPropertiess[0].compound_Size_M2)
             ) {
-              for (let i = 0; i < this.serviceService.files.length; i++) {
-                const element: any = Object.assign(
-                  [],
-                  this.serviceService.files[i]
-                );
-                console.log("sub property", element);
+              // for (let i = 0; i < this.serviceService.files.length; i++) {
+              //   const element: any = Object.assign(
+              //     [],
+              //     this.serviceService.files[i]
+              //   );
+              //   console.log("sub property", element);
 
-                if (element.property_ID !== "No Parent") {
-                  const isdeedchildren = await this.checkPropertylocation(
-                    element
-                  );
+              //   if (element.property_ID !== "No Parent") {
+              //     const isdeedchildren = await this.checkPropertylocation(
+              //       element
+              //     );
 
-                  if (!isdeedchildren) {
-                    const toast = this.notificationsService.warn(
-                      `Must add property location  for this property: ${element.property_ID}`
-                    );
-                    return;
-                  } else {
-                    this.completed.emit();
-                  }
-                }
-              }
+              //     if (!isdeedchildren) {
+              //       const toast = this.notificationsService.warn(
+              //         `Must add property location  for this property: ${element.property_ID}`
+              //       );
+              //       return;
+              //     } else {
+              //       this.completed.emit();
+              //     }
+              //   }
+              // }
+              this.checkPropertylocationAll();
             } else {
               const toast = this.notificationsService.warn(
                 "all property must have location on the map /ሁሉም ንብረቶች በካርታው ላይ ቦታ ሊኖራቸው ይገባል"
@@ -1121,6 +1188,7 @@ export class PropertyComponent implements OnChanges {
           const isdeedchildren = await this.checkProperty(element);
 
           if (!isdeedchildren) {
+            this.checkPropertylocationAll();
             const toast = this.notificationsService.warn(
               `Must add title deed for this property: ${element.property_ID}`
             );
@@ -1129,28 +1197,29 @@ export class PropertyComponent implements OnChanges {
               parseFloat(sumOfPropertiesfinal) ===
               parseFloat(sumOfPropertiess[0].compound_Size_M2)
             ) {
-              for (let i = 0; i < this.serviceService.files.length; i++) {
-                const element: any = Object.assign(
-                  [],
-                  this.serviceService.files[i]
-                );
-                console.log("sub property", element);
+              // for (let i = 0; i < this.serviceService.files.length; i++) {
+              //   const element: any = Object.assign(
+              //     [],
+              //     this.serviceService.files[i]
+              //   );
+              //   console.log("sub property", element);
 
-                if (element.property_ID !== "No Parent") {
-                  const isdeedchildren = await this.checkPropertylocation(
-                    element
-                  );
+              //   if (element.property_ID !== "No Parent") {
+              //     const isdeedchildren = await this.checkPropertylocation(
+              //       element
+              //     );
 
-                  if (!isdeedchildren) {
-                    const toast = this.notificationsService.warn(
-                      `Must add property location  for this property: ${element.property_ID}`
-                    );
-                    return;
-                  } else {
-                    this.completed.emit();
-                  }
-                }
-              }
+              //     if (!isdeedchildren) {
+              //       const toast = this.notificationsService.warn(
+              //         `Must add property location  for this property: ${element.property_ID}`
+              //       );
+              //       return;
+              //     } else {
+              //       this.completed.emit();
+              //     }
+              //   }
+              // }
+              this.checkPropertylocationAll();
             } else {
               const toast = this.notificationsService.warn(
                 "all property must have location on the map /ሁሉም ንብረቶች በካርታው ላይ ቦታ ሊኖራቸው ይገባል"
@@ -1200,6 +1269,71 @@ export class PropertyComponent implements OnChanges {
         }
         return true;
       }
+    }
+  }
+  checkPropertylocationAll() {
+    console.log(
+      "🚀 ~ file: property.component.ts:1273 ~ PropertyComponent ~ checkPropertylocationAll ~ PlotManagementListfinal:",
+      this.PlotManagementListfinal
+    );
+    let isnullplot = false;
+    for (let index = 0; index < this.PlotManagementListfinal.length; index++) {
+      const element = this.PlotManagementListfinal[index];
+      console.log(
+        "🚀 ~ file: property.component.ts:1273 ~ PropertyComponent ~ checkPropertylocationAll ~ element:",
+        element
+      );
+
+      this.serviceService
+        .getPropertyLists(element.plot_ID)
+        .subscribe(async (PropertyList: any) => {
+          let PropertyLists = PropertyList.procProperty_Registrations;
+          PropertyLists = Object.assign([], PropertyLists);
+          console.log(
+            "🚀 ~ file: property.component.ts:1291 ~ PropertyComponent ~ .subscribe ~ PropertyLists:",
+            PropertyLists
+          );
+
+          if (PropertyLists.length == 0) {
+            const toast = this.notificationsService.warn(
+              `Must add property   for this plot: ${element.plot_ID}`
+            );
+            isnullplot = true;
+            return false;
+          } else {
+            let eachPlot = await this.getTreeForeach(
+              Object.assign([], PropertyLists)
+            );
+            console.log(
+              "🚀 ~ file: property.component.ts:1280 ~ PropertyComponent ~ .subscribe ~ eachPlot:",
+              eachPlot
+            );
+            for (let i = 0; i < eachPlot.length; i++) {
+              const element: any = Object.assign([], eachPlot[i]);
+              console.log("sub property", element);
+
+              if (element.property_ID !== "No Parent") {
+                const isdeedchildren = await this.checkPropertylocation(
+                  element
+                );
+
+                if (!isdeedchildren) {
+                  const toast = this.notificationsService.warn(
+                    `Must add property location  for this property: ${element.property_ID}`
+                  );
+                  return;
+                } else {
+                  // const toast = this.notificationsService.warn(
+                  //   `this property have location : ${element.property_ID}`
+                  // );
+                  if (!isnullplot) {
+                    this.completed.emit();
+                  }
+                }
+              }
+            }
+          }
+        });
     }
   }
   async checkPropertylocation(element) {

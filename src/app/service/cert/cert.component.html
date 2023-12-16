@@ -2,14 +2,14 @@
 
 <div class="row m-3">
   <div class="col-md-6" *ngIf="!displayGIS">
-    <p-table [value]="BaseTable" [paginator]="true" [rows]="3">
+    <p-table [value]="BaseTablefinal" [paginator]="true" [rows]="3">
       <ng-template pTemplate="header">
         <tr>
           <th scope="col" translate>Title Deed No</th>
           <th scope="col" translate>Registration Date</th>
           <th scope="col" translate>{{Fields.FIELD_ONE}}</th>
           <th scope="col">
-            <div *ngIf="BaseTable">
+            <div *ngIf="BaseTablefinal">
               <!--<button type="button" *ngIf="BaseTable.length < noadds && !disable" class="btn btn-primary" (click)="AddBase('NewCretafcateBase')">AddNew</button></div>-->
               <button type="button" *ngIf="!disable" class="btn btn-primary" (click)="AddBase(template)"
                 translate>AddNew</button>
@@ -18,8 +18,9 @@
         </tr>
       </ng-template>
 
-      <ng-template pTemplate="body" let-Base>
-        <tr class="aaaa" [class.active]="Base == SelectedBase">
+      <ng-template pTemplate="body" let-Base let-rowData>
+        <tr class="aaaa" 
+         (click)='SelectedBase = rowData;' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === SelectedBase">
           <td class="fit-content-cell">{{Base.Title_Deed_No}}</td>
           <td class="fit-content-cell">{{Base.Registration_Date}}</td>
           <td class="fit-content-cell">
@@ -135,7 +136,7 @@
           <select class="form-control" (ngModelChange)="getDeed($event)" [(ngModel)]="Base.Plot_ID" name="plot"
             id="plot">
             <option disabled>select</option>
-            <option *ngFor="let PLot of plotList;" [value]="PLot.ID">{{PLot.ID}}
+            <option *ngFor="let PLot of PlotManagementListfinal;" [value]="PLot.plot_ID">{{PLot.plot_ID}}
             </option>
           </select>
         </div>

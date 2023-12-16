@@ -1475,8 +1475,9 @@ export class ServiceComponent implements OnInit {
       }
     );
   }
-  showdialog(data, name) {
+  async showdialog(data, name) {
     console.log("vvvvvv", data);
+    let to_to_code;
     this.serviceService.taskrul = data;
     if (name == "R  ") {
       this.showdialoge = true;
@@ -1581,7 +1582,17 @@ export class ServiceComponent implements OnInit {
       .subscribe(
         (message) => {
           // console.log('message', message);
-          const toast = this.notificationsService.success("Sucess", "sucesss");
+          if (message) {
+            const toast = this.notificationsService.success(
+              "Sucess",
+              "sucesss"
+            );
+          } else {
+            const toast = this.notificationsService.error(
+              "Error",
+              "SomeThing Went Wrong"
+            );
+          }
 
           this.Close();
         },
@@ -1592,19 +1603,138 @@ export class ServiceComponent implements OnInit {
           );
         }
       );
+    if (
+      "466A3ADF-CCE5-4FF4-A466-16425D6FBE5E".toLowerCase() === this.tskID ||
+      "6036FB05-FFCD-4724-9FED-07893ABCF7D7".toLowerCase() === this.tskID ||
+      "1923579E-1E4C-456B-A988-3ACC5FEC5D23".toLowerCase() === this.tskID ||
+      "41A08235-8C74-4DC0-918F-353316117B28".toLowerCase() === this.tskID ||
+      "EC01C6AF-DE39-4CBB-A20E-28A727C6C4D4".toLowerCase() === this.tskID ||
+      "416ED07E-4D3C-4786-A982-44498BCB0768".toLowerCase() === this.tskID ||
+      "266365D1-00D4-4843-9AFB-4013CC309047".toLowerCase() === this.tskID ||
+      "F515DAB5-45CD-43EB-8967-A5F072A49938".toLowerCase() === this.tskID ||
+      "269CBEDA-9357-4930-82F6-9CEF39F54AC1".toLowerCase() === this.tskID ||
+      "A8F34D89-7FA1-41E2-9D91-A20941E24C4B".toLowerCase() === this.tskID ||
+      "41F3777B-4525-4CA7-A5D1-DF8CEABB232A".toLowerCase() === this.tskID ||
+      "83EE7239-D109-4036-8B50-D34093AAA500".toLowerCase() === this.tskID ||
+      "E9DC66E7-DD83-46F3-9C48-BB4FD29C7748".toLowerCase() === this.tskID ||
+      "A4E830F1-AB5F-47A6-BE56-CCDBB649C45C".toLowerCase() === this.tskID
+    ) {
+      if (this.licenceData.Parcel_ID) {
+        this.getplotlist(this.licenceData.Parcel_ID);
+      }
+      if (this.licenceData.Plot_Merge_1) {
+        this.getplotlist(this.licenceData.Plot_Merge_1);
+      }
+      if (this.licenceData.Plot_Merge_2) {
+        this.getplotlist(this.licenceData.Plot_Merge_2);
+      }
+      if (this.licenceData.Plot_Merge_3) {
+        this.getplotlist(this.licenceData.Plot_Merge_3);
+      }
+      if (this.licenceData.Plot_Merge_4) {
+        this.getplotlist(this.licenceData.Plot_Merge_4);
+      }
+    }
+  }
+  getplotlist(plotid) {
+    this.serviceService.getPlotManagementApi(plotid).subscribe(
+      async (PlotManagementLists: any) => {
+        let PlotManagementList = PlotManagementLists.procPlot_Registrations;
+        if (PlotManagementList.length > 0) {
+          this.serviceService
+            .getPropertyLists(PlotManagementList[0].plot_ID)
+            .subscribe((res: any) => {
+              const PropertyList = res.procProperty_Registrations;
+              if (PropertyList.length > 0) {
+                let parentproperty = PropertyList.filter(
+                  (x) => parseInt(x.property_Parent_ID) === 0
+                );
+                console.log(parentproperty);
+                parentproperty.forEach((element) => {
+                  this.serviceService
+                    .getPropertyListsfromcenteral(element.property_ID)
+                    .subscribe((ress: any) => {
+                      if (ress.procProporty_Locations) {
+                        this.serviceService
+                          .postplotTopostgres(
+                            this.licenceData.Parcel_ID,
+                            element.property_ID
+                          )
+                          .subscribe((res) => {});
+                      }
+                    });
+                });
+              }
+            });
+        }
+      },
+      (error) => {
+        console.log("error");
+      }
+    );
   }
 
-  SubmitAR(ruleid) {
+  async SubmitAR(ruleid) {
     this.serviceService.disablefins = true;
     this.serviceService
       .SubmitAR(this.AppNo, this.DocID, this.todoID, ruleid)
       .subscribe(
         (message) => {
           if (message) {
+            console.log(
+              "🚀 ~ file: service.component.ts:1615 ~ SubmitAR ~ message:",
+              message
+            );
             const toast = this.notificationsService.success(
               "Sucess",
               "sucesss"
             );
+            if (
+              "466A3ADF-CCE5-4FF4-A466-16425D6FBE5E".toLowerCase() ===
+                this.tskID ||
+              "6036FB05-FFCD-4724-9FED-07893ABCF7D7".toLowerCase() ===
+                this.tskID ||
+              "1923579E-1E4C-456B-A988-3ACC5FEC5D23".toLowerCase() ===
+                this.tskID ||
+              "41A08235-8C74-4DC0-918F-353316117B28".toLowerCase() ===
+                this.tskID ||
+              "EC01C6AF-DE39-4CBB-A20E-28A727C6C4D4".toLowerCase() ===
+                this.tskID ||
+              "416ED07E-4D3C-4786-A982-44498BCB0768".toLowerCase() ===
+                this.tskID ||
+              "266365D1-00D4-4843-9AFB-4013CC309047".toLowerCase() ===
+                this.tskID ||
+              "F515DAB5-45CD-43EB-8967-A5F072A49938".toLowerCase() ===
+                this.tskID ||
+              "269CBEDA-9357-4930-82F6-9CEF39F54AC1".toLowerCase() ===
+                this.tskID ||
+              "A8F34D89-7FA1-41E2-9D91-A20941E24C4B".toLowerCase() ===
+                this.tskID ||
+              "41F3777B-4525-4CA7-A5D1-DF8CEABB232A".toLowerCase() ===
+                this.tskID ||
+              "83EE7239-D109-4036-8B50-D34093AAA500".toLowerCase() ===
+                this.tskID ||
+              "E9DC66E7-DD83-46F3-9C48-BB4FD29C7748".toLowerCase() ===
+                this.tskID ||
+              "A4E830F1-AB5F-47A6-BE56-CCDBB649C45C".toLowerCase() ===
+                this.tskID
+            ) {
+              if (this.licenceData.Parcel_ID) {
+                this.getplotlist(this.licenceData.Parcel_ID);
+              }
+              if (this.licenceData.Plot_Merge_1) {
+                this.getplotlist(this.licenceData.Plot_Merge_1);
+              }
+              if (this.licenceData.Plot_Merge_2) {
+                this.getplotlist(this.licenceData.Plot_Merge_2);
+              }
+              if (this.licenceData.Plot_Merge_3) {
+                this.getplotlist(this.licenceData.Plot_Merge_3);
+              }
+              if (this.licenceData.Plot_Merge_4) {
+                this.getplotlist(this.licenceData.Plot_Merge_4);
+              }
+            }
             this.issucess = true;
           } else {
             const toast = this.notificationsService.error(
