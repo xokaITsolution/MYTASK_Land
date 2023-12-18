@@ -424,6 +424,13 @@ export class ServiceService {
   getorganizationbyparent(orgid) {
     return this.http.get(this.OrganizationparentUrl + "/" + orgid);
   }
+  getcaseWorkerbyApplication(AppNo) {
+    return this.http.get(
+      environment.rootPathApi +
+        "view/procView_Certficate_Verstion_Approved_by_caseworkerController/application_number?application_number=" +
+        AppNo
+    );
+  }
   public getUserRole() {
     return this.http.get(
       this.userRoleUrl + "?userName=" + environment.username

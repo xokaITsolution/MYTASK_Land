@@ -40,7 +40,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   @Input() SelectedPlot;
   @Input() disable;
   @Input() Fields;
-
+  @Input() AppNo;
   mapCenter = [11.610400228322295, 37.41706261388921];
   basemapType = "streets-vector";
   mapZoomLevel = 1;
@@ -811,37 +811,72 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     console.log("coordinatcoordinat", cordinatetemp);
     if (cordinatetemp) {
       this.serviceService.getUserRole().subscribe((response: any) => {
-        let coordinates = this.convertToMultiPoints(cordinatetemp);
-        console.log("coordinatecoordinate", coordinates);
-        this.platformLocation.geo = coordinates;
-        this.platformLocation.geoForwgs84 =
-          this.serviceService.coordinateForwgs84;
-        let coordinate = this.convertToMultiPoint(cordinatetemp);
-        this.platformLocation.geowithzone = coordinate;
-        console.log("responseresponseresponse", response, response[0]);
+        this.serviceService
+          .getcaseWorkerbyApplication(this.AppNo)
+          .subscribe((res: any) => {
+            console.log(
+              "🚀 ~ file: plot.component.ts:324 ~ PlotComponent ~ this.serviceService.getcaseWorkerbyApplication ~ response:",
+              res
+            );
+            let coordinates = this.convertToMultiPoints(cordinatetemp);
 
-        this.platformLocation.ploteId = this.plotManagment.parcel_No;
-        this.platformLocation.created_By = response[0].RoleId;
-        this.platformLocation.created_Date = new Date();
-        this.serviceService.savePlotloc(this.platformLocation).subscribe(
-          (CustID) => {
-            const toast = this.notificationsService.success(
-              "Sucess",
-              "Succesfully saved"
+            console.log("coordinatecoordinate", coordinates);
+            this.platformLocation.geo = coordinates;
+            this.platformLocation.geoForwgs84 =
+              this.serviceService.coordinateForwgs84;
+            let coordinate = this.convertToMultiPoint(cordinatetemp);
+            this.platformLocation.geowithzone = coordinate;
+            console.log("responseresponseresponse", response, response[0]);
+
+            this.platformLocation.ploteId = this.plotManagment.parcel_No;
+            this.platformLocation.created_By = response[0].RoleId;
+            this.platformLocation.created_Date = new Date();
+
+            res.forEach((element) => {
+              if (element.roleId == "5b3b5dd4-3cef-4696-ac19-442ba531a7dd") {
+                console.log(
+                  "🚀 ~ file: plot-managment.component.ts:822 ~ response.forEach ~ element:",
+                  element
+                );
+                this.platformLocation.legal_Approved_By = element.userId;
+                this.platformLocation.legal_Approved = true;
+              } else if (
+                element.roleId == "3ba734c5-d75a-44c7-8c47-5233431372ba"
+              ) {
+                console.log(
+                  "🚀 ~ file: plot-managment.component.ts:822 ~ response.forEach ~ element:",
+                  element
+                );
+                this.platformLocation.tech_Approved_By = element.userId;
+                this.platformLocation.tech_Approved = true;
+              }
+            });
+
+            console.log(
+              "🚀 ~ file: plot-managment.component.ts:888 ~ response.forEach ~ platformLocation:",
+              this.platformLocation
             );
-          },
-          (error) => {
-            console.log("error");
-            const toast = this.notificationsService.error(
-              "error",
-              `unable to Save ${
-                error["status"] == 0
-                  ? error["message"]
-                  : JSON.stringify(JSON.stringify(error["error"]))
-              }`
+
+            this.serviceService.savePlotloc(this.platformLocation).subscribe(
+              (CustID) => {
+                const toast = this.notificationsService.success(
+                  "Sucess",
+                  "Succesfully saved"
+                );
+              },
+              (error) => {
+                console.log("error");
+                const toast = this.notificationsService.error(
+                  "error",
+                  `unable to Save ${
+                    error["status"] == 0
+                      ? error["message"]
+                      : JSON.stringify(JSON.stringify(error["error"]))
+                  }`
+                );
+              }
             );
-          }
-        );
+          });
       });
     }
   }
@@ -902,6 +937,10 @@ export class PlatformLocation {
   public baseMap_Approved_By: any;
   public team_Leader_Approved: any;
   public team_Leader_Approved_By: any;
+  public legal_Approved: any;
+  public legal_Approved_By: any;
+  public tech_Approved: any;
+  public tech_Approved_By: any;
   public geowithzone: any;
   public geoForwgs84: any;
 }

@@ -42,7 +42,7 @@
     <p-tabView (onChange)="tabChanged($event)" [(activeIndex)]="selectedTab"  selected="true">
       <p-tabPanel [header]="'Plot Management' | translate">
         <div class="mt-3">
-          <app-plot-managment (completed)="EnableFins(); EnableFinsPloatuupdate($event)" (completeddel)="EnableFinsDel()" [SelectedPlot]='SelectedPlot' [LicenceData]="LicenceData"
+          <app-plot-managment (completed)="EnableFins(); EnableFinsPloatuupdate($event)" (completeddel)="EnableFinsDel()" [SelectedPlot]='SelectedPlot' [LicenceData]="LicenceData"  [AppNo]='AppNo'
             [disable]="disable" [Fields]="Fields"></app-plot-managment>
             <div style="float: right;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 1" translate>Next</button></div>
         </div>
@@ -76,7 +76,7 @@
 
         <div class="mt-3">
           <app-plot-managment (completed)="EnableFinsPloat($event)" (completeddel)="EnableFinsDel()"
-            [SelectedPlot]='SelectedPlot' [disable]="disable" [Fields]="Fields" [LicenceData]="LicenceData" ></app-plot-managment>
+            [SelectedPlot]='SelectedPlot' [disable]="disable" [Fields]="Fields" [LicenceData]="LicenceData" [AppNo]='AppNo' ></app-plot-managment>
           </div>
         <div class="pull-right"  >
           <button type="button" class="btn btn-primary mr-1" [disabled]="serviceService.toEnablenext"  (click)="SelectPLot(SelectedPlot)"

@@ -2740,6 +2740,12 @@ export class GisMapComponent implements AfterViewInit {
           dataofproperty.property_ID == this.ServiceService.selectedproperty)
       ) {
         this.editableLayers.addLayer(this.drawnShape);
+        const utmCoordinates = this.convertCoordinatesToUTM(latslng);
+        this.ServiceService.coordinateForwgs84 =
+          this.mapToPolygonFormat(latslng);
+        utmCoordinates.push(utmCoordinates[0]);
+        this.ServiceService.coordinate = utmCoordinates;
+        console.log(utmCoordinates);
       }
     });
     if (this.drawnShape instanceof L.Marker) {
@@ -2922,12 +2928,12 @@ export class GisMapComponent implements AfterViewInit {
 
         this.checktheshapeexistans(latLngss);
       }
-      const utmCoordinates = this.convertCoordinatesToUTM(latLngs);
-      this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(latLngs);
-      utmCoordinates.push(utmCoordinates[0]);
-      this.ServiceService.coordinate = utmCoordinates;
-      console.log(utmCoordinates);
     }
+    const utmCoordinates = this.convertCoordinatesToUTM(latLngs);
+    this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(latLngs);
+    utmCoordinates.push(utmCoordinates[0]);
+    this.ServiceService.coordinate = utmCoordinates;
+    console.log(utmCoordinates);
 
     // Remove the previously drawn shape, if any
     if (this.drawnShape) {

@@ -789,6 +789,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
           this.plotloc[0].geowithzone,
           this.plotloc[0]
         );
+
         this.serviceService.selectedproperty = this.selectedpro.property_ID;
         console.log("this.propformLocation", this.serviceService.PropertyList);
         this.serviceService.PropertyList.forEach((element) => {

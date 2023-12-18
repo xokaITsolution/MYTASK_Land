@@ -320,6 +320,33 @@ export class PlotComponent implements OnChanges {
     console.log("coordinatcoordinat", this.serviceService.coordinate);
     if (this.serviceService.coordinate) {
       this.serviceService.getUserRole().subscribe((response: any) => {
+        this.serviceService
+          .getcaseWorkerbyApplication(this.AppNo)
+          .subscribe((res: any) => {
+            console.log(
+              "🚀 ~ file: plot.component.ts:324 ~ PlotComponent ~ this.serviceService.getcaseWorkerbyApplication ~ response:",
+              res
+            );
+            res.forEach((element) => {
+              if (element.roleId == "5b3b5dd4-3cef-4696-ac19-442ba531a7dd") {
+                console.log(
+                  "🚀 ~ file: plot-managment.component.ts:822 ~ response.forEach ~ element:",
+                  element
+                );
+                this.platformLocation.legal_Approved_By = element.userId;
+                this.platformLocation.legal_Approved = true;
+              } else if (
+                element.roleId == "3ba734c5-d75a-44c7-8c47-5233431372ba"
+              ) {
+                console.log(
+                  "🚀 ~ file: plot-managment.component.ts:822 ~ response.forEach ~ element:",
+                  element
+                );
+                this.platformLocation.tech_Approved_By = element.userId;
+                this.platformLocation.tech_Approved = true;
+              }
+            });
+          });
         let coordinates = this.convertToMultiPoints(
           this.serviceService.coordinate
         );
