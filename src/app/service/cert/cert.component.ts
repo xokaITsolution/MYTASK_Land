@@ -81,8 +81,6 @@ export class CertComponent implements OnChanges {
     if (
       this.serviceService.Service_ID ==
         "7d256139-858b-48e7-a298-cae5438e526c" ||
-      this.serviceService.Service_ID ==
-        "d1a3b83a-aa39-4269-90e4-da551715baef" ||
       this.serviceService.Service_ID ===
         "05DB54FC-E388-4E5E-AAAA-BD6141C8E533".toLocaleLowerCase()
     ) {
@@ -97,7 +95,9 @@ export class CertComponent implements OnChanges {
       this.serviceService.Service_ID ===
         "05DB54FC-E388-4E5E-AAAA-BD6141C8E533".toLocaleLowerCase() ||
       this.serviceService.Service_ID ===
-        "7d256139-858b-48e7-a298-cae5438e526c".toLocaleLowerCase()
+        "7d256139-858b-48e7-a298-cae5438e526c".toLocaleLowerCase() ||
+      this.serviceService.Service_ID ===
+        "d1a3b83a-aa39-4269-90e4-da551715baef".toLocaleLowerCase()
     ) {
       this.isdept = true;
     } else {

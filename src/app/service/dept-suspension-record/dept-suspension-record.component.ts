@@ -188,6 +188,7 @@ export class DeptSuspensionRecordComponent implements OnChanges {
     //   this.deptSuspensionRecord.Suspend_Start_Date =
     //     this.deptSuspensionRecord.Suspend_Start_Date.split("T")[0];
     //  }
+    this.getcustomer(this.deptSuspensionRecord.Suspended_By);
     this.deptForm = true;
   }
 
@@ -216,4 +217,5 @@ class DeptSuspensionRecord {
   public Is_Suspended: boolean;
   public Is_Released: boolean;
   public SDP_ID;
+  public Title_Deed_No;
 }

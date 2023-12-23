@@ -175,7 +175,7 @@
 <p-table [value]="tasks" [paginator]="true" [rows]="5">
   <ng-template pTemplate="header">
     <tr>
-      <th scope="col" translate>Lease ID</th>
+      <!-- <th scope="col" translate>Lease ID</th> -->
       <th scope="col" translate>Plot ID</th>
       <th scope="col" translate>Type</th>
       <th scope="col" translate>Lease Contract No</th>
@@ -190,11 +190,18 @@
   <ng-template pTemplate="body" let-lease let-rowData>
   <tr (click)='highlighted = rowData;' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
     
-      <td>{{lease.ID}}</td>
+      <!-- <td>{{lease.ID}}</td> -->
       <td>{{lease.Plot_ID}}</td>
-      <td>{{lease.Type_ID}}</td>
+      <td>
+        <select class="form-select" disabled  name="Typeselect" 
+         >
+          <option *ngFor="let type of serviceComponent.Lease_Type_Lookup;" [value]="lease.Type_ID">
+            {{type.Lease_Type}}
+          </option>
+          </select>
+      </td>
       <td>{{lease.Lease_No}}</td>
-      <td>{{lease.Lease_Price}}</td>
+      <td>{{lease.Amount_of_the_annual_lease_payment}}</td>
      <!--<td>{{lease.Free_Hold_M2}}</td>--> 
       <td>{{lease.Lease_Hold_M2}}</td>
       <td>
