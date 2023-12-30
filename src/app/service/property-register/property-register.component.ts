@@ -62,6 +62,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   isMaximized: boolean;
   ismodaEnable: boolean;
   maxWidth: string = "1400px";
+  isbuildingApartama: boolean;
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -353,6 +354,17 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     //   template,
     //   Object.assign({}, { class: "gray modal-lg" })
     // );
+  }
+  onOptionsSelected(e) {
+    console.log(
+      "🚀 ~ file: property-register.component.ts:358 ~ onOptionsSelected ~ e:",
+      e
+    );
+    if (e == 2 || e == 3) {
+      this.isbuildingApartama = true;
+    } else {
+      this.isbuildingApartama = false;
+    }
   }
   getplotlocbyid(Plot_ID) {
     this.serviceService.getPlotloc(Plot_ID).subscribe((response: any) => {
@@ -1301,6 +1313,7 @@ export class PropertyRegister {
   public children;
   public parent;
   public is_commerscial;
+  public room_No;
 }
 export class PropformLocation {
   public proporty_Id: any;

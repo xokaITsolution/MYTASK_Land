@@ -8,7 +8,7 @@
         <th scope="col" translate>Registration Date</th>
         <th scope="col" *ngIf="multipleplotcanbeadd">
 
-          <button type="button" class="btn btn-primary" (click)="ischeckPlotaev=true;ismodaEnable=true;serviceService.check = true"
+          <button type="button" class="btn btn-primary" (click)="ischeckPlotaev=true;ismodaEnable=true;serviceService.check = true;calculettotal()"
             *ngIf="!disable && PlotManagementListfinal.length < 5" translate>Add New</button>
         </th>
       </tr>
@@ -18,7 +18,7 @@
         
         <td class="fit-content-cell">{{Plot.plot_ID}} </td>
         <td class="fit-content-cell">
-          <select class="form-control" disabled [(ngModel)]="Plot.Plot_Status" name="Status" id="Status">
+          <select class="form-control" disabled [(ngModel)]="Plot.plot_Status" name="Status" id="Status">
             <option disabled translate>select</option>
             <option *ngFor="let Status of serviceService.PlotStutusLook" [value]="Status.Plot_Status_ID">
               {{Status.Name}}

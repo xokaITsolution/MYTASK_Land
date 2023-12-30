@@ -146,9 +146,11 @@ export class CertletterComponent implements OnChanges {
       async (PlotManagementLists: any) => {
         let PlotManagementList = PlotManagementLists.procPlot_Registrations;
         if (PlotManagementList.length > 0) {
-          this.getBase(plotid);
-          this.PlotManagementList =
-            this.removeDuplicatesplot(PlotManagementList);
+          if (PlotManagementList[0].plot_Status == 1) {
+            this.getBase(plotid);
+
+            this.PlotManagementList = this.removeDuplicates(PlotManagementList);
+          }
         }
         console.log("PlotManagementList", this.PlotManagementList);
         if (this.PlotManagementList.length > 0) {
@@ -157,6 +159,18 @@ export class CertletterComponent implements OnChanges {
             this.PlotManagementListfinal
           );
           console.log("PlotManagementList", this.PlotManagementListfinal);
+        }
+        for (
+          let index = 0;
+          index < this.PlotManagementListfinal.length;
+          index++
+        ) {
+          const element = this.PlotManagementListfinal[index];
+          if (element.plot_Status == 1) {
+            this.PlotManagementListfinal = this.PlotManagementListfinal.filter(
+              (x) => x.plot_Status == 1
+            );
+          }
         }
       },
       (error) => {
@@ -329,6 +343,9 @@ export class CertletterComponent implements OnChanges {
         if (CertificateVersion) {
           this.loadingPreDoc = false;
           this.CertificateVersion = CertificateVersion.procCertificate_Versions;
+          this.CertificateVersion = this.CertificateVersion.filter(
+            (x) => x.is_Active == 1
+          );
           console.log("CertificateVersion1", this.CertificateVersion);
 
           // this.CertificateVersion = Object.assign(

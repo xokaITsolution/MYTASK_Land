@@ -60,11 +60,11 @@ export class ThemComponent implements OnChanges {
     });
   }
   getThem(Version_ID) {
-    this.themService.getAll(Version_ID).subscribe(
+    this.themService.getAllapi(Version_ID).subscribe(
       (themCertificateVersionList) => {
         let a;
         a = themCertificateVersionList;
-        this.themCertificateVersionList = Object.assign([], a.list);
+        this.themCertificateVersionList = Object.assign([], a.procThem);
         console.log(
           "this.titleDeedRegistration",
           this.themCertificateVersionList
@@ -73,10 +73,7 @@ export class ThemComponent implements OnChanges {
       (error) => {
         console.log(error);
         if (error.status == "400") {
-          const toast = this.notificationsService.error(
-            "Error",
-            error.error.InnerException.Errors[0].message
-          );
+          const toast = this.notificationsService.error("Error", error.error);
         } else {
           const toast = this.notificationsService.error(
             "Error",
@@ -88,14 +85,14 @@ export class ThemComponent implements OnChanges {
   }
 
   save() {
-    this.themCertificateVersion.Licence_Service_ID =
+    this.themCertificateVersion.licence_Service_ID =
       this.licenceData.Licence_Service_ID;
-    this.themCertificateVersion.Application_No =
+    this.themCertificateVersion.application_No =
       this.licenceData.Application_No;
-    this.themCertificateVersion.To_Do_ID = this.todoid;
-    this.themService.save(this.themCertificateVersion).subscribe(
+    this.themCertificateVersion.to_Do_ID = this.todoid;
+    this.themService.saveapi(this.themCertificateVersion).subscribe(
       (deptSuspension) => {
-        console.log("deptSuspension", deptSuspension);
+        console.log("deptSuspension");
         const toast = this.notificationsService.success(
           "Sucess",
           deptSuspension
@@ -109,10 +106,7 @@ export class ThemComponent implements OnChanges {
       (error) => {
         console.log(error);
         if (error.status == "400") {
-          const toast = this.notificationsService.error(
-            "Error",
-            error.error.InnerException.Errors[0].message
-          );
+          const toast = this.notificationsService.error("Error", error.error);
         } else {
           const toast = this.notificationsService.error(
             "Error",
@@ -128,15 +122,15 @@ export class ThemComponent implements OnChanges {
     this.confirmationService.confirm({
       message: "Are you sure u want to delete this Them?",
       accept: () => {
-        this.themCertificateVersion.Licence_Service_ID =
+        this.themCertificateVersion.licence_Service_ID =
           this.licenceData.Licence_Service_ID;
-        this.themCertificateVersion.Application_No =
+        this.themCertificateVersion.application_No =
           this.licenceData.Application_No;
-        this.themCertificateVersion.To_Do_ID = this.todoid;
-        this.themCertificateVersion.Is_Deleted = true;
-        this.themService.save(this.themCertificateVersion).subscribe(
+        this.themCertificateVersion.to_Do_ID = this.todoid;
+        this.themCertificateVersion.is_Deleted = true;
+        this.themService.saveapi(this.themCertificateVersion).subscribe(
           (deptSuspension) => {
-            console.log("deptSuspension", deptSuspension);
+            console.log("deptSuspension");
             const toast = this.notificationsService.success(
               "Sucess",
               deptSuspension
@@ -175,21 +169,21 @@ export class ThemComponent implements OnChanges {
   }
 
   add() {
-    this.themCertificateVersion.Licence_Service_ID =
+    this.themCertificateVersion.licence_Service_ID =
       this.licenceData.Licence_Service_ID;
-    this.themCertificateVersion.Application_No =
+    this.themCertificateVersion.application_No =
       this.licenceData.Application_No;
-    this.themCertificateVersion.To_Do_ID = this.todoid;
-    this.themService.Add(this.themCertificateVersion).subscribe(
+    this.themCertificateVersion.to_Do_ID = this.todoid;
+    this.themService.Addapi(this.themCertificateVersion).subscribe(
       (deptSuspension) => {
-        console.log("deptSuspension", deptSuspension);
+        console.log("deptSuspension");
         const toast = this.notificationsService.success(
           "Sucess",
           deptSuspension
         );
         // this.isnew = false;
         this.themform = false;
-        this.getThem(this.themCertificateVersion.Certificate_Version_ID);
+        this.getThem(this.themCertificateVersion.certificate_Version_ID);
         if (!this.Saved) {
           this.completed.emit();
           this.Saved = true;
@@ -198,10 +192,7 @@ export class ThemComponent implements OnChanges {
       (error) => {
         console.log(error);
         if (error.status == "400") {
-          const toast = this.notificationsService.error(
-            "Error",
-            error.error.InnerException.Errors[0].message
-          );
+          const toast = this.notificationsService.error("Error", error.error);
         } else {
           const toast = this.notificationsService.error(
             "Error",
@@ -217,7 +208,7 @@ export class ThemComponent implements OnChanges {
     this.themform = true;
     this.isnew = true;
     this.themCertificateVersion = new ThemCertificateVersion();
-    this.themCertificateVersion.Certificate_Version_ID =
+    this.themCertificateVersion.certificate_Version_ID =
       this.Selectedcert.version_ID;
   }
 
@@ -233,20 +224,20 @@ export class ThemComponent implements OnChanges {
 
   closeModal(customer) {
     console.log("closeing.....", customer);
-    this.themCertificateVersion.Them_Customer_ID = customer.customer_ID;
+    this.themCertificateVersion.them_Customer_ID = customer.customer_ID;
     console.log("closeing.....", customer.customer_ID);
     //this.ngxSmartModalService.getModal(modal).close();
   }
 }
 
 class ThemCertificateVersion {
-  public Certificate_Version_ID: string;
-  public Them_Customer_ID: string;
-  public Remark: string;
-  public Date: string;
-  public Is_Ative: boolean;
-  public Is_Deleted: boolean;
-  public Licence_Service_ID;
-  public Application_No;
-  public To_Do_ID;
+  public certificate_Version_ID: string;
+  public them_Customer_ID: string;
+  public remark: string;
+  public date: string;
+  public is_Ative: boolean;
+  public is_Deleted: boolean;
+  public licence_Service_ID;
+  public application_No;
+  public to_Do_ID;
 }

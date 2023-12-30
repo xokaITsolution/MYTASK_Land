@@ -16,7 +16,10 @@ import { BehaviorSubject } from "rxjs";
 import { LeaseOwnerShipService } from "../lease-owner-ship/lease-owner-ship.service";
 import { TitleDeedRegistrationService } from "../title-deed-registration/title-deed-registration.service";
 import { MeasurmentService } from "../measurment/measurment.service";
-import { PropformLocation } from "../property-register/property-register.component";
+import {
+  PropertyRegister,
+  PropformLocation,
+} from "../property-register/property-register.component";
 @Component({
   selector: "app-property",
   templateUrl: "./property.component.html",
@@ -25,6 +28,7 @@ import { PropformLocation } from "../property-register/property-register.compone
 export class PropertyComponent implements OnChanges {
   @Output() completed = new EventEmitter();
   @Output() getpro = new EventEmitter();
+  public propertyRegister: PropertyRegister;
   @Input() LicenceData;
   highlighted;
   @Input() Mode;
@@ -59,6 +63,7 @@ export class PropertyComponent implements OnChanges {
   isNextactive: boolean = true;
   PlotManagementListfinal = [];
   randomColor = "#006ab5";
+
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -201,6 +206,18 @@ export class PropertyComponent implements OnChanges {
             this.PlotManagementListfinal
           );
         }
+        for (
+          let index = 0;
+          index < this.PlotManagementListfinal.length;
+          index++
+        ) {
+          const element = this.PlotManagementListfinal[index];
+          if (element.plot_Status == 1) {
+            this.PlotManagementListfinal = this.PlotManagementListfinal.filter(
+              (x) => x.plot_Status == 1
+            );
+          }
+        }
 
         console.log("PlotManagementList", this.PlotManagementListfinal);
 
@@ -278,14 +295,92 @@ export class PropertyComponent implements OnChanges {
   // }
 
   async SelectProprty(property) {
-    this.propertyForm = true;
-    this.propertyregForm = false;
-    this.SelectedProperty = property;
+    console.log(
+      "🚀 ~ file: property.component.ts:293 ~ PropertyComponent ~ SelectProprty ~ property:",
+      property
+    );
+    this.getleaseOwnerShip(property.plot_ID);
+    if (property.type_Of_Use_ID == 2020) {
+      //የእርሻ ይዞታ አገልግሎት/For Agriculture
+      this.serviceService.isagriculture = true;
+      this.propertyForm = true;
+      // this.propertyregForm = true;
+      this.SelectedProperty = property;
+      this.propertyRegister = new PropertyRegister();
+      this.propertyRegister.building_Size_M2 = property.plot_Size_M2;
+      this.propertyRegister.proportional_from_Compound_Size = 0;
+      this.propertyRegister.parking_Area_M2 = 0;
+      this.propertyRegister.size_In_Proportional = 0;
+      this.propertyRegister.plot_ID = property.plot_ID;
+      this.propertyRegister.application_No = property.application_No;
+      this.propertyRegister.property_Status_ID = 1;
+      this.propertyRegister.property_Type_ID = 1014;
+      this.propertyRegister.compound_Size_M2 = property.plot_Size_M2;
+      this.propertyRegister.description = "የእርሻ ይዞታ አገልግሎት/For Agriculture";
+      this.propertyRegister.registration_Date = new Date();
+      this.propertyRegister.licence_Service_ID = property.licence_Service_ID;
 
-    this.serviceService.Plot_Size_M2 = this.SelectedProperty.plot_Size_M2;
-    console.log("plotManagment", this.SelectedProperty);
-    this.getPropertyList();
-    this.getleaseOwnerShip(this.SelectedProperty.plot_ID);
+      const prop = Object.assign({}, this.propertyRegister);
+      if (prop.children) {
+        prop.children = null;
+      }
+      if (prop.parent) {
+        if (prop.parent.children) {
+          prop.parent.children = null;
+        }
+      }
+
+      if (prop.property_Parent_ID == "No Parent") {
+        prop.property_Parent_ID = "0";
+      }
+
+      prop.property_ID = "-1";
+      console.log(
+        "🚀 ~ file: property.component.ts:339 ~ PropertyComponent ~ SelectProprty ~ prop:",
+        prop
+      );
+      this.serviceService.Add(prop).subscribe(
+        (deptSuspension) => {
+          console.log("deptSuspension", deptSuspension);
+          // if (prop.map_Floor_Plan != null) {
+          //   this.serviceService.isNextactive = true;
+          // } else {
+          //   this.serviceService.isNextactive = false;
+          // }
+          this.serviceService.insertedProperty = deptSuspension[0].property_ID;
+
+          this.isnew = true;
+          if (!this.Saved) {
+            this.Saved = true;
+          }
+          this.getPropertyList();
+          if (prop.property_Parent_ID != "0") {
+            this.serviceService.hide = false;
+          }
+          const toast = this.notificationsService.success("Sucess");
+          //this.getproplocbyid(prop.plot_ID);
+
+          // this.serviceService.disablefins = false;
+          this.serviceService.propertyISEnable = true;
+
+          console.log("added property registration");
+        },
+        (error) => {
+          console.log(error);
+
+          const toast = this.notificationsService.error("Error", error.error);
+        }
+      );
+    } else {
+      this.propertyForm = true;
+      this.propertyregForm = false;
+      this.SelectedProperty = property;
+      this.serviceService.isagriculture = false;
+      this.serviceService.Plot_Size_M2 = this.SelectedProperty.plot_Size_M2;
+      console.log("plotManagment", this.SelectedProperty);
+      this.getPropertyList();
+      this.getleaseOwnerShip(this.SelectedProperty.plot_ID);
+    }
 
     // this.disable=false;
   }
@@ -604,85 +699,93 @@ export class PropertyComponent implements OnChanges {
     // } else {
     //   this.serviceService.isNextactive = false;
     // }
-
-    let a: any = await this.getmeasurment(this.selectedFile.property_ID);
-    let b = await this.getdeed(this.selectedFile.property_ID);
-
-    // Add conditions based on the level of the selected node
-    if (
-      (this.selectedFile.level === 0 &&
-        this.selectedFile.property_ID != "No Parent") ||
-      (this.selectedFile.level === 1 &&
-        this.selectedFile.property_ID != "No Parent")
-    ) {
-      // Handle actions for level 0 nodes
-      this.getpro.emit();
-      if (this.tasksCertificate.length > 0) {
-        if (
-          this.tasksCertificate[0].Type_ID == 2 ||
-          this.tasksCertificate[0].Type_ID == 1
-        ) {
-          this.newplot = false;
-        } else if (this.serviceService.files.length == 2) {
-          this.newplot = true;
-        } else {
-          this.newplot = false;
-        }
-      } else {
-        this.newplot = false;
-      }
-      this.propertyregForm = true;
-      this.isnew = false;
-      this.newplot = false;
-      this.selectedFile.plot_ID = this.SelectedProperty.plot_ID;
-      this.selectedprofromtree = this.selectedFile;
-
-      a = Object.assign([], a.list);
-      b = b.procDeed_Registrations.filter(
-        (x) => x.property_ID === this.selectedFile.property_ID
-      );
-
-      this.selectedprofromtree = this.selectedFile;
-
-      if (a.length > 0) {
-        this.serviceService.ismeasurmentList = true;
-      } else {
-        this.serviceService.ismeasurmentList = false;
-      }
-      if (b.length > 0) {
-        this.serviceService.ishavetitleDeedRegistrationList = true;
-      } else {
-        this.serviceService.ishavetitleDeedRegistrationList = false;
-      }
-    } else {
-      if (this.selectedFile.property_ID === "No Parent") {
-        this.propertyregForm = false;
-        this.newplot = false;
-        return;
-      }
-      // Handle actions for nodes with level > 0
+    if (this.selectedFile.property_Type_ID == 1014) {
+      this.serviceService.isagriculture = true;
       this.propertyregForm = true;
       this.isnew = false;
       this.newplot = true;
       this.selectedFile.plot_ID = this.SelectedProperty.plot_ID;
       this.selectedprofromtree = this.selectedFile;
+    } else {
+      let a: any = await this.getmeasurment(this.selectedFile.property_ID);
+      let b = await this.getdeed(this.selectedFile.property_ID);
+      this.serviceService.isagriculture = false;
+      // Add conditions based on the level of the selected node
+      if (
+        (this.selectedFile.level === 0 &&
+          this.selectedFile.property_ID != "No Parent") ||
+        (this.selectedFile.level === 1 &&
+          this.selectedFile.property_ID != "No Parent")
+      ) {
+        // Handle actions for level 0 nodes
+        this.getpro.emit();
+        if (this.tasksCertificate.length > 0) {
+          if (
+            this.tasksCertificate[0].Type_ID == 2 ||
+            this.tasksCertificate[0].Type_ID == 1
+          ) {
+            this.newplot = false;
+          } else if (this.serviceService.files.length == 2) {
+            this.newplot = true;
+          } else {
+            this.newplot = false;
+          }
+        } else {
+          this.newplot = false;
+        }
+        this.propertyregForm = true;
+        this.isnew = false;
+        this.newplot = false;
+        this.selectedFile.plot_ID = this.SelectedProperty.plot_ID;
+        this.selectedprofromtree = this.selectedFile;
 
-      a = Object.assign([], a.list);
-      b = b.procDeed_Registrations.filter(
-        (x) => x.property_ID === this.selectedFile.property_ID
-      );
+        a = Object.assign([], a.list);
+        b = b.procDeed_Registrations.filter(
+          (x) => x.property_ID === this.selectedFile.property_ID
+        );
 
-      this.selectedprofromtree = this.selectedFile;
+        this.selectedprofromtree = this.selectedFile;
 
-      if (a.length > 0) {
-        this.serviceService.ismeasurmentList = true;
+        if (a.length > 0) {
+          this.serviceService.ismeasurmentList = true;
+        } else {
+          this.serviceService.ismeasurmentList = false;
+        }
+        if (b.length > 0) {
+          this.serviceService.ishavetitleDeedRegistrationList = true;
+        } else {
+          this.serviceService.ishavetitleDeedRegistrationList = false;
+        }
       } else {
-        this.serviceService.ismeasurmentList = false;
-      }
-      if (b.length > 0) {
-        this.serviceService.ishavetitleDeedRegistrationList = true;
-      } else {
-        this.serviceService.ishavetitleDeedRegistrationList = false;
+        if (this.selectedFile.property_ID === "No Parent") {
+          this.propertyregForm = false;
+          this.newplot = false;
+          return;
+        }
+        // Handle actions for nodes with level > 0
+        this.propertyregForm = true;
+        this.isnew = false;
+        this.newplot = true;
+        this.selectedFile.plot_ID = this.SelectedProperty.plot_ID;
+        this.selectedprofromtree = this.selectedFile;
+
+        a = Object.assign([], a.list);
+        b = b.procDeed_Registrations.filter(
+          (x) => x.property_ID === this.selectedFile.property_ID
+        );
+
+        this.selectedprofromtree = this.selectedFile;
+
+        if (a.length > 0) {
+          this.serviceService.ismeasurmentList = true;
+        } else {
+          this.serviceService.ismeasurmentList = false;
+        }
+        if (b.length > 0) {
+          this.serviceService.ishavetitleDeedRegistrationList = true;
+        } else {
+          this.serviceService.ishavetitleDeedRegistrationList = false;
+        }
       }
     }
   }
@@ -1009,7 +1112,9 @@ export class PropertyComponent implements OnChanges {
           const isdeedchildren = await this.checkProperty(element);
 
           if (!isdeedchildren) {
-            this.checkPropertylocationAll();
+            if (!this.serviceService.isagriculture) {
+              this.checkPropertylocationAll();
+            }
             const toast = this.notificationsService.warn(
               `Must add title deed for this property: ${element.property_ID}`
             );
@@ -1019,29 +1124,9 @@ export class PropertyComponent implements OnChanges {
               parseFloat(sumOfPropertiesfinal) ===
               parseFloat(sumOfPropertiess[0].compound_Size_M2)
             ) {
-              // for (let i = 0; i < this.serviceService.files.length; i++) {
-              //   const element: any = Object.assign(
-              //     [],
-              //     this.serviceService.files[i]
-              //   );
-              //   console.log("sub property", element);
-
-              //   if (element.property_ID !== "No Parent") {
-              //     const isdeedchildren = await this.checkPropertylocation(
-              //       element
-              //     );
-
-              //     if (!isdeedchildren) {
-              //       const toast = this.notificationsService.warn(
-              //         `Must add property location  for this property: ${element.property_ID}`
-              //       );
-              //       return;
-              //     } else {
-              //       this.completed.emit();
-              //     }
-              //   }
-              // }
-              this.checkPropertylocationAll();
+              if (!this.serviceService.isagriculture) {
+                this.checkPropertylocationAll();
+              }
             } else {
               const toast = this.notificationsService.warn(
                 "all property must have location on the map /ሁሉም ንብረቶች በካርታው ላይ ቦታ ሊኖራቸው ይገባል"
@@ -1049,109 +1134,20 @@ export class PropertyComponent implements OnChanges {
               return;
             }
           }
+        } else {
+          this.completed.emit();
         }
       }
     } else {
-      const toast = this.notificationsService.warn(
-        "built-in size must be equal to lease size/ ንብረት ድምር ከሊዝ መጠን ጋር እኩል መሆን አለበት።"
-      );
-      return;
+      if (!this.serviceService.isagriculture) {
+        const toast = this.notificationsService.warn(
+          "built-in size must be equal to lease size/ ንብረት ድምር ከሊዝ መጠን ጋር እኩል መሆን አለበት።"
+        );
+        return;
+      } else {
+        this.completed.emit();
+      }
     }
-    // if (this.serviceService.isproportinal == true) {
-    //   if (
-    //     this.serviceService.totlaizeproportinal ==
-    //     this.serviceService.Plot_Size_M2
-    //   ) {
-    //     this.completed.emit();
-    //   } else {
-    //     const toast = this.notificationsService.warn(
-    //       "if the lease type is proportional the sum of property built-in size must be equal to lease size/የሊዝ አይነት ተመጣጣኝ ከሆነ አብሮ የተሰራው ንብረት ድምር ከሊዝ መጠን ጋር እኩል መሆን አለበት።"
-    //     );
-    //   }
-    // } else {
-    //   if (
-    //     2 == this.serviceService.selectedproperty_Type_ID ||
-    //     3 == this.serviceService.selectedproperty_Type_ID
-    //   ) {
-    //     if (this.selectedFile.children.length === 0) {
-    //       // const toast = this.notificationsService.warn(
-    //       //   "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
-    //       // );
-    //       this.completed.emit();
-    //       console.log(
-    //         "must  add minimum  one sub property",
-    //         this.selectedFile.children.length
-    //       );
-    //     } else {
-    //       for (let i = 0; i < this.serviceService.files.length; i++) {
-    //         const element: any = Object.assign(
-    //           [],
-    //           this.serviceService.files[i]
-    //         );
-    //         console.log("sub property", element);
-
-    //         if (element.property_ID !== "No Parent") {
-    //           const isdeedchildren = await this.checkProperty(element);
-
-    //           if (!isdeedchildren) {
-    //             const toast = this.notificationsService.warn(
-    //               `Must add title deed for this property: ${element.property_ID}`
-    //             );
-    //           } else {
-    //             this.completed.emit();
-    //           }
-    //         }
-    //       }
-    //     }
-    //   } else {
-    //     console.log(
-    //       "property_Parent_IDselected",
-    //       this.selectedFile.property_Parent_ID
-    //     );
-
-    //     if (this.selectedFile.property_Parent_ID != "0") {
-    //       for (let i = 0; i < this.serviceService.files.length; i++) {
-    //         const element: any = Object.assign(
-    //           [],
-    //           this.serviceService.files[i]
-    //         );
-    //         console.log("sub property", element);
-
-    //         if (element.property_ID !== "No Parent") {
-    //           const isdeedchildren = await this.checkProperty(element);
-
-    //           if (!isdeedchildren) {
-    //             const toast = this.notificationsService.warn(
-    //               `Must add title deed for this property: ${element.property_ID}`
-    //             );
-    //           } else {
-    //             this.completed.emit();
-    //           }
-    //         }
-    //       }
-    //     } else {
-    //       for (let i = 0; i < this.serviceService.files.length; i++) {
-    //         const element: any = Object.assign(
-    //           [],
-    //           this.serviceService.files[i]
-    //         );
-    //         console.log("sub property", element);
-
-    //         if (element.property_ID !== "No Parent") {
-    //           const isdeedchildren = await this.checkProperty(element);
-
-    //           if (!isdeedchildren) {
-    //             const toast = this.notificationsService.warn(
-    //               `Must add title deed for this property: ${element.property_ID}`
-    //             );
-    //           } else {
-    //             this.completed.emit();
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
   }
 
   async EnableFinstitle() {

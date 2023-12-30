@@ -1048,6 +1048,43 @@ export class GisMapComponent implements AfterViewInit {
 
   Bind_Features(geojson, layerName) {
     if (layerName === "Plot_Locations") {
+      debugger;
+
+      // Filter out features where Is_Active is false or null
+      geojson.features = geojson.features.filter(
+        (feature) => feature.properties.Is_Active === true
+      );
+
+      let isNorthernHemisphere: any = "N";
+
+      // Loop through each filtered feature
+      for (let i = 0; i < geojson.features.length; i++) {
+        const coordinates = geojson.features[i].geometry.coordinates[0];
+
+        // Convert coordinates from UTM to LatLng
+        let coordinate = coordinates.map((coord) =>
+          coord.map((row) =>
+            this.conveUTMToLatLngforshapefilep(
+              row[1],
+              row[0],
+              37,
+              isNorthernHemisphere
+            )
+          )
+        );
+
+        // Convert LatLng coordinates back to UTM
+        let coordinateutm = coordinate.map((coord) =>
+          coord.map((row) => this.ConveLatLngToUTM(row[1], row[0]))
+        );
+
+        // Update the geometry coordinates with the converted UTM coordinates
+        geojson.features[i].geometry.coordinates[0] = coordinateutm;
+      }
+
+      // Debugging output
+      console.log("Modified GeoJSON features:", geojson.features);
+
       const randomColor = "#490000";
       const options = {
         style: function (feature) {
@@ -1058,23 +1095,36 @@ export class GisMapComponent implements AfterViewInit {
         },
       };
 
+      // Create a leaflet vector layer with the modified GeoJSON and styling options
       this.vectorLayer = L.Proj.geoJson(geojson, {
         style: { color: randomColor },
       });
-      this.plot_locations_gejon = geojson;
-      console.log(
-        "🚀 ~ file: gis-map.component.ts:1066 ~ Bind_Features ~ vectorLayer:",
-        geojson
-      );
-
-      // console.log("hhh", geojson)
-      // (this.vectorLayer = L.Proj.geoJson(geojson, options)), {};
-      // console.log(
-      //   "The fetched layer is a multipolygon.",
-      //   this.vectorLayer,
-      //   layerName
-      // );
     } else if (layerName === "Property_locations") {
+      // Filter out features where Is_Active is false or null
+      geojson.features = geojson.features.filter(
+        (feature) => feature.properties.Is_Active === true
+      );
+      let isNorthernHemisphere: any = "N";
+      console.log("ddd", geojson.features);
+      for (let i = 0; i < geojson.features.length; i++) {
+        const coordinates = geojson.features[i].geometry.coordinates[0];
+        // debugger
+        let coordinate = coordinates.map((coord) =>
+          coord.map((row) =>
+            this.conveUTMToLatLngforshapefilep(
+              row[1],
+              row[0],
+              37,
+              isNorthernHemisphere
+            )
+          )
+        );
+        let coordinateutm = coordinate.map((coord) =>
+          coord.map((row) => this.ConveLatLngToUTM(row[1], row[0]))
+        );
+        console.log("coordinatecoordinate", coordinateutm);
+        geojson.features[i].geometry.coordinates[0] = coordinateutm;
+      }
       const randomColor = "#ffcc41";
       const options = {
         style: function (feature) {
@@ -1084,6 +1134,8 @@ export class GisMapComponent implements AfterViewInit {
           };
         },
       };
+      // Debugging output
+      console.log("Modified GeoJSON featuresp:", geojson.features);
       this.vectorLayer = L.Proj.geoJson(geojson, {
         style: { color: randomColor },
       });
@@ -1193,6 +1245,18 @@ export class GisMapComponent implements AfterViewInit {
         });
       }
     }
+  }
+  ConveLatLngToUTM(latitude: number, longitude: number): [number, number] {
+    // Determine the hemisphere (northern or southern)
+    const hemisphere = latitude >= 0 ? "N" : "S";
+
+    // Calculate the UTM zone
+    const zone = Math.floor((longitude + 180) / 6) + 1;
+
+    // Convert latitude and longitude to UTM coordinates
+    const utmCoords = utm.fromLatLon(latitude, longitude, 37, hemisphere);
+
+    return [utmCoords.easting, utmCoords.northing];
   }
   generateDynamicColor() {
     // Generate a random color or use any other color generation logic
@@ -1735,12 +1799,17 @@ export class GisMapComponent implements AfterViewInit {
             "Totalarea",
             area,
             this.ServiceService.Totalarea,
-            environment.Totalareatolerance
+            environment.Totalareatolerance,
+            this.ServiceService.totalsizeformerage,
+            this.ServiceService.Service_ID
           );
           const maxAreaDifference =
             environment.Totalareatolerance * this.ServiceService.Totalarea;
 
-          const areaDifference = Math.abs(this.ServiceService.Totalarea - area);
+          const areaDifference = Math.abs(
+            this.ServiceService.totalsizeformerage -
+              this.ServiceService.Totalarea
+          );
           console.log("Totalareatolerance", areaDifference, maxAreaDifference);
           const popupContent = `Area: ${area.toFixed(
             2
@@ -1749,7 +1818,9 @@ export class GisMapComponent implements AfterViewInit {
 
           if (
             areaDifference >= maxAreaDifference &&
-            this.ServiceService.Totalarea != 0
+            this.ServiceService.totalsizeformerage != 0 &&
+            this.ServiceService.Service_ID ==
+              "793B8814-F845-429E-A472-DC47E797D3FE".toLocaleLowerCase()
           ) {
             const warningMessage =
               "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
@@ -1757,6 +1828,9 @@ export class GisMapComponent implements AfterViewInit {
               "Warning",
               warningMessage + popupContent
             );
+            this.map.removeLayer(layer);
+            //this.editableLayers.removeLayer(layer);
+            this.removeShape();
             this.ServiceService.areaVerified = false;
           } else {
             this.ServiceService.areaVerified = true;
@@ -1838,7 +1912,10 @@ export class GisMapComponent implements AfterViewInit {
           console.log("Totalarea", area, utmCoordinates);
           const maxAreaDifference =
             environment.Totalareatolerance * this.ServiceService.Totalarea;
-          const areaDifference = Math.abs(this.ServiceService.Totalarea - area);
+          const areaDifference = Math.abs(
+            this.ServiceService.totalsizeformerage -
+              this.ServiceService.Totalarea
+          );
           console.log("Totalareatolerance", areaDifference, maxAreaDifference);
           const popupContent = `Area: ${area.toFixed(
             2
@@ -1846,7 +1923,9 @@ export class GisMapComponent implements AfterViewInit {
           layer.bindPopup(popupContent).openPopup();
           if (
             areaDifference >= maxAreaDifference &&
-            this.ServiceService.Totalarea != 0
+            this.ServiceService.totalsizeformerage != 0 &&
+            this.ServiceService.Service_ID ==
+              "793B8814-F845-429E-A472-DC47E797D3FE".toLocaleLowerCase()
           ) {
             const warningMessage =
               "በካርታው ላይ የሚሳሉት ቅርፅ አካባቢው ከሊዝ መያዣ ጋር እኩል መሆን አለበት/the shape you draw on map  the area must be equal to Lease hold";
@@ -3463,6 +3542,33 @@ export class GisMapComponent implements AfterViewInit {
       lat: latLngCoords.latitude,
       lng: latLngCoords.longitude,
     };
+  }
+  conveUTMToLatLngforshapefilep(
+    northing: number,
+    easting: number,
+    zone: number,
+    hemisphere: boolean
+  ): [number, number, number] {
+    console.log("ggggg", easting, northing, zone, hemisphere);
+
+    const latLngCoords = utm.toLatLon(easting, northing, zone, hemisphere);
+
+    console.log(
+      "Latitude, Longitude:",
+      latLngCoords.longitude,
+      latLngCoords.latitude
+    );
+    console.log(
+      "Latitude, Longitude:",
+      latLngCoords.longitude - 0.0008668,
+      latLngCoords.latitude - 0.001876
+    );
+
+    return [
+      latLngCoords.longitude - 0.0008668,
+      latLngCoords.latitude - 0.001876,
+      0,
+    ];
   }
 
   conveUTMToLatLngWrite(

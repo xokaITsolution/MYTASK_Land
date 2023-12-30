@@ -171,11 +171,18 @@ export class ServiceService {
   coordinateForwgs84: any;
   isconfirmsave: boolean;
   allLicenceData: any;
+  totalsizeformerage = 0;
+  isagriculture: boolean = false;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
   }
+  public PropertyManagmentUrlapi =
+    environment.rootPathApi + "Property_Registration/procProperty_Registration"; // URL to web api
   multipleplotcanbeadd = environment.multipleplotcanbeadd;
+  Add(data) {
+    return this.http.post<any[]>(this.PropertyManagmentUrlapi, data);
+  }
   getCustomerLookUP() {
     return this.http.get(
       this.CustomerLookUP +

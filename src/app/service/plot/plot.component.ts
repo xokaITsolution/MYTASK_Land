@@ -550,8 +550,23 @@ export class PlotComponent implements OnChanges {
   clearData() {
     localStorage.removeItem("coordinate");
   }
+  calculettotal() {
+    if (this.PlotManagementListfinal.length > 0) {
+      this.serviceService.totalsizeformerage =
+        this.PlotManagementListfinal.reduce((sum, node) => {
+          sum += parseFloat(node.plot_Size_M2);
+
+          return sum;
+        }, 0);
+      console.log(
+        "🚀 ~ file: plot.component.ts:561 ~ PlotComponent ~ this.serviceService.totalsizeformerage=this.PlotManagementListfinal.reduce ~ totalsizeformerage:",
+        this.serviceService.totalsizeformerage
+      );
+    }
+  }
   getPlotManagement(Licence_Service_ID) {
     let a;
+
     this.serviceService.getPlotManagementApi(Licence_Service_ID).subscribe(
       async (PlotManagementLists: any) => {
         let PlotManagementList = PlotManagementLists.procPlot_Registrations;
@@ -574,6 +589,19 @@ export class PlotComponent implements OnChanges {
         //   "00000000-0000-0000-0000-000000000000",
         //   this.DocID
         // );
+
+        for (
+          let index = 0;
+          index < this.PlotManagementListfinal.length;
+          index++
+        ) {
+          const element = this.PlotManagementListfinal[index];
+          if (element.plot_Status == 1) {
+            this.PlotManagementListfinal = this.PlotManagementListfinal.filter(
+              (x) => x.plot_Status == 1
+            );
+          }
+        }
 
         console.log("PlotManagementList", this.PlotManagementListfinal);
         console.log(
@@ -894,7 +922,7 @@ export class PlotComponent implements OnChanges {
           [],
           this.serviceService.PlotStutusLook.list
         );
-        // console.log('PlotStutusLookUP', PlotStutusLookUP);
+        console.log("PlotStutusLookUP", this.serviceService.PlotStutusLook);
       },
       (error) => {
         console.log("error");

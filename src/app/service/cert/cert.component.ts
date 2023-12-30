@@ -82,7 +82,9 @@ export class CertComponent implements OnChanges {
       this.serviceService.Service_ID ==
         "7d256139-858b-48e7-a298-cae5438e526c" ||
       this.serviceService.Service_ID ===
-        "05DB54FC-E388-4E5E-AAAA-BD6141C8E533".toLocaleLowerCase()
+        "05DB54FC-E388-4E5E-AAAA-BD6141C8E533".toLocaleLowerCase() ||
+      this.serviceService.Service_ID ===
+        "1c3d5a79-350e-4214-a343-d79e92a86e0f".toLocaleLowerCase()
     ) {
       this.isThem = true;
     } else {
@@ -177,8 +179,11 @@ export class CertComponent implements OnChanges {
       async (PlotManagementLists: any) => {
         let PlotManagementList = PlotManagementLists.procPlot_Registrations;
         if (PlotManagementList.length > 0) {
-          this.getBase(plotid);
-          this.PlotManagementList = this.removeDuplicates(PlotManagementList);
+          if (PlotManagementList[0].plot_Status == 1) {
+            this.getBase(plotid);
+
+            this.PlotManagementList = this.removeDuplicates(PlotManagementList);
+          }
         }
         console.log("PlotManagementList", this.PlotManagementListfinal);
         if (this.PlotManagementList.length > 0) {
@@ -186,7 +191,20 @@ export class CertComponent implements OnChanges {
           this.PlotManagementListfinal = this.removeDuplicates(
             this.PlotManagementListfinal
           );
+
           console.log("PlotManagementList", this.PlotManagementListfinal);
+        }
+        for (
+          let index = 0;
+          index < this.PlotManagementListfinal.length;
+          index++
+        ) {
+          const element = this.PlotManagementListfinal[index];
+          if (element.plot_Status == 1) {
+            this.PlotManagementListfinal = this.PlotManagementListfinal.filter(
+              (x) => x.plot_Status == 1
+            );
+          }
         }
       },
       (error) => {

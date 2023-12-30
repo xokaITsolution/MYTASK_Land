@@ -5,7 +5,7 @@
       <label for="CertificateVersionID" class="col-sm-3 col-form-label" translate>Certificate Version ID</label>
       <div class="col-sm-9">
         <input disabled type="text" class="form-control" [disabled]="disable"
-               [(ngModel)]="themCertificateVersion.Certificate_Version_ID"
+               [(ngModel)]="themCertificateVersion.certificate_Version_ID"
                name="CertificateVersionID" id="CertificateVersionID" placeholder="Certificate Version ID">
       </div>
     </div>
@@ -14,8 +14,8 @@
     <div class="form-group row col-md-7">
       <label for="fullname" class="col-sm-3 col-form-label" translate>Customer Full Name</label>
       <div class="col-sm-9">
-        <input type="text" [disabled]="disable" class="form-control" [(ngModel)]="themCertificateVersion.Them_Customer_ID" name="fullname"
-          id="fullname" placeholder="full name">
+        <input type="text" [disabled]="disable" class="form-control" [(ngModel)]="themCertificateVersion.them_Customer_ID" name="fullname"
+          id="fullname" placeholder="full name" >
         <!-- <select  disabled class="form-control"
                 [(ngModel)]="themCertificateVersion.Them_Customer_ID" name="ThemCustomerID" id="ThemCustomerID">
           <option disabled translate>select</option>
@@ -35,7 +35,7 @@
     <div class="form-group row col-md-7">
       <label for="Remark" class="col-sm-3 col-form-label" translate>Remark</label>
       <div class="col-sm-9">
-        <textarea class="form-control" [disabled]="disable" [(ngModel)]="themCertificateVersion.Remark" name="Remark"
+        <textarea class="form-control" [disabled]="disable" [(ngModel)]="themCertificateVersion.Rremark" name="Remark"
                   id="Remark"
                   [placeholder]="'Remark' | translate"></textarea>
       </div>
@@ -43,7 +43,7 @@
     <div class="form-group row col-md-7">
       <label for="Date" class="col-sm-3 col-form-label" translate>Date</label>
       <div class="col-sm-9">
-        <input type="Date" [disabled]="disable" class="form-control" [(ngModel)]="themCertificateVersion.Date"
+        <input type="Date" [disabled]="disable" class="form-control" [(ngModel)]="themCertificateVersion.date"
                name="Date" id="Date"
                placeholder="Date">
       </div>
@@ -53,7 +53,7 @@
       <label for="IsActive" class="col-sm-3 col-form-label" translate>Is Active</label>
 
       <div class="col-sm-9">
-        <p-checkbox [disabled]="disable" [(ngModel)]="themCertificateVersion.Is_Ative" name="IsActive" id="IsActive"
+        <p-checkbox [disabled]="disable" [(ngModel)]="themCertificateVersion.is_Ative" name="IsActive" id="IsActive"
                     binary="true"></p-checkbox>
       </div>
     </div>
@@ -86,10 +86,10 @@
   </ng-template>
   <ng-template pTemplate="body" let-them>
     <tr [class.active]="them == themCertificateVersion">
-      <td>{{them.Them_Customer_ID}}</td>
-      <td>{{them.Date}}</td>
+      <td>{{them.them_Customer_ID}}</td>
+      <td>{{them.date}}</td>
       <td>
-        <p-checkbox [disabled]="true" [(ngModel)]="them.Is_Ative" name="IsActive1" id="IsActive1"
+        <p-checkbox [disabled]="true" [(ngModel)]="them.is_Ative" name="IsActive1" id="IsActive1"
                     binary="true"></p-checkbox>
       </td>
       <td>

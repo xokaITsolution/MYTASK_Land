@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -29,13 +30,15 @@ export class DeptSuspensionRecordComponent implements OnChanges {
   @Input() licenceData;
   customerdata: any;
   Customerdept: boolean;
+  isBank: boolean = false;
 
   constructor(
     private ngxSmartModalService: NgxSmartModalService,
     private deptSuspensionRecordService: DeptSuspensionRecordService,
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService,
-    private serviceService: ServiceService
+    private serviceService: ServiceService,
+    private cdr: ChangeDetectorRef
   ) {
     this.deptSuspensionRecord = new DeptSuspensionRecord();
   }
@@ -47,23 +50,26 @@ export class DeptSuspensionRecordComponent implements OnChanges {
   }
   selectOption(e) {
     if (e == "suspended") {
-      this.deptSuspensionRecord.Is_Suspended = true;
-      this.deptSuspensionRecord.Is_Released = false;
+      this.deptSuspensionRecord.is_Suspended = true;
+      this.deptSuspensionRecord.is_Released = false;
     } else {
-      this.deptSuspensionRecord.Is_Suspended = false;
-      this.deptSuspensionRecord.Is_Released = true;
+      this.deptSuspensionRecord.is_Suspended = false;
+      this.deptSuspensionRecord.is_Released = true;
     }
     console.log(
-      this.deptSuspensionRecord.Is_Suspended,
-      this.deptSuspensionRecord.Is_Released
+      this.deptSuspensionRecord.is_Suspended,
+      this.deptSuspensionRecord.is_Released
     );
   }
   getdeed(Version_ID) {
-    this.deptSuspensionRecordService.getAll(Version_ID).subscribe(
+    this.deptSuspensionRecordService.getAllapi(Version_ID).subscribe(
       (deptSuspension) => {
         let a;
         a = deptSuspension;
-        this.deptSuspensionRecordList = Object.assign([], a.list);
+        this.deptSuspensionRecordList = Object.assign(
+          [],
+          a.procDebt_Suspension_Records
+        );
         console.log("this.deptSuspensionRecord", this.deptSuspensionRecordList);
       },
       (error) => {
@@ -73,73 +79,68 @@ export class DeptSuspensionRecordComponent implements OnChanges {
   }
 
   checkRelease() {
-    this.deptSuspensionRecord.Is_Suspended = false;
-    this.deptSuspensionRecord.Is_Released = true;
+    this.deptSuspensionRecord.is_Suspended = false;
+    this.deptSuspensionRecord.is_Released = true;
   }
 
   checkSuspended() {
-    this.deptSuspensionRecord.Is_Suspended = true;
-    this.deptSuspensionRecord.Is_Released = false;
+    this.deptSuspensionRecord.is_Suspended = true;
+    this.deptSuspensionRecord.is_Released = false;
   }
   save() {
-    this.deptSuspensionRecordService.save(this.deptSuspensionRecord).subscribe(
-      (deptSuspension) => {
-        console.log("deptSuspension", deptSuspension);
-        const toast = this.notificationsService.success(
-          "Sucess",
-          deptSuspension
-        );
+    this.deptSuspensionRecordService
+      .saveapi(this.deptSuspensionRecord)
+      .subscribe(
+        (deptSuspension) => {
+          console.log("deptSuspension", deptSuspension);
+          const toast = this.notificationsService.success("Sucess");
 
-        this.getdeed(this.deptSuspensionRecord.Certificate_Version_No);
-        this.deptForm = false;
-        this.completed.emit();
-      },
-      (error) => {
-        console.log(error);
-        if (error.status == "400") {
-          const toast = this.notificationsService.error(
-            "Error",
-            error.error.InnerException.Errors[0].message
-          );
-        } else {
-          const toast = this.notificationsService.error(
-            "Error",
-            "SomeThing Went Wrong"
-          );
+          this.getdeed(this.deptSuspensionRecord.certificate_Version_No);
+          this.deptForm = false;
+          this.completed.emit();
+        },
+        (error) => {
+          console.log(error);
+          if (error.status == "400") {
+            const toast = this.notificationsService.error(
+              "Error",
+              error.error.InnerException.Errors[0].message
+            );
+          } else {
+            const toast = this.notificationsService.error(
+              "Error",
+              "SomeThing Went Wrong"
+            );
+          }
         }
-      }
-    );
+      );
     console.log("saveing....");
   }
 
   add() {
-    this.deptSuspensionRecordService.Add(this.deptSuspensionRecord).subscribe(
-      (deptSuspension) => {
-        console.log("deptSuspension", deptSuspension);
-        const toast = this.notificationsService.success(
-          "Sucess",
-          deptSuspension
-        );
+    this.deptSuspensionRecordService
+      .Addapi(this.deptSuspensionRecord)
+      .subscribe(
+        (deptSuspension) => {
+          console.log("deptSuspension", deptSuspension);
+          const toast = this.notificationsService.success("Sucess");
 
-        this.getdeed(this.deptSuspensionRecord.Certificate_Version_No);
-        this.deptForm = false;
-        this.completed.emit();
-      },
-      (error) => {
-        console.log(error);
-        if (error.status == "400") {
-          const toast = this.notificationsService.error(
-            "Error",
-            error.error.InnerException.Errors[0].message
-          );
-        } else {
-          const toast = this.notificationsService.error(
-            "Error",
-            "SomeThing Went Wrong"
-          );
+          this.getdeed(this.deptSuspensionRecord.certificate_Version_No);
+          this.deptForm = false;
+          this.completed.emit();
+        },
+        (error) => {
+          console.log(error);
+          if (error.status == "400") {
+            const toast = this.notificationsService.error("Error", error.error);
+          } else {
+            const toast = this.notificationsService.error(
+              "Error",
+              "SomeThing Went Wrong"
+            );
+          }
         }
-      }
-    );
+      );
     console.log("saveing....");
   }
   getcustomer(globvar) {
@@ -149,12 +150,16 @@ export class DeptSuspensionRecordComponent implements OnChanges {
     });
   }
   adddeed() {
+    console.log("this.Selectedcert", this.Selectedcert);
+
     this.deptForm = true;
     this.deptSuspensionRecord = new DeptSuspensionRecord();
-    this.deptSuspensionRecord.Certificate_Version_No =
+    this.deptSuspensionRecord.certificate_Version_No =
       this.Selectedcert.version_ID;
+    this.deptSuspensionRecord.title_Deed_No = this.Selectedcert.title_Deed_No;
 
-    this.deptSuspensionRecord.SDP_ID = this.licenceData.SDP_ID;
+    this.deptSuspensionRecord.sDP_ID = this.licenceData.SDP_ID;
+
     // this.deptSuspensionRecord.Suspend_Start_Date = formatDate(
     //   new Date(),
     //   "MM/dd/yyyy",
@@ -165,19 +170,27 @@ export class DeptSuspensionRecordComponent implements OnChanges {
     //   this.deptSuspensionRecord.Suspend_Start_Date
     // );
   }
+  onOptionsSelected(e) {
+    if (e == 2) {
+      this.isBank = true;
+      this.cdr.detectChanges();
+    } else {
+      this.isBank = false;
+    }
+  }
 
   selectdeed(dept) {
     console.log("deptdept", dept);
 
     this.deptSuspensionRecord = dept;
-    if (this.deptSuspensionRecord.Suspend_Start_Date != null) {
-      this.deptSuspensionRecord.Suspend_Start_Date =
-        this.deptSuspensionRecord.Suspend_Start_Date.split("T")[0];
+    if (this.deptSuspensionRecord.suspend_Start_Date != null) {
+      this.deptSuspensionRecord.suspend_Start_Date =
+        this.deptSuspensionRecord.suspend_Start_Date.split("T")[0];
     }
-    if (this.deptSuspensionRecord.Is_Suspended) {
+    if (this.deptSuspensionRecord.is_Suspended) {
       this.selectOption("suspended");
     }
-    if (this.deptSuspensionRecord.Is_Released) {
+    if (this.deptSuspensionRecord.is_Released) {
       this.selectOption("released");
     }
     //  if(){
@@ -188,7 +201,7 @@ export class DeptSuspensionRecordComponent implements OnChanges {
     //   this.deptSuspensionRecord.Suspend_Start_Date =
     //     this.deptSuspensionRecord.Suspend_Start_Date.split("T")[0];
     //  }
-    this.getcustomer(this.deptSuspensionRecord.Suspended_By);
+    this.getcustomer(this.deptSuspensionRecord.suspended_By);
     this.deptForm = true;
   }
 
@@ -197,7 +210,7 @@ export class DeptSuspensionRecordComponent implements OnChanges {
   }
 
   closeModal(customer) {
-    this.deptSuspensionRecord.Suspended_By = customer.customer_ID;
+    this.deptSuspensionRecord.suspended_By = customer.customer_ID;
     console.log("closeing.....");
     console.log("closeing.....", customer.customer_ID);
     // this.ngxSmartModalService.getModal(modal).close();
@@ -205,17 +218,18 @@ export class DeptSuspensionRecordComponent implements OnChanges {
 }
 
 class DeptSuspensionRecord {
-  public ID: string;
-  public Certificate_Version_No: string;
-  public Suspended_By: string;
-  public Suspend_Start_Date: any;
-  public Suspend_End_Date: any;
-  public Suspend_Reason: string;
-  public Letter_Ref_No: string;
-  public Letter_Ref_Date: any;
-  public Remark: string;
-  public Is_Suspended: boolean;
-  public Is_Released: boolean;
-  public SDP_ID;
-  public Title_Deed_No;
+  public id: string;
+  public certificate_Version_No: string;
+  public suspended_By: string;
+  public suspend_Start_Date: any;
+  public suspend_End_Date: any;
+  public suspend_Reason: string;
+  public letter_Ref_No: string;
+  public letter_Ref_Date: any;
+  public remark: string;
+  public is_Suspended: boolean;
+  public is_Released: boolean;
+  public debt_Suspend_Amount: any;
+  public sDP_ID;
+  public title_Deed_No;
 }

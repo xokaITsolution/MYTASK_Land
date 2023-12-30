@@ -12,7 +12,7 @@
           id="PlotID" [placeholder]="'PlotID'|translate">
       </div>
     </div>
-    <div class="form-group row col-md-6">
+    <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
       <label for="NumberOfLift" class="col-sm-3 col-form-label" translate>Number of Lift</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [(ngModel)]="propertyRegister.number_of_Lift" name="NumberOfLift"
@@ -28,7 +28,7 @@
           <!-- #PropertyID="ngModel" [ngClass]="{ 'is-invalid': PropertyID.invalid }" [disabled]="disable" required -->
       </div>
     </div>
-    <div class="form-group row col-md-6">
+    <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
       <label for="BuildingSize" class="col-sm-3 col-form-label" translate>Building Size (M2)</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [(ngModel)]="propertyRegister.building_Size_M2" name="BuildingSize"
@@ -36,7 +36,7 @@
            #BuildingSize="ngModel" appNumberOnly [ngClass]="{ 'is-invalid': BuildingSize.invalid }" [disabled]="disable"  required >
       </div>
     </div>
-    <div class="form-group row col-md-6">
+    <div class="form-group row col-md-6" >
       <label for="Description" class="col-sm-3 col-form-label" translate>Description</label>
       <div class="col-sm-9">
         <textarea class="form-control" [(ngModel)]="propertyRegister.description" name="Description" id="Description"
@@ -45,7 +45,7 @@
         </textarea>
       </div>
     </div>
-        <div class="form-group row col-md-6">
+        <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
           <label class="col-sm-3 col-form-label" for="Proportional_from_Compound_Size" translate="">Proportional from Compound
             Size</label>
           <div class="col-sm-9">
@@ -54,7 +54,7 @@
                required type="number" appNumberOnly [ngClass]="{ 'is-invalid': Proportional_from_Compound_Size.invalid }" [disabled]="disable">
           </div>
         </div>
-    <div class="form-group row col-md-6">
+    <div class="form-group row col-md-6" >
       <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Property Status</label>
       <div class="col-sm-9">
         <select [disabled]="disable"  class="form-control" [(ngModel)]="propertyRegister.property_Status_ID" name="PropertyStatus"
@@ -71,14 +71,14 @@
       <div class="col-sm-9">
         <select [disabled]="disable" class="form-control" [(ngModel)]="propertyRegister.property_Type_ID" name="PropertyType"
           id="PropertyType"
-            #PropertyType="ngModel" [ngClass]="{ 'is-invalid': PropertyType.invalid }" required>
+            #PropertyType="ngModel" #mySelect (change)='onOptionsSelected(mySelect.value)' [ngClass]="{ 'is-invalid': PropertyType.invalid }" required>
           <option disabled>select</option>
           <option *ngFor="let PropertyType of serviceComponent.PropertyTypeLookUP;"
             [value]="PropertyType.Property_Type_ID">{{PropertyType.Property_Type}}</option>
         </select>
       </div>
     </div>
-    <div class="form-group row col-md-6">
+    <div class="form-group row col-md-6" >
       <label for="TotalCompoundSize" class="col-sm-3 col-form-label" translate>Total Compound Size</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [(ngModel)]="propertyRegister.compound_Size_M2" [disabled]="disable"
@@ -86,7 +86,8 @@
            #TotalCompoundSize="ngModel" appNumberOnly [ngClass]="{ 'is-invalid': TotalCompoundSize.invalid }" required>
       </div>
     </div>
-      <div class="form-group row col-md-6"><label class="col-sm-3 col-form-label" for="Size_In_Proportional" translate="">Size
+      <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
+        <label class="col-sm-3 col-form-label" for="Size_In_Proportional" translate="">Size
           In Proportional</label>
         <div class="col-sm-9">
           <input class="form-control" id="Size_In_Proportional" name="Size_In_Proportional" [disabled]="disable"
@@ -94,14 +95,14 @@
             #Size_In_Proportional="ngModel" appNumberOnly [ngClass]="{ 'is-invalid': Size_In_Proportional.invalid }" required>
         </div>
       </div>
-    <div class="form-group row col-md-6">
+    <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
       <label for="BasementFloor" class="col-sm-3 col-form-label" translate>Basement Floor</label>
       <div class="col-sm-9">
         <input type="text" class="form-control" [(ngModel)]="propertyRegister.basement_Floor_No" name="BasementFloor"
           id="BasementFloor" [placeholder]="'Basement Floor'|translate" [disabled]="disable">
       </div>
     </div>
-    <div class="form-group row col-md-6">
+    <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
       <label for="PropertyParent" class="col-sm-3 col-form-label" translate>Property Parent</label>
       <div class="col-sm-9">
         <!--<input type="text" class="form-control"   name="PropertyParent"  id="PropertyParent" placeholder="Property Parent">-->
@@ -116,14 +117,14 @@
 
       </div>
     </div>
-    <div class="form-group row col-md-6">
+    <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
       <label for="UpperFloor" class="col-sm-3 col-form-label" translate>Upper Floor</label>
       <div class="col-sm-9">
         <input type="text" class="form-control" [(ngModel)]="propertyRegister.upper_Floor_No" name="UpperFloor"
           id="UpperFloor" [placeholder]="'Upper Floor'|translate" [disabled]="disable">
       </div>
     </div>
-   <div class="form-group row col-md-6" *ngIf="isnew">
+   <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture && isnew">
       <label class="col-sm-3 col-form-label" translate>Map Plan</label>
       <div class="col-sm-9">
         <p-fileUpload *ngIf="!disable" #form customUpload="true" (uploadHandler)="upload($event,form)"
@@ -139,7 +140,7 @@
         </div>
       </div>
     </div>
-    <div class="form-group row col-md-6">
+    <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
       <label for="ParkingSize" class="col-sm-3 col-form-label" translate>Parking size</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [(ngModel)]="propertyRegister.parking_Area_M2" name="ParkingSize"
@@ -148,7 +149,7 @@
           [ngClass]="{ 'is-invalid': ParkingSize.invalid }" [disabled]="disable" required>
       </div>
     </div>
-    <div class="form-group row col-md-6">
+    <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
       <label for="HouseNo" class="col-sm-3 col-form-label" translate>House No</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [(ngModel)]="propertyRegister.houseNo" name="HouseNo" id="HouseNo"
@@ -166,7 +167,7 @@
       </div>
     </div> -->
   
-            <div class="form-group row col-md-6" *ngIf="language !== 'amharic'">
+            <div class="form-group row col-md-6" *ngIf="language !== 'amharic'" >
               <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>
               <div class="col-sm-9">
                 <input type="date" class="form-control" [disabled]="disable" [(ngModel)]="propertyRegister.registration_Date"
@@ -189,14 +190,27 @@
           name="LocationName" placeholder="Location Name" type="text" [(ngModel)]="propertyRegister.LocationName"></div>
     </div> -->
     
-    <div class="form-group row col-md-6"><label class="col-sm-3 col-form-label" for="Building_No" translate="">Building
+    <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
+      <label class="col-sm-3 col-form-label" for="Building_No" translate="">Building
         No</label>
       <div class="col-sm-9">
         <input class="form-control" id="Building_No"
-          name="Building_No" [placeholder]="'Building No'|translate" type="text" [(ngModel)]="propertyRegister.building_No" [disabled]="disable" ></div>
+          name="Building_No" [placeholder]="'Building No'|translate" type="text" [(ngModel)]="propertyRegister.building_No" 
+           #Building_No="ngModel"  
+          [ngClass]="{ 'is-invalid': Building_No.invalid && isbuildingApartama }" [disabled]="disable" [required]="isbuildingApartama"
+           ></div>
+    </div>
+    <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture && isbuildingApartama">
+      <label class="col-sm-3 col-form-label" for="Room_No" translate="">Room
+        No</label>
+      <div class="col-sm-9">
+        <input class="form-control" id="Room_No" name="Room_No" [placeholder]="'Building No'|translate" type="text"
+          [(ngModel)]="propertyRegister.room_No" #Room_No="ngModel"
+          [ngClass]="{ 'is-invalid': Room_No.invalid && isbuildingApartama }" [disabled]="disable" [required]="isbuildingApartama">
+      </div>
     </div>
     
-    <div class="form-group row col-md-6">
+    <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
       <label class="col-sm-3 col-form-label" for="Location_of_Property"
         translate="">Location of Property</label>
       <div class="col-sm-9">
@@ -204,13 +218,17 @@
           name="Location_of_Property" [placeholder]="'Location of Property'|translate" type="text" [(ngModel)]="propertyRegister.location_of_Property" [disabled]="disable"></div>
     </div>
     
-    <div class="form-group row col-md-6"><label class="col-sm-3 col-form-label" for="Floor_No" translate="" >Floor No</label>
+    <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
+      <label class="col-sm-3 col-form-label" for="Floor_No" translate="" >Floor No</label>
       <div class="col-sm-9">
         <input class="form-control" id="Floor_No" name="Floor_No" [(ngModel)]="propertyRegister.floor_No"
-          [placeholder]="'Floor No'|translate" type="number" [disabled]="disable"></div>
+          [placeholder]="'Floor No'|translate" type="number" 
+          #Floor_No="ngModel"  
+          [ngClass]="{ 'is-invalid': Floor_No.invalid && isbuildingApartama }" [disabled]="disable" [required]="isbuildingApartama"
+          ></div>
     </div>
   
-    <div class="form-group row col-md-6">
+    <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
       <label  for="is_commerscial"  class="col-sm-3 col-form-label"  translate="">is_commerscial</label>
     <div class="col-sm-9">
      
@@ -221,16 +239,19 @@
 
 
   </div>
-  <button *ngIf="isnew" type="button" [ngClass]="{'blinking': !serviceService.ispropoertylocation}" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
-    (click)="ismodaEnable=true">Spatial</button>&nbsp;
-    <button *ngIf="isnew && !disable"    type="button" [disabled]="!f.valid" class="btn btn-primary" (click)="save();"
-    translate>update</button>
-    <span style="color:red;font-weight: bolder;font-size: large;" *ngIf="!serviceService.ispropoertylocation"
-      translate>you need to save
-      Property Location first</span>
 
-  <button *ngIf="!isnew && !disable" type="button" [disabled]="!f.valid" class="btn btn-primary" (click)="confirmsave();"
-    translate>Save</button>
+    <button *ngIf="isnew" type="button" [ngClass]="{'blinking': !serviceService.ispropoertylocation && !serviceService.isagriculture}" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
+      (click)="ismodaEnable=true">Spatial</button>&nbsp;
+
+      <button *ngIf="isnew && !disable && !serviceService.isagriculture"    type="button" [disabled]="!f.valid" class="btn btn-primary" (click)="save();"
+      translate>update</button>
+      <span style="color:red;font-weight: bolder;font-size: large;" *ngIf="!serviceService.ispropoertylocation && !serviceService.isagriculture"
+        translate>you need to save
+        Property Location first</span>
+  
+    <button *ngIf="!isnew && !disable && !serviceService.isagriculture" type="button" [disabled]="!f.valid" class="btn btn-primary" (click)="confirmsave();"
+      translate>Save</button>
+
 
 </form>
 
@@ -474,16 +495,16 @@
 
       </div>
    
-      <div class="ngxsmartmodal-footer">
+      <div class="ngxsmartmodal-footer" >
         <!-- Modal footer content -->
           <div class="modal-footer">
             <div *ngIf="Hight_Meter.invalid">
               <span translate class="text-danger">Requierd</span>
             </div>
-            <button type="button" class="btn btn-primary" (click)="saveproploc();ismodaEnable=false" *ngIf="!isproplocnew &&  !disable"
+            <button type="button" class="btn btn-primary" (click)="saveproploc();ismodaEnable=false" *ngIf="!isproplocnew &&  !disable && !serviceService.isagriculture"
               [disabled]="!location.valid" translate>Save</button>
             <button type="button" class="btn btn-primary" (click)="updateproploc();ismodaEnable=false"
-              *ngIf="isproplocnew &&  !disable" [disabled]="!location.valid" translate>Update</button>
+              *ngIf="isproplocnew &&  !disable && !serviceService.isagriculture" [disabled]="!location.valid" translate>Update</button>
             <button type="button" class="btn btn-danger" (click)="ismodaEnable=false" translate>Close</button>
           </div>
       </div>
