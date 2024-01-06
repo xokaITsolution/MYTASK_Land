@@ -1048,7 +1048,7 @@ export class GisMapComponent implements AfterViewInit {
 
   Bind_Features(geojson, layerName) {
     if (layerName === "Plot_Locations") {
-      debugger;
+      //debugger;
 
       // Filter out features where Is_Active is false or null
       geojson.features = geojson.features.filter(
@@ -1469,7 +1469,21 @@ export class GisMapComponent implements AfterViewInit {
         remove: true, // Enable the remove/edit tool
       },
     };
-    const drawControl = new L.Control.Draw(options);
+    // const drawControl = new L.Control.Draw(options);
+    // this.map.addControl(drawControl);
+    const optionss = {
+      draw: {
+        polyline: true,
+        polygon: true,
+        rectangle: true,
+        marker: true,
+        // Exclude circle
+        circle: false,
+      },
+      // Add other options as needed
+    };
+
+    const drawControl = new L.Control.Draw(optionss);
     this.map.addControl(drawControl);
 
     this.map.on("draw:created", (e) => {
@@ -2027,9 +2041,9 @@ export class GisMapComponent implements AfterViewInit {
       editedLayers.eachLayer((layer) => {
         if (layer instanceof L.Polygon) {
           const coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the edited polygon
-          this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(
-            this.coordinates
-          );
+          // this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(
+          //   this.coordinates
+          // );
           console.log(
             "🚀 ~ file: gis-map.component.ts:1630 ~ this.map.on ~ tempcord:",
             this.ServiceService.coordinateForwgs84
@@ -2101,6 +2115,10 @@ export class GisMapComponent implements AfterViewInit {
               // Do something with the coordinates, such as displaying or processing them
               // For example, you can set them in a service or perform other actions
               this.ServiceService.coordinate = this.utmCoordinates;
+              console.log(
+                "🚀 ~ file: gis-map.component.ts:2104 ~ editedLayers.eachLayer ~ coordinate:",
+                this.ServiceService.coordinate
+              );
               console.log("utmCoordinates", utmCoordinates);
               // this.ServiceService.shapes.push(drawnShape);
 
@@ -2157,9 +2175,9 @@ export class GisMapComponent implements AfterViewInit {
 
   mapToPolygonFormat(coordinates: { lat: number; lng: number }[]): string {
     // Ensure there are at least 3 coordinates to form a polygon
-    if (coordinates.length < 3) {
-      throw new Error("At least 3 coordinates are required to form a polygon.");
-    }
+    // if (coordinates.length <= 3) {
+    //   throw new Error("At least 3 coordinates are required to form a polygon.");
+    // }
 
     // Sort the coordinates in counter-clockwise order
     const sortedCoordinates = this.sortCoordinatesCounterClockwise(coordinates);

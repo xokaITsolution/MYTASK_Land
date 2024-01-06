@@ -282,8 +282,8 @@ export class CertComponent implements OnChanges {
         // this.BaseTable = (Object.assign([], this.BaseTable));
         const uniqueJobMatchIDs = {};
         const uniqueData = BaseTable.filter((item) => {
-          if (!uniqueJobMatchIDs[item.Title_Deed_No]) {
-            uniqueJobMatchIDs[item.Title_Deed_No] = true;
+          if (!uniqueJobMatchIDs[item.Ownership_ID]) {
+            uniqueJobMatchIDs[item.Ownership_ID] = true;
             return true;
           }
           return false;
@@ -293,7 +293,7 @@ export class CertComponent implements OnChanges {
           this.BaseTablefinal.push(this.BaseTable[0]);
           this.BaseTablefinal = this.BaseTablefinal.filter(
             (item, index, self) =>
-              self.findIndex((i) => i.Title_Deed_No === item.Title_Deed_No) ===
+              self.findIndex((i) => i.Ownership_ID === item.Ownership_ID) ===
               index
           );
           console.log("BaseTable", this.BaseTablefinal);

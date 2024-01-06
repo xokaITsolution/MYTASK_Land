@@ -32,7 +32,7 @@
           <td *ngIf="task.status !== 'O' && task.status !== 'A  '">
             {{ task.todo_comment }}
           </td>
-          <td>{{task.start_date}}</td>
+          <td>{{task.start_date | date :"M/d/yy" }}</td>
           <td>{{task.description}}</td>
           <td>{{task.status}}</td>
           <td (mouseenter)="task.showButton = true" (mouseleave)="task.showButton = false">

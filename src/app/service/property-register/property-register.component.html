@@ -228,13 +228,25 @@
           ></div>
     </div>
   
-    <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
+    <!-- <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
       <label  for="is_commerscial"  class="col-sm-3 col-form-label"  translate="">is_commerscial</label>
     <div class="col-sm-9">
      
     <p-checkbox  [(ngModel)]="propertyRegister.is_commerscial" name="is_commerscial" id="IsActive1"
       binary="true"></p-checkbox>
       </div>
+  </div> -->
+  <div class="form-group row col-md-6">
+    <label for="PropertyType" class="col-sm-3 col-form-label" translate>property posetion type</label>
+    <div class="col-sm-9">
+      <select [disabled]="disable" class="form-control" [(ngModel)]="propertyRegister.property_Type_ID"
+        name="PropertyType" id="PropertyType" #PropertyType="ngModel" #mySelect
+        (change)='onOptionsSelected(mySelect.value)' [ngClass]="{ 'is-invalid': PropertyType.invalid }" required>
+        <option disabled>select</option>
+        <option *ngFor="let PropertyType of serviceComponent.PropertyTypeLookUP;" [value]="PropertyType.Property_Type_ID">
+          {{PropertyType.Property_Type}}</option>
+      </select>
+    </div>
   </div>
 
 
