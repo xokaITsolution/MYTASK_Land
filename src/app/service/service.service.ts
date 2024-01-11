@@ -81,6 +81,7 @@ export class ServiceService {
   private PaymentDetailUrl = environment.rootPath + "Payment_Details"; // URL to web api
   private Plot_Land_Grade_lookup =
     environment.rootPath + "Plot_Land_Grade_lookup"; // URL to web api
+  private View_propertyUse = environment.rootPathApi + "view/View_propertyUse"; // URL to web api
   private Lease_Stuts_Lookup =
     environment.rootPath + "Lease_Owned_Status_Lookup/Get";
   private lookup = environment.rootPath + "BPEL/GetLookUp?DropGownName";
@@ -305,6 +306,9 @@ export class ServiceService {
 
   GetPlot_Land_Grade_lookup() {
     return this.http.get(this.Plot_Land_Grade_lookup);
+  }
+  GetProperty_use_lookup() {
+    return this.http.get(this.View_propertyUse);
   }
 
   UpdateLicence(LicenceData) {

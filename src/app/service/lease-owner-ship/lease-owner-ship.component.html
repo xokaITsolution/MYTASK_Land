@@ -2,13 +2,13 @@
 <form #f="ngForm" *ngIf ="serviceService.isleaseForm"  novalidate name="leaseform">
   <!--  -->
   <div class="form-row">
-    <div class="form-group row col-md-6">
+    <!-- <div class="form-group row col-md-6" >
       <label for="LeaseID" class="col-sm-3 col-form-label" translate>Lease ID</label>
       <div class="col-sm-9">
         <input type="text" disabled class="form-control" [(ngModel)]="leaseOwnerShip.ID" name="LeaseID" id="LeaseID"
-          [placeholder]="'Lease ID' | translate">
+          [placeholder]="'Lease ID' | translate"  hidden>
       </div>
-    </div>
+    </div> -->
     <div class="form-group row col-md-6">
       <label for="FreeHold" class="col-sm-3 col-form-label" translate>Free Hold</label>
       <div class="col-sm-9">

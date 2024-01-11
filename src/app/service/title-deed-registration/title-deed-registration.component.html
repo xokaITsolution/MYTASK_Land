@@ -178,7 +178,7 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
                 [ngClass]="{ 'is-invalid': Transferd_Value.invalid }" [disabled]="disable" required>
             </div>
           </div>
-  <div class="form-group row col-md-7">
+  <div class="form-group row col-md-7" *ngIf="Isshow">
     <label for="Estimate_Value" class="col-sm-3 col-form-label" translate>Estimate Value</label>
     <div class="col-sm-9">
       <input type="Estimate_Value" class="form-control" [(ngModel)]="titleDeedRegistration.estimate_Value"
@@ -187,7 +187,7 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
         [disabled]="disable" required>
     </div>
   </div>
-    <div class="form-group row col-md-7">
+    <div class="form-group row col-md-7" *ngIf="Isshow">
       <label for="Capital_Gain_Value" class="col-sm-3 col-form-label" translate>Capital Gain Value</label>
       <div class="col-sm-9">
         <input type="Capital_Gain_Value" class="form-control" [(ngModel)]="titleDeedRegistration.capital_Gain_Value"

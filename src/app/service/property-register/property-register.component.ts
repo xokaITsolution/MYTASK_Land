@@ -63,6 +63,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   ismodaEnable: boolean;
   maxWidth: string = "1400px";
   isbuildingApartama: boolean;
+  proprty_Use_lookup: Object;
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -177,7 +178,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     }
     console.log("is new :: ", this.isnew);
     console.log("is disable :: ", this.disable);
+    this.GetpropertyUselookup();
   }
+
   selectedDateTime(dates: any, selecter) {
     if (selecter == 1) {
       this.propertyRegister.registration_Date =
@@ -204,7 +207,18 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       return datenow.nowTime;
     }
   }
+  GetpropertyUselookup() {
+    this.serviceService.GetProperty_use_lookup().subscribe(
+      (res) => {
+        this.proprty_Use_lookup = res;
 
+        console.log("Plot_Land_Grade_lookup", this.proprty_Use_lookup);
+      },
+      (error) => {
+        console.log("error");
+      }
+    );
+  }
   async save() {
     if (this.serviceService.isproportinal == true) {
       let totalsize =
@@ -364,6 +378,26 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       this.isbuildingApartama = true;
     } else {
       this.isbuildingApartama = false;
+    }
+  }
+  onOptionsSelecteds(e) {
+    console.log(
+      "🚀 ~ file: property-register.component.ts:358 ~ onOptionsSelecteds ~ e:",
+      e
+    );
+    if (e == 5) {
+      this.serviceService.isagriculture = true;
+
+      this.propertyRegister.proportional_from_Compound_Size = 0;
+      this.propertyRegister.parking_Area_M2 = 0;
+
+      this.propertyRegister.property_Status_ID = 1;
+      this.propertyRegister.property_Type_ID = 1014;
+
+      this.propertyRegister.description = "የእርሻ ይዞታ አገልግሎት/For Agriculture";
+      this.propertyRegister.registration_Date = new Date();
+    } else {
+      this.serviceService.isagriculture = false;
     }
   }
   getplotlocbyid(Plot_ID) {
@@ -1314,6 +1348,7 @@ export class PropertyRegister {
   public parent;
   public is_commerscial;
   public room_No;
+  public proprty_Use;
 }
 export class PropformLocation {
   public proporty_Id: any;
