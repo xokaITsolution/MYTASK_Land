@@ -1480,6 +1480,10 @@ export class GisMapComponent implements AfterViewInit {
         // Exclude circle
         circle: false,
       },
+      edit: {
+        featureGroup: this.editableLayers, // Specify the feature group to edit
+        remove: true, // Enable the remove/edit tool
+      },
       // Add other options as needed
     };
 

@@ -174,6 +174,7 @@ export class ServiceService {
   allLicenceData: any;
   totalsizeformerage = 0;
   isagriculture: boolean = false;
+  isRecordDocumentationManager: boolean;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);

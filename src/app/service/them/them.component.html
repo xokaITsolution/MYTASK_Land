@@ -14,7 +14,7 @@
     <div class="form-group row col-md-7">
       <label for="fullname" class="col-sm-3 col-form-label" translate>Customer Full Name</label>
       <div class="col-sm-9">
-        <input type="text" [disabled]="disable" class="form-control" [(ngModel)]="themCertificateVersion.them_Customer_ID" name="fullname"
+        <input type="text" [disabled]="disable" class="form-control" [(ngModel)]="Customer_NAME" name="fullname"
           id="fullname" placeholder="full name" >
         <!-- <select  disabled class="form-control"
                 [(ngModel)]="themCertificateVersion.Them_Customer_ID" name="ThemCustomerID" id="ThemCustomerID">
@@ -76,7 +76,7 @@
 <p-table [value]="themCertificateVersionList" [paginator]="true" [rows]="5">
   <ng-template pTemplate="header">
     <tr>
-      <th scope="col" translate>Them Customer ID</th>
+      <th scope="col" translate>Them Customer fullname</th>
       <th scope="col" translate>Date</th>
       <th scope="col" translate>Is Active</th>
       <th scope="col">
@@ -86,7 +86,7 @@
   </ng-template>
   <ng-template pTemplate="body" let-them>
     <tr [class.active]="them == themCertificateVersion">
-      <td>{{them.them_Customer_ID}}</td>
+      <td>{{them.Customer_NAME}}</td>
       <td>{{them.date}}</td>
       <td>
         <p-checkbox [disabled]="true" [(ngModel)]="them.is_Ative" name="IsActive1" id="IsActive1"

@@ -359,6 +359,19 @@ export class ServiceComponent implements OnInit {
         }
       }
     });
+    this.serviceService.getUserRole().subscribe((response: any) => {
+      for (let index = 0; index < response.length; index++) {
+        const element = response[index];
+
+        if (element.RoleId == "8C133397-587E-456F-AB31-9CF5358BE8D2") {
+          this.serviceService.isRecordDocumentationManager = true;
+          break;
+        } else {
+          console.log("responseresponseresponse", element);
+          this.serviceService.isRecordDocumentationManager = false;
+        }
+      }
+    });
     // this.preback();
     if (
       environment.Lang_code === "am-et" ||
