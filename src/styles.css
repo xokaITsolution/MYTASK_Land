@@ -345,7 +345,7 @@ select {
 .ngxsmartmodal {
   display: none;
   position: fixed;
-    top: 20%;
+    top: 15%;
     left: 0;
   right: 0;
   bottom: 0;
@@ -355,7 +355,7 @@ select {
   justify-content: center;
   align-items: center;
   
-
+height: 100%;
 }
 
 .ngxsmartmodal--open {

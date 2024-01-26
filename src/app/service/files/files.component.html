@@ -1,0 +1,209 @@
+<!-- <div>
+
+  <div class="form-row mt-5">
+    <div class="col-md-12">
+      <div *ngIf="RequiredDocs">
+        <form #f="ngForm" novalidate name="proform">
+          <div class="form-group row col-md-12" *ngFor="let RequiredDoc of RequiredDocs; let i = index;">
+            <label for="File" class="col-md-4 col-form-label">
+              {{ language === 'amharic' ? RequiredDoc.description_Local : RequiredDoc.description_en }}
+            </label>
+            <div class="col-md-8">
+              <div>
+
+              </div>
+              <div *ngIf="!RequiredDoc.File">
+                <p-fileUpload #fild id="File" name="demo[]" customUpload="true"
+                  (uploadHandler)="upload($event,RequiredDoc,fild)" [auto]="true" [disabled] ="disabled"
+                  accept=".pdf,.jpg,.jfif,.png,.gif,.doc,.docx,.xls,.xlsx,.csv,.geojson,.zip" [chooseLabel]="'UPLOAD' | translate"
+                 maxFileSize="2900000">
+                </p-fileUpload>
+
+              </div>
+              <div *ngIf="RequiredDoc.File">
+                <button type="button" class="btn btn-primary" (click)="removeUpload(RequiredDoc)" [disabled] ="disabled" translate="">Remove</button>
+              </div>
+              <div *ngIf="RequiredDoc.required">
+                <input type="hidden" class="form-control" #file="ngModel" [(ngModel)]="RequiredDoc.File"
+                  [name]="RequiredDoc.description_en" id="NumberOfLift" placeholder="Number of Lift" required>
+                <div *ngIf="file.invalid">
+                   <span class="text-danger">REQUIRED</span>
+                </div>
+              </div>
+              <div *ngIf="RequiredDoc.File">
+                <div
+                  *ngIf="RequiredDoc.fileType !== 'image/jpeg' && RequiredDoc.fileType !== 'image/png' && RequiredDoc.fileType !== 'image/gif' && RequiredDoc.fileType !== 'application/pdf'">
+                  <div class="alert alert-info" translate>
+                    Document uploaded
+                  </div>
+                </div>
+                <div
+                  *ngIf="RequiredDoc.fileType === 'image/jpeg' || RequiredDoc.fileType === 'image/png' || RequiredDoc.fileType === 'image/gif'">
+                  <img height="30%" width="30%" [src]="RequiredDoc.File" alt="FileUPloaded" />
+                </div>
+                <div *ngIf="RequiredDoc.fileType === 'application/pdf'">
+                  <iframe width="100%" [src]="RequiredDoc.File" alt="FileUPloaded" class="pdf-ifram"></iframe>
+                </div>
+                <span>File name: {{ RequiredDoc.fileName }}</span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<div>
+
+  <div class="form-row mt-5">
+    <div class="col-md-12">
+      <div *ngIf="RecordComponent.RequerdDocspre">
+        <form #f="ngForm" novalidate name="proform">
+          <p-table [value]="RecordComponent.RequerdDocspre" [tableStyle]="{ 'min-width': '100rem' }">
+            <ng-template pTemplate="header">
+              <tr>
+                <th translate>Document</th>
+                <th translate>Attachment</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-RequerdDocpre let-rowIndex="rowIndex" *ngFor="let RequerdDocpre of RecordComponent.RequerdDocspre;let ok of hide; let i = index;">
+              <tr [pSelectableRow]="RequerdDocpre" [class.selected]="selectedRowIndex === rowIndex">
+                <td>
+                  <label for="File" class="col-md-4 col-form-label">
+                    {{ language === 'amharic' ? RequerdDocpre.description_Local : RequerdDocpre.description_en }}
+                  <span *ngIf="RequerdDocpre.required" style="color:red ; size: 100px;">&nbsp;*&nbsp;</span></label>
+                 </td>
+                <td  > 
+                  <div >
+                    <div>
+       
+                    </div>
+                    <div *ngIf="!RequerdDocpre.File"  >
+              
+                  <p-fileUpload #fild [id]="'file'+i" name="demo[]" customUpload="true" (uploadHandler)="upload($event, RequerdDocpre, fild);"
+                    [auto]="true" accept=".pdf,.jpg,.jfif,.png,.gif,.doc,.docx,.xls,.xlsx,.csv,.geojson,.zip"
+                    [chooseLabel]="'UPLOAD'" maxFileSize="2900000" [ngStyle]="RequerdDocpre.required ? {'border': '2px solid red'} : {}">
+                    <!-- Conditionally apply 'required-border' class -->
+                  </p-fileUpload>
+      
+                      <span *ngIf="RequerdDocpre.required" style="color:red ; size: 50px;">ሰነድ ማያያዝ ያስፈልጋል</span>
+                    </div>
+                    <!-- <div *ngIf="uploadedDocumnet">
+                      <button type="button" class="btn btn-primary" (click)="removeUpload(RequerdDocpre)" [disabled]="disabled"
+                        translate="">Remove</button>
+                    </div> -->
+                    <div *ngIf="RequerdDocpre.required">
+                      <input type="hidden" class="form-control" #file="ngModel" [(ngModel)]="RequerdDocpre.File"
+                        [name]="RequerdDocpre.description_en" id="NumberOfLift" placeholder="Number of Lift" required>
+                      <div *ngIf="file.invalid">
+                        <!-- <span class="text-danger">REQUIRED</span> -->
+                      </div>
+                    </div>
+                    <div *ngIf="RequerdDocpre.File">
+      
+                      <div *ngIf="!RequerdDocpre.File">
+                        <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="4">
+                        </p-progressSpinner>
+                      </div>
+                      <!-- <div *ngIf="uploadedDocumnet" [hidden]="disDocument" >
+                        <div>
+                        <iframe width="100%" [src]="documentupload" alt="FileUPloaded"  class="pdf-ifram"></iframe>
+                        
+                           </div></div>  -->
+                       <div
+                        *ngIf="mimeExtension[RequerdDocpre.mimeType]?.extension == 'pdf' || mimeExtension[RequerdDocpre.mimeType]?.extension == 'geojson' || mimeExtension[RequerdDocpre.mimeType]?.extension == 'xlsx'">
+                        <!-- <div *ngIf="PreviewshowdialogeArray[i]">
+                          <button type="button" [hidden]="hide"  class="btn btn-primary" (click)="removeUpload(RequerdDocpre)" [disabled]="disabled"
+                          translate="">Remove</button>
+                          
+                          <iframe width="100%" [src]="RequerdDocpre.File" alt="FileUPloaded" class="pdf-ifram"></iframe>
+                            <span>File name: {{ RequerdDocpre.fileName }}</span>
+                        </div> -->
+                        <div >
+                          <!-- <div class="alert alert-info" [hidden]="RequerdDocpre.hidden">
+                            <p> file uploaded</p> 
+                                                      </div> -->
+                                                      <button type="button" [hidden]="!RequerdDocpre.hidden"  class="btn btn-primary" [id]="'r'+ i" (click)="removeUpload(RequerdDocpre);hideCloseBtn=true" [disabled]="disabled"
+                                                      translate="">Remove</button>
+                                                     
+                            
+                                                      <button type="button"  class="btn btn-primary" [id]="'p' + i" (click)="showdiv(rowIndex);hideDiv=false" [disabled]="disabled" translate="">
+                                                        preview
+                                                      </button>
+                          
+                          <div >
+                            <div >
+                              <div [id]="'div' + i" *ngIf="selectdiv === rowIndex" [hidden]="hideDiv">
+                                <div>
+
+                                  <iframe width="100%" [src]="RequerdDocpre.File" alt="FileUPloaded" class="pdf-ifram"></iframe>
+                                <span>File name: {{ RequerdDocpre.fileName }}</span>
+                                  
+                          <div class="alert alert-info">
+                            <a [href]='RequerdDocpre.File'
+                              [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType]?.extension">
+                              Attached - Please download!
+                            </a>
+                          </div>
+                                </div>
+                                <button type="button"   class="btn btn-primary" [id]="'r'+ i" (click)="hideDiv=true" [disabled]="disabled"
+                            translate="">close</button>
+                              </div>
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
+                       <div
+                        *ngIf="mimeExtension[RequerdDocpre.mimeType]?.extension == 'jpg' || mimeExtension[RequerdDocpre.mimeType]?.extension == 'png' || mimeExtension[RequerdDocpre.mimeType]?.extension == 'gif'">
+                        <div >
+                          <!-- <div class="alert alert-info" [hidden]="RequerdDocpre.hidden">
+                            <p> file uploaded</p> 
+                                                      </div> -->
+                                                      <button type="button" [hidden]="!RequerdDocpre.hidden"  class="btn btn-primary" [id]="'r'+ i" (click)="removeUpload(RequerdDocpre);hideCloseBtn=true" [disabled]="disabled"
+                                                      translate="">Remove</button>
+                                                     
+                            
+                                                      <button type="button"  class="btn btn-primary" [id]="'p' + i" (click)="showdiv(rowIndex);hideDiv=false" [disabled]="disabled" translate="">
+                                                        preview
+                                                      </button>
+                          
+                          <div >
+                            <div >
+                              <div [id]="'div' + i" *ngIf="selectdiv === rowIndex" [hidden]="hideDiv">
+                                <div>
+
+                                  <img height="30%" width="30%" [src]="RequerdDocpre.File" alt="FileUploaded" />
+                                  <span>File name: {{ RequerdDocpre.fileName }}</span>
+                                  
+                          <div class="alert alert-info">
+                            <a [href]='RequerdDocpre.File'
+                              [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType]?.extension">
+                              Attached - Please download!
+                            </a>
+                          </div>
+                                </div>
+                                <button type="button"   class="btn btn-primary" [id]="'r'+ i" (click)="hideDiv=true" [disabled]="disabled"
+                            translate="">close</button>
+                              </div>
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div> 
+                      
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+           
+          
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

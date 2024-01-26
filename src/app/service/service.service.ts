@@ -11,6 +11,64 @@ import { catchError } from "rxjs/operators";
 export class ServiceService {
   public Service_Name: string = null;
   disablefins: boolean = true;
+  private taskdropdown = environment.rootPathApi + "tasks/proctasks";
+  private servicedropdwn = environment.rootPathApi + "services/procservices";
+  private DocumentArc =
+    environment.rootPathApi + "Document_Archive/procDocument_Archive";
+  private orgdropdwn =
+    environment.rootPathApi + "organizations/procorganizations";
+  private Requirement_Documents =
+    environment.rootpath2 + "getRequrementDocumentOfTasks";
+  private save_Documentoftask = environment.rootpath2 + "SaveDocumentMaster";
+  private Save_License_Service =
+    environment.rootpath2 + "saveLicenceServiceRecord";
+  private Remove_Document = environment.rootpath2 + "Remove_RequrementDocument";
+  private License_Service = environment.rootpath2 + "License_Service";
+  private Tasks = environment.rootpath2 + "getTasks";
+  private Document = environment.rootpath2 + "getAllDocument";
+  private saveFileLookUP = environment.rootpath2 + "SaveDocumentMaster";
+  private UpdateCertURL1 = environment.rootPath + "Document_Archive";
+  private UpdateCertURL =
+    environment.rootPathApi + "Document_Archive/procDocument_Archive";
+  private GetApplicationNumberByUserURL =
+    environment.rootPath2 + "GetApplicationNumberByUser";
+  private getRequerdURL =
+    environment.rootpath2 + "getRequrementDocumentOfTasks";
+  private All_Service =
+    "http://197.156.93.110/XOKA.eoffice.bpel_Land/api/" + "BPEL/Service";
+  private Task_Service =
+    "http://197.156.93.110/XOKA.eoffice.bpel_Land/api/" + "BPEL/getTasks";
+  private All_Org = environment.rootpath2 + "AllOrg";
+  public customerUrl = environment.rootPathApi + "Customer/procCustomer";
+  public Username =
+    environment.rootPathApi + "view/View_GetcustomerAllWithVitalId/";
+  public CustomerId =
+    environment.rootPathApi +
+    "view/View_GetcustomerAllWithVitalId/Customer_ID/";
+  public CustomerByColumn =
+    environment.rootPathApi + "Customer/procCustomer/Column/";
+  public QRcode = environment.rootPathApi + "QRCode/QRCode";
+  public CustomerByColumn1 =
+    environment.rootPathApi +
+    "Customer/procCustomer/Column/Column/CustomerLoadByTitledeedculumn/";
+  private EthiopianToGregorian =
+    environment.rootPathApi + "EthiopianToGregorian";
+  private gregorianToEthiopianDate =
+    environment.rootPathApi + "gregorianToEthiopianDate";
+  public DocByAppNo =
+    environment.rootPathApi +
+    "View_RecordAppNoAndDocIdByAppNo/procView_RecordAppNoAndDocIdByAppNo/";
+  public DeedByAPP =
+    environment.rootPathApi + "view/View_DeedRegstration/Application_No/";
+  public DeedByCustId =
+    environment.rootPathApi + "view/View_DeedRegstration12/Customer_ID";
+  public AppbyUserId =
+    environment.rootPathApi +
+    "ApplicationLoadByUserId/procApplicationLoadByUserId/";
+
+  private getTodandAppNoURL = environment.rootPath + "TodandAppNo";
+  private RemoveDocURL = environment.rootPath + "Remove_RequrementDocument";
+  private License_ServiceURL = environment.rootPath + "License_Service";
   private paymentUrl =
     environment.rootPath +
     "Payment?sortOrder=test&currentFilter&searchString&pageIndex&pageSize";
@@ -34,10 +92,7 @@ export class ServiceService {
   private CertificateVersionUrl1 =
     environment.rootPath3 + "Certificate_Version/procCertificate_Version";
   private DeedUrl = environment.rootPath + "Deed_Registration"; // URL to web api
-  private License_ServiceURL = environment.rootPath + "License_Service";
-  private License_Service =
-    environment.rootPathApi + "License_Service/procLicense_Service"; // URL to web api
-  private saveFileLookUP = environment.rootPath + "BPEL/SaveDocumentMaster"; // URL to web api
+
   private Postit_user = environment.rootPathApi + "view/View_postit_note_user";
   private CustomerTypeLookUP = environment.rootPath + "Customer_Type_Lookup"; // URL to web api
   private CustomerLookUP = environment.rootPath + "Customer"; // URL to web api
@@ -54,22 +109,18 @@ export class ServiceService {
   private PlotLandUseLookUP = environment.rootPath + "Plot_Type_Of_Use_Lookup"; // URL to web api
   private saveFormDataURL = environment.rootPath + "BPEL/Savedata"; // URL to web api
   private getTaskRuleURL = environment.rootPath + "BPEL/TaskRule"; // URL to web api
-  private getTodandAppNoURL = environment.rootPath + "BPEL/TodandAppNo"; // URL to web api
-  private getRequerdURL =
-    environment.rootPath + "BPEL/getRequrementDocumentOfTasks"; // URL to web api
+
   private nextTaskCompleteURL = environment.rootPath + "BPEL/nextTaskComplete"; // URL to web api
   private nextTaskAcceptOrRejectURl =
     environment.rootPath + "BPEL/nextTaskAcceptOrReject"; // URL to web api
   private SaveDataURL = environment.rootPath + "BPEL/SaveData"; // URL to web api
   private GetDataURL = environment.rootPath + "BPEL/GetData"; // URL to web api
-  private RemoveDocURL =
-    environment.rootPath + "BPEL/Remove_RequrementDocument"; // URL to web api
+
   private ViewAspNetUsersWorkInfoDetail =
     environment.rootPath + "view/ViewAspNetUsersWorkInfoDetail";
   private BaseUrl = environment.rootPath + "BPEL/GetCertficateBase";
   private SaveBaseUrl = environment.rootPath + "Certificate_Base";
-  private UpdateCertURL = environment.rootPath + "Document_Archive"; // URL to web api
-  docId;
+
   private SaveNoteURL = environment.rootPath + "BPEL/Edit_postit_notes"; // URL to web api
   private AddNoteURL = environment.rootPath + "BPEL/Set_postit_notes"; // URL to web api
   private SendNoteURL = environment.rootPath + "BPEL/sendNot"; // URL to web api
@@ -96,9 +147,7 @@ export class ServiceService {
   saveplotlocdata = environment.rootPath3 + "Plot_Location/procPlot_Location/";
   saveproplocdata =
     environment.rootPath3 + "Proporty_Location/procProporty_Location/";
-  private EthiopianToGregorian = environment.rootPath3 + "EthiopianToGregorian";
-  private gregorianToEthiopianDate =
-    environment.rootPath3 + "gregorianToEthiopianDate";
+
   private propertreg =
     environment.rootPath3 + "Property_Registration/procProperty_Registration";
   private propertregis =
@@ -112,10 +161,7 @@ export class ServiceService {
     environment.rootPath + "Customer_Status_Lookup"; // URL to web api
   private saveCustomeredit = environment.rootPath + "Customer";
   private dbstatus = environment.rootPath + "BPEL/";
-  public customerUrl = environment.rootPathApi + "Customer/procCustomer";
-  private GetApplicationNumberByUserURL =
-    environment.rootPathApi +
-    "view/View_getUserNameForReviewByApplication/UserName/";
+
   private APIForMoreOptionGetCustmerInformationURL =
     environment.rootPathApi +
     "view/View_APIForMoreOptionGetCustmerInformation/application_number?application_number=";
@@ -175,6 +221,8 @@ export class ServiceService {
   totalsizeformerage = 0;
   isagriculture: boolean = false;
   isRecordDocumentationManager: boolean;
+  docId;
+  currentApplicationUsers: any;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -191,6 +239,96 @@ export class ServiceService {
         "?" +
         "sortOrder=test&currentFilter&searchString&pageIndex&pageSize"
     );
+  }
+  GetApplicationNumberByUsers(username) {
+    return this.http.get(
+      this.GetApplicationNumberByUserURL + "?UserName=" + username
+    );
+  }
+  getTasks(data) {
+    return this.http.get(this.Tasks + "?ServiceCode=" + data);
+  }
+  getDocumentArc() {
+    return this.http.get(this.DocumentArc);
+  }
+  getDocIdByAppNo(AppNo) {
+    return this.http.get(this.DocByAppNo + AppNo);
+  }
+  getDeedByApp(AppNo) {
+    return this.http.get(
+      this.DeedByAPP + "Application_No?Application_No=" + AppNo
+    );
+  }
+  getDeedByCustId(CustId) {
+    return this.http.get(this.DeedByCustId + "?Customer_ID=" + CustId);
+  }
+  getAppbyUserid(UserId) {
+    return this.http.get(this.AppbyUserId + UserId);
+  }
+  getLicenceService(AppNo) {
+    return this.http.get<any[]>(
+      this.License_ServiceURL +
+        "?" +
+        "sortOrder=test&currentFilter=" +
+        AppNo +
+        "&searchString&pageIndex&pageSize"
+    );
+  }
+  saveRecord(data) {
+    console.log("logggggg1", data);
+
+    return this.http.post(
+      this.Save_License_Service +
+        "?ApplicationNo=" +
+        data.appno +
+        "&ServiceCode=" +
+        data.selectedService +
+        "&applicationDate=" +
+        data.date +
+        "&SDP=" +
+        data.SDP +
+        "&TitleDeedNo=" +
+        data.Deed +
+        "&Woredaid=" +
+        data.Woreda +
+        "&ploteNo=" +
+        data.FullName_AM,
+      null
+    );
+  }
+  deletedoc() {
+    return this.http.delete(this.Remove_Document);
+  }
+
+  getorg() {
+    return this.http.get(this.All_Org);
+  }
+  getreqdoc() {
+    return this.http.get(this.Requirement_Documents);
+  }
+  postdocfortask(data) {
+    return this.http.post(this.save_Documentoftask, data);
+  }
+  gettask(serviceCode: string) {
+    const url = `${this.Task_Service}?ServiceCode=${encodeURIComponent(
+      serviceCode
+    )}`;
+    return this.http.get(url);
+  }
+  getservice() {
+    return this.http.get(this.All_Service);
+  }
+  getUsernme(data) {
+    return this.http.get(this.Username + "UserName?UserName=" + data);
+  }
+  getByCustomerId(data) {
+    return this.http.get(this.CustomerId + "Customer_ID?Customer_ID=" + data);
+  }
+  getQRcode(data) {
+    return this.http.get(this.QRcode + "?data=" + data);
+  }
+  getCustomerByCols(col) {
+    return this.http.get(this.CustomerByColumn + col);
   }
   getuserName(Appno) {
     return this.http.get(this.getusernameUrl + Appno);

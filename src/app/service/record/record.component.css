@@ -1,0 +1,6 @@
+.app-datepicker-ethiopian {
+    position: absolute;
+    top: -50px; /* Adjust this value based on the desired positioning */
+    left: 0;
+    z-index: 99999999; /* Ensure the datepicker appears above the popup */
+  }

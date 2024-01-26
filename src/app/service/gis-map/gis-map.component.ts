@@ -944,7 +944,7 @@ export class GisMapComponent implements AfterViewInit {
   getcapablities(_workspace) {
     //
     // GetCapabilities request to retrieve layer names within the group
-    const capabilitiesUrl = `${environment.geoser}/${_workspace}/wms?service=wms&request=getcapabilities&version=1.1.0&tiled=true`;
+    const capabilitiesUrl = `${environment.geoser}/${_workspace}/wms?service=wms&request=getcapabilities&version=1.1.1`;
 
     // 'http://197.156.93.110:8080/geoserver/Arada_AddisLand/gwc/service/wms?service=wms&request=getcapabilities&version=1.1.0&tiled=true';
     fetch(capabilitiesUrl)
@@ -1052,7 +1052,9 @@ export class GisMapComponent implements AfterViewInit {
 
       // Filter out features where Is_Active is false or null
       geojson.features = geojson.features.filter(
-        (feature) => feature.properties.Is_Active === true
+        (feature) =>
+          feature.properties.Is_Active === true ||
+          feature.properties.Is_Active == null
       );
 
       let isNorthernHemisphere: any = "N";
@@ -1797,7 +1799,7 @@ export class GisMapComponent implements AfterViewInit {
 
           // Add the transformed GeoJSON layer to the map
 
-          this.drawnShape.addTo(this.map);
+          //this.drawnShape.addTo(this.map);
           this.utmCoordinates.push(this.utmCoordinates[0]);
           //points.push(points[0])
           this.sample = this.drawnShape;
@@ -1867,7 +1869,7 @@ export class GisMapComponent implements AfterViewInit {
 
             // Add the transformed GeoJSON layer to the map
 
-            this.drawnShape.addTo(this.map);
+            //this.drawnShape.addTo(this.map);
             this.utmCoordinates.push(this.utmCoordinates[0]);
             //points.push(points[0])
             this.sample = this.drawnShape;
@@ -1880,7 +1882,7 @@ export class GisMapComponent implements AfterViewInit {
             this.ServiceService.coordinate = this.utmCoordinates;
             //  this.ServiceService.shapes = this.aaa.push(this.drawnShape);
             // Transform GeoJSON to EPSG:20137 CRS
-            this.editableLayers.addLayer(layer);
+            this.editableLayers.addLayer(this.drawnShape);
           }
         } else if (layer instanceof L.Circle) {
           // Get the center LatLng of the circle

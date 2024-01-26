@@ -231,6 +231,11 @@
               <div *ngIf="ID==7">
                 <app-certletter [disable]="false" (completed)="EnableFins();saveFormm2('{}');" [AppNo]="AppNo"
                   [certCode]="licenceData.Certificate_Code" [licenceData]="licenceData"></app-certletter>
+                  
+              </div>
+              <div *ngIf="ID==12">
+               
+                  <app-record [useNamelist]="useNamelist"></app-record>
               </div>
               <div *ngIf="ID==9">
                 <app-property (completed)="saveFormm('{}');" (getpro)="getPropertyTypeLookUP()" [LicenceData]="licenceData"

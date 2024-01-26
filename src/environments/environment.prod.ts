@@ -30,4 +30,6 @@ export const environment = {
   multipleplotcanbeadd: window["multipleplotcanbeadd"],
   folderpath: window["folderpath"],
   Totalareatolerance: window["Totalareatolerance"],
+  subcity: window["subcity"],
+  rootpath2: window["rootpath2"],
 };

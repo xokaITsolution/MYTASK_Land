@@ -15,7 +15,7 @@
            window["iconpath"]='/DesktopModules/MVC/TASK/Views/Item/assets/assets/marker-icon.png'
       window['rootPath'] = 'http://197.156.93.110/XOKA.eoffice.bpel_land/api/';
        window["rootPathApi"] = "http://197.156.93.110/Xoka_land_API/api/";
-    
+    window["rootpath2"] = "http://197.156.93.110/XOKA.eoffice.bpel_Land/api/BPEL/";
       window['local_GIS_server'] = './assets/geojson';
     
       window['wfs_geoserver'] = 'http://192.168.0.133:8082/geoserver/ows';
@@ -28,6 +28,7 @@
       window['groupLayerName'] = "Arada_AddisLand:W1.Arada.Layers";
       window['parentGroupName'] = "AddisLand"
       window['groupName'] = "W1.Arada.Layers";
+       window['subcity'] = window.location.pathname.split("/")[1]
         window['SubcityName'] =  window.location.pathname.split("/")[1]+ "_AddisLand"
    const workspace = window.location.pathname.split("/")[1] + '_AddisLand';
       window['geoserverUrl'] = `http://land.xokait.com.et:8080/geoserver/${workspace}/wms`;

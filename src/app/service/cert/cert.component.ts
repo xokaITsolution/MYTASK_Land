@@ -229,26 +229,24 @@ export class CertComponent implements OnChanges {
   getDeed(plotID) {
     this.DeedTable = [];
     this.certificateVersionService.getDeedTable(plotID).subscribe(
-      (DeedTable) => {
+      (DeedTable: any) => {
         this.DeedTable = DeedTable;
-        console.log(
-          "DeedTable =>> plaot id " +
-            plotID +
-            "  //  DeedTable" +
-            this.DeedTable
-        );
-        if (this.DeedTable != undefined || this.DeedTable != null) {
-          for (let i = 0; i < this.DeedTable.length; i++) {
-            for (let j = 0; j < this.BaseTable.length; j++) {
-              if (
-                this.DeedTable[i].Title_Deed_No ==
-                this.BaseTable[j].Title_Deed_No
-              ) {
-                this.DeedTable.splice(i, 1);
-              }
-            }
-          }
-        }
+        // console.log(
+        //   "DeedTable =>> plaot id " + plotID + "  //  DeedTable" + DeedTable
+        // );
+        console.log("🚀 ~ CertComponent ~ getDeed ~ DeedTable:", DeedTable);
+        // if (this.DeedTable != undefined || this.DeedTable != null) {
+        //   for (let i = 0; i < this.DeedTable.length; i++) {
+        //     for (let j = 0; j < this.BaseTable.length; j++) {
+        //       if (
+        //         this.DeedTable[i].Title_Deed_No ==
+        //         this.BaseTable[j].Title_Deed_No
+        //       ) {
+        //         this.DeedTable.splice(i, 1);
+        //       }
+        //     }
+        //   }
+        // }
         const uniqueJobMatchIDs = {};
         const uniqueData = this.DeedTable.filter((item) => {
           if (!uniqueJobMatchIDs[item.Property_ID]) {

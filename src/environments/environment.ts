@@ -14,9 +14,9 @@ export const environment = {
   iconpath: window["iconpath"],
   formPath: window["formPath"],
 
-  //username: "AR_Tech_Officer",
-
   username: "AR_Tech_Officer",
+
+  //username: "AR_Record_Mgr",
   //username: "0910156313",
 
   // username: "BL_Cashier",
@@ -34,6 +34,7 @@ export const environment = {
   overlayLayer: window["overlayLayer"],
   layerConfig: window["layerConfig"],
   rootPath2: window["rootPath2"],
+  rootpath2: window["rootpath2"],
   rootPath3: window["rootPath3"],
   groupLayerName: window["groupLayerName"],
   parentGroupName: window["parentGroupName"],
@@ -44,6 +45,7 @@ export const environment = {
   geoser: window["geoser"],
   multipleplotcanbeadd: window["multipleplotcanbeadd"],
   folderpath: window["folderpath"],
+  subcity: window["subcity"],
 };
 
 /*

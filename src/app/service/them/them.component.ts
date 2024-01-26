@@ -238,6 +238,7 @@ export class ThemComponent implements OnChanges {
   addThem() {
     this.themform = true;
     this.isnew = true;
+    this.Customer_NAME = null;
     this.themCertificateVersion = new ThemCertificateVersion();
     this.themCertificateVersion.certificate_Version_ID =
       this.Selectedcert.version_ID;
@@ -283,6 +284,23 @@ export class ThemComponent implements OnChanges {
     console.log("closeing.....", customer);
     this.themCertificateVersion.them_Customer_ID = customer.customer_ID;
     console.log("closeing.....", customer.customer_ID);
+    if (this.language == "amharic") {
+      this.Customer_NAME =
+        customer.applicant_First_Name_AM +
+        "  " +
+        customer.applicant_Middle_Name_AM +
+        " " +
+        customer.applicant_Last_Name_AM;
+      console.log("closeing.....");
+      //
+    } else {
+      this.Customer_NAME =
+        customer.applicant_First_Name_EN +
+        "  " +
+        customer.applicant_Middle_Name_En +
+        " " +
+        customer.applicant_Last_Name_EN;
+    }
     //this.ngxSmartModalService.getModal(modal).close();
   }
 }

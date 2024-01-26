@@ -137,8 +137,10 @@
 <!-- <p-blockUI [target]="pnl" [blocked]="ServiceService.isconfirmsave">
   <i class="fa fa-lock fa-5x" style="position:absolute;top:25%;left:50% ; z-index: autoZIndex;"></i>
 </p-blockUI> -->
+
+
 <div class="ngxsmartmodal" *ngIf="ismodaEnable">
-  <div class="ngxsmartmodal-dialog" [style.max-width]="maxWidth">
+  <div class="ngxsmartmodal-dialog" [style.max-width]="maxWidth" [style.max-height]="maxheight">
     <div class="ngxsmartmodal-dialog-content">
       <div class="ngxsmartmodal-header">
         <!-- Modal header content -->
@@ -169,7 +171,6 @@
     </div>
   </div>
 </div>
-
 
 
 

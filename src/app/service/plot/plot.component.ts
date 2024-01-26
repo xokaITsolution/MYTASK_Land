@@ -64,6 +64,7 @@ export class PlotComponent implements OnChanges {
   maxWidth: string = "1400px";
   isMaximized: boolean;
   PlotManagementListfinal = [];
+  maxheight: string = "500px";
 
   constructor(
     public serviceService: ServiceService,
@@ -531,12 +532,13 @@ export class PlotComponent implements OnChanges {
   }
   openFullModal() {
     this.isMaximized = true;
-    this.maxWidth = "1600px"; // Set the max width for full modal
+    this.maxWidth = "2000px"; // Set the max width for full modal
+    this.maxheight = "800px";
   }
 
   openMiniModal() {
     this.isMaximized = false;
-    this.maxWidth = "800px"; // Set the max width for mini modal
+    this.maxWidth = "1600px"; // Set the max width for mini modal
   }
   // Function to store data in local storage
   storeData() {

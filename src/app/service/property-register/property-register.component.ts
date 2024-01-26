@@ -64,6 +64,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   maxWidth: string = "1400px";
   isbuildingApartama: boolean;
   proprty_Use_lookup: Object;
+  maxheight: string;
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -1300,15 +1301,15 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     console.log("closeing.....");
     this.ngxSmartModalService.getModal(modal).close();
   }
-
   openFullModal() {
     this.isMaximized = true;
-    this.maxWidth = "1600px"; // Set the max width for full modal
+    this.maxWidth = "2000px"; // Set the max width for full modal
+    this.maxheight = "800px";
   }
 
   openMiniModal() {
     this.isMaximized = false;
-    this.maxWidth = "800px"; // Set the max width for mini modal
+    this.maxWidth = "1600px"; // Set the max width for mini modal
   }
 }
 

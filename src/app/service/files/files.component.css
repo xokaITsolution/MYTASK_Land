@@ -1,0 +1,9 @@
+.pdf-ifram {
+  width: 100%;
+  height: 300px;
+}
+/* Add a border when the 'required-border' class is applied */
+.required-border {
+  border: 2px solid red;
+  /* You can adjust the border style as needed */
+} 

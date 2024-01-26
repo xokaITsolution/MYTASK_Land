@@ -363,7 +363,10 @@ export class ServiceComponent implements OnInit {
       for (let index = 0; index < response.length; index++) {
         const element = response[index];
 
-        if (element.RoleId == "8C133397-587E-456F-AB31-9CF5358BE8D2") {
+        if (
+          element.RoleId ==
+          "8C133397-587E-456F-AB31-9CF5358BE8D2".toLocaleLowerCase()
+        ) {
           this.serviceService.isRecordDocumentationManager = true;
           break;
         } else {
@@ -434,6 +437,8 @@ export class ServiceComponent implements OnInit {
       this.ID = 9;
     } else if (this.formcode == "da8c5bd4-ea3d-4f02-b1b2-38cf26d6d1f") {
       this.ID = 10;
+    } else if (this.formcode == "cc71e78d-ef6f-4b93-8d8e-3996f1043fba") {
+      this.ID = 12;
     } else {
       this.ID = 0;
 
@@ -2209,7 +2214,8 @@ export class ServiceComponent implements OnInit {
   getuserName(AppNo) {
     this.serviceService.getuserName(AppNo).subscribe((res: any) => {
       this.useNamelist = res;
-      console.log("useNamelist", this.useNamelist, AppNo);
+      this.serviceService.currentApplicationUsers = this.useNamelist[0];
+      console.log("useNamelist", this.useNamelist[0], AppNo);
       if (this.useNamelist.length > 0) {
         this.GetApplicationNumberByUser(
           this.useNamelist[0].userName,

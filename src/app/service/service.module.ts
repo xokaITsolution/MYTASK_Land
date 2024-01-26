@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ProgressBarModule } from "primeng/progressbar";
 import { ServiceRoutingModule } from "./service-routing.module";
 import { QrCodeDirective, ServiceComponent } from "./service.component";
@@ -97,12 +97,22 @@ import {
 } from "primeng/components/dynamicdialog/dynamicdialog";
 import { NumberOnlyDirectiveDirective } from "./number-only-directive.directive";
 import { BlockUIModule } from "primeng/blockui";
+import { RecordComponent } from "./record/record.component";
+import { FilesComponent } from "./files/files.component";
+import { ListboxModule } from "primeng/listbox";
+import { BsModalService } from "ngx-bootstrap";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 @NgModule({
   imports: [
     QRCodeModule,
     //BackButtonDisableModule.forRoot({
     //  preserveScrollPosition: true
     // }),
+    ReactiveFormsModule,
+    NgbModule,
+    FormsModule,
+    ListboxModule,
+    ProgressSpinnerModule,
     BlockUIModule,
     DynamicDialogModule,
     RadioButtonModule,
@@ -160,6 +170,8 @@ import { BlockUIModule } from "primeng/blockui";
   ],
 
   declarations: [
+    FilesComponent,
+    RecordComponent,
     QrCodeDirective,
     ExampleComponent,
     PaymentComponent,
@@ -217,6 +229,8 @@ import { BlockUIModule } from "primeng/blockui";
     ThemService,
     TitleDeedRegistrationService,
     DialogService,
+    BsModalService,
   ],
+  exports: [FilesComponent],
 })
 export class ServiceModule {}
