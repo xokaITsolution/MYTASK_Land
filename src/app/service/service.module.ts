@@ -182,8 +182,8 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     PropertyRegisterComponent,
     MeasurmentComponent,
     TitleDeedRegistrationComponent,
-    CertificateVersionComponent,
     CertletterComponent,
+    CertificateVersionComponent,
 
     ThemComponent,
     DeptSuspensionRecordComponent,

@@ -32,6 +32,7 @@ export class CertComponent implements OnChanges {
   @Input() disable;
   @Input() AppNo;
   @Input() Fields;
+  @Input() Isfrompprinttask;
   DeedTable;
   BaseTable;
   // SelectedDeed;
@@ -63,6 +64,7 @@ export class CertComponent implements OnChanges {
   PlotManagementList = [];
   PlotManagementListfinal = [];
   BaseTablefinal = [];
+  DocumentArc: any;
 
   constructor(
     private serviceService: ServiceService,
@@ -156,6 +158,7 @@ export class CertComponent implements OnChanges {
 
     //this.getDeed();
   }
+
   async getEthiopianToGregorian(date) {
     console.log("checkingdate", date);
     if (date) {
@@ -326,6 +329,34 @@ export class CertComponent implements OnChanges {
         this.notificationsService.success("Sucess", "suceesfully created");
         this.displayGIS = false;
         // this.closeModall();
+        this.serviceService
+          .getLicencebyid(this.licenceData.Licence_Service_ID)
+          .subscribe((rec: any) => {
+            if (rec.procLicense_Services.length > 0) {
+              const RID = rec.procLicense_Services[0].RecordNo;
+              this.serviceService
+                .getDocumentArcbyid(RID)
+                .subscribe((DocumentArc: any) => {
+                  if (DocumentArc) {
+                    this.DocumentArc = DocumentArc.procDocument_Archives;
+                    this.DocumentArc[0].title_Deed_No =
+                      certafcateCode[0].title_Deed_No;
+                    this.serviceService
+                      .UpdateDocmentArcive(this.DocumentArc[0])
+                      .subscribe(
+                        (Licence) => {},
+                        (error) => {
+                          const toast = this.notificationsService.error(
+                            "Error",
+                            error.error
+                          );
+                        }
+                      );
+                  }
+                });
+            }
+          });
+
         this.getBase(this.Base.Plot_ID);
       },
       async (error) => {

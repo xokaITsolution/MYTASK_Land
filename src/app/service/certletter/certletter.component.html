@@ -86,9 +86,9 @@
         <ng-template pTemplate="body" let-cerltter2 let-rowData>
           <tr (click)='highlighted = rowData;selectcerltter(cerltter2)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
          
-            <td>{{cerltter2.Document_Number}}</td>
-            <td>{{cerltter2.Title_Deed_No}}</td>
-            <td>{{cerltter2.Regstration_Date}}</td>
+            <td>{{cerltter2.document_Number}}</td>
+            <td>{{cerltter2.title_Deed_No}}</td>
+            <td>{{cerltter2.regstration_Date}}</td>
             <td>
               <button type="button" class="btn btn-primary" (click)="selectcerltter(cerltter2)"  *ngIf="disable" translate>select</button>
               <button type="button" class="btn btn-primary" (click)="selectcerltter(cerltter2)"  *ngIf="!disable" translate>Edit</button>
@@ -102,37 +102,37 @@
 
   <form class="form-row" #cerlettrform="ngForm" *ngIf="cerlettrform">
     <div class="col-md-6">
-      <div class="form-group row col-12">
+      <div class="form-group row col-12" >
       <label  class="col-sm-4 col-form-label" translate>Document No</label>
       <div class="col-sm-8">
-      <input class="form-control" [disabled]="disable"   name="DocumentNo" id="DocumentNo" [(ngModel)]="cerltter.Document_Number" [placeholder]="'Document No' | translate"
+      <input class="form-control" [disabled]="disable"   name="DocumentNo" id="DocumentNo" [(ngModel)]="cerltter.document_Number" [placeholder]="'Document No' | translate"
       
       #DocumentNo="ngModel" [ngClass]="{ 'is-invalid': DocumentNo.invalid }" required>
     </div></div>
-    <div class="form-group row col-12">
+    <div class="form-group row col-12" *ngIf="isshow">
       <label  class="col-sm-4 col-form-label" translate>Shelf Column</label>
       <div class="col-sm-8">
-      <input class="form-control"  [disabled]="disable"   name="ShelfColumn" id="ShelfColumn" [(ngModel)]="cerltter.Shelf_Column" [placeholder]="'Shelf Column' | translate">
+      <input class="form-control"  [disabled]="disable"   name="ShelfColumn" id="ShelfColumn" [(ngModel)]="cerltter.shelf_Column" [placeholder]="'Shelf Column' | translate">
     </div></div>
-      <div class="form-group row col-12">
+      <div class="form-group row col-12" *ngIf="isshow">
       <label  class="col-sm-4 col-form-label" translate>Shelf No</label>      <div class="col-sm-8">
-      <input class="form-control" [disabled]="disable"   name="ShelfNo" id="ShelfNo" [(ngModel)]="cerltter.Shelf_NO" [placeholder]="'Shelf No' | translate">
+      <input class="form-control" [disabled]="disable"   name="ShelfNo" id="ShelfNo" [(ngModel)]="cerltter.shelf_NO" [placeholder]="'Shelf No' | translate">
     </div></div>
-      <div class="form-group row col-12">
+      <div class="form-group row col-12" *ngIf="isshow">
       <label  class="col-sm-4 col-form-label" translate>File Room No</label>      <div class="col-sm-8">
-      <input class="form-control"   [disabled]="disable"  name="FileRoomNo" id="FileRoomNo" [(ngModel)]="cerltter.Room" [placeholder]="'File Room No' | translate">
+      <input class="form-control"   [disabled]="disable"  name="FileRoomNo" id="FileRoomNo" [(ngModel)]="cerltter.room" [placeholder]="'File Room No' | translate">
     </div></div>
-      <div class="form-group row col-12">
+      <div class="form-group row col-12" *ngIf="isshow">
       <label  class="col-sm-4 col-form-label" translate>Shelf Row</label>      <div class="col-sm-8">
-      <input class="form-control" [disabled]="disable"   name="ShelfRow" id="ShelfRow" [(ngModel)]="cerltter.Shelf_Raw" [placeholder]="'Shelf Row' | translate">
+      <input class="form-control" [disabled]="disable"   name="ShelfRow" id="ShelfRow" [(ngModel)]="cerltter.shelf_Raw" [placeholder]="'Shelf Row' | translate">
     </div></div>  </div> <div class="col-md-6">
-      <div class="form-group row col-12">
+      <div class="form-group row col-12" *ngIf="isshow">
       <label  class="col-sm-4 col-form-label" translate>Block/Floor</label>      <div class="col-sm-8">
-      <input class="form-control"  [disabled]="disable"  name="Block/Floor" id="Block/Floor" [(ngModel)]="cerltter.Block_Floor" [placeholder]="'Block/Floor' | translate">
+      <input class="form-control"  [disabled]="disable"  name="Block/Floor" id="Block/Floor" [(ngModel)]="cerltter.block_Floor" [placeholder]="'Block/Floor' | translate">
     </div></div>
-      <div class="form-group row col-12">
+      <div class="form-group row col-12" *ngIf="isshow">
       <label  class="col-sm-4 col-form-label" translate>Site</label>      <div class="col-sm-8">
-      <input class="form-control" [disabled]="disable"   name="Site" id="Site" [(ngModel)]="cerltter.Site" [placeholder]="'Site' | translate">
+      <input class="form-control" [disabled]="disable"   name="Site" id="Site" [(ngModel)]="cerltter.site" [placeholder]="'Site' | translate">
     </div></div>
     <!--  <div class="form-group row col-12">
       <label  class="col-sm-4 col-form-label" translate>Date Created</label>
@@ -140,16 +140,16 @@
     </div>-->
     <div class="form-group row col-12"  *ngIf="language !== 'amharic'">
       <label  class="col-sm-4 col-form-label" translate>Regstration Date</label>      <div class="col-sm-8">
-      <input type="date" class="form-control"  [disabled]="disable"  name="Regstration_Date" id="Regstration_Date" [(ngModel)]="cerltter.Regstration_Date" [placeholder]="'Regstration Date' | translate">
+      <input type="date" class="form-control"  [disabled]="disable"  name="Regstration_Date" id="Regstration_Date" [(ngModel)]="cerltter.regstration_Date" [placeholder]="'Regstration Date' | translate">
     </div>  </div>
     <div  class="form-group row col-12"  *ngIf="language === 'amharic'">
       <label  class="col-sm-4 col-form-label" translate>Regstration Date</label>      <div class="col-sm-8">
-      <input type="text" class="form-control" readonly [disabled]="disable"  name="Regstration_Date" id="Regstration_Date" [(ngModel)]="cerltter.Regstration_Date" [placeholder]="'Regstration Date' | translate" appDatepickerEthiopian
+      <input type="text" class="form-control" readonly [disabled]="disable"  name="Regstration_Date" id="Regstration_Date" [(ngModel)]="cerltter.regstration_Date" [placeholder]="'Regstration Date' | translate" appDatepickerEthiopian
       (dateEmitter)="selectedDateTime($event,1)">
     </div></div>
       <div class="form-group row col-12">
       <label  class="col-sm-4 col-form-label" translate>Title Deed No</label>      <div class="col-sm-8">
-      <input type="text" disabled class="form-control" [disabled]="disable"   name="Title_Deed_No" id="Title_Deed_No " [(ngModel)]="cerltter.Title_Deed_No " [placeholder]="'Title Deed No' | translate">
+      <input type="text" disabled class="form-control" [disabled]="disable"   name="Title_Deed_No" id="Title_Deed_No " [(ngModel)]="cerltter.title_Deed_No " [placeholder]="'Title Deed No' | translate">
     </div></div>
     <div class=" col-sm-7 pull-right" *ngIf="!isnew">
       <button *ngIf="!disable"  type="button" class="btn btn-primary" (click)="save()"translate>Update</button>
@@ -159,97 +159,30 @@
     </div></div>
   </form>
 
+
+  
+  
+
   <div class="m-3" *ngIf="certltrview" >
     <!-- *ngIf="disable_new" -->
 
     <button class="m-3 btn btn-primary" type="button" (click)="isLetterPrintingConfirmation=true" translate>Show Letter Printing Confirmation</button>
 
     <button class="m-3 btn btn-primary" type="button" (click)="isCertifcatePrintforConfirmation=true" translate>Show Certifcate Print for Confirmation</button>
-  
-  </div>
-  <!--
-  <tabset #staticTabs  *ngIf="certltrview">
-    <tab heading="Letter Printing Confirmation">
-      <div class="mt-3">
-        <iframe  class="holds-the-iframe" height="2500px" width="100%" [src]="LetterReportPath" ></iframe>
+  <div *ngIf="!serviceService.isRecordDocumentationManager && isNewformat">
+    <app-cert [disable]="false" (completed)="EnableFins();saveFormm2('{}');" [licenceData]="licenceData" [todoid]="todoID"
+        [Certificate_Code]="licenceData.Certificate_Code" [disable]="false" [AppNo]="AppNo"
+        [Fields]="prepareCertificateFields" [Isfrompprinttask]="Isfrompprinttask">
+      </app-cert>
       </div>
-    </tab>
-    <tab heading="Certifcate Print for Confirmation">
-      <div class="mt-3">
-        <iframe  class="holds-the-iframe" height="2500px" width="100%" [src]="certReportPath" ></iframe>
-      </div>
-    </tab>
-  </tabset>
--->
+  </div>
+ 
 </div>
 
 
-
-<!-- <ngx-smart-modal #Letter identifier="Letter" class="nsm-dialog" >
-  <div class="modal-header">
-    <h4 class="modal-title pull-left" translate>Letter Printing Confirmation</h4>
-  </div>
-  <div class="modal-body">
-    <div class="mt-3">
-      <iframe  class="holds-the-iframe" height="1500px" width="100%" [src]="LetterReportPath" ></iframe>
-    </div>
-
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="closeModal('Letter')">Close</button>
-  </div>
-</ngx-smart-modal>
+ 
 
 
-
-<ngx-smart-modal #cert identifier="cert">
-  <div class="modal-header">
-    <h4 class="modal-title pull-left" translate>Certifcate Print for Confirmation</h4>
-  </div>
-  <div class="modal-body">
-    <div class="mt-3">
-      <iframe  class="holds-the-iframe" height="1000px" width="1000px" [src]="certReportPath" ></iframe>
-    </div>
-
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="closeModal('cert')">Close</button>
-  </div>
-</ngx-smart-modal> -->
-<!-- <p-dialog header=" Letter Printing Confirmation" [(visible)]="isLetterPrintingConfirmation" [responsive]="true" 
-[width]="1400" [minY]="70"
-[maximizable]="true"
-[contentStyle]="{'overflow-y': 'auto', 
-               'overflow-x': 'hidden', 
-               'max-height': '80vh',
-               'min-height':'250px'}">
-                           
-<div class="modal-body">
-  <iframe class="ng-template" width="100%" height="500px" [src]="LetterReportPath"></iframe>
-
-
-</div>
-    <div class=" float-right">
-      <p-button icon="pi pi-check" (click)="isLetterPrintingConfirmation=false;" label="Close" styleClass="p-button-text"></p-button>
-    </div>
-    </p-dialog> -->
-
-    <!-- <p-dialog header="Certifcate Print for Confirmation" [(visible)]="isCertifcatePrintforConfirmation" [responsive]="true" 
-    [width]="1400" [minY]="70"
-    [maximizable]="true"  
-    [contentStyle]="{'overflow-y': 'auto', 
-                   'overflow-x': 'hidden', 
-                   'max-height': '80vh',
-                   'min-height':'250px'}">
-
-
-<div class="modal-body">
-  <iframe class="ng-template" width="100%" height="500px" [src]="certReportPath"></iframe>
-</div>
-    <div class=" float-right">
-      <p-button icon="pi pi-check" (click)="isCertifcatePrintforConfirmation=false;" label="Close" styleClass="p-button-text"></p-button>
-    </div>
-    </p-dialog> -->
     <div class="ngxsmartmodal" *ngIf="isLetterPrintingConfirmation">
       <div class="ngxsmartmodal-dialog" [style.max-width]="maxWidth">
         <div class="ngxsmartmodal-dialog-content">
@@ -310,3 +243,46 @@
 
 
 
+  <ngx-smart-modal #Customer identifier="organizations">
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Issued By</h4>
+    </div>
+    <div class="modal-body">
+  
+  
+      <p-table #dt [value]="serviceComponent.orginizationlookup" [paginator]="true" [rows]="5"
+        [globalFilterFields]="['Registration_code','geo_location_Y']">
+        <ng-template pTemplate="caption">
+          <div style="text-align: right">
+  
+            <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+            <input type="text" pInputText size="50" [placeholder]="'Global Filter' | translate"
+              (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th translate>Registration_code</th>
+            <th translate>Full Name AM</th>
+            <th translate>Full Name EN</th>
+            <th translate>created_date</th>
+            <th translate>geo_location_X</th>
+            <th translate>geo_location_Y</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-organizations>
+          <tr (click)="closeModal(organizations,'organizations')">
+            <td>{{organizations.Registration_code}}</td>
+            <td>{{organizations.name_am}}</td>
+            <td>{{organizations.name_en}}</td>
+            <td>{{organizations.created_date}}</td>
+            <td>{{organizations.geo_location_X}}</td>
+            <td>{{organizations.geo_location_Y}}</td>
+  
+          </tr>
+        </ng-template>
+      </p-table>
+  
+  
+    </div>
+  </ngx-smart-modal>

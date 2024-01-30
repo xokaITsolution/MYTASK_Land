@@ -71,35 +71,35 @@ export class ThemComponent implements OnChanges {
           this.themCertificateVersionList
         );
 
-        this.themCertificateVersionList.forEach((element) => {
-          this.serviceService
-            .getcustomerbyid(element.them_Customer_ID)
-            .subscribe((resp: any) => {
-              console.log("tasktasktasktask", resp.procCustomers);
-              this.customerdata = resp.procCustomers;
-              let customer = this.customerdata[0];
-              let Customer_NAME;
-              if (this.language == "amharic") {
-                Customer_NAME =
-                  customer.applicant_First_Name_AM +
-                  "  " +
-                  customer.applicant_Middle_Name_AM +
-                  " " +
-                  customer.applicant_Last_Name_AM;
-                console.log("closeing.....");
-                //
-              } else {
-                Customer_NAME =
-                  customer.applicant_First_Name_EN +
-                  "  " +
-                  customer.applicant_Middle_Name_En +
-                  " " +
-                  customer.applicant_Last_Name_EN;
-              }
+        // this.themCertificateVersionList.forEach((element) => {
+        //   this.serviceService
+        //     .getcustomerbyid(element.them_Customer_ID)
+        //     .subscribe((resp: any) => {
+        //       console.log("tasktasktasktask", resp.procCustomers);
+        //       this.customerdata = resp.procCustomers;
+        //       let customer = this.customerdata[0];
+        //       let Customer_NAME;
+        //       if (this.language == "amharic") {
+        //         Customer_NAME =
+        //           customer.applicant_First_Name_AM +
+        //           "  " +
+        //           customer.applicant_Middle_Name_AM +
+        //           " " +
+        //           customer.applicant_Last_Name_AM;
+        //         console.log("closeing.....");
+        //         //
+        //       } else {
+        //         Customer_NAME =
+        //           customer.applicant_First_Name_EN +
+        //           "  " +
+        //           customer.applicant_Middle_Name_En +
+        //           " " +
+        //           customer.applicant_Last_Name_EN;
+        //       }
 
-              element.Customer_NAME = Customer_NAME;
-            });
-        });
+        //       element.Customer_NAME = Customer_NAME;
+        //     });
+        // });
       },
       (error) => {
         console.log(error);
@@ -247,33 +247,34 @@ export class ThemComponent implements OnChanges {
   selectThem(them) {
     this.isnew = false;
     this.themform = true;
-    this.serviceService
-      .getcustomerbyid(them.them_Customer_ID)
-      .subscribe((resp: any) => {
-        console.log("tasktasktasktask", resp.procCustomers);
-        this.customerdata = resp.procCustomers;
-        let customer = this.customerdata[0];
 
-        if (this.language == "amharic") {
-          this.Customer_NAME =
-            customer.applicant_First_Name_AM +
-            "  " +
-            customer.applicant_Middle_Name_AM +
-            " " +
-            customer.applicant_Last_Name_AM;
-          console.log("closeing.....");
-          //
-        } else {
-          this.Customer_NAME =
-            customer.applicant_First_Name_EN +
-            "  " +
-            customer.applicant_Middle_Name_En +
-            " " +
-            customer.applicant_Last_Name_EN;
-        }
+    // this.serviceService
+    //   .getcustomerbyid(them.them_Customer_ID)
+    //   .subscribe((resp: any) => {
+    //     console.log("tasktasktasktask", resp.procCustomers);
+    //     this.customerdata = resp.procCustomers;
+    //     let customer = this.customerdata[0];
 
-        this.themCertificateVersion = them;
-      });
+    //     if (this.language == "amharic") {
+    //       this.Customer_NAME =
+    //         customer.applicant_First_Name_AM +
+    //         "  " +
+    //         customer.applicant_Middle_Name_AM +
+    //         " " +
+    //         customer.applicant_Last_Name_AM;
+    //       console.log("closeing.....");
+    //       //
+    //     } else {
+    //       this.Customer_NAME =
+    //         customer.applicant_First_Name_EN +
+    //         "  " +
+    //         customer.applicant_Middle_Name_En +
+    //         " " +
+    //         customer.applicant_Last_Name_EN;
+    //     }
+
+    //   });
+    this.themCertificateVersion = them;
   }
 
   openModal(modal) {

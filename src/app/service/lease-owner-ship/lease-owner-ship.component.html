@@ -9,6 +9,19 @@
           [placeholder]="'Lease ID' | translate"  hidden>
       </div>
     </div> -->
+        <div class="form-group row col-md-6">
+          <label for="Type" class="col-sm-3 col-form-label" translate>Type</label>
+          <div class="col-sm-9">
+            <select class="form-select" [disabled]="disable" #mySelect [(ngModel)]="leaseOwnerShip.Type_ID" name="Type"
+              id="Type" #Type="ngModel" [ngClass]="{ 'is-invalid': Type.invalid }" (change)='onOptionsSelected(mySelect.value)'
+              required>
+              <option disabled translate>select</option>
+              <option *ngFor="let type of serviceComponent.Lease_Type_Lookup;" [value]="type.Lease_Type_ID">
+                {{type.Lease_Type}}
+              </option>
+            </select>
+          </div>
+        </div>
     <div class="form-group row col-md-6">
       <label for="FreeHold" class="col-sm-3 col-form-label" translate>Free Hold</label>
       <div class="col-sm-9">
@@ -20,18 +33,7 @@
       
       </div>
     </div>
-    <div class="form-group row col-md-6">
-      <label for="Type" class="col-sm-3 col-form-label" translate>Type</label>
-      <div class="col-sm-9">
-        <select class="form-select"  [disabled]="disable" #mySelect [(ngModel)]="leaseOwnerShip.Type_ID" name="Type" id="Type"
-          #Type="ngModel" [ngClass]="{ 'is-invalid': Type.invalid }"  (change)='onOptionsSelected(mySelect.value)'  required>
-          <option disabled translate>select</option>
-          <option *ngFor="let type of serviceComponent.Lease_Type_Lookup;" [value]="type.Lease_Type_ID">
-            {{type.Lease_Type}}
-          </option>
-        </select>
-      </div>
-    </div>
+
     <div class="form-group row col-md-6">
       <label for="Status" class="col-sm-3 col-form-label" translate>Status</label>
       <div class="col-sm-9">

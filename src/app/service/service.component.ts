@@ -208,6 +208,15 @@ export class ServiceComponent implements OnInit {
   updated: any;
   custmerInformation: any;
   issucess: boolean;
+  displayTab: boolean;
+  RequerdDocspreeach: any;
+  taskList: any;
+  showdWhenNoTodo: boolean;
+  PreAppDataa: any;
+  PreAppDataaa: any;
+  hid: boolean;
+  procView_RecordAppNoAndDocIdByAppNo: any;
+  selectedeachapp: any;
   constructor(
     private modalService: BsModalService,
     private activatedRoute: ActivatedRoute,
@@ -392,6 +401,7 @@ export class ServiceComponent implements OnInit {
       this.formcode = params["formcode"];
       this.AppNo = params["AppNo"];
       this.SDP_ID = params["SDP_ID"];
+
       this.getAll(this.AppNo);
       this.tskTyp = params["tskTyp"];
       this.tskID = params["tskID"];
@@ -1200,19 +1210,306 @@ export class ServiceComponent implements OnInit {
     this.getAppData(appNO);
   }
 
+  async getPriveysLicenceeach(value) {
+    try {
+      this.AppN = null;
+
+      const PriveLicence = await this.serviceService
+        .getPriveys(value)
+        .toPromise();
+
+      this.PriveLicence = PriveLicence;
+      this.PriveLicence = Object.assign([], this.PriveLicence.list);
+      this.AppNoList = [];
+
+      for (let i = 0; i < this.PriveLicence.length; i++) {
+        this.AppNoList[i] = {};
+        this.AppNoList[i].Application_No = this.PriveLicence[i].Application_No;
+      }
+
+      if (this.AppNoList.length > 0) {
+        this.pendclose(this.AppNoList[0]["Application_No"]);
+      } else {
+        this.se.emit(this.eventTypes.JSONFOUND);
+      }
+
+      this.PriveAppNoList = Object.assign([], this.AppNo);
+      this.ifAppNo = true;
+
+      return this.PriveLicence; // Return the data
+    } catch (error) {
+      console.error("Error:", error);
+      this.se.emit(this.eventTypes.JSONFOUND);
+      return null; // Return null or handle the error accordingly
+    }
+  }
+  getRequiredDocspreeach(tskID) {
+    this.serviceService.getRequerdDocs(tskID).subscribe((res) => {
+      this.RequerdDocspreeach = res;
+      this.displayTab = false;
+      console.log(
+        "taskresponsessssdd",
+        res,
+        tskID,
+        this.RequerdDocspreeach.length
+      );
+      for (let i = 0; i < this.RequerdDocspreeach.length; i++) {
+        if (this.RequerdDocspreeach[i].description_en == "Dummy") {
+          this.RequerdDocspreeach.splice(i, 1);
+          break;
+        }
+      }
+      this.serviceService
+        .getDocIdByAppNo(this.selectedeachapp)
+        .subscribe((DocIdByAppNo: any) => {
+          this.procView_RecordAppNoAndDocIdByAppNo =
+            DocIdByAppNo.procView_RecordAppNoAndDocIdByAppNos;
+          console.log(
+            "DocIdByAppNo90",
+            this.procView_RecordAppNoAndDocIdByAppNo
+          );
+          this.getAllDocumentpreforeach(
+            this.procView_RecordAppNoAndDocIdByAppNo[0].application_code,
+            this.procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id
+          );
+        });
+    });
+  }
+  getAllDocumentpreforeach(Licence_Service_ID, DocID) {
+    let updatedArray: any[] = [];
+    this.loadingPreDoc = true;
+    console.log("this.RequerdDocspre", this.RequerdDocspreeach);
+    this.serviceService.getAllDocument(Licence_Service_ID, DocID).subscribe(
+      (SavedFiles) => {
+        if (SavedFiles.length > 0) {
+          console.log("SavedFiiiilessssffff", SavedFiles, SavedFiles.length);
+
+          this.loadingPreDoc = false;
+          this.SavedFilespre = SavedFiles;
+          for (let j = 0; j < SavedFiles.length; j++) {
+            if (SavedFiles[j].AttachedBY.trim() != environment.username) {
+              this.hid = false;
+            } else {
+              this.hid = true;
+            }
+            let updatedObject = {
+              // Copy the existing properties from the original object
+              is_hidde: this.hid,
+            };
+
+            updatedArray.push(updatedObject);
+          }
+
+          this;
+          if (
+            this.RequerdDocspreeach != null ||
+            this.RequerdDocspreeach != undefined
+          )
+            this.showProgressBar = false;
+          console.log("pdf fileeee", this.RequerdDocspreeach);
+          for (let i = 0; i < this.RequerdDocspreeach.length; i++) {
+            for (let j = 0; j < SavedFiles.length; j++) {
+              if (
+                this.RequerdDocspreeach[i].requirement_code ==
+                SavedFiles[j].requirement_code
+              ) {
+                console.log("updatedArray", updatedArray[j]);
+                try {
+                  let fileData = JSON.parse(atob(SavedFiles[j].document));
+
+                  let { type, data } = fileData;
+
+                  this.RequerdDocspreeach[i].mimeType = type;
+                  this.RequerdDocspreeach[i].File =
+                    "data:" + type + ";base64, " + data;
+                  console.log(
+                    "this.RequerdDocspre[i].File",
+                    SavedFiles[j].document
+                  );
+                  this.RequerdDocspreeach[i].hidden = updatedArray[j].is_hidde;
+                  console.log(
+                    "updatedArrayyyyy",
+                    this.RequerdDocspreeach[i].hidden
+                  );
+
+                  this.RequerdDocspreeach[i].File =
+                    this.sanitizer.bypassSecurityTrustResourceUrl(
+                      this.RequerdDocspreeach[i].File
+                    );
+
+                  this.RequerdDocspreeach[i].document_code =
+                    SavedFiles[j].document_code;
+                  this.RequerdDocspreeach = this.RequerdDocspreeach;
+                } catch (e) {
+                  console.error(e);
+                }
+              }
+            }
+          }
+
+          console.log("RequerdDocspre", this.RequerdDocspreeach);
+          this.RequerdDocspreeach.forEach((item, index) => {
+            this.PreviewshowdialogeArray[index] = false; // Initialize all dialog variables to false
+          });
+        } else {
+        }
+      },
+      (error) => {
+        this.loadingPreDoc = false;
+        console.log("error");
+      }
+    );
+  }
+
+  async getappdataForeach(appNO) {
+    const result = await this.getPriveysLicenceeach(appNO);
+    console.log("PriveLicenceeach", result);
+    this.selectedeachapp = appNO;
+    if (result.length > 0) {
+      this.PriveLicence = result;
+      this.serviceService.getTodandAppNo(appNO).subscribe(
+        async (PreAppData) => {
+          console.log("🚀 ~ PreAppData:", PreAppData);
+          this.PreAppData = PreAppData;
+          if (this.PreAppData.Table.length == 0) {
+            this.serviceService
+              .getTasks(result[0].Service_ID)
+              .subscribe((ress: any) => {
+                this.taskList = ress;
+                console.log("taskresponsess", this.taskList);
+                this.showdWhenNoTodo = true;
+              });
+          } else {
+            this.showdWhenNoTodo = false;
+          }
+          // this.PreAppData = PreAppData;
+          // if (appNO != this.Application_No) {
+          //const result = await this.getPriveysLicenceeach(appNO);
+          // }
+
+          //  console.log("PriveLicenceeach", result);
+          for (let i = 0; i < this.PriveLicence.length; i++) {
+            if (this.PriveLicence[i].Application_No == appNO) {
+              this.SelectedpreApp = this.PriveLicence[i];
+              console.log("this.SelectedpreApp", this.SelectedpreApp);
+            }
+          }
+
+          this.PreAppData = Object.assign([], this.PreAppData.Table);
+          this.PreAppData.sort((a, b) => {
+            if (a.level < b.level) {
+              return -1;
+            } else if (a.level > b.level) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
+
+          this.PreAppData.find((appData) => {
+            if (appData.form_code === this.formcode) {
+              this.FormData = appData.JsonData;
+              console.log("json data pend and close :: ", appData.JsonData);
+
+              return true;
+            }
+
+            return false;
+          });
+          this.se.emit(this.eventTypes.JSONFOUND);
+
+          let allTasks = [];
+
+          if (!this.appliedNow) {
+            this.serviceService
+              .getMytasks("24d45c72-8088-4591-810a-bc674f9f0a57")
+              .subscribe((tasks) => {
+                let applicationFound = false;
+                let isPickable = true;
+                let warningData = {
+                  message: "",
+                  type: 0,
+                };
+                if (tasks["Table1"]) {
+                  allTasks = tasks["Table1"];
+
+                  allTasks.find((task) => {
+                    console.log(
+                      "task :: ",
+                      task["step_no"],
+                      " & ",
+                      task["todo_comment"],
+                      " app number :: ",
+                      this.AppNo
+                    );
+                    if (task["todo_comment"] == this.AppNo && this.AppNo) {
+                      applicationFound = true;
+                      this.PreAppData.find((appData) => {
+                        if (appData.tasks_task_code == this.tskID) {
+                          console.warn("found already saved task :: ", appData);
+                          console.log("nnn", appData.form_code);
+                          if (task["tasks_id"] != this.tskID) {
+                            console.warn("found already passed task");
+                            isPickable = false;
+                            warningData.message =
+                              "you already have gone through this task! redirecting to my task";
+                            warningData.type = this.errorType.TASKCOMPLETED;
+                            return true;
+                          }
+                          return true;
+                        }
+                        return false;
+                      });
+                    }
+                    return false;
+                  });
+                  if (!applicationFound) {
+                    isPickable = false;
+                    warningData.message =
+                      "you have completed the application! redirecting to my task";
+                    warningData.type = this.errorType.TASKCOMPLETED;
+                  }
+
+                  if (!isPickable) {
+                    this.se.emit(this.eventTypes.ALREADYAPPLIED, warningData);
+                  }
+                }
+              });
+          }
+          // this.PreAppData = (Object.assign({}, this.PreAppData.Table));
+          console.log("PreAppData", this.PreAppData);
+          this.ifTask = true;
+          this.GetNotePrevius(appNO);
+          if (this.TaskN) {
+            this.getTaskData(this.TaskN);
+          }
+        },
+        (error) => {
+          console.log("error");
+          this.se.emit(this.eventTypes.JSONFOUND);
+        }
+      );
+    }
+  }
+
   getAppData(appNO) {
     this.preAppID = 0;
     this.serviceService.getTodandAppNo(appNO).subscribe(
-      (PreAppData) => {
+      async (PreAppData) => {
         this.PreAppData = PreAppData;
         // this.PreAppData = PreAppData;
-        console.log("PriveLicence", this.PriveLicence);
+        // if (appNO != this.Application_No) {
+        //const result = await this.getPriveysLicenceeach(appNO);
+        // }
+
+        //  console.log("PriveLicenceeach", result);
         for (let i = 0; i < this.PriveLicence.length; i++) {
           if (this.PriveLicence[i].Application_No == appNO) {
             this.SelectedpreApp = this.PriveLicence[i];
             console.log("this.SelectedpreApp", this.SelectedpreApp);
           }
         }
+
         this.PreAppData = Object.assign([], this.PreAppData.Table);
         this.PreAppData.sort((a, b) => {
           if (a.level < b.level) {
@@ -1294,7 +1591,6 @@ export class ServiceComponent implements OnInit {
               }
             });
         }
-
         // this.PreAppData = (Object.assign({}, this.PreAppData.Table));
         console.log("PreAppData", this.PreAppData);
         this.ifTask = true;
@@ -1415,6 +1711,7 @@ export class ServiceComponent implements OnInit {
         }
       );
   }
+
   saveForm2(formData) {
     if (this.Licence_Service_ID == undefined) {
       this.Licence_Service_ID = "00000000-0000-0000-0000-000000000000";
@@ -1893,7 +2190,7 @@ export class ServiceComponent implements OnInit {
   }
   GetApplicationNumberByUser(username, orgcode) {
     this.serviceService
-      .GetApplicationNumberByUser(username, orgcode)
+      .GetApplicationNumberByUsers(username, orgcode)
       .subscribe((ApplicationNumber: any) => {
         this.ApplicationNumberlist = ApplicationNumber;
         this.ApplicationNumberlist.sort((a, b) => {
@@ -2175,7 +2472,10 @@ export class ServiceComponent implements OnInit {
         console.log("Licence Service", this.licenceService);
         if (this.licenceService.list.length > 0) {
           this.licenceData = this.licenceService.list[0];
+
+          this.serviceService.licenceData = this.licenceData;
           this.SDP_ID = this.licenceData.SDP_ID;
+          this.serviceService.currentsdpid = this.SDP_ID;
           this.Service_ID = this.licenceData.Service_ID;
           this.serviceService.Service_ID = this.licenceData.Service_ID;
           this.serviceService.serviceDP = this.SDP_ID;

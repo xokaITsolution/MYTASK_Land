@@ -1,8 +1,10 @@
 import {
   Component,
+  EventEmitter,
   Input,
   OnChanges,
   OnInit,
+  Output,
   SimpleChanges,
   TemplateRef,
 } from "@angular/core";
@@ -35,6 +37,7 @@ import { BehaviorSubject, empty } from "rxjs";
 export class RecordComponent implements OnChanges {
   @Input() useNamelist;
   bsConfig: Partial<BsDatepickerConfig>;
+  @Output() completed = new EventEmitter();
   model: NgbDateStruct;
   modalRef: BsModalRef;
   activeTab = "tab1";
@@ -42,6 +45,7 @@ export class RecordComponent implements OnChanges {
   search: boolean;
   public Task: any;
   Service: any;
+  Isshow: boolean = false;
   Org: any;
   hideNeww: boolean;
   appno: any;
@@ -169,6 +173,8 @@ export class RecordComponent implements OnChanges {
   selectedDate: string;
   public archive = "Document Location";
   globalDeed: any;
+  currentlicenceData: any;
+  currentTaskelected: any;
   switchTab(tab: string) {
     this.activeTab = tab;
   }
@@ -305,13 +311,13 @@ export class RecordComponent implements OnChanges {
     // Create the formatted date string in the "year-month-day" format
     const formattedDate = `${day}${month}${year}`;
 
-    console.log(formattedDate); // Output: 2023-10-02
+    console.log("formattedDate", formattedDate); // Output: 2023-10-02
     //  this.record.patchValue({
     //   // SDP: generateGuid(),
     //   // appno:"BL-"+formattedDate+"-"+randomNumber(1,99999999999999999)
     //  })
   }
-  addNew() {
+  async addNew() {
     this.getData = true;
     this.displayTab = true;
     this.disableDoc = false;
@@ -341,16 +347,47 @@ export class RecordComponent implements OnChanges {
     this.isDisabled = true;
     this.btnDisable = true;
     this.taskdisable = false;
-    this.openArchive = true;
+    this.openArchive = false;
+    if (this.language == "amharic") {
+      let regstration_Date;
+      const currentDate = new Date();
+      const formattedDate =
+        currentDate.getFullYear() +
+        "-" +
+        ("00" + (currentDate.getMonth() + 1)).slice(-2) +
+        "-" +
+        ("00" + currentDate.getDate()).slice(-2) +
+        "T" +
+        ("00" + currentDate.getHours()).slice(-2) +
+        ":" +
+        ("00" + currentDate.getMinutes()).slice(-2) +
+        ":" +
+        ("00" + currentDate.getSeconds()).slice(-2);
+      console.log(formattedDate);
 
-    this.record.patchValue({
-      appno: "",
-      selectedService: "",
-      // date: "",
-      Woreda: "",
-      // Woreda:this.licenceData.Wereda_ID,
-      Deed: "",
-    });
+      console.log(formattedDate);
+      regstration_Date = await this.getgregorianToEthiopianDate(formattedDate);
+      this.selectedDate = regstration_Date;
+      this.record.patchValue({
+        appno: "",
+        selectedService: "",
+        date: regstration_Date,
+        Woreda: "",
+        // Woreda:this.licenceData.Wereda_ID,
+        Deed: "",
+      });
+    } else {
+      let regstration_Date;
+      regstration_Date = new Date().toISOString().substr(0, 10);
+      this.record.patchValue({
+        appno: "",
+        selectedService: "",
+        date: regstration_Date,
+        Woreda: "",
+        // Woreda:this.licenceData.Wereda_ID,
+        Deed: "",
+      });
+    }
   }
 
   clear() {
@@ -481,11 +518,17 @@ export class RecordComponent implements OnChanges {
           .subscribe((AppbyUserId: any) => {
             console.log("AppbyUserId", AppbyUserId);
             this.ApplicationNumberlist =
+              AppbyUserId.procApplicationLoadByUserIds;
+            this.selectedAppno =
               AppbyUserId.procApplicationLoadByUserIds.filter(
                 (x) =>
                   x.application_number == this.useNamelist[0].application_number
-              );
-            this.selectedAppno = this.ApplicationNumberlist[0];
+              )[0];
+
+            console.log(
+              "🚀 ~ RecordComponent ~ .subscribe ~ selectedAppno:",
+              this.selectedAppno
+            );
             this.handleSelectionChange();
           });
         this.service
@@ -511,7 +554,9 @@ export class RecordComponent implements OnChanges {
   getservice() {
     this.service.getservice().subscribe((service) => {
       this.Service = service;
-      this.Service = this.Service;
+      this.Service = this.Service.filter(
+        (x) => x.is_published == true && x.is_active == true
+      );
       console.log("service", this.Service);
     });
   }
@@ -549,8 +594,6 @@ export class RecordComponent implements OnChanges {
         this.procView_RecordAppNoAndDocIdByAppNo =
           DocIdByAppNo.procView_RecordAppNoAndDocIdByAppNos;
         console.log("DocIdByAppNo90", this.procView_RecordAppNoAndDocIdByAppNo);
-        // ? this.AppNo=this.procView_RecordAppNoAndDocIdByAppNo[0].application_code;
-        // this.DocID=this.procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id;
       });
 
     this.service
@@ -558,99 +601,117 @@ export class RecordComponent implements OnChanges {
       .subscribe((licenceService) => {
         this.licenceService = licenceService;
         this.licenceData = this.licenceService.list[0];
+
         this.getPriveysLicence(this.licenceData.Application_No);
-        console.log("Licence Service", this.licenceService);
-        this.service.getDocumentArc().subscribe((DocumentArc: any) => {
-          if (DocumentArc) {
-            this.DocumentArc = DocumentArc.procDocument_Archives;
-            console.log("this.DocumentArc", DocumentArc);
+        console.log("Licence Service", this.licenceData);
 
-            this.disableForm = true;
-            // this.DocumentArc1 = this.DocumentArc.filter(
-            //   (value) =>
-            //   value.application_No == this.selectedAppno.application_number
-            //   );
-            //   console.log(
-            //     "this.selectedAppno.application_number",
-            //     this.DocumentArc1, this.DocumentArc
-            //   );
-
-            if (this.DocumentArc.length < 0) {
-              this.getData = false;
-              this.record.patchValue({
-                appno: this.licenceData.Application_No,
-                selectedService: this.licenceData.Service_ID,
-                date: formatDate(
-                  this.licenceData.Created_Date,
-                  "yyyy-MM-dd",
-                  "en"
-                ),
-                SDP: this.licenceData.SDP_ID,
-                Woreda: this.userName[0].wereda_ID,
-                // Woreda:this.licenceData.Wereda_ID,
-                Deed: this.DocumentArc[0].title_Deed_No,
-              });
-              this.getDocmentArcive(this.DocumentArc[0].title_Deed_No);
-            } else {
-              this.service
-                .getDeedByApp(this.selectedAppno.application_number)
-                .subscribe((DeedByApp: any) => {
-                  console.log("DeedByApp", DeedByApp.length);
-                  if (DeedByApp.length > 0) {
-                    this.getData = false;
-                    this.record.patchValue({
-                      appno: this.licenceData.Application_No,
-                      selectedService: this.licenceData.Service_ID,
-                      date: formatDate(
-                        this.licenceData.Created_Date,
-                        "yyyy-MM-dd",
-                        "en"
-                      ),
-                      SDP: this.licenceData.SDP_ID,
-                      Woreda: this.userName[0].wereda_ID,
-                      // Woreda:this.licenceData.Wereda_ID,
-                      Deed: DeedByApp[0].title_Deed_No,
-                    });
-                    this.getDocmentArcive(DeedByApp[0].title_Deed_No);
-                  } else {
-                    this.getData = false;
-                    this.record.patchValue({
-                      appno: this.licenceData.Application_No,
-                      selectedService: this.licenceData.Service_ID,
-                      date: formatDate(
-                        this.licenceData.Created_Date,
-                        "yyyy-MM-dd",
-                        "en"
-                      ),
-                      SDP: this.licenceData.SDP_ID,
-                      Woreda: this.userName[0].wereda_ID,
-                      // Woreda:this.licenceData.Wereda_ID,
-                      Deed: "",
-                    });
-                  }
-                });
+        this.service
+          .getLicencebyid(this.licenceData.Licence_Service_ID)
+          .subscribe((rec: any) => {
+            console.log("🚀 ~ RecordComponent ~ ).subscribe ~ rec:", rec);
+            let RID;
+            if (rec.procLicense_Services.length > 0) {
+              RID = rec.procLicense_Services[0].RecordNo;
             }
 
             this.service
-              .getTasks(this.licenceData.Service_ID)
-              .subscribe((ress: any) => {
-                if (ress) {
-                  this.taskList = ress;
-                  this.taskdisable = true;
+              .getDocumentArcbyid(RID)
+              .subscribe((DocumentArc: any) => {
+                if (DocumentArc) {
+                  this.DocumentArc = DocumentArc.procDocument_Archives;
+                  console.log("this.DocumentArc", DocumentArc);
+                  if (this.DocumentArc.length > 0) {
+                    this.recordDocumnet = this.DocumentArc[0];
+                    if (this.language == "amharic") {
+                      this.recordDocumnet.regstration_Date =
+                        this.getgregorianToEthiopianDate(
+                          formatDate(
+                            this.recordDocumnet.regstration_Date,
+                            "yyyy-MM-dd",
+                            "en"
+                          )
+                        );
+                    } else {
+                      this.recordDocumnet.regstration_Date = formatDate(
+                        this.recordDocumnet.regstration_Date,
+                        "yyyy-MM-dd",
+                        "en"
+                      );
+                    }
+                    this.disableBtn = true;
+                    this.disableForm = true;
+                  }
+                  if (this.DocumentArc.length < 0) {
+                    this.getData = false;
+                    this.record.patchValue({
+                      appno: this.licenceData.Application_No,
+                      selectedService: this.licenceData.Service_ID,
+                      date: formatDate(
+                        this.licenceData.Created_Date,
+                        "yyyy-MM-dd",
+                        "en"
+                      ),
+                      SDP: this.licenceData.SDP_ID,
+                      Woreda: this.userName[0].wereda_ID,
+                      // Woreda:this.licenceData.Wereda_ID,
+                      Deed: this.DocumentArc[0].title_Deed_No,
+                    });
+                    this.getDocmentArcive(this.DocumentArc[0].title_Deed_No);
+                  } else {
+                    this.service
+                      .getDeedByApp(this.selectedAppno.application_number)
+                      .subscribe((DeedByApp: any) => {
+                        console.log("DeedByApp", DeedByApp.length);
+                        if (DeedByApp.length > 0) {
+                          this.getData = false;
+                          this.record.patchValue({
+                            appno: this.licenceData.Application_No,
+                            selectedService: this.licenceData.Service_ID,
+                            date: formatDate(
+                              this.licenceData.Created_Date,
+                              "yyyy-MM-dd",
+                              "en"
+                            ),
+                            SDP: this.licenceData.SDP_ID,
+                            Woreda: this.userName[0].wereda_ID,
+                            // Woreda:this.licenceData.Wereda_ID,
+                            Deed: DeedByApp[0].title_Deed_No,
+                          });
+                          this.getDocmentArcive(DeedByApp[0].title_Deed_No);
+                        } else {
+                          this.getData = false;
+                          this.record.patchValue({
+                            appno: this.licenceData.Application_No,
+                            selectedService: this.licenceData.Service_ID,
+                            date: formatDate(
+                              this.licenceData.Created_Date,
+                              "yyyy-MM-dd",
+                              "en"
+                            ),
+                            SDP: this.licenceData.SDP_ID,
+                            Woreda: this.userName[0].wereda_ID,
+                            // Woreda:this.licenceData.Wereda_ID,
+                            Deed: "",
+                          });
+                        }
+                      });
+                  }
 
-                  console.log("taskresponsess", this.taskList);
+                  this.service
+                    .getTasks(this.licenceData.Service_ID)
+                    .subscribe((ress: any) => {
+                      if (ress) {
+                        this.taskList = ress;
+                        this.taskdisable = true;
+
+                        console.log("taskresponsess", this.taskList);
+                      }
+                    });
+                } else {
+                  this.openArchive = true;
                 }
               });
-          } else {
-            this.openArchive = true;
-          }
-        });
-
-        // console.log("DocIDD", this.DocIDlist, this.licenceData);
-        // this.getRequiredDocs(
-        //   this.DocIDlist.task_code,
-        //   this.DocIDlist.application_detail_id
-        // );
+          });
       });
     // You can access the selected item here and perform further actions
   }
@@ -682,7 +743,7 @@ export class RecordComponent implements OnChanges {
   }
   GetApplicationNumberByUser(username) {
     this.service
-      .GetApplicationNumberByUsers(username)
+      .GetApplicationNumberByUser(username)
       .subscribe((ApplicationNumber: any) => {
         if (ApplicationNumber != null) {
           console.log("finalystatuslist", ApplicationNumber);
@@ -828,10 +889,12 @@ export class RecordComponent implements OnChanges {
   }
   passdata(code: any) {
     console.log("this.selectedTask1", code);
+    this.currentTaskelected = code;
     this.getRequiredDocspre(code);
-    console.log("this.PreAppData", this.PreAppData.Table);
+    //console.log("this.PreAppData", this.PreAppData.Table);
   }
   getRequiredDocspre(tskID) {
+    this.RequerdDocspre = null;
     this.service.getRequerdDocs(tskID).subscribe((res) => {
       this.RequerdDocspre = res;
       this.displayTab = false;
@@ -843,64 +906,90 @@ export class RecordComponent implements OnChanges {
         }
       }
 
-      console.log("checklength", this.PreAppData.Table.length);
+      this.service
+        .getDocIdByAppNo(this.selectedAppno.application_number)
+        .subscribe((DocIdByAppNo: any) => {
+          this.procView_RecordAppNoAndDocIdByAppNo =
+            DocIdByAppNo.procView_RecordAppNoAndDocIdByAppNos;
+          console.log(
+            "DocIdByAppNo90",
+            this.procView_RecordAppNoAndDocIdByAppNo
+          );
+          if (this.procView_RecordAppNoAndDocIdByAppNo.length > 0) {
+            this.AppNo =
+              this.procView_RecordAppNoAndDocIdByAppNo[0].application_code;
+            this.DocID =
+              this.procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id;
+          }
+          this.getAllDocumentpre(
+            this.procView_RecordAppNoAndDocIdByAppNo[0].application_code,
+            this.procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id,
+            tskID
+          );
+        });
 
-      this.PreAppDataa = this.PreAppData.Table;
-      this.PreAppDataaa = this.PreAppData.Table;
-      console.log("this.PreAppDataaaatttt", this.PreAppDataaa);
-      this.selectedTask = this.PreAppDataa.filter(
-        (value) => value.tasks_task_code == tskID
-      );
-      console.log("this.selectedTaskhh", this.selectedTask);
-      if (this.PreAppDataa.length > 1) {
-        console.log("this.selectedAppno1", this.licenceData.Service_ID);
-        console.log("this.PreAppDataaaa1", this.PreAppDataaa[0]);
+      // console.log("checklength", this.PreAppData.Table.length);
+      // this.PreAppDataa = this.PreAppData.Table;
+      // this.PreAppDataaa = this.PreAppData.Table;
+      // console.log("this.PreAppDataaaatttt", this.PreAppDataaa);
+      // this.selectedTask = this.PreAppDataa.filter(
+      //   (value) => value.tasks_task_code == tskID
+      // );
+      // console.log("this.selectedTaskhh", this.selectedTask);
+      // if (this.PreAppDataa.length > 1) {
+      //   console.log("this.selectedAppno1", this.licenceData.Service_ID);
+      //   console.log("this.PreAppDataaaa1", this.PreAppDataaa[0]);
 
-        this.AppNo = this.selectedAppno.application_number;
-        this.DocID = this.selectedTask[0].docId;
-        console.log(
-          "gfghuiuyhgfdghjhg",
-          this.selectedAppno,
-          this.AppNo,
-          this.DocID
-        );
+      //   this.AppNo = this.selectedAppno.application_number;
 
-        // this.getAllDocument(
-        //   this.licenceData.Service_ID,
-        //   this.selectedTask[0].docId
-        // );
-        this.getAll(
-          this.selectedAppno.application_code,
-          this.selectedTask[0].docId
-        );
-      } else if (this.PreAppDataaa.length == 1) {
-        console.log("this.selectedAppno12", this.licenceData.Service_ID);
-        console.log("this.PreAppDataaaa12", this.PreAppDataaa[0]);
-        this.AppNo = this.selectedAppno.application_code;
-        this.DocID = this.PreAppDataaa[0].docId;
-        // this.getAllDocument(
-        //   this.licenceData.Service_ID,
-        //   this.PreAppDataaa[0].docId
-        // );
-        this.getAll(
-          this.selectedAppno.application_code,
-          this.PreAppDataaa[0].docId
-        );
-      } else if (this.PreAppDataaa.length == 0) {
-        this.AppNo =
-          this.procView_RecordAppNoAndDocIdByAppNo[0].application_code;
-        this.DocID =
-          this.procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id;
+      //   if (this.selectedTask.length == 0) {
+      //     this.DocID =
+      //       this.procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id;
+      //   } else {
+      //     this.DocID = this.selectedTask[0].docId;
+      //     this.getAll(
+      //       this.selectedAppno.application_code,
+      //       this.selectedTask[0].docId
+      //     );
+      //   }
+      //   console.log(
+      //     "gfghuiuyhgfdghjhg",
+      //     this.selectedAppno,
+      //     this.AppNo,
+      //     this.DocID
+      //   );
 
-        // this.getAllDocument(
-        //   this.licenceData.Service_ID,
-        //   this.PreAppDataaa[0].docId
-        // );
-        this.getAll(
-          this.procView_RecordAppNoAndDocIdByAppNo[0].application_code,
-          this.procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id
-        );
-      }
+      //   // this.getAllDocument(
+      //   //   this.licenceData.Service_ID,
+      //   //   this.selectedTask[0].docId
+      //   // );
+      // } else if (this.PreAppDataaa.length == 1) {
+      //   console.log("this.selectedAppno12", this.licenceData.Service_ID);
+      //   console.log("this.PreAppDataaaa12", this.PreAppDataaa[0]);
+      //   this.AppNo = this.selectedAppno.application_code;
+      //   this.DocID = this.PreAppDataaa[0].docId;
+      //   // this.getAllDocument(
+      //   //   this.licenceData.Service_ID,
+      //   //   this.PreAppDataaa[0].docId
+      //   // );
+      //   this.getAll(
+      //     this.selectedAppno.application_code,
+      //     this.PreAppDataaa[0].docId
+      //   );
+      // } else if (this.PreAppDataaa.length == 0) {
+      //   this.AppNo =
+      //     this.procView_RecordAppNoAndDocIdByAppNo[0].application_code;
+      //   this.DocID =
+      //     this.procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id;
+
+      //   // this.getAllDocument(
+      //   //   this.licenceData.Service_ID,
+      //   //   this.PreAppDataaa[0].docId
+      //   // );
+      //   if (this.procView_RecordAppNoAndDocIdByAppNo.length > 0) {
+
+      //   }
+      // }
       // else
       // if(this.procView_RecordAppNoAndDocIdByAppNo.length>0){
       //   this.AppNo=this.procView_RecordAppNoAndDocIdByAppNo[0].application_code;
@@ -982,12 +1071,20 @@ export class RecordComponent implements OnChanges {
     this.service.CreateDocmentArcive(this.recordDocumnet).subscribe(
       async (message) => {
         console.log("message", message);
+        //localStorage.setItem("RID", message[0].document_Number);
         // this.serviceService.disablefins = false;
         // if (!this.Saved) {
         //   this.completed.emit();
         //   this.Saved = true;
         // }
         // this.documentAddress=false
+        this.selectedService.licenceData.RecordNo = message[0].document_Number;
+        this.service.UpdateLicence(this.selectedService.licenceData).subscribe(
+          (Licence) => {},
+          (error) => {
+            const toast = this.notificationsService.error("Error", error.error);
+          }
+        );
         const toast = this.notificationsService.success(
           "Sucess",
           "create archive successfully"
@@ -1126,10 +1223,11 @@ export class RecordComponent implements OnChanges {
 
         this.recordDocumnet.application_No = this.response = res.split("/");
         console.log("this.response", this.response[0]);
+
         this.AppNo = this.response[0];
         this.DocID = this.response[1];
         this.getAll(this.AppNo, this.DocID);
-        this.getAllDocumentpre(this.AppNo, this.DocID);
+        //this.getAllDocumentpre(this.AppNo, this.DocID);
         const toast = this.notificationsService.success("Success", "Saved");
       },
       (error) => {
@@ -1140,7 +1238,6 @@ export class RecordComponent implements OnChanges {
         );
       }
     );
-
     this.addnew = true;
     // this.displayGIS=false
   }
@@ -1148,6 +1245,7 @@ export class RecordComponent implements OnChanges {
     console.log("Attachments", Attachments.docs);
     this.Attachments = Attachments.docs;
     let a = true;
+    this.completed.emit();
     for (let i = 0; i < this.Attachments.length; i++) {
       console.log(
         "this.Attachments[i].required && !this.Attachments[i].File",
@@ -1183,6 +1281,13 @@ export class RecordComponent implements OnChanges {
         //       this.recordDocumnet.Regstration_Date
         //     );
         // }
+        this.selectedService.licenceData.RecordNo = message[0].document_Number;
+        this.service.UpdateLicence(this.selectedService.licenceData).subscribe(
+          (Licence) => {},
+          (error) => {
+            const toast = this.notificationsService.error("Error", error.error);
+          }
+        );
         const toast = this.notificationsService.success("Sucess", message);
       },
       (error) => {
@@ -1223,6 +1328,7 @@ export class RecordComponent implements OnChanges {
     }
   }
   async getgregorianToEthiopianDate(date) {
+    console.log("checkingdate", date);
     if (date != "0001-01-01T00:00:00") {
       var datenow = await this.service
         .getgregorianToEthiopianDate(date)
@@ -1243,12 +1349,13 @@ export class RecordComponent implements OnChanges {
         dates[0]._day + "/" + dates[0]._month + "/" + dates[0]._year;
     }
   }
-  getAllDocumentpre(Licence_Service_ID, DocID) {
+  getAllDocumentpre(Licence_Service_ID, DocID, taskid) {
     let updatedArray: any[] = [];
     this.loadingPreDoc = true;
     console.log("this.RequerdDocspre", this.RequerdDocspre);
     this.service.getAllDocument(Licence_Service_ID, DocID).subscribe(
       (SavedFiles) => {
+        SavedFiles = SavedFiles.filter((x) => x.tasks_task_code == taskid);
         if (SavedFiles.length > 0) {
           console.log("SavedFiiiilessssffff", SavedFiles, SavedFiles.length);
 
@@ -1269,8 +1376,6 @@ export class RecordComponent implements OnChanges {
           }
 
           this.hide = updatedArray;
-
-          this;
           if (this.RequerdDocspre != null || this.RequerdDocspre != undefined)
             this.showProgressBar = false;
           for (let i = 0; i < this.RequerdDocspre.length; i++) {
@@ -1314,7 +1419,7 @@ export class RecordComponent implements OnChanges {
               }
             }
           }
-
+          this.hide = updatedArray;
           console.log("SavedFileeeees", updatedArray);
           console.log("RequerdDocspre", this.RequerdDocspre);
           this.RequerdDocspre.forEach((item, index) => {
@@ -1348,10 +1453,11 @@ export class RecordComponent implements OnChanges {
             appno: this.licenceData.Application_No,
           });
           this.Application_Number = this.licenceData.Application_No;
+          this.selectedAppno.application_number = this.Application_Number;
           this.recordDocumnet.application_No = this.licenceData.Application_No;
           //
           console.log("licenceData", this.licenceData.Licence_Service_ID);
-          this.getAllDocumentpre(this.licenceData.Licence_Service_ID, DocID);
+          //this.getAllDocumentpre(this.licenceData.Licence_Service_ID, DocID);
         }
       },
       (error) => {

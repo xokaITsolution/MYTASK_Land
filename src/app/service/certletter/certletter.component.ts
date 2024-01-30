@@ -52,9 +52,21 @@ export class CertletterComponent implements OnChanges {
   isprintedtask: boolean;
   maxWidth: string = "1800px";
   isMaximized: boolean;
+  Isfrompprinttask: Boolean = true;
+  isshow: boolean = false;
   basefinal;
   PlotManagementList = [];
   PlotManagementListfinal = [];
+  prepareCertificateFields = {
+    FIELD_ONE: "Branch name",
+  };
+  plotRegistrationFields = {
+    FIELD_ONE: "Plot id",
+  };
+  isThem: boolean;
+  isdept: boolean;
+
+  isNewformat: boolean = false;
   constructor(
     private sanitizer: DomSanitizer,
     public serviceService: ServiceService,
@@ -69,10 +81,47 @@ export class CertletterComponent implements OnChanges {
   isCertifcatePrintforConfirmation: boolean;
   isLetterPrintingConfirmation: boolean;
   ngOnChanges() {
+    console.log(
+      "🚀 ~ file: cert.component.ts:82 ~ CertComponent ~ ngOnChanges ~ Service_ID:",
+      this.serviceService.Service_ID
+    );
+    if (
+      this.serviceService.Service_ID ==
+        "7d256139-858b-48e7-a298-cae5438e526c" ||
+      this.serviceService.Service_ID ===
+        "05DB54FC-E388-4E5E-AAAA-BD6141C8E533".toLocaleLowerCase() ||
+      this.serviceService.Service_ID ===
+        "1c3d5a79-350e-4214-a343-d79e92a86e0f".toLocaleLowerCase()
+    ) {
+      this.isThem = true;
+    } else {
+      this.isThem = false;
+    }
+
+    if (
+      this.serviceService.Service_ID ==
+        "1c3d5a79-350e-4214-a343-d79e92a86e0f" ||
+      this.serviceService.Service_ID ===
+        "05DB54FC-E388-4E5E-AAAA-BD6141C8E533".toLocaleLowerCase() ||
+      this.serviceService.Service_ID ===
+        "7d256139-858b-48e7-a298-cae5438e526c".toLocaleLowerCase() ||
+      this.serviceService.Service_ID ===
+        "d1a3b83a-aa39-4269-90e4-da551715baef".toLocaleLowerCase()
+    ) {
+      this.isdept = true;
+    } else {
+      this.isdept = false;
+    }
     if (environment.Lang_code === "am-et") {
       this.language = "amharic";
     } else {
       this.language = "english";
+    }
+    if (
+      this.serviceService.Service_ID ===
+      "05db54fc-e388-4e5e-aaaa-bd6141c8e533".toLocaleLowerCase()
+    ) {
+      this.isNewformat = true;
     }
     // this.completed.emit();
     this.routerService.params.subscribe((params) => {
@@ -236,6 +285,11 @@ export class CertletterComponent implements OnChanges {
     }
   }
   async getgregorianToEthiopianDate(date) {
+    console.log(
+      "🚀 ~ CertletterComponent ~ getgregorianToEthiopianDate ~ date:",
+      date
+    );
+
     if (date != "0001-01-01T00:00:00") {
       var datenow = await this.serviceService
         .getgregorianToEthiopianDate(date)
@@ -246,7 +300,7 @@ export class CertletterComponent implements OnChanges {
   }
   selectedDateTime(dates: any, selecter) {
     if (selecter == 1) {
-      this.cerltter.Regstration_Date =
+      this.cerltter.regstration_Date =
         dates[0]._day + "/" + dates[0]._month + "/" + dates[0]._year;
     }
   }
@@ -331,50 +385,56 @@ export class CertletterComponent implements OnChanges {
   getDocmentArcive() {
     console.log("this.cerlettrformList", this.SelectedBase.Title_Deed_No);
     let a;
-    this.serviceService
-      .getDocmentArcive(this.SelectedBase.Title_Deed_No)
-      .subscribe(
-        async (cerltter: any) => {
-          a = cerltter;
-          console.log("this.cerlettrformList", a);
+    if (this.SelectedBase != undefined) {
+      this.serviceService
+        .getDocmentArcive(this.SelectedBase.Title_Deed_No)
+        .subscribe(
+          async (cerltter: any) => {
+            a = cerltter;
 
-          this.cerlettrformList = a.list;
-          if (this.cerlettrformList.length > 0) {
-            if (this.language == "amharic") {
-              if ((this.cerlettrformList[0].Regstration_Date! = null)) {
-                this.cerlettrformList[0].Regstration_Date =
-                  await this.getgregorianToEthiopianDate(
-                    this.cerlettrformList[0].Regstration_Date
-                  );
-              }
+            this.cerlettrformList = a.procDocument_Archives;
+            console.log("this.cerlettrformList", this.cerlettrformList);
+            this.cerlettrformList = this.cerlettrformList.filter(
+              (x) => x.title_Deed_No == this.SelectedBase.Title_Deed_No
+            );
+
+            // if (this.cerlettrformList != undefined) {
+            //   if (this.language == "amharic") {
+            //     if ((this.cerlettrformList[0].Regstration_Date! = null)) {
+            //       this.cerlettrformList[0].Regstration_Date =
+            //         await this.getgregorianToEthiopianDate(
+            //           this.cerlettrformList[0].Regstration_Date
+            //         );
+            //     }
+            //   }
+            // }
+
+            if (this.cerlettrformList != undefined) {
+              this.disable_new = true;
+            } else {
+              this.disable_new = false;
             }
-          }
-
-          if (this.cerlettrformList.length > 0) {
-            this.disable_new = true;
-          } else {
-            this.disable_new = false;
-          }
-          console.log("this.cerlettrformList", this.cerlettrformList);
-          console.log("this.cerltter", this.cerltter);
-          /* if (a.list.length) {
+            console.log("this.cerlettrformList", this.cerlettrformList);
+            console.log("this.cerltter", this.cerltter);
+            /* if (a.list.length) {
          this.isnew = false;
        } else {
          this.isnew = true;
          this.cerltter.Title_Deed_No = this.certCode;
        }*/
-        },
-        (error) => {
-          console.log("error");
-        }
-      );
+          },
+          (error) => {
+            console.log("error");
+          }
+        );
+    }
   }
 
   async save() {
-    this.cerltter.Application_No = this.AppNo;
+    this.cerltter.application_No = this.AppNo;
     if (this.language == "amharic") {
-      this.cerltter.Regstration_Date = await this.getEthiopianToGregorian(
-        this.cerltter.Regstration_Date
+      this.cerltter.regstration_Date = await this.getEthiopianToGregorian(
+        this.cerltter.regstration_Date
       );
     }
     this.serviceService.UpdateDocmentArcive(this.cerltter).subscribe(
@@ -386,12 +446,12 @@ export class CertletterComponent implements OnChanges {
           this.Saved = true;
         }
         if (this.language == "amharic") {
-          this.cerltter.Regstration_Date =
+          this.cerltter.regstration_Date =
             await this.getgregorianToEthiopianDate(
-              this.cerltter.Regstration_Date
+              this.cerltter.regstration_Date
             );
         }
-        const toast = this.notificationsService.success("Sucess", message);
+        const toast = this.notificationsService.success("Sucess");
       },
       async (error) => {
         console.log(error);
@@ -401,9 +461,9 @@ export class CertletterComponent implements OnChanges {
             error.error.InnerException.Errors[0].message
           );
           if (this.language == "amharic") {
-            this.cerltter.Regstration_Date =
+            this.cerltter.regstration_Date =
               await this.getgregorianToEthiopianDate(
-                this.cerltter.Regstration_Date
+                this.cerltter.regstration_Date
               );
           }
         } else {
@@ -412,9 +472,9 @@ export class CertletterComponent implements OnChanges {
             "SomeThing Went Wrong"
           );
           if (this.language == "amharic") {
-            this.cerltter.Regstration_Date =
+            this.cerltter.regstration_Date =
               await this.getgregorianToEthiopianDate(
-                this.cerltter.Regstration_Date
+                this.cerltter.regstration_Date
               );
           }
         }
@@ -425,8 +485,8 @@ export class CertletterComponent implements OnChanges {
 
   async add() {
     if (this.language == "amharic") {
-      this.cerltter.Regstration_Date = await this.getEthiopianToGregorian(
-        this.cerltter.Regstration_Date
+      this.cerltter.regstration_Date = await this.getEthiopianToGregorian(
+        this.cerltter.regstration_Date
       );
     }
     this.serviceService.CreateDocmentArcive(this.cerltter).subscribe(
@@ -437,7 +497,7 @@ export class CertletterComponent implements OnChanges {
           this.completed.emit();
           this.Saved = true;
         }
-        const toast = this.notificationsService.success("Sucess", message);
+        const toast = this.notificationsService.success("Sucess");
         this.getDocmentArcive();
         this.cerlettrform = false;
       },
@@ -445,9 +505,9 @@ export class CertletterComponent implements OnChanges {
         console.log(error);
         if (error.status == "400") {
           if (this.language == "amharic") {
-            this.cerltter.Regstration_Date =
+            this.cerltter.regstration_Date =
               await this.getgregorianToEthiopianDate(
-                this.cerltter.Regstration_Date
+                this.cerltter.regstration_Date
               );
           }
           const toast = this.notificationsService.error(
@@ -460,9 +520,9 @@ export class CertletterComponent implements OnChanges {
             "SomeThing Went Wrong"
           );
           if (this.language == "amharic") {
-            this.cerltter.Regstration_Date =
+            this.cerltter.regstration_Date =
               await this.getgregorianToEthiopianDate(
-                this.cerltter.Regstration_Date
+                this.cerltter.regstration_Date
               );
           }
         }
@@ -476,21 +536,28 @@ export class CertletterComponent implements OnChanges {
     this.isnew = true;
     this.cerltter = new Cerltter();
     //this.cerltter.Title_Deed_No = this.certCode;
-    this.cerltter.Application_No = this.AppNo;
-    this.cerltter.Title_Deed_No = this.SelectedBase.Title_Deed_No;
+    this.cerltter.application_No = this.AppNo;
+    this.cerltter.title_Deed_No = this.SelectedBase.Title_Deed_No;
   }
 
-  selectcerltter(cerltter) {
+  async selectcerltter(cerltter) {
     this.isnew = false;
     this.cerlettrform = true;
     this.cerltter = cerltter;
-    if (this.cerltter.Regstration_Date) {
-      this.cerltter.Regstration_Date =
-        this.cerltter.Regstration_Date.split("T")[0];
+
+    if (this.cerltter.regstration_Date) {
+      if (this.language == "amharic") {
+        this.cerltter.regstration_Date = await this.getgregorianToEthiopianDate(
+          this.cerltter.regstration_Date
+        );
+      } else {
+        this.cerltter.regstration_Date =
+          this.cerltter.regstration_Date.split("T")[0];
+      }
     }
-    if (this.cerltter.Created_Date) {
-      this.cerltter.Created_Date = this.cerltter.Created_Date.split("T")[0];
-    }
+    // if (this.cerltter.created_Date) {
+    //   this.cerltter.created_Date = this.cerltter.created_Date.split("T")[0];
+    // }
   }
 
   openModal(modal) {
@@ -503,15 +570,15 @@ export class CertletterComponent implements OnChanges {
 }
 
 export class Cerltter {
-  public Document_Number;
-  public Title_Deed_No;
-  public Application_No;
-  public Room;
-  public Site;
-  public Block_Floor;
-  public Shelf_NO;
-  public Shelf_Raw;
-  public Shelf_Column;
-  public Created_Date;
-  public Regstration_Date;
+  public document_Number;
+  public title_Deed_No;
+  public application_No;
+  public room;
+  public site;
+  public block_Floor;
+  public shelf_NO;
+  public shelf_Raw;
+  public shelf_Column;
+  public sreated_Date;
+  public regstration_Date;
 }

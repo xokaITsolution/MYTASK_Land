@@ -26,28 +26,7 @@
         <div class="row">
           <div class="col-sm-8">
             <div style="width: 50rem; margin-top: 30px; margin-left: 190px">
-              <!-- <div class="form-group row">
-                <label
-                  for="Amount"
-                  class="font-weight-bold font-weight-bold col-sm-3 col-form-label"
-                  translate
-                  >User Name</label
-                >
-                <div class="col-sm-4">
-                  <input
-                    type="text"
-                    class="form-control"
-                    #myInputValue
-                    id="year"
-                    placeholder="insert User Name"
-                    required
-                  />
-                </div>
-                &nbsp; &nbsp;
-                <button type="button" class="btn btn-primary" (click)="SEARCH(myInputValue.value);">
-                  <span class="pi pi-search"></span>
-                </button>
-              </div> -->
+             
               <p-dialog  [header]="'Customer' | translate" [(visible)]="isEnvironmentalConsideration" 
               [responsive]="true" [width]="900" [minY]="50"
                 [maximizable]="true" [positionTop]="250" 
@@ -213,7 +192,6 @@
                   [attr.disabled]="disableDate"
                     type="date"
                     class="form-control"
-                    formControlName="year"
                     id="year"
                     formControlName="date"
                     required
@@ -223,7 +201,6 @@
                   readonly
                   [attr.disabled]="disableForm"
                   class="form-control"
-                    formControlName="year"
                     id="year"
                     formControlName="date"
                     required
@@ -236,7 +213,7 @@
                   [attr.disabled]="disableDate"
                     type="text"
                     class="form-control"
-                    formControlName="year"
+                  
                     id="year"
                     formControlName="date"
                     required
@@ -248,7 +225,7 @@
                   readonly
                   [attr.disabled]="disableForm"
                   class="form-control"
-                    formControlName="year"
+                   
                     id="year"
                     formControlName="date"
                     required
@@ -303,8 +280,8 @@
                   />
                   <input
                   [hidden]="getData"
-				  readonly
-          [attr.disabled]="disableForm"
+				 
+          
                     type="text"
                     class="form-control"
                     placeholder=""
@@ -399,7 +376,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-12" *ngIf="taskdisable">
+            <div class="col-md-12" >
               <label
                 for="license_No"
                 class="font-weight-bold font-weight-bold col-sm-3 col-form-label"
@@ -444,7 +421,7 @@
       <tab [heading]="'New' | translate">
         <div class="mt-3">
           <app-files [RequiredDocs]="RequiredDocs" [hide]="hide" [AppNo]="AppNo" (updated)="UpdateAttachments($event)"
-                [DocID]="DocID" (getalldoc)="getAllDocumentpre(AppNo,DocID)"></app-files>
+                [DocID]="DocID" (getalldoc)="getAllDocumentpre(AppNo,DocID,currentTaskelected)"></app-files>
           <!-- <p-table [value]="RequerdDocspre" [tableStyle]="{ 'min-width': '100rem' }">
             <ng-template pTemplate="header">
               <tr>
@@ -574,32 +551,41 @@
   <form class="form-row">
 	<div class="col-md-6">
 	  <div class="form-group row col-12">
-	  <label  class="col-sm-4 col-form-label" translate>Document No</label>
+	  <label  class="col-sm-4 col-form-label" translate>Record No</label>
 	  <div class="col-sm-8">
 	  <input class="form-control" [disabled]="disableDoc"   name="DocumentNo" id="DocumentNo" [(ngModel)]="recordDocumnet.document_Number" [placeholder]="'Document No'">
-	</div></div>
-	<div class="form-group row col-12">
+	</div>
+</div>
+<div class="form-group row col-12">
+  <label class="col-sm-4 col-form-label" translate>Title Deed No</label>
+  <div class="col-sm-8">
+    <input type="text"  class="form-control" [disabled]="disable" name="title_Deed_No" id="title_Deed_No "
+      [(ngModel)]="recordDocumnet.title_Deed_No " [placeholder]="'Title Deed No' | translate">
+  </div>
+  </div>
+	<div class="form-group row col-12" *ngIf="Isshow">
 	  <label  class="col-sm-4 col-form-label" translate>Shelf Column</label>
 	  <div class="col-sm-8">
 	  <input class="form-control"  [disabled]="disable"   name="ShelfColumn" id="ShelfColumn" [(ngModel)]="recordDocumnet.shelf_Column" [placeholder]="'Shelf Column' | translate">
-	</div></div>
-	  <div class="form-group row col-12">
+	</div>
+</div>
+	  <div class="form-group row col-12" *ngIf="Isshow">
 	  <label  class="col-sm-4 col-form-label" translate>Shelf No</label>      <div class="col-sm-8">
 	  <input class="form-control" [disabled]="disable"   name="ShelfNo" id="ShelfNo" [(ngModel)]="recordDocumnet.shelf_NO" [placeholder]="'Shelf No' | translate">
 	</div></div>
-	  <div class="form-group row col-12">
+	  <div class="form-group row col-12" *ngIf="Isshow">
 	  <label  class="col-sm-4 col-form-label" translate>File Room No</label>      <div class="col-sm-8">
 	  <input class="form-control"   [disabled]="disable"  name="FileRoomNo" id="FileRoomNo" [(ngModel)]="recordDocumnet.room" [placeholder]="'File Room No' | translate">
 	</div></div>
-	  <div class="form-group row col-12">
+	  <div class="form-group row col-12" *ngIf="Isshow">
 	  <label  class="col-sm-4 col-form-label" translate>Shelf Row</label>      <div class="col-sm-8">
 	  <input class="form-control" [disabled]="disable"   name="ShelfRow" id="ShelfRow" [(ngModel)]="recordDocumnet.shelf_Raw" [placeholder]="'Shelf Row' | translate">
 	</div></div>  </div> <div class="col-md-6">
-	  <div class="form-group row col-12">
+	  <div class="form-group row col-12" *ngIf="Isshow">
 	  <label  class="col-sm-4 col-form-label" translate>Block/Floor</label>      <div class="col-sm-8">
 	  <input class="form-control"  [disabled]="disable"  name="Block/Floor" id="Block/Floor" [(ngModel)]="recordDocumnet.block_Floor" [placeholder]="'Block/Floor' | translate">
 	</div></div>
-	  <div class="form-group row col-12">
+	  <div class="form-group row col-12" *ngIf="Isshow">
 	  <label  class="col-sm-4 col-form-label" translate>Site</label>      <div class="col-sm-8">
 	  <input class="form-control" [disabled]="disable"   name="site" id="site" [(ngModel)]="recordDocumnet.site" [placeholder]="'site' | translate">
 	</div></div>
@@ -622,14 +608,13 @@
       [placeholder]="'Regstration Date'" appDatepickerEthiopian
 	  (dateEmitter)="selectedDateTime($event,1)">
 	</div></div>
-	  <div class="form-group row col-12">
-	  <label  class="col-sm-4 col-form-label" translate>Title Deed No</label>      <div class="col-sm-8">
-	  <input type="text" disabled class="form-control" [disabled]="disable"   name="title_Deed_No" id="title_Deed_No " [(ngModel)]="recordDocumnet.title_Deed_No " [placeholder]="'Title Deed No' | translate">
-	</div></div>
+
   <div class="form-group row col-12">
 	  <label  class="col-sm-4 col-form-label" translate>is all hardcopy uploaded</label>      <div class="col-sm-8">
-	  <input type="checkbox" class="form-control"  [disabled]="disable"  name="is_all_hardcopy_uploaded" id="is_all_hardcopy_uploaded" [(ngModel)]="recordDocumnet.is_all_hardcopy_uploaded">
-	</div></div>
+
+  <p-checkbox [(ngModel)]="recordDocumnet.is_all_hardcopy_uploaded" name="is_all_hardcopy_uploaded" id="is_all_hardcopy_uploaded"
+    binary="true"></p-checkbox>
+  </div></div>
 	<div class=" col-sm-7 pull-right">
 	  <button [hidden]="disableBtn"  type="button" class="btn btn-primary" (click)="update()"translate>Update</button>
 	</div>
@@ -637,7 +622,9 @@
 	  <button [hidden]="!disableBtn"  type="button" class="btn btn-primary" (click)="add()" translate>Save</button>
 	</div></div>
   </form>
-  <button type="button" class="btn btn-primary" (click)="documentAddress=false" translate>Close</button>
+
+  <button style="align-items: left;" type="button" class="btn btn-primary" (click)="documentAddress=false" translate>Close</button>
+
   <simple-notifications></simple-notifications>
 </p-dialog>
   <!-- <p-dialog

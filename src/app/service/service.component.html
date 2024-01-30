@@ -235,7 +235,7 @@
               </div>
               <div *ngIf="ID==12">
                
-                  <app-record [useNamelist]="useNamelist"></app-record>
+                  <app-record [useNamelist]="useNamelist"  (completed)="EnableFins()"></app-record>
               </div>
               <div *ngIf="ID==9">
                 <app-property (completed)="saveFormm('{}');" (getpro)="getPropertyTypeLookUP()" [LicenceData]="licenceData"
@@ -348,7 +348,7 @@
 <simple-notifications></simple-notifications>
 
 
-<ng-template #template>
+<ng-template #template style="z-index: 1000;">
   <div class="modal-header">
     <h4 class="modal-title pull-left" translate>Review</h4>
     <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
@@ -359,14 +359,14 @@
     <div class="aa">
       <div class="col-sm-2" translate>Application No</div>
       <div class="aa">
-        <select *ngIf="ifAppNo" class="form-control" [(ngModel)]="AppN" (change)="getAppData(AppN)"
+        <select *ngIf="ifAppNo" class="form-control" [(ngModel)]="AppN" (change)="getappdataForeach(AppN)"
           name="CustomerType" id="ApplicationLIst">
           <option disabled>select</option>
           <option *ngFor="let AppNo of ApplicationNumberlist" [value]="AppNo.application_number">{{AppNo.application_number}} | {{AppNo.title_Deed_No}}| {{AppNo.service_Name}} | {{AppNo.application_Date}}</option>
         </select>
       </div>
     </div>
-    <div *ngIf="ifTask" class="aa">
+    <div *ngIf="ifTask && !showdWhenNoTodo" class="aa" >
       <div class="col-sm-2" translate>Task Name</div>
       <div class="aa">
         <select *ngIf="ifTask" class="form-control" [(ngModel)]="TaskN" (change)="getTaskData(TaskN)"
@@ -455,11 +455,6 @@
            </app-property>  
               
               </div>
-             
-            
-       
-
-
               <!-- <div *ngIf="preAppID==6" id="dform">
                 <app-cert [disable]="true" (completed)="EnableFins()" [licenceData]="licenceData" [todoid]="todoID"
                   [Certificate_Code]="licenceData.Certificate_Code" [AppNo]="AppNo"></app-cert>
@@ -581,12 +576,110 @@
     </div>
 
   </div>
+    <div class="modal-body" *ngIf="showdWhenNoTodo">
+      <tabset style="margin-right: 30px">
+        <tab [heading]="'Uploded' | translate">
+          <div class="mt-3">
+            <div>
+              <div>
+                <select class="form-control" name="task" id="task" (change)="getRequiredDocspreeach($event.target.value)">
+                  <option >---select task----</option>
+    
+                  <ng-container *ngFor="let task of taskList">
+                    <option [value]="task.task_code">
+                      {{language === 'amharic' ? task.description_local : task.description_en}}
+                    </option>
+                  </ng-container>
+                </select>
+                <div *ngIf="RequerdDocspreeach">
+                  <div class="form-group row col-sm-12 m-0" *ngFor="let RequerdDocpre of RequerdDocspreeach; let i = index">
+                    <label class="col-sm-12 col-form-label m-0">
+                      {{ language === 'amharic' ? RequerdDocpre.description_Local : RequerdDocpre.description_en }}
+                    </label>
+                    <div class="col-sm-12 m-0 text-center">
+                      <!-- <div *ngIf="loadingPreDoc">
+                          <p-progressSpinner [style]="{ width: '50px', height: '50px' }" strokeWidth="4"></p-progressSpinner>
+                        </div> -->
+    
+                      <div class="alert alert-warning" role="alert" *ngIf="!RequerdDocpre.File && !loadingPreDoc">
+                        {{language === 'amharic' ? 'ሰነድ አልገባለትም!' : 'Document not uploaded!'}}
+                      </div>
+                      <div *ngIf="RequerdDocpre.File">
+                        <div class="alert alert-info">
+                          <a [href]="RequerdDocpre.File"
+                            [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType].extension">Attached
+                            -
+                            Please download!</a>
+                        </div>
+    
+    
+                        <div
+                          *ngIf="mimeExtension[RequerdDocpre.mimeType].extension == 'pdf'||mimeExtension[RequerdDocpre.mimeType].extension == 'xlsx'">
+    
+                          <button type="button" class="btn btn-primary" id="Preview{{i}}"
+                            (click)="PreviewshowdialogeArray[i] = true">Preview</button>
+    
+                          <!-- <p-dialog [(visible)]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
+                            [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                              'max-height': '80vh','min-height':'250px'}"> -->
+                          <div *ngIf="PreviewshowdialogeArray[i]">
+                            <div *ngIf="!RequerdDocpre.File">
+                              <p-progressSpinner [style]="{ width: '50px', height: '50px' }"
+                                strokeWidth="4"></p-progressSpinner>
+                            </div>
+                            <div class="modal-body">
+                              <iframe width="100%" [src]="RequerdDocpre.File" alt="FileUploaded"
+                                class="pdf-iframe"></iframe>
+                            </div>
+                            <div>
+                              <button type="button" class="btn btn-primary"
+                                (click)="PreviewshowdialogeArray[i] = false">Close</button>
+                            </div>
+                          </div>
+                          <!-- </p-dialog> -->
+                        </div>
+                        <div *ngIf="['jpg', 'png', 'gif'].includes(mimeExtension[RequerdDocpre.mimeType].extension)">
+    
+                          <button type="button" class="btn btn-primary" id="Preview{{i}}"
+                            (click)="PreviewshowdialogeArray[i] = true">Preview</button>
+                          <!-- <p-dialog [(visible)]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
+                              [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                                'max-height': '80vh','min-height':'250px'}"> -->
+                          <div *ngIf="PreviewshowdialogeArray[i]">
+                            <div *ngIf="!RequerdDocpre.File">
+                              <p-progressSpinner [style]="{ width: '50px', height: '50px' }"
+                                strokeWidth="4"></p-progressSpinner>
+                            </div>
+                            <div class="modal-body">
+                              <img width="50%" [src]="RequerdDocpre.File" alt="FileUploaded" />
+                            </div>
+                            <div>
+                              <button type="button" class="btn btn-primary" id="Preview{{i}}"
+                                (click)="PreviewshowdialogeArray[i] = false">Close</button>
+                            </div>
+                          </div>
+    
+                          <!-- </p-dialog> -->
+    
+    
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+    
+              </div>
+            </div>
+          </div>
+        </tab>
+      </tabset>
+    </div>
   <div class="modal-footer">
   
  
     <button type="button" class="btn btn-success" roNgxSimplePrint [printContentId]="'dform'"  id="printPageButton" 
     translate (click)="print()"> <i class="fa fa-print"></i>print</button>
-    <button type="button" class="btn btn-primary" (click)="closeModal()" translate>Done</button>
+    <button type="button" class="btn btn-primary" (click)="closeModal(); showdWhenNoTodo=false" translate>Done</button>
   </div>
   <ngx-smart-modal #note_popup identifier="note_popup" class="dd">
 
@@ -717,3 +810,104 @@
   </p-dialog> -->
 </html>
 
+<!-- <p-dialog [(visible)]="showdWhenNoTodo" header="Upload Documents" [responsive]="true" [width]="900" [minY]="70"
+  [maximizable]="true" [baseZIndex]="2000000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                        'max-height': '80vh','min-height':'250px'}">
+  <div class="modal-body">
+    <tabset style="margin-right: 30px">
+      <tab [heading]="'Uploded' | translate">
+        <div class="mt-3">
+          <div>
+            <div>
+                <select class="form-control" name="task" id="task"  (change)="getRequiredDocspreeach($event.target.value)">
+                  <option>---select task----</option>
+                
+                  <ng-container *ngFor="let task of taskList">
+                    <option [value]="task.task_code">
+                      {{language === 'amharic' ? task.description_local : task.description_en}}
+                    </option>
+                  </ng-container>
+                </select>
+              <div *ngIf="RequerdDocspreeach">
+                <div class="form-group row col-sm-12 m-0" *ngFor="let RequerdDocpre of RequerdDocspreeach; let i = index">
+                  <label class="col-sm-12 col-form-label m-0">
+                    {{ language === 'amharic' ? RequerdDocpre.description_Local : RequerdDocpre.description_en }}
+                  </label>
+                  <div class="col-sm-12 m-0 text-center">
+                   
+    
+                    <div class="alert alert-warning" role="alert" *ngIf="!RequerdDocpre.File && !loadingPreDoc">
+                      {{language === 'amharic' ? 'ሰነድ አልገባለትም!' : 'Document not uploaded!'}}
+                    </div>
+                    <div *ngIf="RequerdDocpre.File">
+                      <div class="alert alert-info">
+                        <a [href]="RequerdDocpre.File"
+                          [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType].extension">Attached
+                          -
+                          Please download!</a>
+                      </div>
+    
+    
+                      <div
+                        *ngIf="mimeExtension[RequerdDocpre.mimeType].extension == 'pdf'||mimeExtension[RequerdDocpre.mimeType].extension == 'xlsx'">
+    
+                        <button type="button" class="btn btn-primary" id="Preview{{i}}"
+                          (click)="PreviewshowdialogeArray[i] = true">Preview</button>
+    
+                      
+                        <div *ngIf="PreviewshowdialogeArray[i]">
+                          <div *ngIf="!RequerdDocpre.File">
+                            <p-progressSpinner [style]="{ width: '50px', height: '50px' }"
+                              strokeWidth="4"></p-progressSpinner>
+                          </div>
+                          <div class="modal-body">
+                            <iframe width="100%" [src]="RequerdDocpre.File" alt="FileUploaded" class="pdf-iframe"></iframe>
+                          </div>
+                          <div>
+                            <button type="button" class="btn btn-primary"
+                              (click)="PreviewshowdialogeArray[i] = false">Close</button>
+                          </div>
+                        </div>
+
+                      </div>
+                      <div *ngIf="['jpg', 'png', 'gif'].includes(mimeExtension[RequerdDocpre.mimeType].extension)">
+    
+                        <button type="button" class="btn btn-primary" id="Preview{{i}}"
+                          (click)="PreviewshowdialogeArray[i] = true">Preview</button>
+                    
+                        <div *ngIf="PreviewshowdialogeArray[i]">
+                          <div *ngIf="!RequerdDocpre.File">
+                            <p-progressSpinner [style]="{ width: '50px', height: '50px' }"
+                              strokeWidth="4"></p-progressSpinner>
+                          </div>
+                          <div class="modal-body">
+                            <img width="50%" [src]="RequerdDocpre.File" alt="FileUploaded" />
+                          </div>
+                          <div>
+                            <button type="button" class="btn btn-primary" id="Preview{{i}}"
+                              (click)="PreviewshowdialogeArray[i] = false">Close</button>
+                          </div>
+                        </div>
+    
+                        
+    
+    
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+    
+            </div>
+          </div>
+        </div>
+      </tab>
+    </tabset>
+  </div>
+<div>
+  <button type="button" class="btn btn-primary"  (click)="showdWhenNoTodo=false" translate>
+  close
+  </button>
+  </div>
+
+  </p-dialog> -->

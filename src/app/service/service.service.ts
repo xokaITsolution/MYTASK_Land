@@ -23,7 +23,8 @@ export class ServiceService {
   private Save_License_Service =
     environment.rootpath2 + "saveLicenceServiceRecord";
   private Remove_Document = environment.rootpath2 + "Remove_RequrementDocument";
-  private License_Service = environment.rootpath2 + "License_Service";
+  private License_Service =
+    environment.rootPathApi + "License_Service/procLicense_Service";
   private Tasks = environment.rootpath2 + "getTasks";
   private Document = environment.rootpath2 + "getAllDocument";
   private saveFileLookUP = environment.rootpath2 + "SaveDocumentMaster";
@@ -31,7 +32,14 @@ export class ServiceService {
   private UpdateCertURL =
     environment.rootPathApi + "Document_Archive/procDocument_Archive";
   private GetApplicationNumberByUserURL =
-    environment.rootPath2 + "GetApplicationNumberByUser";
+    environment.rootPathApi +
+    "view/View_getUserNameForReviewByApplication/UserName";
+
+  private GetApplicationNumberByUserURLsapi =
+    environment.rootPathApi +
+    "view/View_getUserNameForReviewByApplication/UserName/UserName";
+  private GetApplicationNumberByUserURLs =
+    environment.rootpath2 + "GetApplicationNumberByUser";
   private getRequerdURL =
     environment.rootpath2 + "getRequrementDocumentOfTasks";
   private All_Service =
@@ -66,7 +74,7 @@ export class ServiceService {
     environment.rootPathApi +
     "ApplicationLoadByUserId/procApplicationLoadByUserId/";
 
-  private getTodandAppNoURL = environment.rootPath + "TodandAppNo";
+  private getTodandAppNoURL = environment.rootpath2 + "TodandAppNo";
   private RemoveDocURL = environment.rootPath + "Remove_RequrementDocument";
   private License_ServiceURL = environment.rootPath + "License_Service";
   private paymentUrl =
@@ -223,6 +231,8 @@ export class ServiceService {
   isRecordDocumentationManager: boolean;
   docId;
   currentApplicationUsers: any;
+  currentsdpid: any;
+  licenceData: any;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -240,9 +250,14 @@ export class ServiceService {
         "sortOrder=test&currentFilter&searchString&pageIndex&pageSize"
     );
   }
-  GetApplicationNumberByUsers(username) {
+  GetApplicationNumberByUser(username) {
     return this.http.get(
-      this.GetApplicationNumberByUserURL + "?UserName=" + username
+      this.GetApplicationNumberByUserURLs + "?UserName=" + username
+    );
+  }
+  GetApplicationNumberByUserapi(username) {
+    return this.http.get(
+      this.GetApplicationNumberByUserURLsapi + "?UserName=" + username
     );
   }
   getTasks(data) {
@@ -250,6 +265,9 @@ export class ServiceService {
   }
   getDocumentArc() {
     return this.http.get(this.DocumentArc);
+  }
+  getDocumentArcbyid(RID) {
+    return this.http.get(this.DocumentArc + "/" + RID);
   }
   getDocIdByAppNo(AppNo) {
     return this.http.get(this.DocByAppNo + AppNo);
@@ -338,9 +356,9 @@ export class ServiceService {
       this.gettopostgres + plotid + "/Proporty_Id?Proporty_Id=" + propertid
     );
   }
-  GetApplicationNumberByUser(username, orgcod) {
+  GetApplicationNumberByUsers(username, orgcod) {
     return this.http.get(
-      this.GetApplicationNumberByUserURL + username + "/" + orgcod
+      this.GetApplicationNumberByUserURL + "/" + username + "/" + orgcod
     );
   }
   GetApplicationNumberByUserInfo(appno) {
@@ -452,6 +470,10 @@ export class ServiceService {
 
   UpdateLicence(LicenceData) {
     return this.http.put(this.License_Service, LicenceData);
+  }
+
+  getLicencebyid(LicenceData) {
+    return this.http.get(this.License_Service + "/" + LicenceData);
   }
 
   isvalidated(todoid, taskid, Plotid, ProperyID, DocID) {

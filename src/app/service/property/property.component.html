@@ -76,7 +76,7 @@
      
             </div>
           </p-tabPanel>
-          <p-tabPanel [header]="'Measurement' | translate" [disabled]="true">
+          <!-- <p-tabPanel [header]="'Measurement' | translate" [disabled]="true">
             <div class="mt-3">
               <app-measurment (completed)="EnableFins()" [selectedpro]='selectedFile'  [disable]="disable"
                 [Licence_Service_ID]="Licence_Service_ID"></app-measurment>
@@ -84,7 +84,7 @@
               <div style="float: left;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 0"
                   translate>previous</button></div>
             </div>
-          </p-tabPanel>
+          </p-tabPanel> -->
           <p-tabPanel [header]="'Title Deed Registration' | translate" [disabled]="true">
             <div class="mt-3">
               <app-title-deed-registration (completed)="EnableFinstitle()" [selectedpro]='selectedFile'
@@ -116,7 +116,7 @@
         
             </div>
           </p-tabPanel>
-          <p-tabPanel [header]="'Measurement' | translate" [disabled]="true">
+          <!-- <p-tabPanel [header]="'Measurement' | translate" [disabled]="true">
             <div class="mt-3">
                 <app-measurment (completed)="EnableFinsMesNEw()" [selectedpro]='selectedprofromtree' [disable]="disable"
                   [Licence_Service_ID]="Licence_Service_ID"></app-measurment>
@@ -125,7 +125,7 @@
               <div style="float: left;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 0"
                   translate>previous</button></div>
             </div>
-          </p-tabPanel>
+          </p-tabPanel> -->
           <p-tabPanel [header]="'Title Deed Registration' | translate" [disabled]="true">
             <div class="mt-3">
                 <app-title-deed-registration (completed)="EnableFinstitle();"

@@ -157,6 +157,36 @@ export class GisMapComponent implements AfterViewInit {
       tooltipAnchor: [16, -28],
       shadowSize: [41, 41],
     });
+    console.log("subcitycurent", this.subcity);
+
+    const subcityToSDPMapping = {
+      arada: "6921d772-3a1c-4641-95a0-0ab320bac3e2",
+      bole: "89eb1aec-c875-4a08-aaf6-2c36c0864979",
+      nifasS: "f8ea62db-05bc-4f1a-ab30-4e926d43e3fb",
+      gullele: "6a8c042f-a3e1-4375-9769-54d94c2312c6",
+      addisK: "7101d44d-97d5-41aa-957d-82f36d928c07",
+      lideta: "e4d8219e-51f9-40cb-9d53-883c6ca9aaa3",
+      lemiK: "f02e9467-1b7d-4350-bee7-9844d4f56da0",
+      yeka: "8222f028-5fe3-4047-9a50-b52bfa64c851",
+      akakyK: "08f9c927-6366-467a-ba99-c837c5add427",
+      kirkos: "aaa5094c-8899-4708-9f7b-d8ff634a3540",
+      kolfeK: "930d1c20-9e0e-4a50-9eb2-e542fafbad68",
+      central: "275619f2-69c2-4fb7-a053-938f0b62b088",
+    };
+
+    const resultArray = Object.keys(subcityToSDPMapping).map((subcity) => ({
+      name: `${subcity}_AddisLand`,
+      id: subcityToSDPMapping[subcity],
+    }));
+    console.log("🚀 ~ resultArray ~ resultArray:", resultArray);
+
+    if (this.subcity == "central_AddisLand") {
+      const filtedsdp = resultArray.filter(
+        (x) => x.id === this.ServiceService.currentsdpid
+      );
+      this.subcity = filtedsdp[0].name;
+    }
+
     L.Marker.prototype.options.icon = iconDefault;
 
     this.initMap();
@@ -334,7 +364,7 @@ export class GisMapComponent implements AfterViewInit {
     const storedtreedatalayersubString =
       localStorage.getItem("treeformapsubcity");
 
-    console.log("treeformap", storedtreedatalayerString);
+    console.log("treeformap", environment.parentWorkspace);
 
     this.geoser
       .fetchGroupLayers(environment.parentWorkspace)
@@ -1878,7 +1908,8 @@ export class GisMapComponent implements AfterViewInit {
             //this.drawnShapes.push(this.coordinates);
 
             // Do something with the coordinates, such as displaying or processing them
-
+            const area = this.calculateUTMPolygonArea(utmCoordinates);
+            this.ServiceService.Totalarea = parseInt(area.toFixed(2));
             this.ServiceService.coordinate = this.utmCoordinates;
             //  this.ServiceService.shapes = this.aaa.push(this.drawnShape);
             // Transform GeoJSON to EPSG:20137 CRS
@@ -2434,7 +2465,7 @@ export class GisMapComponent implements AfterViewInit {
       console.log(this.longitude, this.latitude);
       let isNorthernHemisphere: any = "N";
       let zone = 37;
-      const latLng = this.conveUTMToLatLngWrite(
+      const latLng = this.conveUTMToLatLngWriteadd(
         this.longitude,
         this.latitude,
         zone,
@@ -3614,6 +3645,26 @@ export class GisMapComponent implements AfterViewInit {
       lng: latLngCoords.longitude,
     };
   }
+  conveUTMToLatLngWriteadd(
+    northing: number,
+    easting: number,
+    zone: number,
+    hemisphere: boolean
+  ): { lat: number; lng: number } {
+    console.log(easting, northing, zone, hemisphere);
+
+    const latLngCoords = utm.toLatLon(easting, northing, zone, hemisphere);
+    console.log("Latitude, Longitude:", latLngCoords);
+    // return {
+    //   lat: latLngCoords.latitude,
+    //   lng: latLngCoords.longitude,
+    // };
+    return {
+      lat: latLngCoords.latitude + 0.001876,
+      lng: latLngCoords.longitude + 0.0008668,
+    };
+  }
+
   checkUTMtolatlong() {
     const latLngCoords = utm.toLatLon("425304.62", "1020351.60", 37, "N");
     console.log(

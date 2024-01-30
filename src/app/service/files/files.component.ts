@@ -118,10 +118,6 @@ export class FilesComponent implements OnChanges {
   ngOnChanges(changes) {
     console.log("appppppppno", this.AppNo);
     console.log("DocdddIDD", this.DocIDlist, this.RequiredDocs, this.hide);
-    console.log(
-      "this.RecordComponent.RequerdDocspre",
-      this.RecordComponent.RequerdDocspre[0].hidden
-    );
 
     if (this.DocIDlist != null || this.DocIDlist != undefined) {
       this.serviceService
@@ -147,10 +143,12 @@ export class FilesComponent implements OnChanges {
           this.licenceService = licenceService;
           console.log("Licence Service", this.licenceService);
           this.licenceData = this.licenceService.list[0];
-          this.getAllDocumentpre(
-            this.licenceData.Licence_Service_ID,
-            this.DocID
-          );
+          if (this.licenceData.length > 0) {
+            this.getAllDocumentpre(
+              this.licenceData.Licence_Service_ID,
+              this.DocID
+            );
+          }
         });
     }
 
