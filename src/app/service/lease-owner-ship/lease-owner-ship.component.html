@@ -58,10 +58,10 @@
       </div>
     </div>
     <div class="form-group row col-md-6">
-      <label for="LandHold" class="col-sm-3 col-form-label" translate>Lease Hold</label>
+      <label for="LandHold" class="col-sm-3 col-form-label" translate>lease hold area</label>
       <div class="col-sm-9">
     <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="leaseOwnerShip.Lease_Hold_M2" name="LandHold"
-      id="LandHold" [placeholder]="'Lease Hold' | translate" #LandHold="ngModel"
+      id="LandHold" [placeholder]="'lease hold area' | translate" #LandHold="ngModel"
       [ngClass]="{ 'is-invalid': LandHold.invalid }" appNumberOnly required  [readonly]="iislease">
        <span *ngIf="LandHold.invalid " style="color: red;">accept only numbers and float numbers</span>
         </div>
@@ -183,7 +183,7 @@
       <th scope="col" translate>Lease Contract No</th>
       <th scope="col" translate>Lease Price</th>
       <!--<th scope="col" translate>free hold</th>-->
-      <th scope="col" translate>Lease hold</th>
+      <th scope="col" translate>lease hold area</th>
       <th scope="col">
         <button type="button" class="btn btn-primary" (click)=" addLease()" *ngIf="!disable" translate>Add New</button>
       </th>

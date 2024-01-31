@@ -34,6 +34,12 @@ export class ServiceService {
   private GetApplicationNumberByUserURL =
     environment.rootPathApi +
     "view/View_getUserNameForReviewByApplication/UserName";
+  private GetApplicationNumberBypreviousApplication =
+    environment.rootPathApi +
+    "view/View_getUserNameForReviewByApplication/previousApplication";
+  private GetpreviousApplicationNumberByUserURL =
+    environment.rootPathApi +
+    "view/View_GetPreviceApplicationForReview/current/";
 
   private GetApplicationNumberByUserURLsapi =
     environment.rootPathApi +
@@ -359,6 +365,22 @@ export class ServiceService {
   GetApplicationNumberByUsers(username, orgcod) {
     return this.http.get(
       this.GetApplicationNumberByUserURL + "/" + username + "/" + orgcod
+    );
+  }
+  GetApplicationNumberByprevious(Title_Deed_No, Useranem, orgcod) {
+    return this.http.get(
+      this.GetApplicationNumberBypreviousApplication +
+        "/" +
+        Title_Deed_No +
+        "/" +
+        Useranem +
+        "/" +
+        orgcod
+    );
+  }
+  GetpreviousApplicationNumberByUsers(username, Parch_ID) {
+    return this.http.get(
+      this.GetpreviousApplicationNumberByUserURL + username + "/" + Parch_ID
     );
   }
   GetApplicationNumberByUserInfo(appno) {

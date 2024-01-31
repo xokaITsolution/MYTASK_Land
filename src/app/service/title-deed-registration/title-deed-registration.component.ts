@@ -408,6 +408,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
     this.Transfer_From_CustomerName = null;
     this.Transfer_To_CustomerName = null;
     this.titleDeedRegistration = new TitleDeedRegistration();
+    this.titleDeedRegistration.capital_Gain_Value = 0;
     this.titleDeedRegistration.property_ID = this.selectedpro.property_ID;
     this.titleDeedRegistration.is_Active = true;
   }

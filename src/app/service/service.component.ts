@@ -2194,6 +2194,39 @@ export class ServiceComponent implements OnInit {
       .subscribe((ApplicationNumber: any) => {
         this.ApplicationNumberlist = ApplicationNumber;
         this.ApplicationNumberlist.sort((a, b) => {
+          this.licenceData.Parcel_ID;
+          if (this.licenceData.Parcel_ID != null) {
+            this.serviceService
+              .GetpreviousApplicationNumberByUsers(
+                username,
+                this.licenceData.Parcel_ID
+              )
+              .subscribe((PriveLicence: any) => {
+                console.log("🚀 ~ .subscribe ~ PriveLicence:", PriveLicence);
+                if (PriveLicence.length > 0) {
+                  this.serviceService
+                    .GetApplicationNumberByprevious(
+                      PriveLicence[0].title_Deed_No,
+                      PriveLicence[0].previousUserName,
+                      PriveLicence[0].organization_code
+                    )
+                    .subscribe((ApplicationNumber: any) => {
+                      console.log(
+                        "🚀 ~ .subscribe ~ ApplicationNumber:",
+                        ApplicationNumber
+                      );
+                      ApplicationNumber.forEach((element) => {
+                        this.ApplicationNumberlist.push(element);
+                      });
+                    });
+                  console.log(
+                    "🚀 ~ .subscribe ~ ApplicationNumberlist:",
+                    this.ApplicationNumberlist
+                  );
+                }
+              });
+          }
+
           if (a.application_Date > b.application_Date) {
             console.log("sttatattgs", this.ApplicationNumberlist);
             return -1;

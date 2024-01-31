@@ -12,13 +12,13 @@
           id="PlotID" [placeholder]="'PlotID'|translate">
       </div>
     </div>
-    <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
+    <!-- <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
       <label for="NumberOfLift" class="col-sm-3 col-form-label" translate>Number of Lift</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [(ngModel)]="propertyRegister.number_of_Lift" name="NumberOfLift"
           id="NumberOfLift" [placeholder]="'Number of Lift' | translate" [disabled]="disable">
       </div>
-    </div>
+    </div> -->
     <div class="form-group row col-md-6">
       <label for="PropertyID" class="col-sm-3 col-form-label" translate>Property ID</label>
       <div class="col-sm-9">
@@ -29,10 +29,10 @@
       </div>
     </div>
     <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
-      <label for="BuildingSize" class="col-sm-3 col-form-label" translate>Building Size (M2)</label>
+      <label for="BuildingSize" class="col-sm-3 col-form-label" translate>Built up area (M2)</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [(ngModel)]="propertyRegister.building_Size_M2" name="BuildingSize"
-          id="BuildingSize" [placeholder]="'Building Size (M2)' | translate" 
+          id="BuildingSize" [placeholder]="'Built up area (M2)' | translate" 
            #BuildingSize="ngModel" appNumberOnly [ngClass]="{ 'is-invalid': BuildingSize.invalid }" [disabled]="disable"  required >
       </div>
     </div>
@@ -140,7 +140,7 @@
         </div>
       </div>
     </div>
-    <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
+    <!-- <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
       <label for="ParkingSize" class="col-sm-3 col-form-label" translate>Parking size</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [(ngModel)]="propertyRegister.parking_Area_M2" name="ParkingSize"
@@ -148,7 +148,7 @@
           #ParkingSize="ngModel" appNumberOnly 
           [ngClass]="{ 'is-invalid': ParkingSize.invalid }" [disabled]="disable" required>
       </div>
-    </div>
+    </div> -->
     <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
       <label for="HouseNo" class="col-sm-3 col-form-label" translate>House No</label>
       <div class="col-sm-9">

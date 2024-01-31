@@ -921,6 +921,9 @@ export class PlotManagment {
   public nortech_No: string;
   public licence_Service_ID;
   public application_No;
+  public Is1988: any;
+  public Is1997: any;
+  public Is2023: any;
 }
 export class PlatformLocation {
   public ploteId: any;

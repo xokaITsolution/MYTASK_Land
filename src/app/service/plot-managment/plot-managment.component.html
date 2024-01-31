@@ -184,6 +184,27 @@
           name="Nortech_No" id="Nortech_No" [placeholder]="'Nortech_No' | translate">
       </div>
     </div>
+    <div class="form-group row col-md-7">
+      <label class="col-sm-3 col-form-label" for="Is1988" translate>Is1988</label>
+      <div class="col-sm-9">
+        <p-checkbox [(ngModel)]="plotManagment.Is1988" 
+          name="Is1988" id="Is1988" ></p-checkbox>
+      </div>
+    </div>
+    <div class="form-group row col-md-7">
+      <label class="col-sm-3 col-form-label" for="Is1997" translate>Is1997</label>
+      <div class="col-sm-9">
+        <p-checkbox [(ngModel)]="plotManagment.Is1997" 
+          name="Is1997" id="Is1997" ></p-checkbox>
+      </div>
+    </div>
+    <div class="form-group row col-md-7">
+      <label class="col-sm-3 col-form-label" for="Is2023" translate>Is2023</label>
+      <div class="col-sm-9">
+        <p-checkbox [(ngModel)]="plotManagment.Is2023" 
+          name="Is2023" id="Is2023" ></p-checkbox>
+      </div>
+    </div>
   </div>
   <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!isnew && !disable" (click)="Delete()"
     translate>Update</button>

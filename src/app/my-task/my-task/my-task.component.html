@@ -28,8 +28,8 @@
             task.status == 'S' || task.status == 'P' || task.status == 'B'
           " [class.red]="task.Minutes_late > 0">
           <td>{{ task.number }}</td>
-          <td *ngIf="task.status == 'O' || task.status == 'A  '">**********</td>
-          <td *ngIf="task.status !== 'O' && task.status !== 'A  '">
+          <td *ngIf="task.status == 'O' || task.status == 'A  ' || task.status == 'R  '">**********</td>
+          <td *ngIf="task.status !== 'O' && task.status !== 'A  ' && task.status !== 'R  '">
             {{ task.todo_comment }}
           </td>
           <td>{{task.start_date | date :"M/d/yy" }}</td>

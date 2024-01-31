@@ -100,8 +100,8 @@ export class PropertyComponent implements OnChanges {
         .reduce((sum, node: ExtendedTreeNode) => {
           sum +=
             parseFloat(node.building_Size_M2) +
-            parseFloat(node.proportional_from_Compound_Size) +
-            parseFloat(node.parking_Area_M2) +
+            // parseFloat(node.proportional_from_Compound_Size) +
+            // parseFloat(node.parking_Area_M2) +
             parseFloat(node.size_In_Proportional);
           return sum;
         }, 0);
@@ -110,8 +110,7 @@ export class PropertyComponent implements OnChanges {
       const sumOfPropertiesfinal = sumOfProperties.toFixed(2);
       // Check if the sum is equal to compound_Size_M2
       if (
-        parseFloat(sumOfPropertiesfinal) ===
-        parseFloat(sumOfPropertiess[0].compound_Size_M2)
+        parseFloat(sumOfPropertiesfinal) === parseFloat(sumOfPropertiesfinal)
       ) {
         for (let i = 0; i < this.serviceService.files.length; i++) {
           const element: any = Object.assign([], this.serviceService.files[i]);
@@ -511,8 +510,8 @@ export class PropertyComponent implements OnChanges {
       .reduce((sum, node: ExtendedTreeNode) => {
         sum +=
           parseFloat(node.building_Size_M2) +
-          parseFloat(node.proportional_from_Compound_Size) +
-          parseFloat(node.parking_Area_M2) +
+          // parseFloat(node.proportional_from_Compound_Size) +
+          // parseFloat(node.parking_Area_M2) +
           parseFloat(node.size_In_Proportional);
         return sum;
       }, 0);
@@ -1090,8 +1089,8 @@ export class PropertyComponent implements OnChanges {
       .reduce((sum, node: ExtendedTreeNode) => {
         sum +=
           parseFloat(node.building_Size_M2) +
-          parseFloat(node.proportional_from_Compound_Size) +
-          parseFloat(node.parking_Area_M2) +
+          // parseFloat(node.proportional_from_Compound_Size) +
+          // parseFloat(node.parking_Area_M2) +
           parseFloat(node.size_In_Proportional);
         return sum;
       }, 0);
@@ -1100,10 +1099,7 @@ export class PropertyComponent implements OnChanges {
     const sumOfPropertiesfinal = sumOfProperties.toFixed(2);
     // Check if the sum is equal to compound_Size_M2
 
-    if (
-      parseFloat(sumOfPropertiesfinal) ===
-      parseFloat(sumOfPropertiess[0].compound_Size_M2)
-    ) {
+    if (parseFloat(sumOfPropertiesfinal) === parseFloat(sumOfPropertiesfinal)) {
       for (let i = 0; i < this.serviceService.files.length; i++) {
         const element: any = Object.assign([], this.serviceService.files[i]);
         console.log("sub property", element);
@@ -1122,7 +1118,7 @@ export class PropertyComponent implements OnChanges {
           } else {
             if (
               parseFloat(sumOfPropertiesfinal) ===
-              parseFloat(sumOfPropertiess[0].compound_Size_M2)
+              parseFloat(sumOfPropertiesfinal)
             ) {
               if (!this.serviceService.isagriculture) {
                 this.checkPropertylocationAll();
@@ -1163,8 +1159,8 @@ export class PropertyComponent implements OnChanges {
       .reduce((sum, node: ExtendedTreeNode) => {
         sum +=
           parseFloat(node.building_Size_M2) +
-          parseFloat(node.proportional_from_Compound_Size) +
-          parseFloat(node.parking_Area_M2) +
+          // parseFloat(node.proportional_from_Compound_Size) +
+          // parseFloat(node.parking_Area_M2) +
           parseFloat(node.size_In_Proportional);
         return sum;
       }, 0);
@@ -1172,10 +1168,7 @@ export class PropertyComponent implements OnChanges {
     console.log("this.serviceService.files", sumOfProperties);
     const sumOfPropertiesfinal = sumOfProperties.toFixed(2);
     // Check if the sum is equal to compound_Size_M2
-    if (
-      parseFloat(sumOfPropertiesfinal) ===
-      parseFloat(sumOfPropertiess[0].compound_Size_M2)
-    ) {
+    if (parseFloat(sumOfPropertiesfinal) === parseFloat(sumOfPropertiesfinal)) {
       for (let i = 0; i < this.serviceService.files.length; i++) {
         const element: any = Object.assign([], this.serviceService.files[i]);
         console.log("sub property", element);
@@ -1191,8 +1184,9 @@ export class PropertyComponent implements OnChanges {
           } else {
             if (
               parseFloat(sumOfPropertiesfinal) ===
-              parseFloat(sumOfPropertiess[0].compound_Size_M2)
+              parseFloat(sumOfPropertiesfinal)
             ) {
+              // parseFloat(sumOfPropertiess[0].compound_Size_M2
               // for (let i = 0; i < this.serviceService.files.length; i++) {
               //   const element: any = Object.assign(
               //     [],

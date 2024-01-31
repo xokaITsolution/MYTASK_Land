@@ -224,8 +224,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     if (this.serviceService.isproportinal == true) {
       let totalsize =
         parseInt(this.propertyRegister.building_Size_M2) +
-        parseInt(this.propertyRegister.proportional_from_Compound_Size) +
-        parseInt(this.propertyRegister.parking_Area_M2) +
+        // parseInt(this.propertyRegister.proportional_from_Compound_Size) +
+        // parseInt(this.propertyRegister.parking_Area_M2) +
         parseInt(this.propertyRegister.size_In_Proportional);
       console.log("totalsize", totalsize);
 
@@ -240,8 +240,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                 if (element.property_ID != this.propertyRegister.property_ID) {
                   let totalsize =
                     parseInt(element.building_Size_M2) +
-                    parseInt(element.proportional_from_Compound_Size) +
-                    parseInt(element.parking_Area_M2) +
+                    // parseInt(element.proportional_from_Compound_Size) +
+                    // parseInt(element.parking_Area_M2) +
                     parseInt(element.size_In_Proportional);
                   this.totlaizeproportinal += totalsize;
                 }
@@ -646,8 +646,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     if (this.serviceService.isproportinal == true) {
       let totalsize =
         parseInt(this.propertyRegister.building_Size_M2) +
-        parseInt(this.propertyRegister.proportional_from_Compound_Size) +
-        parseInt(this.propertyRegister.parking_Area_M2) +
+        // parseInt(this.propertyRegister.proportional_from_Compound_Size) +
+        // parseInt(this.propertyRegister.parking_Area_M2) +
         parseInt(this.propertyRegister.size_In_Proportional);
       console.log("totalsize", totalsize);
 
@@ -661,8 +661,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
               if (element.property_ID != "No Parent") {
                 let totalsize =
                   parseInt(element.building_Size_M2) +
-                  parseInt(element.proportional_from_Compound_Size) +
-                  parseInt(element.parking_Area_M2) +
+                  // parseInt(element.proportional_from_Compound_Size) +
+                  // parseInt(element.parking_Area_M2) +
                   parseInt(element.size_In_Proportional);
 
                 this.totlaizeproportinal += totalsize;
@@ -754,12 +754,15 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     } else {
       let totalsize =
         parseInt(this.propertyRegister.building_Size_M2) +
-        parseInt(this.propertyRegister.proportional_from_Compound_Size) +
-        parseInt(this.propertyRegister.parking_Area_M2) +
+        // parseInt(this.propertyRegister.proportional_from_Compound_Size) +
+        // parseInt(this.propertyRegister.parking_Area_M2) +
         parseInt(this.propertyRegister.size_In_Proportional);
       console.log(parseInt(this.serviceService.Plot_Size_M2));
 
-      if (parseInt(this.serviceService.Plot_Size_M2) < totalsize) {
+      if (
+        parseInt(this.serviceService.Plot_Size_M2) !=
+        parseInt(this.serviceService.Plot_Size_M2)
+      ) {
         const toast = this.notificationsService.error(
           "error",
           "the sum of building_Size_M2 , proportional_from_Compound_Size  and parking_Area_M2 must be equle to " +

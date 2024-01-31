@@ -571,23 +571,22 @@ export class RecordComponent implements OnChanges {
     this.btnDisable = false;
     this.RequerdDocspre = [""];
     console.log("this.selectedAppno111111", this.selectedAppno);
-    this.service
-      .getTodandAppNo(this.selectedAppno.application_number)
-      .subscribe((PreAppData) => {
-        if (PreAppData) {
-          this.hideNew = true;
-        } else {
-          this.hideNew = false;
-        }
-        this.PreAppData = PreAppData;
-        if (this.PreAppData.Table.length === 0) {
-          this.taskEnable = true;
-        } else {
-          this.taskEnable = false;
-        }
-        console.log("this.PreAppDataaa", this.PreAppData.Table.length);
-      });
-
+    // this.service
+    //   .getTodandAppNo(this.selectedAppno.application_number)
+    //   .subscribe((PreAppData) => {
+    //     if (PreAppData) {
+    //       this.hideNew = true;
+    //     } else {
+    //       this.hideNew = false;
+    //     }
+    //     this.PreAppData = PreAppData;
+    //     if (this.PreAppData.Table.length === 0) {
+    //       this.taskEnable = true;
+    //     } else {
+    //       this.taskEnable = false;
+    //     }
+    //     console.log("this.PreAppDataaa", this.PreAppData.Table.length);
+    //   });
     this.service
       .getDocIdByAppNo(this.selectedAppno.application_number)
       .subscribe((DocIdByAppNo: any) => {
@@ -603,17 +602,16 @@ export class RecordComponent implements OnChanges {
         this.licenceData = this.licenceService.list[0];
 
         this.getPriveysLicence(this.licenceData.Application_No);
-        console.log("Licence Service", this.licenceData);
+        console.log("Licence Service", this.service.licenceData);
 
         this.service
-          .getLicencebyid(this.licenceData.Licence_Service_ID)
+          .getLicencebyid(this.service.licenceData.Licence_Service_ID)
           .subscribe((rec: any) => {
             console.log("🚀 ~ RecordComponent ~ ).subscribe ~ rec:", rec);
             let RID;
             if (rec.procLicense_Services.length > 0) {
-              RID = rec.procLicense_Services[0].RecordNo;
+              RID = rec.procLicense_Services[0].recordNo;
             }
-
             this.service
               .getDocumentArcbyid(RID)
               .subscribe((DocumentArc: any) => {
@@ -1078,8 +1076,10 @@ export class RecordComponent implements OnChanges {
         //   this.Saved = true;
         // }
         // this.documentAddress=false
-        this.selectedService.licenceData.RecordNo = message[0].document_Number;
-        this.service.UpdateLicence(this.selectedService.licenceData).subscribe(
+        console.log(this.service.licenceData);
+
+        this.service.licenceData.RecordNo = message[0].document_Number;
+        this.service.UpdateLicence(this.service.licenceData).subscribe(
           (Licence) => {},
           (error) => {
             const toast = this.notificationsService.error("Error", error.error);
@@ -1205,7 +1205,8 @@ export class RecordComponent implements OnChanges {
     this.taskdisable = true;
     this.documentAddress = true;
     this.recordDocumnet.title_Deed_No = this.record.get("Deed").value;
-    this.getDocmentArcive(this.record.get("Deed").value);
+
+    //this.getDocmentArcive(this.record.get("Deed").value);
     this.GetApplicationNumberByUser(this.record.get("FullName_AM").value);
     // this.Application_Number=this.record.get('appno').value;
     // console.log('loggggg',this.Application_Number);
@@ -1281,8 +1282,10 @@ export class RecordComponent implements OnChanges {
         //       this.recordDocumnet.Regstration_Date
         //     );
         // }
-        this.selectedService.licenceData.RecordNo = message[0].document_Number;
-        this.service.UpdateLicence(this.selectedService.licenceData).subscribe(
+        console.log(this.service.licenceData);
+
+        this.service.licenceData.RecordNo = message[0].document_Number;
+        this.service.UpdateLicence(this.service.licenceData).subscribe(
           (Licence) => {},
           (error) => {
             const toast = this.notificationsService.error("Error", error.error);
