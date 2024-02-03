@@ -297,7 +297,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                 console.log("property", property);
                 this.getPropertyList(prop.plot_ID);
                 if (!this.Saved) {
-                  this.completed.emit();
+                  this.completed.emit(prop);
                   this.Saved = true;
                 }
                 this.serviceService.frompropertyUpdate = true;
@@ -346,7 +346,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
           console.log("property", property);
           //this.getPropertyList(prop.plot_ID);
           if (!this.Saved) {
-            this.completed.emit();
+            this.completed.emit(prop);
             this.Saved = true;
           }
           this.serviceService.frompropertyUpdate = true;
@@ -490,7 +490,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             this.getPropertyList(prop.plot_ID);
             const toast = this.notificationsService.success("Sucess", property);
             if (!this.Saved) {
-              this.completed.emit();
+              this.completed.emit(prop);
               this.Saved = true;
             }
           },
@@ -518,6 +518,10 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       (PropertyList: any) => {
         this.PropertyList = PropertyList.procProperty_Registrations;
         this.PropertyList = Object.assign([], this.PropertyList);
+        let currentpro = this.PropertyList.filter(
+          (x) => x.property_ID === this.serviceService.insertedProperty
+        );
+        this.completed.emit(currentpro[0]);
         console.log("PropertyList", PropertyList);
         this.PropertyList.push({ property_ID: "No Parent" });
         //this.getTree(Object.assign([], this.PropertyList));
@@ -720,12 +724,13 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                 // }
                 this.serviceService.insertedProperty =
                   deptSuspension[0].property_ID;
-                this.completed.emit();
+
                 this.isnew = true;
                 if (!this.Saved) {
                   this.Saved = true;
                 }
                 this.getPropertyList(prop.plot_ID);
+
                 if (prop.property_Parent_ID != "0") {
                   this.serviceService.hide = false;
                 }
@@ -801,12 +806,13 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             // }
             this.serviceService.insertedProperty =
               deptSuspension[0].property_ID;
-            this.completed.emit();
+
             this.isnew = true;
             if (!this.Saved) {
               this.Saved = true;
             }
             this.getPropertyList(prop.plot_ID);
+            //this.completed.emit(prop);
             if (prop.property_Parent_ID != "0") {
               this.serviceService.hide = false;
             }
@@ -839,6 +845,12 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
           this.plotloc[0].geowithzone,
           this.plotloc[0]
         );
+        if (this.plotloc[0].geoForwgs84 != null) {
+          this.convertPolygonCoordinates(
+            this.plotloc[0].geoForwgs84,
+            this.plotloc[0]
+          );
+        }
 
         this.serviceService.selectedproperty = this.selectedpro.property_ID;
         console.log("this.propformLocation", this.serviceService.PropertyList);
@@ -999,32 +1011,6 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     console.log("convertedCconvertedCoordinatesoordinates", arrayOfArrays);
     this.tellChild(arrayOfArrays);
   }
-  // convertCoordinates(data, prop) {
-  //   const arrayOfShapes = [];
-
-  //   // Create the header row
-  //   const headerRow = ["northing", "easting", "hemisphere", "zone"];
-
-  //   for (const coord of data) {
-  //     const shape = {
-  //       name: prop,
-  //       coordinates: [
-  //         coord.northing,
-  //         coord.easting,
-  //         coord.hemisphere,
-  //         coord.zone,
-  //       ],
-  //     };
-
-  //     arrayOfShapes.push(shape);
-  //   }
-
-  //   // Insert the header row at the beginning
-  //   arrayOfShapes.unshift(headerRow);
-
-  //   console.log("arrayOfShapes", arrayOfShapes);
-  //   this.tellChild(arrayOfShapes);
-  // }
 
   updateproploc() {
     console.log(

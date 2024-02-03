@@ -116,16 +116,20 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
 
       this.plotManagment = this.SelectedPlot;
       this.plotManagment.plot_Status = 1;
-      this.getplotloc(this.plotManagment.plot_ID);
+      //this.getplotloc(this.plotManagment.plot_ID);
       this.regionSelectedd(this.plotManagment.sdP_ID);
     }
     console.log("chang detected");
-
-    if (this.plotManagment["plot_ID"]) {
-      this.isnew = this.plotManagment["parcel_No"] ? false : true;
-      this.isploatDisabled = true;
+    if (!this.serviceService.fornewplotinsert) {
+      if (this.plotManagment["plot_ID"]) {
+        this.isnew = this.plotManagment["plot_ID"] ? false : true;
+        this.isploatDisabled = true;
+      } else {
+        this.isnew = this.plotManagment["plot_ID"] ? false : true;
+        this.isploatDisabled = false;
+      }
     } else {
-      this.isnew = this.plotManagment["parcel_No"] ? false : true;
+      this.isnew = true;
       this.isploatDisabled = false;
     }
 
@@ -822,11 +826,11 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
 
             console.log("coordinatecoordinate", coordinates);
             this.platformLocation.geo = coordinates;
-            this.platformLocation.geoForwgs84 =
-              this.serviceService.coordinateForwgs84;
+            // this.platformLocation.geoForwgs84 =
+            //   this.serviceService.coordinateForwgs84;
             let coordinate = this.convertToMultiPoint(cordinatetemp);
             this.platformLocation.geowithzone = coordinate;
-            console.log("responseresponseresponse", response, response[0]);
+            console.log("responseresponseresponse", response);
 
             this.platformLocation.ploteId = this.plotManagment.parcel_No;
             this.platformLocation.created_By = response[0].RoleId;
@@ -921,9 +925,9 @@ export class PlotManagment {
   public nortech_No: string;
   public licence_Service_ID;
   public application_No;
-  public Is1988: any;
-  public Is1997: any;
-  public Is2023: any;
+  public iS1988;
+  public iS1997;
+  public iS2023;
 }
 export class PlatformLocation {
   public ploteId: any;
@@ -946,4 +950,5 @@ export class PlatformLocation {
   public tech_Approved_By: any;
   public geowithzone: any;
   public geoForwgs84: any;
+  public freholdgis: any;
 }

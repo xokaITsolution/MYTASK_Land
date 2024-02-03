@@ -415,7 +415,7 @@ export class PropertyComponent implements OnChanges {
     );
   }
 
-  getPropertyList() {
+  async getPropertyList() {
     this.serviceService
       .getPropertyLists(this.SelectedProperty.plot_ID)
       .subscribe(
@@ -432,6 +432,13 @@ export class PropertyComponent implements OnChanges {
           //this.isvalidated();
 
           if (this.PropertyList.length > 0) {
+            // if (Property) {
+            //   this.selectedFile = Property;
+            //   this.selectedprofromtree = this.selectedFile;
+            //   this.selectedprofromtree = {
+            //     property_ID: Property.property_ID,
+            //   };
+            // }
           }
         },
         (error) => {
@@ -944,123 +951,19 @@ export class PropertyComponent implements OnChanges {
   }
 
   async EnableFinspronew(Property) {
-    this.getPropertyList();
-    this.DoneNew();
-    // const sumOfPropertiess: any = this.serviceService.files.filter(
-    //   (node: ExtendedTreeNode) => node.level === 0 && node.label != "No Parent"
-    // );
-    // const sumOfProperties = this.serviceService.files
-    //   .filter(
-    //     (node: ExtendedTreeNode) =>
-    //       node.level === 0 && node.label != "No Parent"
-    //   )
-    //   .reduce((sum, node: ExtendedTreeNode) => {
-    //     sum +=
-    //       parseFloat(node.building_Size_M2) +
-    //       parseFloat(node.proportional_from_Compound_Size) +
-    //       parseFloat(node.parking_Area_M2) +
-    //       parseFloat(node.size_In_Proportional);
-    //     return sum;
-    //   }, 0);
+    console.log(
+      "🚀 ~ PropertyComponent ~ EnableFinspronew ~ Property:",
+      Property
+    );
 
-    // console.log("this.serviceService.files", sumOfProperties);
-    // const sumOfPropertiesfinal = sumOfProperties.toFixed(2);
-    // // Check if the sum is equal to compound_Size_M2
-    // if (
-    //   parseFloat(sumOfPropertiesfinal) ===
-    //   parseFloat(sumOfPropertiess[0].compound_Size_M2)
-    // ) {
-    //   for (let i = 0; i < this.serviceService.files.length; i++) {
-    //     const element: any = Object.assign([], this.serviceService.files[i]);
-    //     console.log("sub property", element);
-
-    //     if (element.property_ID !== "No Parent") {
-    //       const isdeedchildren = await this.checkProperty(element);
-
-    //       if (!isdeedchildren) {
-    //         const toast = this.notificationsService.warn(
-    //           `Must add title deed for this property: ${element.property_ID}`
-    //         );
-    //       } else {
-    //         this.completed.emit();
-    //       }
-    //     }
-    //   }
-    // } else {
-    //   const toast = this.notificationsService.warn(
-    //     "built-in size must be equal to lease size/ ንብረት ድምር ከሊዝ መጠን ጋር እኩል መሆን አለበት።"
-    //   );
-    // }
-
-    // if (this.serviceService.isproportinal == true) {
-    //   if (
-    //     this.serviceService.totlaizeproportinal ==
-    //     this.serviceService.Plot_Size_M2
-    //   ) {
-    //     this.completed.emit();
-    //   } else {
-    //     const toast = this.notificationsService.warn(
-    //       "if the lease type is proportional the sum of property built-in size must be equal to lease size/የሊዝ አይነት ተመጣጣኝ ከሆነ አብሮ የተሰራው ንብረት ድምር ከሊዝ መጠን ጋር እኩል መሆን አለበት።"
-    //     );
-    //   }
-    // } else {
-    //   if (
-    //     2 == this.serviceService.selectedproperty_Type_ID ||
-    //     3 == this.serviceService.selectedproperty_Type_ID
-    //   ) {
-    //     if (this.selectedFile.children.length == 0) {
-    //       const toast = this.notificationsService.warn(
-    //         "must  add minimum  one sub property if the property type is building or apartment / የንብረቱ ዓይነት ሕንፃ ወይም አፓርትመንት ከሆነ ቢያንስ አንድ ንዑስ ንብረት መጨመር አለበት"
-    //       );
-    //     } else {
-    //       for (let i = 0; i < this.serviceService.files.length; i++) {
-    //         const element: any = Object.assign(
-    //           [],
-    //           this.serviceService.files[i]
-    //         );
-    //         console.log("sub property", element);
-
-    //         if (element.property_ID !== "No Parent") {
-    //           const isdeedchildren = await this.checkProperty(element);
-
-    //           if (!isdeedchildren) {
-    //             const toast = this.notificationsService.warn(
-    //               `Must add title deed for this property: ${element.property_ID}`
-    //             );
-    //           } else {
-    //             this.completed.emit();
-    //           }
-    //         }
-    //       }
-    //     }
-    //   } else {
-    //     for (let i = 0; i < this.serviceService.files.length; i++) {
-    //       const element: any = Object.assign([], this.serviceService.files[i]);
-    //       console.log("sub property", element);
-
-    //       if (element.property_ID !== "No Parent") {
-    //         const isdeedchildren = await this.checkProperty(element);
-
-    //         if (!isdeedchildren) {
-    //           const toast = this.notificationsService.warn(
-    //             `Must add title deed for this property: ${element.property_ID}`
-    //           );
-    //         } else {
-    //           this.completed.emit();
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-    // this.propertyregForm = false;
     this.selectedFile = Property;
     this.selectedprofromtree = this.selectedFile;
-    console.log("next to measurement", Property.property_ID);
 
-    this.selectedprofromtree;
     this.selectedprofromtree = {
-      property_ID: Property.property_ID,
+      property_ID: this.serviceService.insertedProperty,
     };
+    await this.getPropertyList();
+    this.DoneNew();
   }
 
   EnabledelFinspro() {
@@ -1098,6 +1001,17 @@ export class PropertyComponent implements OnChanges {
     console.log("this.serviceService.files", sumOfProperties);
     const sumOfPropertiesfinal = sumOfProperties.toFixed(2);
     // Check if the sum is equal to compound_Size_M2
+    console.log(
+      "🚀 ~ PropertyComponent ~ DoneNew ~ serviceService:",
+      this.serviceService.files
+    );
+    this.serviceService.files = this.serviceService.files.filter(
+      (x) => x.label != "No Parent"
+    );
+    console.log(
+      "🚀 ~ PropertyComponent ~ DoneNew ~ serviceService:",
+      this.serviceService.files
+    );
 
     if (parseFloat(sumOfPropertiesfinal) === parseFloat(sumOfPropertiesfinal)) {
       for (let i = 0; i < this.serviceService.files.length; i++) {
@@ -1108,21 +1022,19 @@ export class PropertyComponent implements OnChanges {
           const isdeedchildren = await this.checkProperty(element);
 
           if (!isdeedchildren) {
-            if (!this.serviceService.isagriculture) {
-              this.checkPropertylocationAll();
-            }
+            //this.checkPropertylocationAll();
+
             const toast = this.notificationsService.warn(
-              `Must add title deed for this property: ${element.property_ID}`
+              `Must add title deed For this property: ${element.property_ID}`
             );
+
             return;
           } else {
             if (
               parseFloat(sumOfPropertiesfinal) ===
               parseFloat(sumOfPropertiesfinal)
             ) {
-              if (!this.serviceService.isagriculture) {
-                this.checkPropertylocationAll();
-              }
+              this.checkPropertylocationAll();
             } else {
               const toast = this.notificationsService.warn(
                 "all property must have location on the map /ሁሉም ንብረቶች በካርታው ላይ ቦታ ሊኖራቸው ይገባል"
@@ -1181,6 +1093,7 @@ export class PropertyComponent implements OnChanges {
             const toast = this.notificationsService.warn(
               `Must add title deed for this property: ${element.property_ID}`
             );
+            return;
           } else {
             if (
               parseFloat(sumOfPropertiesfinal) ===
@@ -1311,6 +1224,7 @@ export class PropertyComponent implements OnChanges {
                   const toast = this.notificationsService.warn(
                     `Must add property location  for this property: ${element.property_ID}`
                   );
+
                   return;
                 } else {
                   // const toast = this.notificationsService.warn(

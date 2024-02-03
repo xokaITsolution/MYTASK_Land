@@ -4,6 +4,7 @@ import { environment } from "../../environments/environment";
 import { TreeNode } from "primeng/api";
 import { Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
+import { LeaseOwnerShip } from "./lease-owner-ship/lease-owner-ship.component";
 
 @Injectable({
   providedIn: "root",
@@ -239,6 +240,12 @@ export class ServiceService {
   currentApplicationUsers: any;
   currentsdpid: any;
   licenceData: any;
+  isFreeHold: boolean;
+  selectedplotid: any;
+  fornewplotinsert: any;
+  freeholdsize: any;
+  leaseOwnerShip: LeaseOwnerShip;
+  isfreeholdselected: boolean;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);

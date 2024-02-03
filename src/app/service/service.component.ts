@@ -233,41 +233,92 @@ export class ServiceComponent implements OnInit {
   hide = true;
 
   saveFormm(formData) {
-    console.log("save-form", JSON.stringify(formData));
-    this.serviceService
-      .saveFormm(
-        this.licenceData
-          ? this.licenceData.Licence_Service_ID
-          : this.Service_ID,
-        this.licenceData
-          ? this.licenceData.Service_ID
-          : "00000000-0000-0000-0000-000000000000",
-        this.tskID,
-        this.SDP_ID,
-        JSON.stringify(formData),
-        this.DocID || "00000000-0000-0000-0000-000000000000",
-        this.todoID || "00000000-0000-0000-0000-000000000000"
-      )
-      .subscribe(
-        (response) => {
-          console.log("save-from-response", response);
+    if ("de4937d8-bdcd-46d6-8749-dc31c9f3adcf" == this.SDP_ID) {
+      if (this.Licence_Service_ID == undefined) {
+        this.Licence_Service_ID = "00000000-0000-0000-0000-000000000000";
+        this.DocID = "00000000-0000-0000-0000-000000000000";
+        this.todoID = "00000000-0000-0000-0000-000000000000";
+        this.Service_ID = this.SDP_ID;
+      }
+      //let doc_id = this.serviceService.docId ? this.serviceService.docId : '00000000-0000-0000-0000-000000000000';
+      // this.serviceService.saveForm(this.Licence_Service_ID, this.Service_ID, this.tskID, this.SDP_ID, JSON.stringify(formData), this.DocID, this.todoID).subscribe(message => {
+      this.serviceService
+        .saveForm(
+          this.Licence_Service_ID,
+          this.Service_ID,
+          this.tskID,
+          this.AppNo,
+          JSON.stringify(formData),
+          this.DocID,
+          this.todoID
+        )
+        .subscribe(
+          (message) => {
+            this.serviceService.disablefins = false;
+            this.AppCode = message[0];
+            this.DocID = message[1];
+            //this.todoID = message[2];
+            this.getAll(message[0]);
 
-          this.serviceService.disablefins = false;
-          this.AppNo = response[0];
-          this.DocID = response[1];
-          //  this.todoID = response[2];
-          this.getAll(this.AppNo);
-          const toast = this.notificationsService.success("Success", "Saved");
-          this.validated = true;
-        },
-        (error) => {
-          console.log("save-form-error", error);
-          const toast = this.notificationsService.error(
-            "Error",
-            "SomeThing Went Wrong"
-          );
-        }
-      );
+            if (formData == "{}") {
+              const toast = this.notificationsService;
+            } else {
+              const toast = this.notificationsService.success(
+                "Success",
+                "Successfully Saved"
+              );
+            }
+            this.validated = true;
+          },
+
+          (error) => {
+            if (formData == "{}") {
+              const toast = this.notificationsService;
+            } else {
+              const toast = this.notificationsService.error(
+                "Error",
+                "SomeThing Went Wrong"
+              );
+            }
+          }
+        );
+    } else {
+      console.log("save-form", JSON.stringify(formData));
+      this.serviceService
+        .saveFormm(
+          this.licenceData
+            ? this.licenceData.Licence_Service_ID
+            : this.Service_ID,
+          this.licenceData
+            ? this.licenceData.Service_ID
+            : "00000000-0000-0000-0000-000000000000",
+          this.tskID,
+          this.SDP_ID,
+          JSON.stringify(formData),
+          this.DocID || "00000000-0000-0000-0000-000000000000",
+          this.todoID || "00000000-0000-0000-0000-000000000000"
+        )
+        .subscribe(
+          (response) => {
+            console.log("save-from-response", response);
+
+            this.serviceService.disablefins = false;
+            this.AppNo = response[0];
+            this.DocID = response[1];
+            //  this.todoID = response[2];
+            this.getAll(this.AppNo);
+            const toast = this.notificationsService.success("Success", "Saved");
+            this.validated = true;
+          },
+          (error) => {
+            console.log("save-form-error", error);
+            const toast = this.notificationsService.error(
+              "Error",
+              "SomeThing Went Wrong"
+            );
+          }
+        );
+    }
   }
   moreDetailToggle() {
     this.moreDetail.toggle = !this.moreDetail.toggle;
@@ -353,34 +404,38 @@ export class ServiceComponent implements OnInit {
     //     });
     // }, 1000);
     this.serviceService.getUserRole().subscribe((response: any) => {
-      for (let index = 0; index < response.length; index++) {
-        const element = response[index];
+      if (response) {
+        for (let index = 0; index < response.length; index++) {
+          const element = response[index];
 
-        if (
-          element.RoleId == "8e759c69-1ed6-445b-b7f8-32c3fd44e8be" ||
-          element.RoleId == "3ba734c5-d75a-44c7-8c47-5233431372ba"
-        ) {
-          this.hideit = true;
-          break;
-        } else {
-          console.log("responseresponseresponse", element);
-          this.hideit = false;
+          if (
+            element.RoleId == "8e759c69-1ed6-445b-b7f8-32c3fd44e8be" ||
+            element.RoleId == "3ba734c5-d75a-44c7-8c47-5233431372ba"
+          ) {
+            this.hideit = true;
+            break;
+          } else {
+            console.log("responseresponseresponse", element);
+            this.hideit = false;
+          }
         }
       }
     });
     this.serviceService.getUserRole().subscribe((response: any) => {
-      for (let index = 0; index < response.length; index++) {
-        const element = response[index];
+      if (response) {
+        for (let index = 0; index < response.length; index++) {
+          const element = response[index];
 
-        if (
-          element.RoleId ==
-          "8C133397-587E-456F-AB31-9CF5358BE8D2".toLocaleLowerCase()
-        ) {
-          this.serviceService.isRecordDocumentationManager = true;
-          break;
-        } else {
-          console.log("responseresponseresponse", element);
-          this.serviceService.isRecordDocumentationManager = false;
+          if (
+            element.RoleId ==
+            "8C133397-587E-456F-AB31-9CF5358BE8D2".toLocaleLowerCase()
+          ) {
+            this.serviceService.isRecordDocumentationManager = true;
+            break;
+          } else {
+            console.log("responseresponseresponse", element);
+            this.serviceService.isRecordDocumentationManager = false;
+          }
         }
       }
     });
@@ -401,7 +456,7 @@ export class ServiceComponent implements OnInit {
       this.formcode = params["formcode"];
       this.AppNo = params["AppNo"];
       this.SDP_ID = params["SDP_ID"];
-
+      this.Service_ID = this.SDP_ID;
       this.getAll(this.AppNo);
       this.tskTyp = params["tskTyp"];
       this.tskID = params["tskID"];
@@ -1807,7 +1862,9 @@ export class ServiceComponent implements OnInit {
             element.RoleId ==
               "5B3B5DD4-3CEF-4696-AC19-442BA531A7DD".toLocaleLowerCase ||
             element.RoleId ==
-              "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase()
+              "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase() ||
+            element.RoleId ==
+              "8ACA5AE9-7CE3-4964-AF89-F92A9DF3C2E2".toLocaleLowerCase()
           ) {
             this.serviceService
               .getPropertyLists(this.licenceData.Parcel_ID)
@@ -1920,7 +1977,9 @@ export class ServiceComponent implements OnInit {
           element.RoleId ==
             "5B3B5DD4-3CEF-4696-AC19-442BA531A7DD".toLocaleLowerCase ||
           element.RoleId ==
-            "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase()
+            "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase() ||
+          element.RoleId ==
+            "8ACA5AE9-7CE3-4964-AF89-F92A9DF3C2E2".toLocaleLowerCase()
         ) {
           if (this.licenceData.Parcel_ID) {
             this.getplotlist(this.licenceData.Parcel_ID);
@@ -2085,7 +2144,9 @@ export class ServiceComponent implements OnInit {
                   element.RoleId ==
                     "5B3B5DD4-3CEF-4696-AC19-442BA531A7DD".toLocaleLowerCase ||
                   element.RoleId ==
-                    "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase()
+                    "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase() ||
+                  element.RoleId ==
+                    "8ACA5AE9-7CE3-4964-AF89-F92A9DF3C2E2".toLocaleLowerCase()
                 ) {
                   if (this.licenceData.Parcel_ID) {
                     this.getplotlist(this.licenceData.Parcel_ID);
@@ -2202,7 +2263,7 @@ export class ServiceComponent implements OnInit {
                 this.licenceData.Parcel_ID
               )
               .subscribe((PriveLicence: any) => {
-                console.log("🚀 ~ .subscribe ~ PriveLicence:", PriveLicence);
+                //console.log("🚀 ~ .subscribe ~ PriveLicence:", PriveLicence);
                 if (PriveLicence.length > 0) {
                   this.serviceService
                     .GetApplicationNumberByprevious(
@@ -2211,27 +2272,27 @@ export class ServiceComponent implements OnInit {
                       PriveLicence[0].organization_code
                     )
                     .subscribe((ApplicationNumber: any) => {
-                      console.log(
-                        "🚀 ~ .subscribe ~ ApplicationNumber:",
-                        ApplicationNumber
-                      );
+                      // console.log(
+                      //   "🚀 ~ .subscribe ~ ApplicationNumber:",
+                      //   ApplicationNumber
+                      // );
                       ApplicationNumber.forEach((element) => {
                         this.ApplicationNumberlist.push(element);
                       });
                     });
-                  console.log(
-                    "🚀 ~ .subscribe ~ ApplicationNumberlist:",
-                    this.ApplicationNumberlist
-                  );
+                  // console.log(
+                  //   "🚀 ~ .subscribe ~ ApplicationNumberlist:",
+                  //   this.ApplicationNumberlist
+                  // );
                 }
               });
           }
 
           if (a.application_Date > b.application_Date) {
-            console.log("sttatattgs", this.ApplicationNumberlist);
+            // console.log("sttatattgs", this.ApplicationNumberlist);
             return -1;
           } else if (a.application_Date < b.application_Date) {
-            console.log("sttatattgs", this.ApplicationNumberlist);
+            //  console.log("sttatattgs", this.ApplicationNumberlist);
             return 1;
           } else {
             return 0;

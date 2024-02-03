@@ -43,7 +43,7 @@
                     <!-- Add input boxes with type for Adindan / UTM zone 36N, 37N, and 38N -->
                     <div class="form-group input-group">
                       <div class="input-group-prepend">
-                        <span class="input-group-text">Latitude</span>
+                        <span class="input-group-text">X</span>
                       </div>
                       <input type="number" class="form-control" [(ngModel)]="latitude" />
                       <div class="input-group-append">
@@ -52,11 +52,20 @@
                     </div>
                     <div class="form-group input-group">
                       <div class="input-group-prepend">
-                        <span class="input-group-text">Longitude</span>
+                        <span class="input-group-text">Y</span>
                       </div>
                       <input type="number" class="form-control" [(ngModel)]="longitude" />
                       <div class="input-group-append">
                         <span class="input-group-text">E</span>
+                      </div>
+                    </div>
+                    <div *ngIf="ispointadd" class="form-group input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Number of Add point</span>
+                      </div>
+                      <input type="number" readonly class="form-control" [(ngModel)]="numberOFaddpoint" />
+                      <div class="input-group-append">
+                        <span class="input-group-text">P</span>
                       </div>
                     </div>
                   </div>
@@ -93,7 +102,7 @@
                     <!-- Add input boxes with type for WGS 1984 UTM Zone 36, 37, and 38 -->
                     <div class="form-group input-group">
                       <div class="input-group-prepend">
-                        <span class="input-group-text">Latitude</span>
+                        <span class="input-group-text">X</span>
                       </div>
                       <input type="number" class="form-control" [(ngModel)]="latitude" />
                       <div class="input-group-append">
@@ -102,13 +111,23 @@
                     </div>
                     <div class="form-group input-group">
                       <div class="input-group-prepend">
-                        <span class="input-group-text">Longitude</span>
+                        <span class="input-group-text">Y</span>
                       </div>
                       <input type="number" class="form-control" [(ngModel)]="longitude" />
                       <div class="input-group-append">
                         <span class="input-group-text">E</span>
                       </div>
                     </div>
+                      <div *ngIf="ispointadd" class="form-group input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Number of Add point</span>
+                        </div>
+                        <input type="number" readonly class="form-control" [(ngModel)]="numberOFaddpoint" />
+                        <div class="input-group-append">
+                          <span class="input-group-text">P</span>
+                        </div>
+                      </div>
+                   
                   </div>
                 </div>
             
@@ -144,9 +163,7 @@
         <button type="button" class="btn btn-info mb-2" (click)="convertToExcel(utmCoordinates)">
           Convert to Excel
         </button>
-        <h6 *ngIf="ispointadd">
-          Number of Add point: {{ numberOFaddpoint }}
-        </h6>
+       
       </div>
 
       <div id="mapp" style="width: 100%; height: 700px;"></div>

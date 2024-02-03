@@ -191,11 +191,23 @@ export class GisMapComponent implements AfterViewInit {
 
     this.initMap();
     this.getGroupLayers();
+    // localStorage.setItem("PolygonAreanameFrehold", "" + 0);
+    // // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
+    // localStorage.setItem("PolygonAreaname", "" + 0);
 
     if (this.geo) {
       console.log("value is changing", this.geo);
       if (this.ServiceService.check) {
-        this.processImportedShapes(this.geo);
+        for (let index = 0; index < this.geo.length; index++) {
+          // const element = this.geo[index];
+
+          this.processcoordinatesForPlot(this.geo[index][0]);
+
+          if (index == this.geo.length - 1) {
+            this.drawnshapeAfterProcessForplot();
+          }
+        }
+        // this.processImportedShapes(this.geo);
       } else {
         for (let index = 0; index < this.geo.length; index++) {
           // const element = this.geo[index];
@@ -1844,7 +1856,14 @@ export class GisMapComponent implements AfterViewInit {
           const area = this.calculateUTMPolygonArea(utmCoordinates);
           this.ServiceService.Totalarea = parseInt(area.toFixed(2));
           // Show the area in a popup
-          localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
+          if (this.ServiceService.isfreeholdselected) {
+            localStorage.setItem(
+              "PolygonAreanameFrehold",
+              "" + area.toFixed(2)
+            );
+          } else {
+            localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
+          }
           console.log(
             "Totalarea",
             area,
@@ -1958,8 +1977,14 @@ export class GisMapComponent implements AfterViewInit {
           );
           const area = this.calculateUTMPolygonArea(utmCoordinates);
           this.ServiceService.Totalarea = parseInt(area.toFixed(2));
-          localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
-          // Show the area in a popup
+          if (this.ServiceService.isfreeholdselected) {
+            localStorage.setItem(
+              "PolygonAreanameFrehold",
+              "" + area.toFixed(2)
+            );
+          } else {
+            localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
+          }
           console.log("Totalarea", area, utmCoordinates);
           const maxAreaDifference =
             environment.Totalareatolerance * this.ServiceService.Totalarea;
@@ -2110,7 +2135,14 @@ export class GisMapComponent implements AfterViewInit {
             this.utmCoordinates
           );
           const area = this.calculateUTMPolygonArea(this.utmCoordinates);
-          localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
+          if (this.ServiceService.isfreeholdselected) {
+            localStorage.setItem(
+              "PolygonAreanameFrehold",
+              "" + area.toFixed(2)
+            );
+          } else {
+            localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
+          }
           // Show the area in a popup
           console.log("Totalarea", area, utmCoordinates);
           this.ServiceService.Totalarea = parseInt(area.toFixed(2));
@@ -2563,7 +2595,11 @@ export class GisMapComponent implements AfterViewInit {
     const area = this.calculateUTMPolygonArea(utmCoordinates);
     this.ServiceService.Totalarea = parseInt(area.toFixed(2));
     // Show the area in a popup
-    localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
+    if (this.ServiceService.isfreeholdselected) {
+      localStorage.setItem("PolygonAreanameFrehold", "" + area.toFixed(2));
+    } else {
+      localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
+    }
     this.utmCoordinates = utmCoordinates;
     //utmCoordinates.push(utmCoordinates[0]);
     this.ServiceService.coordinate = utmCoordinates;
@@ -2637,7 +2673,7 @@ export class GisMapComponent implements AfterViewInit {
 
       // Process the imported shapes and add them to the map
       this.fromexcel = true;
-      this.processImportedShapes(jsonData);
+      this.processImportedShapesXLSX(jsonData);
     };
     fileReader.readAsArrayBuffer(file);
   }
@@ -2830,6 +2866,34 @@ export class GisMapComponent implements AfterViewInit {
 
     this.alllatlong.push(combinedData);
   }
+  public processcoordinatesForPlot(data: any[]): void {
+    // Remove the header row from the data
+    const coordinates = data.slice(1);
+    console.log("coordinates", coordinates);
+    // Map the data to LatLng objects and their associated shape properties
+    const combinedData = [];
+    const latLngs = coordinates.map((row) =>
+      this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
+    );
+    const shapeProperties = coordinates.map((row) => row.pop());
+    combinedData.push(latLngs);
+
+    const uniqueJobMatchIDs = {};
+    const uniqueData = shapeProperties.filter((item) => {
+      if (!uniqueJobMatchIDs[item.plot_ID]) {
+        uniqueJobMatchIDs[item.plot_ID] = true;
+        return true;
+      }
+      return false;
+    });
+    combinedData.push(uniqueData);
+
+    // Now, combinedData contains the latLng and shapeProperties in each object
+
+    console.log("shapeProperties", combinedData);
+
+    this.alllatlong.push(combinedData);
+  }
 
   public drawnshapeAfterProcess() {
     console.log("this.alllatlong", this.alllatlong);
@@ -2863,6 +2927,86 @@ export class GisMapComponent implements AfterViewInit {
         .bindPopup(
           dataofproperty.ploteId == undefined
             ? dataofproperty.property_ID
+            : dataofproperty.ploteId
+        )
+        .openPopup();
+      // this.arrayFoPolygonarea.push(this.calculatePolygonArea(L.polygon(shape)));
+      // console.log("this.alllatlong", this.arrayFoPolygonarea);
+      if (
+        dataofproperty.ploteId == undefined ||
+        (dataofproperty.ploteId == null &&
+          dataofproperty.property_ID == this.ServiceService.selectedproperty)
+      ) {
+        this.editableLayers.addLayer(this.drawnShape);
+        const utmCoordinates = this.convertCoordinatesToUTM(latslng);
+        this.ServiceService.coordinateForwgs84 =
+          this.mapToPolygonFormat(latslng);
+        utmCoordinates.push(utmCoordinates[0]);
+        this.ServiceService.coordinate = utmCoordinates;
+        console.log(utmCoordinates);
+      }
+    });
+    if (this.drawnShape instanceof L.Marker) {
+      //this.map.setView(this.drawnShape.getLatLng(), this.map.getZoom());
+    } else if (
+      this.drawnShape instanceof L.Circle ||
+      this.drawnShape instanceof L.Polygon
+    ) {
+      // this.map.fitBounds(this.drawnShape.getBounds(),{ maxZoom:15 });
+      const drawnShapeBounds = this.drawnShape.getBounds();
+      console.log("center", drawnShapeBounds);
+
+      const center = drawnShapeBounds.getCenter();
+      console.log("center", center);
+
+      this.map.fitBounds(this.drawnShape.getBounds());
+      this.onDatumChange();
+      // this.setviewFromDatumchange(center);
+      // Specify the zoom level
+      const zoomLevel = 6; // Adjust this to your desired zoom level
+
+      // Specify the duration of the flyTo animation in seconds
+      const flyToDuration = 5; // 2 seconds
+
+      // Use the flyTo method to animate the map
+      this.map.flyTo(center, zoomLevel, {
+        duration: flyToDuration,
+      });
+      // this.map.setView(center, 15);
+    }
+  }
+  public drawnshapeAfterProcessForplot() {
+    console.log("this.alllatlong", this.alllatlong);
+
+    this.alllatlong.forEach((shape) => {
+      let latslng = shape[0];
+      let dataofproperty = shape[1][0];
+
+      console.log("shapeProperties", latslng);
+
+      const randomColor =
+        "#" + Math.floor(Math.random() * 16777215).toString(16);
+      const polygonOptionss = {
+        color: randomColor,
+      };
+
+      const polygonOptions = {
+        weight: 3,
+        dashArray: "5, 10",
+        lineCap: "square",
+        color: "blue",
+      };
+      console.log("polygonOptions", polygonOptions);
+
+      let slectedpro =
+        dataofproperty.ploteId == this.ServiceService.selectedplotid
+          ? polygonOptions
+          : polygonOptionss;
+      this.drawnShape = L.polygon(latslng, slectedpro).addTo(this.map);
+      this.drawnShape
+        .bindPopup(
+          dataofproperty.ploteId == undefined
+            ? dataofproperty.ploteId
             : dataofproperty.ploteId
         )
         .openPopup();
@@ -3178,6 +3322,170 @@ export class GisMapComponent implements AfterViewInit {
       this.sample = this.drawnShape;
     }
   }
+  public processImportedShapesXLSX(data: any[]): void {
+    // Event handler for when a shape is drawn
+
+    console.log("dataaaa", data);
+    // Remove the header row from the data
+    const coordinates = data.slice(1);
+    console.log("coordinates", coordinates);
+    this.utmCoordinates = coordinates;
+
+    const latLngs = coordinates.map((row) =>
+      this.conveUTMToLatLngWritexlsx(row[0], row[1], row[3], row[2])
+    );
+    const latLngss = coordinates.map((row) =>
+      this.conveUTMToLatLng(row[0], row[1], row[3], row[2])
+    );
+
+    // Map the data to LatLng objects
+
+    console.log("latLngs", latLngs);
+    if (!this.ServiceService.check) {
+      this.alllatlong = [];
+      this.alllatlong.push(latLngs);
+    } else {
+      this.alllatlong.push(latLngs);
+    }
+    if (this.fromexcel === true && this.alllatlong.length == 1) {
+      if (
+        this.ServiceService.allLicenceData.Parcel_ID == null &&
+        this.ServiceService.allLicenceData.Plot_Merge_1 == null &&
+        this.ServiceService.allLicenceData.Plot_Merge_2 == null &&
+        this.ServiceService.allLicenceData.Plot_Merge_3 == null &&
+        this.ServiceService.allLicenceData.Plot_Merge_4 == null
+      ) {
+        console.log(
+          "🚀 ~ file: gis-map.component.ts:1691 ~ this.map.on ~ ServiceService:",
+          this.ServiceService.allLicenceData
+        );
+
+        this.checktheshapeexistans(latLngss);
+      }
+    }
+    const utmCoordinates = this.convertCoordinatesToUTM(latLngs);
+    this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(latLngs);
+    utmCoordinates.push(utmCoordinates[0]);
+    this.ServiceService.coordinate = utmCoordinates;
+    console.log(utmCoordinates);
+    const area = this.calculateUTMPolygonArea(utmCoordinates);
+    this.ServiceService.Totalarea = parseInt(area.toFixed(2));
+    // Show the area in a popup
+    if (this.ServiceService.isfreeholdselected) {
+      localStorage.setItem("PolygonAreanameFrehold", "" + area.toFixed(2));
+    } else {
+      localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
+    }
+    // Remove the previously drawn shape, if any
+    if (this.drawnShape) {
+      this.map.removeLayer(this.drawnShape);
+    }
+
+    console.log("alllatlong", this.alllatlong);
+
+    this.alllatlong.forEach((shape, index) => {
+      let randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+
+      this.drawnShape = L.polygon(shape, { color: randomColor }).addTo(
+        this.map
+      );
+
+      this.editableLayers.addLayer(this.drawnShape);
+      if (shape.length < 26) {
+        shape.forEach((point, pointIndex) => {
+          const markerLatLng = L.latLng(point); // Create a LatLng object for the point
+          // Add a marker with a character label to the polygon
+          this.addMarkerWithCharacter(
+            this.drawnShape,
+            markerLatLng,
+            String.fromCharCode(65 + pointIndex)
+          );
+        });
+      }
+    });
+
+    //this.ServiceService.coordinate.push(latLngs[0])
+    console.log("alllatlong", latLngs);
+
+    //this.ServiceService.coordinate=latLngs
+    // Fit the map view to the drawn shape
+    if (this.drawnShape instanceof L.Marker) {
+      this.map.setView(this.drawnShape.getLatLng(), this.map.getZoom());
+    } else if (
+      this.drawnShape instanceof L.Circle ||
+      this.drawnShape instanceof L.Polygon
+    ) {
+      // this.map.fitBounds(this.drawnShape.getBounds(),{ maxZoom:15 });
+      const drawnShapeBounds = this.drawnShape.getBounds();
+
+      const customIcon = new L.Icon({
+        iconUrl: environment.iconpath, // Replace with the actual path to your icon image
+        iconSize: [50, 50], // Adjust the size as needed
+        iconAnchor: [25, 50], // Adjust the anchor point if necessary
+        popupAnchor: [0, -50], // Adjust the popup anchor if needed
+        className: "custom-icon-class", // You can also add a custom CSS class
+      });
+      // Calculate the center of the bounds
+      const center = drawnShapeBounds.getCenter();
+      var marker = new L.Marker(center, {
+        icon: customIcon,
+      });
+      //this.addCenterMarker(center);
+      // marker.addTo(this.map);
+
+      this.map.fitBounds(this.drawnShape.getBounds());
+      this.onDatumChange();
+      // this.setviewFromDatumchange(center);
+      // Specify the zoom level
+
+      const zoomLevel = 3; // Adjust this to your desired zoom level
+
+      // Specify the duration of the flyTo animation in seconds
+      const flyToDuration = 5; // 2 seconds
+
+      // Use the flyTo method to animate the map
+      this.map.flyTo(center, zoomLevel, {
+        duration: flyToDuration,
+      });
+
+      // this.map.setView(center, 15);
+      if (this.ServiceService.check != true) {
+        this.map.on(L.Draw.Event.CREATED, (e: any) => {
+          const layer = e.layer;
+          console.log("alllatlong", this.alllatlong[0]);
+
+          // Assuming limited area bounds as a polygon
+          const limitedAreaBounds = L.polygon(this.alllatlong[0][0]).addTo(
+            this.map
+          );
+
+          // Check if the drawn shape intersects with the limited area bounds
+          if (limitedAreaBounds.getBounds().contains(layer.getBounds())) {
+            this.map.addLayer(layer);
+            this.ServiceService.disablebutton = true;
+          } else {
+            const toast = this.messageService.add({
+              severity: "warn",
+              summary: "Warn",
+              detail:
+                "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡",
+            });
+            this.map.removeLayer(layer);
+            this.removeShape();
+            this.ServiceService.disablebutton = false;
+          }
+        });
+      }
+      // Set the map view to the calculated center and zoom level
+      // Fit the bounds with the new maxZoom level
+
+      this.aaa.push(this.drawnShape);
+      // this.onDatumChange()
+      this.ServiceService.shapes = this.aaa;
+      this.sample = this.drawnShape;
+    }
+  }
+
   updateplote(filtertheshape: any) {
     console.log(
       "🚀 ~ file: gis-map.component.ts:2965 ~ updateplote ~ filtertheshape:",
@@ -3592,7 +3900,7 @@ export class GisMapComponent implements AfterViewInit {
     console.log(easting, northing, zone, hemisphere);
 
     const latLngCoords = utm.toLatLon(easting, northing, zone, hemisphere);
-    console.log("Latitude, Longitude:", latLngCoords);
+    //console.log("Latitude, Longitude:", latLngCoords);
     return {
       lat: latLngCoords.latitude,
       lng: latLngCoords.longitude,
@@ -3607,12 +3915,11 @@ export class GisMapComponent implements AfterViewInit {
     console.log("ggggg", easting, northing, zone, hemisphere);
 
     const latLngCoords = utm.toLatLon(easting, northing, zone, hemisphere);
-
-    console.log(
-      "Latitude, Longitude:",
-      latLngCoords.longitude,
-      latLngCoords.latitude
-    );
+    // console.log(
+    //   "Latitude, Longitude:",
+    //   latLngCoords.longitude,
+    //   latLngCoords.latitude
+    // );
     console.log(
       "Latitude, Longitude:",
       latLngCoords.longitude - 0.0008668,
@@ -3635,7 +3942,7 @@ export class GisMapComponent implements AfterViewInit {
     console.log(easting, northing, zone, hemisphere);
 
     const latLngCoords = utm.toLatLon(easting, northing, zone, hemisphere);
-    console.log("Latitude, Longitude:", latLngCoords);
+    //console.log("Latitude, Longitude:", latLngCoords);
     // return {
     //   lat: latLngCoords.latitude,
     //   lng: latLngCoords.longitude,
@@ -3643,6 +3950,25 @@ export class GisMapComponent implements AfterViewInit {
     return {
       lat: latLngCoords.latitude,
       lng: latLngCoords.longitude,
+    };
+  }
+  conveUTMToLatLngWritexlsx(
+    northing: number,
+    easting: number,
+    zone: number,
+    hemisphere: boolean
+  ): { lat: number; lng: number } {
+    console.log(easting, northing, zone, hemisphere);
+
+    const latLngCoords = utm.toLatLon(easting, northing, zone, hemisphere);
+    //  console.log("Latitude, Longitude:", latLngCoords);
+    // return {
+    //   lat: latLngCoords.latitude,
+    //   lng: latLngCoords.longitude,
+    // };
+    return {
+      lat: latLngCoords.latitude + 0.001876,
+      lng: latLngCoords.longitude + 0.0008668,
     };
   }
   conveUTMToLatLngWriteadd(
@@ -3654,7 +3980,7 @@ export class GisMapComponent implements AfterViewInit {
     console.log(easting, northing, zone, hemisphere);
 
     const latLngCoords = utm.toLatLon(easting, northing, zone, hemisphere);
-    console.log("Latitude, Longitude:", latLngCoords);
+    // console.log("Latitude, Longitude:", latLngCoords);
     // return {
     //   lat: latLngCoords.latitude,
     //   lng: latLngCoords.longitude,
