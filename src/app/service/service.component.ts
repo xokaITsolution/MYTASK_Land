@@ -234,6 +234,31 @@ export class ServiceComponent implements OnInit {
 
   saveFormm(formData) {
     if ("de4937d8-bdcd-46d6-8749-dc31c9f3adcf" == this.SDP_ID) {
+      if (environment.subcity == "arada") {
+        this.AppNo = "6921d772-3a1c-4641-95a0-0ab320bac3e2";
+      } else if (environment.subcity == "bole") {
+        this.AppNo = "89eb1aec-c875-4a08-aaf6-2c36c0864979";
+      } else if (environment.subcity == "nifasS") {
+        this.AppNo = "f8ea62db-05bc-4f1a-ab30-4e926d43e3fb";
+      } else if (environment.subcity == "gullele") {
+        this.AppNo = "6a8c042f-a3e1-4375-9769-54d94c2312c6";
+      } else if (environment.subcity == "addisK") {
+        this.AppNo = "7101d44d-97d5-41aa-957d-82f36d928c07";
+      } else if (environment.subcity == "lideta") {
+        this.AppNo = "e4d8219e-51f9-40cb-9d53-883c6ca9aaa3";
+      } else if (environment.subcity == "lemiK") {
+        this.AppNo = "f02e9467-1b7d-4350-bee7-9844d4f56da0";
+      } else if (environment.subcity == "yeka") {
+        this.AppNo = "8222f028-5fe3-4047-9a50-b52bfa64c851";
+      } else if (environment.subcity == "akakyK") {
+        this.AppNo = "08f9c927-6366-467a-ba99-c837c5add427";
+      } else if (environment.subcity == "kirkos") {
+        this.AppNo = "aaa5094c-8899-4708-9f7b-d8ff634a3540";
+      } else if (environment.subcity == "kolfeK") {
+        this.AppNo = "930d1c20-9e0e-4a50-9eb2-e542fafbad68";
+      } else if (environment.subcity == "central") {
+        this.AppNo = "275619f2-69c2-4fb7-a053-938f0b62b088";
+      }
       if (this.Licence_Service_ID == undefined) {
         this.Licence_Service_ID = "00000000-0000-0000-0000-000000000000";
         this.DocID = "00000000-0000-0000-0000-000000000000";

@@ -122,6 +122,8 @@ export class CertletterComponent implements OnChanges {
       "05db54fc-e388-4e5e-aaaa-bd6141c8e533".toLocaleLowerCase()
     ) {
       this.isNewformat = true;
+    } else {
+      this.isNewformat = true; // based on samrawit  comment she said for all service
     }
     // this.completed.emit();
     this.routerService.params.subscribe((params) => {

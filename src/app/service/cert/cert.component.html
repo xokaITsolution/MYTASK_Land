@@ -95,12 +95,12 @@
           [SelectedBase]="SelectedBase" [disable]="disable"></app-certificate-version>
       </div>
     </tab>
-    <tab [heading]="'Them' | translate"  [disabled]="!isThem" >
+    <tab [heading]="'Them' | translate"  [disabled]="!isThem && isnotprint" >
       <div class="mt-3">
         <app-them (completed)="EnableFins()" [Selectedcert]='Selectedcert' [disable]="disable" [licenceData]="licenceData"></app-them>
       </div>
     </tab>
-    <tab [heading]="'Debt/SuspensionRecord' | translate" [disabled]="!isdept"  >  
+    <tab [heading]="'Debt/SuspensionRecord' | translate" [disabled]="!isdept && isnotprint"  >  
       <!-- [disabled]="!isdept" -->
           <div class="mt-3">
             <app-dept-suspension-record  (completed)="EnableFins()" [Selectedcert]='Selectedcert' [disable]="disable" [licenceData]="licenceData"

@@ -65,6 +65,7 @@ export class CertComponent implements OnChanges {
   PlotManagementListfinal = [];
   BaseTablefinal = [];
   DocumentArc: any;
+  isnotprint: boolean;
 
   constructor(
     private serviceService: ServiceService,
@@ -80,6 +81,29 @@ export class CertComponent implements OnChanges {
       "🚀 ~ file: cert.component.ts:82 ~ CertComponent ~ ngOnChanges ~ Service_ID:",
       this.serviceService.Service_ID
     );
+    this.serviceService.getUserRole().subscribe((response: any) => {
+      if (response) {
+        console.log(
+          "🚀 ~ CertComponent ~ this.serviceService.getUserRole ~ response:",
+          response
+        );
+        for (let index = 0; index < response.length; index++) {
+          const element = response[index];
+
+          if (
+            element.RoleId ==
+            "5B3B5DD4-3CEF-4696-AC19-442BA531A7DD".toLocaleLowerCase()
+          ) {
+            this.isnotprint = false;
+            break;
+          } else {
+            console.log("responseresponseresponse", element);
+            this.isnotprint = true;
+          }
+        }
+      }
+    });
+
     if (
       this.serviceService.Service_ID ==
         "7d256139-858b-48e7-a298-cae5438e526c" ||

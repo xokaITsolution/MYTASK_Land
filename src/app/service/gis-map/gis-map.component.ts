@@ -24,6 +24,8 @@ import { MessageService, TreeNode } from "primeng/api";
 import { ApiService } from "../testgismap/api.service";
 import { CookieService } from "ngx-cookie-service/cookie-service/cookie.service";
 import { Subject } from "rxjs";
+import html2canvas from "html2canvas";
+import * as fileSaver from "file-saver";
 interface AssignedBodyTree {
   label: string;
   workspace: string;
@@ -44,6 +46,7 @@ interface AssignedBodyTree2 {
   styleUrls: ["./gis-map.component.css"],
 })
 export class GisMapComponent implements AfterViewInit {
+  @ViewChild("snipContainer", { static: false }) snipContainer: ElementRef;
   @Output() completed = new EventEmitter();
   @ViewChild("tree", { static: false }) tree: any; // Replace 'any' with the actual type of your tree if available
   @ViewChild("fileInputt", { static: false }) fileInputt: ElementRef;
@@ -80,6 +83,9 @@ export class GisMapComponent implements AfterViewInit {
   isconfirmsave: boolean;
   message: string;
   arrayproporty: any;
+  isSnipping: boolean;
+  snipStartX: number;
+  snipStartY: number;
 
   constructor(
     public ServiceService: ServiceService,
@@ -3010,6 +3016,7 @@ export class GisMapComponent implements AfterViewInit {
             : dataofproperty.ploteId
         )
         .openPopup();
+      this.editableLayers.addLayer(this.drawnShape);
       // this.arrayFoPolygonarea.push(this.calculatePolygonArea(L.polygon(shape)));
       // console.log("this.alllatlong", this.arrayFoPolygonarea);
       if (
@@ -4143,6 +4150,21 @@ export class GisMapComponent implements AfterViewInit {
       (bounds._northEast.lat - bounds._southWest.lat) *
       (bounds._northEast.lng - bounds._southWest.lng)
     );
+  }
+  startSnipping(event: MouseEvent) {
+    this.isSnipping = true;
+    this.snipStartX = event.clientX;
+    this.snipStartY = event.clientY;
+  }
+
+  saveMapAsImage() {
+    html2canvas(document.getElementById("mapp")).then(function (canvas) {
+      var imgData = canvas.toDataURL("image/png");
+      var link = document.createElement("a");
+      link.href = imgData;
+      link.download = "map.png";
+      link.click();
+    });
   }
 }
 // Define the Layer interface

@@ -195,12 +195,14 @@
       <!-- <td>{{lease.ID}}</td> -->
       <td>{{lease.Plot_ID}}</td>
       <td>
-        <select class="form-select"  disabled ="lease.Type_ID"  name="Typeselect" 
-         >
-          <option *ngFor="let type of serviceComponent.Lease_Type_Lookup;" [value]="lease.Type_ID">
-            {{type.Lease_Type}}
-          </option>
-          </select>
+      <select class="form-select" disabled #Typeselect [(ngModel)]="lease.Type_ID"
+        name="Typeselect" id="Typeselect" #Typeselect="ngModel"
+        >
+        <option disabled translate>select</option>
+        <option *ngFor="let type of serviceComponent.Lease_Type_Lookup;" [value]="type.Lease_Type_ID">
+          {{type.Lease_Type}}
+        </option>
+      </select>
       </td>
       <td>{{lease.Lease_No}}</td>
       <td>{{lease.Amount_of_the_annual_lease_payment}}</td>
