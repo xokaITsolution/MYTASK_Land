@@ -26,7 +26,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 })
 export class CertComponent implements OnChanges {
   @Output() completed = new EventEmitter();
-  ismodaEnable
+  ismodaEnable;
   @Input() licenceData;
   @Input() todoid;
   @Input() Certificate_Code;
@@ -195,7 +195,7 @@ export class CertComponent implements OnChanges {
 
     //this.getDeed();
   }
-   toggleBlink() {
+  toggleBlink() {
     var button = document.getElementById("myButton");
     button.classList.toggle("blinking");
   }
@@ -461,36 +461,50 @@ export class CertComponent implements OnChanges {
       this.certForm = true;
       this.getCertificateVersion(Deed);
     }*/
-    loading2(cert){
-      // this.load=true
-      this.ceertform = this.sanitizer.bypassSecurityTrustResourceUrl(environment.location+environment.city+'/'+environment.Lang_code+'/edit_certificate/' + cert.title_Deed_No);
-        // this.load=false
-        console.log('ceertform',this.ceertform )
-    }
+  loading2(cert) {
+    // this.load=true
+    this.ceertform = this.sanitizer.bypassSecurityTrustResourceUrl(
+      environment.location +
+        environment.city +
+        "/" +
+        environment.Lang_code +
+        "/edit_certificate/" +
+        cert.title_Deed_No
+    );
+    // this.load=false
+    console.log("ceertform", this.ceertform);
+  }
   Selectversion(certver) {
-    console.log('city',environment.city,environment.Lang_code,environment.appbase,environment.location)
-    this.serviceService.getCertificateVersion1(certver.title_Deed_No).subscribe(
-      (CertificateVersion: any) => {
+    console.log(
+      "city",
+      environment.city,
+      environment.Lang_code,
+      environment.appbase,
+      environment.location
+    );
+    this.serviceService
+      .getCertificateVersion1(certver.title_Deed_No)
+      .subscribe((CertificateVersion: any) => {
         this.CertificateVersion = CertificateVersion.procCertificate_Versions;
-       var img= this.CertificateVersion.filter((x)=>x.is_Active==true)
-       if(img.length>0){
-       console.log('img',img[0].certificate_Image)
-       if(img[0].certificate_Image){
-        this.Selectedcert = certver;
-        this.certverForm = true;
-        this.disableTab = false;
-        this.displayGIS = false;
-        if (certver.is_Active) {
-          this.serviceService.disablefins = false;
-        } else {
-          this.serviceService.disablefins = true;
+        var img = this.CertificateVersion.filter((x) => x.is_Active == true);
+        if (img.length > 0) {
+          console.log("img", img[0].certificate_Image);
+          if (img[0].certificate_Image) {
+            this.Selectedcert = certver;
+            this.certverForm = true;
+            this.disableTab = false;
+            this.displayGIS = false;
+            if (certver.is_Active) {
+              this.serviceService.disablefins = false;
+            } else {
+              this.serviceService.disablefins = true;
+            }
+          } else {
+            this.isnew = true;
+            this.isnews = true;
+          }
         }
-       }
-      else{
-        this.isnew=true
-        this.isnews=true
-      }}
-  })
+      });
     console.log("certver", certver);
   }
 

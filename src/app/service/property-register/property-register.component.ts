@@ -975,8 +975,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     // Remove the last point if it's identical to the first point
     if (
       points.length > 1 &&
-      points[0].easting === points[points.length - 1].easting &&
-      points[0].northing === points[points.length - 1].northing
+      points[0].easting === points[points.length - 2].easting &&
+      points[0].northing === points[points.length - 2].northing
     ) {
       points.pop();
     }
