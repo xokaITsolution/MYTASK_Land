@@ -16,6 +16,7 @@ import { environment } from "src/environments/environment";
 import { BsModalRef, BsModalService } from "ngx-bootstrap";
 
 import { BehaviorSubject } from "rxjs";
+import { DomSanitizer } from "@angular/platform-browser";
 
 @Component({
   selector: "app-cert",
@@ -25,7 +26,7 @@ import { BehaviorSubject } from "rxjs";
 })
 export class CertComponent implements OnChanges {
   @Output() completed = new EventEmitter();
-
+  ismodaEnable
   @Input() licenceData;
   @Input() todoid;
   @Input() Certificate_Code;
@@ -66,11 +67,15 @@ export class CertComponent implements OnChanges {
   BaseTablefinal = [];
   DocumentArc: any;
   isnotprint: boolean;
+  isnew: boolean;
+  isnews: boolean;
+  ceertform: any;
 
   constructor(
     private serviceService: ServiceService,
     private ngxSmartModalService: NgxSmartModalService,
     private modalService: BsModalService,
+    private sanitizer: DomSanitizer,
     private certificateVersionService: CertificateVersionService,
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService
@@ -190,7 +195,10 @@ export class CertComponent implements OnChanges {
 
     //this.getDeed();
   }
-
+   toggleBlink() {
+    var button = document.getElementById("myButton");
+    button.classList.toggle("blinking");
+  }
   async getEthiopianToGregorian(date) {
     console.log("checkingdate", date);
     if (date) {
@@ -453,18 +461,36 @@ export class CertComponent implements OnChanges {
       this.certForm = true;
       this.getCertificateVersion(Deed);
     }*/
-
-  Selectversion(certver) {
-    this.Selectedcert = certver;
-    this.certverForm = true;
-    this.disableTab = false;
-    this.displayGIS = false;
-    if (certver.is_Active) {
-      this.serviceService.disablefins = false;
-    } else {
-      this.serviceService.disablefins = true;
+    loading2(cert){
+      // this.load=true
+      this.ceertform = this.sanitizer.bypassSecurityTrustResourceUrl(environment.location+environment.city+'/'+environment.Lang_code+'/edit_certificate/' + cert.title_Deed_No);
+        // this.load=false
+        console.log('ceertform',this.ceertform )
     }
-
+  Selectversion(certver) {
+    console.log('city',environment.city,environment.Lang_code,environment.appbase,environment.location)
+    this.serviceService.getCertificateVersion1(certver.title_Deed_No).subscribe(
+      (CertificateVersion: any) => {
+        this.CertificateVersion = CertificateVersion.procCertificate_Versions;
+       var img= this.CertificateVersion.filter((x)=>x.is_Active==true)
+       if(img.length>0){
+       console.log('img',img[0].certificate_Image)
+       if(img[0].certificate_Image){
+        this.Selectedcert = certver;
+        this.certverForm = true;
+        this.disableTab = false;
+        this.displayGIS = false;
+        if (certver.is_Active) {
+          this.serviceService.disablefins = false;
+        } else {
+          this.serviceService.disablefins = true;
+        }
+       }
+      else{
+        this.isnew=true
+        this.isnews=true
+      }}
+  })
     console.log("certver", certver);
   }
 
