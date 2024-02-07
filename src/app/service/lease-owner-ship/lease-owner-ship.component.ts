@@ -57,6 +57,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
   todoidcurrent: any;
   iscanEdite: boolean;
   Lease_Type_Lookup: any;
+  plotIdselected: any;
   constructor(
     private ngxSmartModalService: NgxSmartModalService,
     private leaseOwnerShipService: LeaseOwnerShipService,
@@ -143,15 +144,27 @@ export class LeaseOwnerShipComponent implements OnChanges {
       this.islease = true;
       this.isfreehole = true;
       // Check if the value retrieved from localStorage is not null for Free_Hold_M2
-      const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
-      this.serviceService.leaseOwnerShip.Free_Hold_M2 =
-        freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
+      if (
+        this.serviceService.leaseOwnerShip.Free_Hold_M2 == null ||
+        this.serviceService.leaseOwnerShip.Free_Hold_M2 == 0
+      ) {
+        const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
+        this.serviceService.leaseOwnerShip.Free_Hold_M2 =
+          freeHoldM2Value !== null
+            ? parseFloat(freeHoldM2Value)
+            : this.serviceService.leaseOwnerShip.Free_Hold_M2;
+      }
 
-      // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
-      const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
-      this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
-        leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
-
+      if (
+        this.serviceService.leaseOwnerShip.Lease_Hold_M2 == null ||
+        this.serviceService.leaseOwnerShip.Lease_Hold_M2 == 0
+      ) {
+        const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+        this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+          leaseHoldM2Value !== null
+            ? parseFloat(leaseHoldM2Value)
+            : this.serviceService.leaseOwnerShip.Lease_Hold_M2;
+      }
       this.serviceService.isFreeHold = true;
     } else if (value == 1) {
       this.iislease = true;
@@ -159,25 +172,41 @@ export class LeaseOwnerShipComponent implements OnChanges {
       this.isfreehole = true;
       // Check if the value retrieved from localStorage is not null for Free_Hold_M2
       const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
-      this.serviceService.leaseOwnerShip.Free_Hold_M2 = 0;
+      this.serviceService.leaseOwnerShip.Free_Hold_M2 =
+        this.serviceService.leaseOwnerShip.Free_Hold_M2;
       // freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
 
       // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
-      const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
-      this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
-        leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
+      if (
+        this.serviceService.leaseOwnerShip.Lease_Hold_M2 == null ||
+        this.serviceService.leaseOwnerShip.Lease_Hold_M2 == 0
+      ) {
+        const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+        this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+          leaseHoldM2Value !== null
+            ? parseFloat(leaseHoldM2Value)
+            : this.serviceService.leaseOwnerShip.Lease_Hold_M2;
+      }
     } else if (value == 3) {
       this.islease = false;
       this.iislease = true;
       this.isfreehole = true;
       this.serviceService.leaseOwnerShip.Lease_Hold_M2 = 0;
       // Check if the value retrieved from localStorage is not null for Free_Hold_M2
-      const freeHoldM2Value = localStorage.getItem("PolygonAreaname");
-      this.serviceService.leaseOwnerShip.Free_Hold_M2 =
-        freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
+      if (
+        this.serviceService.leaseOwnerShip.Free_Hold_M2 == null ||
+        this.serviceService.leaseOwnerShip.Free_Hold_M2 == 0
+      ) {
+        const freeHoldM2Value = localStorage.getItem("PolygonAreaname");
+        this.serviceService.leaseOwnerShip.Free_Hold_M2 =
+          freeHoldM2Value !== null
+            ? parseFloat(freeHoldM2Value)
+            : this.serviceService.leaseOwnerShip.Free_Hold_M2;
+      }
       // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
       const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
-      this.serviceService.leaseOwnerShip.Lease_Hold_M2 = 0;
+      this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+        this.serviceService.leaseOwnerShip.Lease_Hold_M2;
       // leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
     }
   }
@@ -218,20 +247,15 @@ export class LeaseOwnerShipComponent implements OnChanges {
   }
   async selectLease(task) {
     console.log("tasktasktasktask", task);
-
+    this.plotIdselected = task.Plot_ID;
     this.serviceService.Totalarea = task.Lease_Hold_M2 + task.Free_Hold_M2;
 
     console.log();
     // Check if the value retrieved from localStorage is not null for Free_Hold_M2
-    const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
-    task.Free_Hold_M2 =
-      freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
 
-    // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
-    const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
-    task.Lease_Hold_M2 =
-      leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
-    this.serviceService.currentplotsize = freeHoldM2Value + leaseHoldM2Value;
+    this.serviceService.currentplotsize =
+      this.serviceService.leaseOwnerShip.Lease_Hold_M2 +
+      this.serviceService.leaseOwnerShip.Lease_Hold_M2;
 
     this.addnew = false;
     // this.leaseForm = true;
@@ -249,43 +273,43 @@ export class LeaseOwnerShipComponent implements OnChanges {
     if (parseInt(task.Status) == 1 || task.To_Do_ID === this.todoidcurrent) {
       console.log(task.To_Do_ID, task.Status, task.Type_ID);
 
-      if (parseInt(task.Type_ID) == 2) {
-        this.islease = true;
-        this.iislease = false;
-        this.isfreehole = false;
-        const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
-        task.Free_Hold_M2 =
-          freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
+      // if (parseInt(task.Type_ID) == 2) {
+      //   this.islease = true;
+      //   this.iislease = false;
+      //   this.isfreehole = false;
+      //   const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
+      //   task.Free_Hold_M2 =
+      //     freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
+      //   // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
+      //   const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+      //   task.Lease_Hold_M2 =
+      //     leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
+      // } else if (parseInt(task.Type_ID) == 1) {
+      //   this.iislease = false;
+      //   this.islease = true;
+      //   this.isfreehole = true;
 
-        // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
-        const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
-        task.Lease_Hold_M2 =
-          leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
-      } else if (parseInt(task.Type_ID) == 1) {
-        this.iislease = false;
-        this.islease = true;
-        this.isfreehole = true;
-        const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
-        task.Free_Hold_M2 =
-          freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
+      //   const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
+      //   task.Free_Hold_M2 =
+      //     freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
 
-        // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
-        const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
-        task.Lease_Hold_M2 =
-          leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
-      } else if (parseInt(task.Type_ID) == 3) {
-        this.islease = false;
-        this.iislease = true;
-        this.isfreehole = false;
-        const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
-        task.Free_Hold_M2 =
-          freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
+      //   // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
+      //   const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+      //   task.Lease_Hold_M2 =
+      //     leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
+      // } else if (parseInt(task.Type_ID) == 3) {
+      //   this.islease = false;
+      //   this.iislease = true;
+      //   this.isfreehole = false;
+      //   const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
+      //   task.Free_Hold_M2 =
+      //     freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
 
-        // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
-        const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
-        task.Lease_Hold_M2 =
-          leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
-      }
+      //   // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
+      //   const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+      //   task.Lease_Hold_M2 =
+      //     leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
+      // }
     }
 
     this.serviceService.isleaseForm = true;
@@ -335,6 +359,29 @@ export class LeaseOwnerShipComponent implements OnChanges {
       this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
     this.addnew = true;
     this.leaseForm = true;
+  }
+
+  Refresh() {
+    this.leaseOwnerShipService
+      .getAll(this.plotIdselected)
+      .subscribe((CertificateVersion: any) => {
+        let tasks = CertificateVersion;
+        tasks = Object.assign([], tasks.list);
+        console.log("this.tasksss", tasks);
+
+        this.serviceService.leaseOwnerShip.Free_Hold_M2 = parseFloat(
+          tasks[0].Free_Hold_M2
+        );
+
+        this.serviceService.leaseOwnerShip.Lease_Hold_M2 = parseFloat(
+          tasks[0].Free_Hold_M2
+        );
+        console.log(
+          "this.tasksss",
+          tasks[0].Free_Hold_M2,
+          tasks[0].Lease_Hold_M2
+        );
+      });
   }
 
   getleaseOwnerShip(plotID) {
@@ -497,6 +544,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
               "Sucess",
               deptSuspension
             );
+            localStorage.setItem("PolygonAreaname", "" + 0);
+            localStorage.setItem("PolygonAreanameFrehold", "" + 0);
 
             //this.serviceService.disablefins = false;
             this.getleaseOwnerShip(this.serviceService.leaseOwnerShip.Plot_ID);
@@ -678,6 +727,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
               "Sucess",
               deptSuspension
             );
+            localStorage.setItem("PolygonAreaname", "" + 0);
+            localStorage.setItem("PolygonAreanameFrehold", "" + 0);
 
             this.serviceService.Totalarea =
               parseFloat(this.serviceService.leaseOwnerShip.Lease_Hold_M2) +

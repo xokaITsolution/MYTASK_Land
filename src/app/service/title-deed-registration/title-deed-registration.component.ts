@@ -144,14 +144,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
     this.routerService.params.subscribe((params) => {
       this.urlParams = params;
     });
-    if (
-      "2b1fc99a-9705-4799-96b9-164bd3b1077e" == this.Service_ID ||
-      "86997006-53c7-4bbd-9f56-e79721b4561e" == this.Service_ID
-    ) {
-      this.Isshow = true;
-    } else {
-      this.Isshow = false;
-    }
+
     this.deedform = false;
     this.getdeed(this.selectedpro.property_ID);
     this.titleDeedRegistration.ownership_ID = this.selectedpro.property_ID;
@@ -195,7 +188,18 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
       }
     );
   }
+  onOptionsSelected(e) {
+    console.log(
+      "🚀 ~ TitleDeedRegistrationComponent ~ onOptionsSelected ~ e:",
+      e
+    );
 
+    if (e == 2014 || e == 2044 || e == 2015) {
+      this.Isshow = true;
+    } else {
+      this.Isshow = false;
+    }
+  }
   // getdeed(propertyid) {
   //   console.log("propertyid", propertyid);
 

@@ -140,7 +140,7 @@
       <div class="col-sm-9">
         <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="plotManagment.parcel_No"
           name="ParcelNo" id="ParcelNo" [placeholder]="'Parcel No' | translate" 
-         >
+         readonly>
       </div>
     </div>
     <div class="form-group row col-md-6">
@@ -199,20 +199,21 @@
       </div>
     </div>
     <div class="form-group row col-md-7">
-      <label class="col-sm-3 col-form-label" for="Is2023" translate>Is2023</label>
+      <label class="col-sm-3 col-form-label" for="Is2023" translate>Is2003</label>
       <div class="col-sm-9">
         <p-checkbox [(ngModel)]="plotManagment.iS2023" 
           name="Is2023" id="Is2023"  binary="true" ></p-checkbox>
       </div>
     </div>
   </div>
-  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!isnew && !disable" (click)="Delete()"
+  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!isnew && !disable" (click)="checkplothavecertificet()"
     translate>Update</button>
    
   <!-- <button type="button" class="btn btn-danger ml-3" [disabled]="!f.valid" *ngIf="!isnew && !disable" (click)="Delete()"
     translate>Delete</button> -->
   <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="isnew && !disable" (click)="add()"
     translate>Save</button>
+
 </form>
 
 
@@ -463,4 +464,19 @@
   </p-footer>
   
 
+  </p-dialog>
+
+  <p-dialog [header]="'Confirmation' | translate" [(visible)]="isconfirmsaveplot" [responsive]="true" [width]="300"
+    [minY]="40" [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                           'max-height': '80vh','min-height':'50px'}">
+    <p translate>
+      {{ messagefortoast | translate}}
+    </p>
+  
+    <p-footer>
+      <button type="button" pButton icon="pi pi-check" (click)="isconfirmsaveplot=false;Delete()"
+        [label]="'yes' | translate"></button>
+      <button type="button" pButton icon="pi pi-close" (click)="isconfirmsaveplot=false" [label]="'no'| translate "
+        class="ui-button-secondary"></button>
+    </p-footer>
   </p-dialog>

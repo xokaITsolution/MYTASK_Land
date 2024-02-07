@@ -62,6 +62,8 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   plotlistnull: null;
   PlotManagementfilterd: any;
   serachplotExists: boolean;
+  messagefortoast: string;
+  isconfirmsaveplot: boolean;
 
   constructor(
     public serviceService: ServiceService,
@@ -115,6 +117,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       console.log("plotManagment", this.SelectedPlot);
 
       this.plotManagment = this.SelectedPlot;
+      this.plotManagment.parcel_No = this.SelectedPlot.Application_No;
       this.plotManagment.plot_Status = 1;
       //this.getplotloc(this.plotManagment.plot_ID);
       this.regionSelectedd(this.plotManagment.sdP_ID);
@@ -672,11 +675,27 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       });
     }
   }
+  checkplothavecertificet() {
+    this.serviceService
+      .GetView_ForApicheckcertificateVersion(this.plotManagment.plot_ID)
+      .subscribe((rec: any) => {
+        console.log("🚀 ~ PlotManagmentComponent ~ .subscribe ~ rec:", rec);
+
+        if (rec.length > 0) {
+          this.messagefortoast = `The plot with ID ${rec[0].plot_ID} currently has an active map certificate version identified by the title deed number ${rec[0].title_Deed_No}. Would you like to deactivate the map certificate version? Upon clicking 'Yes,' the map will be deactivated.`;
+          // console.log(
+          // //   "🚀 ~ PlotManagmentComponent ~ .subscribe ~ messagefortoast:",
+          // //   this.messagefortoast
+          // // );
+          this.isconfirmsaveplot = true;
+        } else {
+          this.Delete();
+          this.isconfirmsaveplot = false;
+        }
+      });
+  }
 
   async Delete() {
-    // this.confirmationService.confirm({
-    //   message: 'Are you sure u want to delete this Plot?',
-    //   accept: () => {
     console.log("this.plotManagment", this.plotManagment);
 
     if (this.language === "amharic") {
@@ -684,7 +703,6 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         this.plotManagment.registration_Date
       );
     }
-
     this.plotManagment.is_Deleted = true;
     this.ploatManagmentService.save(this.plotManagment).subscribe(
       async (deptSuspension) => {
@@ -732,7 +750,6 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         }
       }
     );
-    console.log("saveing....");
 
     //   });
   }

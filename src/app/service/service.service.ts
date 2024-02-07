@@ -183,6 +183,8 @@ export class ServiceService {
   private APIForMoreOptionGetCustmerInformationURL =
     environment.rootPathApi +
     "view/View_APIForMoreOptionGetCustmerInformation/application_number?application_number=";
+  private View_ForApicheckcertificateVersionController =
+    environment.rootPathApi + "view/View_ForApicheckcertificateVersion";
   // environment.rootPath + "BPEL/GetApplicationNumberByUser"; // URL to web api
   httpOptions = {
     headers: new HttpHeaders({ "Content-Type": "application/json" }),
@@ -400,6 +402,18 @@ export class ServiceService {
   }
   GetApplicationNumberByUserInfo(appno) {
     return this.http.get(this.APIForMoreOptionGetCustmerInformationURL + appno);
+  }
+  GetView_ForApicheckcertificateVersion(plot_ID) {
+    return this.http.get(
+      this.View_ForApicheckcertificateVersionController + "/" + plot_ID
+    );
+  }
+  GetView_ForApicheckcertificateVersionbyproperty(propertyID) {
+    return this.http.get(
+      this.View_ForApicheckcertificateVersionController +
+        "/propertyID/" +
+        propertyID
+    );
   }
   getAppointmentByApp(params): Observable<any> {
     const url = environment.rootPath + "GetAppointementByApp";

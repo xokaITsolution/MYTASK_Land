@@ -65,6 +65,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   isbuildingApartama: boolean;
   proprty_Use_lookup: Object;
   maxheight: string;
+  messagefortoast: string;
+  isconfirmsaveplot: boolean;
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -219,6 +221,24 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         console.log("error");
       }
     );
+  }
+  checkplothavecertificet() {
+    this.serviceService
+      .GetView_ForApicheckcertificateVersionbyproperty(
+        this.propertyRegister.property_ID
+      )
+      .subscribe((rec: any) => {
+        console.log("🚀 ~ .subscribe ~ rec:", rec);
+
+        if (rec.length > 0) {
+          this.messagefortoast = `The property with ID ${rec[0].property_ID} currently has an active map certificate version identified by the title deed number ${rec[0].title_Deed_No}. Would you like to deactivate the map certificate version? Upon clicking 'Yes,' the map will be deactivated.`;
+
+          this.isconfirmsaveplot = true;
+        } else {
+          this.save();
+          this.isconfirmsaveplot = false;
+        }
+      });
   }
   async save() {
     if (this.serviceService.isproportinal == true) {
