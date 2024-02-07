@@ -129,6 +129,8 @@ export class ServiceService {
   private nextTaskAcceptOrRejectURl =
     environment.rootPath + "BPEL/nextTaskAcceptOrReject"; // URL to web api
   private SaveDataURL = environment.rootPath + "BPEL/SaveData"; // URL to web api
+  private SaveDataURLkill = environment.rootPath + "BPEL/Kill"; // URL to web api
+  private SaveDataURLreopen = environment.rootPath + "BPEL/reOpen"; // URL to web api
   private GetDataURL = environment.rootPath + "BPEL/GetData"; // URL to web api
 
   private ViewAspNetUsersWorkInfoDetail =
@@ -176,7 +178,8 @@ export class ServiceService {
     environment.rootPath + "Customer_Status_Lookup"; // URL to web api
   private saveCustomeredit = environment.rootPath + "Customer";
   private dbstatus = environment.rootPath + "BPEL/";
-
+  private GetSuperviedUsersUrl =
+    environment.rootPath + "BPEL/Get_SuperviedUsers"; // URL to web api
   private APIForMoreOptionGetCustmerInformationURL =
     environment.rootPathApi +
     "view/View_APIForMoreOptionGetCustmerInformation/application_number?application_number=";
@@ -261,6 +264,11 @@ export class ServiceService {
       this.CustomerLookUP +
         "?" +
         "sortOrder=test&currentFilter&searchString&pageIndex&pageSize"
+    );
+  }
+  GetSuperviedUsers() {
+    return this.http.get(
+      this.GetSuperviedUsersUrl + "?username=" + environment.username
     );
   }
   GetApplicationNumberByUser(username) {
@@ -1025,6 +1033,38 @@ export class ServiceService {
         docid +
         "&todoid=" +
         todoId,
+      null
+    );
+  }
+  killtodo(appno, eid, todoid, usename, status) {
+    return this.http.post(
+      this.SaveDataURLkill +
+        "?ApplicationNO=" +
+        appno +
+        "&eid=" +
+        eid +
+        "&todoid=" +
+        todoid +
+        "&userName=" +
+        usename +
+        "&status=" +
+        status,
+      null
+    );
+  }
+  Reopentodo(appno, eid, todoid, usename, status) {
+    return this.http.post(
+      this.SaveDataURLreopen +
+        "?ApplicationNO=" +
+        appno +
+        "&eid=" +
+        eid +
+        "&todoid=" +
+        todoid +
+        "&userName=" +
+        usename +
+        "&status=" +
+        status,
       null
     );
   }

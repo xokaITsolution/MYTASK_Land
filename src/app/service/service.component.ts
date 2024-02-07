@@ -217,6 +217,9 @@ export class ServiceComponent implements OnInit {
   hid: boolean;
   procView_RecordAppNoAndDocIdByAppNo: any;
   selectedeachapp: any;
+  eid: any;
+  SuperviedUsers: any;
+  isSuperviedUsers: boolean;
   constructor(
     private modalService: BsModalService,
     private activatedRoute: ActivatedRoute,
@@ -282,7 +285,7 @@ export class ServiceComponent implements OnInit {
             this.serviceService.disablefins = false;
             this.AppCode = message[0];
             this.DocID = message[1];
-            //this.todoID = message[2];
+            this.todoID = message[2];
             this.getAll(message[0]);
 
             if (formData == "{}") {
@@ -437,9 +440,11 @@ export class ServiceComponent implements OnInit {
             element.RoleId == "8e759c69-1ed6-445b-b7f8-32c3fd44e8be" ||
             element.RoleId == "3ba734c5-d75a-44c7-8c47-5233431372ba"
           ) {
+            this.eid = element.UserId;
             this.hideit = true;
             break;
           } else {
+            this.eid = element.UserId;
             console.log("responseresponseresponse", element);
             this.hideit = false;
           }
@@ -455,15 +460,30 @@ export class ServiceComponent implements OnInit {
             element.RoleId ==
             "8C133397-587E-456F-AB31-9CF5358BE8D2".toLocaleLowerCase()
           ) {
+            this.eid = element.UserId;
             this.serviceService.isRecordDocumentationManager = true;
             break;
           } else {
+            this.eid = element.UserId;
             console.log("responseresponseresponse", element);
             this.serviceService.isRecordDocumentationManager = false;
           }
         }
       }
     });
+
+    this.serviceService.GetSuperviedUsers().subscribe((SuperviedUsers) => {
+      this.SuperviedUsers = SuperviedUsers;
+      this.SuperviedUsers = Object.assign([], this.SuperviedUsers);
+      this.SuperviedUsers = SuperviedUsers;
+
+      if (this.SuperviedUsers) {
+        this.isSuperviedUsers = true;
+      } else {
+        this.isSuperviedUsers = false;
+      }
+    });
+
     // this.preback();
     if (
       environment.Lang_code === "am-et" ||
@@ -2575,6 +2595,20 @@ export class ServiceComponent implements OnInit {
     this.todoID = event["todoId"];
     this.AppNo = event["appCode"];
     this.getPriveysLicence(this.Application_No);
+  }
+  killtodo() {
+    this.serviceService
+      .killtodo(this.AppNo, this.eid, this.todoID, environment.username, "K")
+      .subscribe((message) => {
+        this.Close();
+      });
+  }
+  Reopentodo() {
+    this.serviceService
+      .Reopentodo(this.AppNo, this.eid, this.todoID, environment.username, "O")
+      .subscribe((message) => {
+        this.Close();
+      });
   }
 
   public getAll(AppNo) {

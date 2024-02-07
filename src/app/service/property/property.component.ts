@@ -658,9 +658,9 @@ export class PropertyComponent implements OnChanges {
     if (this.selectedFile) {
       this.selectedprofromtree.property_Parent_ID =
         this.selectedFile.property_ID;
-      this.selectedprofromtree.property_Type_ID = 2;
+      //this.selectedprofromtree.property_Type_ID = 2;
     } else {
-      this.selectedprofromtree.property_Type_ID = 1;
+      // this.selectedprofromtree.property_Type_ID = 1;
     }
 
     console.log("plotManagment", this.SelectedProperty.plot_ID);

@@ -7,6 +7,7 @@ import { environment } from "../../environments/environment";
 })
 export class MyTaskService {
   private MytasksUrl = environment.rootPath + "BPEL/GetlistofTodo"; // URL to web api
+  private MytasksUrlsuper = environment.rootPath + "BPEL/GetTodoListToSup"; // URL to web api
   private SupervisertasksUrl = environment.rootPath + "BPEL/GetlistofTodo"; // URL to web api
   private ViewAspNetUsersWorkInfoDetail =
     environment.rootPathApi + "view/View_postit_note_user";
@@ -83,11 +84,11 @@ export class MyTaskService {
     );
   }
 
-  getMytasksbyusername(username) {
+  getMytasksbyusername() {
     return this.http.get(
-      this.MytasksUrl +
+      this.MytasksUrlsuper +
         "?username=" +
-        username +
+        environment.username +
         "&orgid=00000000-0000-0000-0000-000000000000&lanid=2C2EBBEA-3361-E111-95D5-00E04C05559B&userroll" +
         "=00000000-0000-0000-0000-000000000000"
     );

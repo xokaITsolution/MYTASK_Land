@@ -25,7 +25,7 @@ import { ApiService } from "../testgismap/api.service";
 import { CookieService } from "ngx-cookie-service/cookie-service/cookie.service";
 import { Subject } from "rxjs";
 import html2canvas from "html2canvas";
-import * as fileSaver from "file-saver";
+import "leaflet-simple-map-screenshoter";
 interface AssignedBodyTree {
   label: string;
   workspace: string;
@@ -86,6 +86,9 @@ export class GisMapComponent implements AfterViewInit {
   isSnipping: boolean;
   snipStartX: number;
   snipStartY: number;
+  screenshot: any;
+  simpleMapScreenshoter: any;
+  screenshotBase64: any;
 
   constructor(
     public ServiceService: ServiceService,
@@ -1437,6 +1440,44 @@ export class GisMapComponent implements AfterViewInit {
     // // Define the tile layers
     // console.log(googleSatelliteLayer);
     // Custom control for North arrow
+
+    let pluginOptions = {
+      cropImageByInnerWH: true, // crop blank opacity from image borders
+      hidden: false, // hide screen icon
+      preventDownload: false, // prevent download on button click
+      domtoimageOptions: {}, // see options for dom-to-image
+      position: "topleft", // position of take screen icon
+      screenName: "screen", // string or function
+      iconUrl: "http://land.xokait.com.et/images/camera.svg", // screen btn icon base64 or url
+      hideElementsWithSelectors: [".leaflet-control-container"], // by default hide map controls All els must be child of _map._container
+      mimeType: "image/png", // used if format == image,
+      caption: null, // string or function, added caption to bottom of screen
+      captionFontSize: 15,
+      captionFont: "Arial",
+      captionColor: "black",
+      captionBgColor: "white",
+      captionOffset: 5,
+      // callback for manually edit map if have warn: "May be map size very big on that zoom level, we have error"
+      // and screenshot not created
+      onPixelDataFail: async function ({
+        node,
+        plugin,
+        error,
+        mapPane,
+        domtoimageOptions,
+      }) {
+        // Solutions:
+        // decrease size of map
+        // or decrease zoom level
+        // or remove elements with big distanses
+        // and after that return image in Promise - plugin._getPixelDataOfNormalMap
+        return plugin._getPixelDataOfNormalMap(domtoimageOptions);
+      },
+    };
+    this.simpleMapScreenshoter = L.simpleMapScreenshoter(pluginOptions).addTo(
+      this.map
+    );
+
     var northArrowControl = L.Control.extend({
       options: {
         position: "topright",
@@ -4166,7 +4207,27 @@ export class GisMapComponent implements AfterViewInit {
       link.click();
     });
   }
+  takeScreenshot() {
+    let format = "image"; // Return base64
+    let overridedPluginOptions = {
+      mimeType: "image/jpeg",
+    };
+
+    // Start the screenshot process
+    this.simpleMapScreenshoter
+      .takeScreen(format, overridedPluginOptions)
+      .then((base64Data) => {
+        console.log("Screenshot taken as base64:", base64Data);
+        // Save the base64 data to a variable or use it as needed
+        this.screenshotBase64 = base64Data;
+        console.log("🚀 ~ .then ~ screenshotBase64:", this.screenshotBase64);
+      })
+      .catch((error) => {
+        console.error("Error taking screenshot:", error);
+      });
+  }
 }
+
 // Define the Layer interface
 interface Layer {
   name: string; // Name of the layer

@@ -324,8 +324,9 @@ export class LeaseOwnerShipComponent implements OnChanges {
     this.serviceService.leaseOwnerShip.Plot_ID = this.SelectedPlot.plot_ID;
     this.serviceService.leaseOwnerShip.To_Do_ID = this.todoidcurrent;
     this.serviceService.leaseOwnerShip.Application_No = this.applicationo;
-    this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
-      localStorage.getItem("PolygonAreaname");
+
+    // this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+    //   localStorage.getItem("PolygonAreaname");
     this.serviceService.currentplotsize = parseFloat(
       localStorage.getItem("PolygonAreaname")
     );
@@ -690,12 +691,12 @@ export class LeaseOwnerShipComponent implements OnChanges {
             if (areaDifferences <= maxAreaDifferences) {
               this.serviceService.plotsizenotequal = false;
             } else {
-              this.serviceService.plotsizenotequal = true;
-              const toast = this.notificationsService.warn(
-                `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
-          በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
-           ${Math.abs(totalsize - totalsum)}`
-              );
+              this.serviceService.plotsizenotequal = false;
+              //     const toast = this.notificationsService.warn(
+              //       `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
+              // በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
+              //  ${Math.abs(totalsize - totalsum)}`
+              //     );
             }
 
             if (this.language == "amharic") {

@@ -274,6 +274,8 @@
 
  <!-- <button *ngIf="!hideit" type="button" class="btn btn-primary mr-2" (click)="Back()" translate>Back</button> -->
    <button type="button" class="btn btn-primary mr-2" (click)="openModal(template)" translate>Review</button>
+   <button type="button" class="btn btn-primary mr-2" *ngIf="isSuperviedUsers" (click)="killtodo()" translate>Kill</button>
+   <button type="button" class="btn btn-primary mr-2" *ngIf="isSuperviedUsers" (click)="Reopentodo()" translate>Reopen</button>
 
     <!-- [disabled]="disablefins" -->
 

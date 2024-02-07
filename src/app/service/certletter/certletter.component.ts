@@ -123,7 +123,7 @@ export class CertletterComponent implements OnChanges {
     ) {
       this.isNewformat = true;
     } else {
-      this.isNewformat = true; // based on samrawit  comment she said for all service
+      this.isNewformat = true;
     }
     // this.completed.emit();
     this.routerService.params.subscribe((params) => {

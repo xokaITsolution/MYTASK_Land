@@ -572,12 +572,17 @@ export class PlotComponent implements OnChanges {
                 this.platformLocation.legal_Approved_By = element.userId;
                 this.platformLocation.legal_Approved = true;
               } else if (
-                element.roleId == "3ba734c5-d75a-44c7-8c47-5233431372ba"
+                element.roleId == "3ba734c5-d75a-44c7-8c47-5233431372ba" ||
+                element.roleId ==
+                  "1A4A2E38-E6A2-45CE-9BFB-B44B7541618C".toLocaleLowerCase()
               ) {
                 console.log(
                   "🚀 ~ file: plot-managment.component.ts:822 ~ response.forEach ~ element:",
                   element
                 );
+                this.platformLocation.tech_Approved_By = element.userId;
+                this.platformLocation.tech_Approved = true;
+              } else {
                 this.platformLocation.tech_Approved_By = element.userId;
                 this.platformLocation.tech_Approved = true;
               }
@@ -626,6 +631,26 @@ export class PlotComponent implements OnChanges {
     }
   }
 
+  // convertToMultiPoint(
+  //   points: {
+  //     easting: number;
+  //     northing: number;
+  //     hemisphere: string;
+  //     zone: number;
+  //   }[]
+  // ): string {
+  //   const multiPointArray = points
+  //     .map(
+  //       (point) =>
+  //         `${point.easting} ${point.northing} ${point.hemisphere} ${point.zone}`
+  //     )
+  //     .join(", ");
+
+  //   // const multiPointString = `MULTIPOINT(${multiPointArray})`;
+  //   const multiPointString = `POLYGON((${multiPointArray}))`;
+
+  //   return multiPointString;
+  // }
   convertToMultiPoint(
     points: {
       easting: number;
@@ -634,6 +659,27 @@ export class PlotComponent implements OnChanges {
       zone: number;
     }[]
   ): string {
+    // Check if the input points form a valid polygon
+    if (
+      points.length < 3 || // At least three points are required for a polygon
+      points[0].easting !== points[points.length - 1].easting || // Check if the first and last points are the same
+      points[0].northing !== points[points.length - 1].northing
+    ) {
+      const toast = this.notificationsService.warn(
+        "Invalid polygon: The first and last points must be the same."
+      );
+      return;
+    }
+
+    // Remove the last point if it's identical to the first point
+    if (
+      points.length > 1 &&
+      points[0].easting === points[points.length - 1].easting &&
+      points[0].northing === points[points.length - 1].northing
+    ) {
+      points.pop();
+    }
+
     const multiPointArray = points
       .map(
         (point) =>
@@ -641,11 +687,11 @@ export class PlotComponent implements OnChanges {
       )
       .join(", ");
 
-    // const multiPointString = `MULTIPOINT(${multiPointArray})`;
     const multiPointString = `POLYGON((${multiPointArray}))`;
 
     return multiPointString;
   }
+
   convertToMultiPoints(
     points: { easting: number; northing: number }[]
   ): string {

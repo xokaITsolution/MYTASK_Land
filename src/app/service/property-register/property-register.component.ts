@@ -913,6 +913,25 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     });
   }
 
+  // convertToMultiPoint(
+  //   points: {
+  //     easting: number;
+  //     northing: number;
+  //     hemisphere: string;
+  //     zone: number;
+  //   }[]
+  // ): string {
+  //   const multiPointArray = points
+  //     .map(
+  //       (point) =>
+  //         `${point.easting} ${point.northing} ${point.hemisphere} ${point.zone}`
+  //     )
+  //     .join(", ");
+
+  //   const multiPointString = `POLYGON((${multiPointArray}))`;
+
+  //   return multiPointString;
+  // }
   convertToMultiPoint(
     points: {
       easting: number;
@@ -921,6 +940,27 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       zone: number;
     }[]
   ): string {
+    // Check if the input points form a valid polygon
+    if (
+      points.length < 3 || // At least three points are required for a polygon
+      points[0].easting !== points[points.length - 1].easting || // Check if the first and last points are the same
+      points[0].northing !== points[points.length - 1].northing
+    ) {
+      const toast = this.notificationsService.warn(
+        "Invalid polygon: The first and last points must be the same."
+      );
+      return;
+    }
+
+    // Remove the last point if it's identical to the first point
+    if (
+      points.length > 1 &&
+      points[0].easting === points[points.length - 1].easting &&
+      points[0].northing === points[points.length - 1].northing
+    ) {
+      points.pop();
+    }
+
     const multiPointArray = points
       .map(
         (point) =>
@@ -1099,6 +1139,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         console.log("responseresponseresponse", response, response[0].RoleId);
         this.propformLocation.proporty_Id =
           this.serviceService.insertedProperty;
+        this.propformLocation.created_By = response[0].RoleId;
         this.propformLocation.created_By = response[0].RoleId;
         this.propformLocation.created_Date = new Date();
 

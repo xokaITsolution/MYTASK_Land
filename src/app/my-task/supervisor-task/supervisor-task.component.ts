@@ -41,49 +41,81 @@ export class SupervisorTaskComponent implements OnInit {
     });
   }
 
+  // GetSuperviedUsers() {
+  //   this.myTaskService.GetSuperviedUsers().subscribe((SuperviedUsers) => {
+  //     this.SuperviedUsers = SuperviedUsers;
+  //     this.SuperviedUsers = Object.assign([], this.SuperviedUsers);
+  //     this.SuperviedUsers = SuperviedUsers;
+  //     let mergedTaskList = []; // Create an empty array to store the merged tasks
+
+  //     if (this.SuperviedUsers) {
+  //       console.log("this.SuperviedUsers", this.SuperviedUsers);
+  //       for (let i = 0; i < this.SuperviedUsers.length; i++) {
+  //         this.myTaskService
+  //           .getMytasksbyusername(this.SuperviedUsers[i].UserName)
+  //           .subscribe((tasks) => {
+  //             this.taskListtamp = tasks;
+  //             this.taskListtamp = Object.assign([], this.taskListtamp.Table1);
+  //             console.log("tasks", tasks);
+
+  //             // Concatenate the current tasks with the mergedTaskList
+  //             mergedTaskList = mergedTaskList.concat(this.taskListtamp);
+
+  //             if (i === this.SuperviedUsers.length - 1) {
+  //               // Last iteration, assign the mergedTaskList to this.taskList
+  //               this.taskList = Object.assign([], mergedTaskList);
+  //               this.taskList = this.taskList.filter(
+  //                 (x) => x.status != "O" && x.status != "C"
+  //               );
+  //               console.log("this.taskList", this.taskList);
+  //               this.taskList.sort((a, b) => {
+  //                 if (a.start_date && b.start_date) {
+  //                   const dateA = new Date(a.start_date);
+  //                   const dateB = new Date(b.start_date);
+  //                   return dateA.getTime() - dateB.getTime();
+  //                 } else if (a.start_date && !b.start_date) {
+  //                   return -1;
+  //                 } else if (!a.start_date && b.start_date) {
+  //                   return 1;
+  //                 } else {
+  //                   return 0;
+  //                 }
+  //               });
+  //             }
+  //           });
+  //       }
+  //     }
+  //   });
+  // }
   GetSuperviedUsers() {
     this.myTaskService.GetSuperviedUsers().subscribe((SuperviedUsers) => {
       this.SuperviedUsers = SuperviedUsers;
       this.SuperviedUsers = Object.assign([], this.SuperviedUsers);
       this.SuperviedUsers = SuperviedUsers;
-      let mergedTaskList = []; // Create an empty array to store the merged tasks
 
       if (this.SuperviedUsers) {
         console.log("this.SuperviedUsers", this.SuperviedUsers);
-        for (let i = 0; i < this.SuperviedUsers.length; i++) {
-          this.myTaskService
-            .getMytasksbyusername(this.SuperviedUsers[i].UserName)
-            .subscribe((tasks) => {
-              this.taskListtamp = tasks;
-              this.taskListtamp = Object.assign([], this.taskListtamp.Table1);
-              console.log("tasks", tasks);
 
-              // Concatenate the current tasks with the mergedTaskList
-              mergedTaskList = mergedTaskList.concat(this.taskListtamp);
+        this.myTaskService.getMytasksbyusername().subscribe((tasks) => {
+          this.taskListtamp = tasks;
+          this.taskList = Object.assign([], this.taskListtamp.Table1);
+          console.log("tasks", tasks);
 
-              if (i === this.SuperviedUsers.length - 1) {
-                // Last iteration, assign the mergedTaskList to this.taskList
-                this.taskList = Object.assign([], mergedTaskList);
-                this.taskList = this.taskList.filter(
-                  (x) => x.status != "O" && x.status != "C"
-                );
-                console.log("this.taskList", this.taskList);
-                this.taskList.sort((a, b) => {
-                  if (a.start_date && b.start_date) {
-                    const dateA = new Date(a.start_date);
-                    const dateB = new Date(b.start_date);
-                    return dateA.getTime() - dateB.getTime();
-                  } else if (a.start_date && !b.start_date) {
-                    return -1;
-                  } else if (!a.start_date && b.start_date) {
-                    return 1;
-                  } else {
-                    return 0;
-                  }
-                });
-              }
-            });
-        }
+          console.log("this.taskList", this.taskList);
+          this.taskList.sort((a, b) => {
+            if (a.start_date && b.start_date) {
+              const dateA = new Date(a.start_date);
+              const dateB = new Date(b.start_date);
+              return dateA.getTime() - dateB.getTime();
+            } else if (a.start_date && !b.start_date) {
+              return -1;
+            } else if (!a.start_date && b.start_date) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
+        });
       }
     });
   }

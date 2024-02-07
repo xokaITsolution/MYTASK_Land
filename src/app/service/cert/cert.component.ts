@@ -100,37 +100,45 @@ export class CertComponent implements OnChanges {
             console.log("responseresponseresponse", element);
             this.isnotprint = true;
           }
+          if (
+            element.RoleId ==
+              "C8E6C4E6-564F-40B9-B672-B8B6D2049777".toLocaleLowerCase() ||
+            "5B3B5DD4-3CEF-4696-AC19-442BA531A7DD".toLocaleLowerCase()
+          ) {
+            this.isThem = true;
+            this.isdept = true;
+          } else {
+            if (
+              this.serviceService.Service_ID ==
+                "7d256139-858b-48e7-a298-cae5438e526c" ||
+              this.serviceService.Service_ID ===
+                "05DB54FC-E388-4E5E-AAAA-BD6141C8E533".toLocaleLowerCase() ||
+              this.serviceService.Service_ID ===
+                "1c3d5a79-350e-4214-a343-d79e92a86e0f".toLocaleLowerCase()
+            ) {
+              this.isThem = true;
+            } else {
+              this.isThem = false;
+            }
+
+            if (
+              this.serviceService.Service_ID ==
+                "1c3d5a79-350e-4214-a343-d79e92a86e0f" ||
+              this.serviceService.Service_ID ===
+                "05DB54FC-E388-4E5E-AAAA-BD6141C8E533".toLocaleLowerCase() ||
+              this.serviceService.Service_ID ===
+                "7d256139-858b-48e7-a298-cae5438e526c".toLocaleLowerCase() ||
+              this.serviceService.Service_ID ===
+                "d1a3b83a-aa39-4269-90e4-da551715baef".toLocaleLowerCase()
+            ) {
+              this.isdept = true;
+            } else {
+              this.isdept = false;
+            }
+          }
         }
       }
     });
-
-    if (
-      this.serviceService.Service_ID ==
-        "7d256139-858b-48e7-a298-cae5438e526c" ||
-      this.serviceService.Service_ID ===
-        "05DB54FC-E388-4E5E-AAAA-BD6141C8E533".toLocaleLowerCase() ||
-      this.serviceService.Service_ID ===
-        "1c3d5a79-350e-4214-a343-d79e92a86e0f".toLocaleLowerCase()
-    ) {
-      this.isThem = true;
-    } else {
-      this.isThem = false;
-    }
-
-    if (
-      this.serviceService.Service_ID ==
-        "1c3d5a79-350e-4214-a343-d79e92a86e0f" ||
-      this.serviceService.Service_ID ===
-        "05DB54FC-E388-4E5E-AAAA-BD6141C8E533".toLocaleLowerCase() ||
-      this.serviceService.Service_ID ===
-        "7d256139-858b-48e7-a298-cae5438e526c".toLocaleLowerCase() ||
-      this.serviceService.Service_ID ===
-        "d1a3b83a-aa39-4269-90e4-da551715baef".toLocaleLowerCase()
-    ) {
-      this.isdept = true;
-    } else {
-      this.isdept = false;
-    }
 
     if (environment.Lang_code === "am-et") {
       this.language = "amharic";
