@@ -122,6 +122,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       //this.getplotloc(this.plotManagment.plot_ID);
       this.regionSelectedd(this.plotManagment.sdP_ID);
     }
+
     console.log("chang detected");
     if (!this.serviceService.fornewplotinsert) {
       if (this.plotManagment["plot_ID"]) {
@@ -901,6 +902,22 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       });
     }
   }
+  checkRadioButtons(selected) {
+    // Check if one of the radio buttons is checked
+    if (selected == 1988) {
+      this.plotManagment.iS1988 = true;
+      this.plotManagment.iS1997 = false;
+      this.plotManagment.iS2023 = false;
+    } else if (selected == 1997) {
+      this.plotManagment.iS1988 = false;
+      this.plotManagment.iS1997 = true;
+      this.plotManagment.iS2023 = false;
+    } else {
+      this.plotManagment.iS1988 = false;
+      this.plotManagment.iS1997 = false;
+      this.plotManagment.iS2023 = true;
+    }
+  }
 }
 
 export class PlotManagment {
@@ -942,9 +959,9 @@ export class PlotManagment {
   public nortech_No: string;
   public licence_Service_ID;
   public application_No;
-  public iS1988;
-  public iS1997;
-  public iS2023;
+  public iS1988: any;
+  public iS1997: any;
+  public iS2023: any;
 }
 export class PlatformLocation {
   public ploteId: any;

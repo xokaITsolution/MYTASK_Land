@@ -139,6 +139,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
 
     if (value == 2) {
       this.openGIsFreehold.emit();
+
       this.serviceService.isfreeholdselected = true;
       this.iislease = true;
       this.islease = true;
@@ -263,7 +264,13 @@ export class LeaseOwnerShipComponent implements OnChanges {
     }
     if (parseInt(task.Status) == 1 || task.To_Do_ID === this.todoidcurrent) {
       console.log(task.To_Do_ID, task.Status, task.Type_ID);
-
+      if (parseInt(task.Type_ID) == 2) {
+        this.serviceService.isfreeholdselected = true;
+      } else if (parseInt(task.Type_ID) == 1) {
+        this.serviceService.isfreeholdselected = false;
+      } else if (parseInt(task.Type_ID) == 3) {
+        //this.serviceService.isfreeholdselected = true;
+      }
       // if (parseInt(task.Type_ID) == 2) {
       //   this.islease = true;
       //   this.iislease = false;
@@ -535,8 +542,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
               "Sucess",
               deptSuspension
             );
-            localStorage.setItem("PolygonAreaname", "" + 0);
-            localStorage.setItem("PolygonAreanameFrehold", "" + 0);
+            // localStorage.setItem("PolygonAreaname", "" + 0);
+            // localStorage.setItem("PolygonAreanameFrehold", "" + 0);
 
             //this.serviceService.disablefins = false;
             this.getleaseOwnerShip(this.serviceService.leaseOwnerShip.Plot_ID);
@@ -545,6 +552,11 @@ export class LeaseOwnerShipComponent implements OnChanges {
 
             const areaDifferences = Math.abs(
               totalsize - parseFloat(localStorage.getItem("PolygonAreaname"))
+            );
+            console.log(
+              "🚀 ~ LeaseOwnerShipComponent ~ areaDifferences:",
+              areaDifferences,
+              maxAreaDifferences
             );
 
             if (areaDifferences <= maxAreaDifferences) {
@@ -559,12 +571,12 @@ export class LeaseOwnerShipComponent implements OnChanges {
            )}`
               );
             }
-            if (this.language == "amharic") {
-              this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
-                await this.getgregorianToEthiopianDate(
-                  this.serviceService.leaseOwnerShip.Date_of_final_lease_payment
-                );
-            }
+            // if (this.language == "amharic") {
+            //   this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+            //     await this.getgregorianToEthiopianDate(
+            //       this.serviceService.leaseOwnerShip.Date_of_final_lease_payment
+            //     );
+            // }
             if (!this.Saved) {
               //this.completed.emit();
               this.Saved = true;

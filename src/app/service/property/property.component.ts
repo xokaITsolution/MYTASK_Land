@@ -298,6 +298,7 @@ export class PropertyComponent implements OnChanges {
       "🚀 ~ file: property.component.ts:293 ~ PropertyComponent ~ SelectProprty ~ property:",
       property
     );
+
     this.getleaseOwnerShip(property.plot_ID);
     if (property.type_Of_Use_ID == 2020) {
       //የእርሻ ይዞታ አገልግሎት/For Agriculture
@@ -1260,16 +1261,28 @@ export class PropertyComponent implements OnChanges {
           }
         } else {
           for (const elementchildren of element.children) {
+            console.log(
+              "🚀 ~ PropertyComponent ~ checkPropertylocation ~ elementchildren:",
+              elementchildren
+            );
+
             const d: any = await this.getProploc(elementchildren.property_ID);
             const f = Object.assign([], d);
+
             const dlocation = f.procProporty_Locations.find(
               (x) => x.Proporty_Id === elementchildren.property_ID
             );
-            if (dlocation.length === 0) {
-              // const toast = this.notificationsService.warn(
-              //   `Must add title deed for this property: ${elementchildren.property_ID}`
-              // );
-              return false;
+            console.log(
+              "🚀 ~ PropertyComponent ~ checkPropertylocation ~ dlocation:",
+              dlocation
+            );
+            if (dlocation != undefined) {
+              if (dlocation.length === 0) {
+                const toast = this.notificationsService.warn(
+                  `Must add title deed for this property: ${elementchildren.property_ID}`
+                );
+                return false;
+              }
             }
           }
           return true;

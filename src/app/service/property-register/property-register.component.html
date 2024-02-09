@@ -60,7 +60,7 @@
         <select [disabled]="disable"  class="form-control" [(ngModel)]="propertyRegister.property_Status_ID" name="PropertyStatus"
           id="PropertyStatus"
            #PropertyStatus="ngModel" [ngClass]="{ 'is-invalid': PropertyStatus.invalid }" required>
-          <option disabled selected>select</option>
+         
           <option *ngFor="let PropertyStatus of serviceComponent.PropertyStatusLookUP;"
             [value]="PropertyStatus.P_Status_ID">{{PropertyStatus.Property_Status}}</option>
         </select>
@@ -69,13 +69,14 @@
     <div class="form-group row col-md-6">
       <label for="PropertyType" class="col-sm-3 col-form-label" translate>Property Type</label>
       <div class="col-sm-9">
-        <select [disabled]="disable" class="form-control" [(ngModel)]="propertyRegister.property_Type_ID" name="PropertyType"
-          id="PropertyType"
-            #PropertyType="ngModel" #mySelect (change)='onOptionsSelected(mySelect.value)' [ngClass]="{ 'is-invalid': PropertyType.invalid }" required>
-          <option disabled selected>select</option>
-          <option *ngFor="let PropertyType of serviceComponent.PropertyTypeLookUP;"
-            [value]="PropertyType.Property_Type_ID">{{PropertyType.Property_Type}}</option>
-        </select>
+      
+      <select [disabled]="disable" class="form-control" [(ngModel)]="propertyRegister.property_Type_ID" name="PropertyType"
+        id="PropertyType" #PropertyType="ngModel" [ngClass]="{ 'is-invalid': PropertyType.invalid }" required>
+        <option *ngFor="let propertyType of serviceComponent.PropertyTypeLookUP" [value]="propertyType.Property_Type_ID">
+          {{propertyType.Property_Type}}
+        </option>
+      </select>
+
       </div>
     </div>
     <div class="form-group row col-md-6" >

@@ -225,11 +225,21 @@ export class MyTaskComponent implements OnInit {
             return 0;
           }
         });
+
         for (let i = 0; i < this.taskList.length; i++) {
           this.seice.docId = this.taskList[i].service_details_id;
         }
         let num = 1;
         (this.taskList as Array<any>).map((task) => (task["number"] = num++));
+        const uniqueJobMatchIDs = {};
+        const uniqueData = this.taskList.filter((item) => {
+          if (!uniqueJobMatchIDs[item.todo_comment]) {
+            uniqueJobMatchIDs[item.todo_comment] = true;
+            return true;
+          }
+          return false;
+        });
+        this.taskList = uniqueData;
       },
       (error) => {
         console.log("error");

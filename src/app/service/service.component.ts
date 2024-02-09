@@ -458,10 +458,13 @@ export class ServiceComponent implements OnInit {
 
           if (
             element.RoleId ==
-            "8C133397-587E-456F-AB31-9CF5358BE8D2".toLocaleLowerCase()
+              "8C133397-587E-456F-AB31-9CF5358BE8D2".toLocaleLowerCase() ||
+            element.RoleId ==
+              "270F762A-5393-4971-83BA-C7FF7D560BDA".toLocaleLowerCase()
           ) {
             this.eid = element.UserId;
             this.serviceService.isRecordDocumentationManager = true;
+            console.log("responseresponseresponserole", element);
             break;
           } else {
             this.eid = element.UserId;
@@ -2298,41 +2301,42 @@ export class ServiceComponent implements OnInit {
     this.serviceService
       .GetApplicationNumberByUsers(username, orgcode)
       .subscribe((ApplicationNumber: any) => {
+        console.log("🚀 ~ .subscribe ~ ApplicationNumber:", ApplicationNumber);
         this.ApplicationNumberlist = ApplicationNumber;
-        this.ApplicationNumberlist.sort((a, b) => {
-          this.licenceData.Parcel_ID;
-          if (this.licenceData.Parcel_ID != null) {
-            this.serviceService
-              .GetpreviousApplicationNumberByUsers(
-                username,
-                this.licenceData.Parcel_ID
-              )
-              .subscribe((PriveLicence: any) => {
-                //console.log("🚀 ~ .subscribe ~ PriveLicence:", PriveLicence);
-                if (PriveLicence.length > 0) {
-                  this.serviceService
-                    .GetApplicationNumberByprevious(
-                      PriveLicence[0].title_Deed_No,
-                      PriveLicence[0].previousUserName,
-                      PriveLicence[0].organization_code
-                    )
-                    .subscribe((ApplicationNumber: any) => {
-                      // console.log(
-                      //   "🚀 ~ .subscribe ~ ApplicationNumber:",
-                      //   ApplicationNumber
-                      // );
-                      ApplicationNumber.forEach((element) => {
-                        this.ApplicationNumberlist.push(element);
-                      });
-                    });
-                  // console.log(
-                  //   "🚀 ~ .subscribe ~ ApplicationNumberlist:",
-                  //   this.ApplicationNumberlist
-                  // );
-                }
-              });
-          }
 
+        console.log("🚀 ~ .subscribe ~ Parcel_ID:", this.licenceData.Parcel_ID);
+        if (this.licenceData.Parcel_ID != null) {
+          this.serviceService
+            .GetpreviousApplicationNumberByUsers(
+              username,
+              this.licenceData.Parcel_ID
+            )
+            .subscribe((PriveLicence: any) => {
+              console.log("🚀 ~ .subscribe ~ PriveLicence:", PriveLicence);
+              if (PriveLicence.length > 0) {
+                this.serviceService
+                  .GetApplicationNumberByprevious(
+                    PriveLicence[0].title_Deed_No,
+                    PriveLicence[0].previousUserName,
+                    PriveLicence[0].organization_code
+                  )
+                  .subscribe((ApplicationNumber: any) => {
+                    console.log(
+                      "🚀 ~ .subscribe ~ ApplicationNumber:",
+                      ApplicationNumber
+                    );
+                    ApplicationNumber.forEach((element) => {
+                      this.ApplicationNumberlist.push(element);
+                    });
+                  });
+                console.log(
+                  "🚀 ~ .subscribe ~ ApplicationNumberlist:",
+                  this.ApplicationNumberlist
+                );
+              }
+            });
+        }
+        this.ApplicationNumberlist.sort((a, b) => {
           if (a.application_Date > b.application_Date) {
             // console.log("sttatattgs", this.ApplicationNumberlist);
             return -1;
@@ -2382,7 +2386,11 @@ export class ServiceComponent implements OnInit {
           [],
           this.PropertyTypeLookUP.list
         );
-        // console.log('PropertyTypeLookUP', PropertyTypeLookUP);
+        this.PropertyTypeLookUP.unshift({
+          Property_Type_ID: null,
+          Property_Type: "select",
+        });
+        console.log("PropertyTypeLookUP", this.PropertyTypeLookUP);
       },
       (error) => {
         console.log("error");
@@ -2398,6 +2406,10 @@ export class ServiceComponent implements OnInit {
           [],
           this.PropertyStatusLookUP.list
         );
+        // this.PropertyStatusLookUP.unshift({
+        //   P_Status_ID: null,
+        //   Property_Status: "select",
+        // });
         // console.log('PropertyStatusLookUP', PropertyStatusLookUP);
       },
       (error) => {

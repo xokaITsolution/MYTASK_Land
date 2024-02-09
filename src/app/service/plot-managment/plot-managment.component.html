@@ -184,27 +184,38 @@
           name="Nortech_No" id="Nortech_No" [placeholder]="'Nortech_No' | translate">
       </div>
     </div>
-    <div class="form-group row col-md-7">
-      <label class="col-sm-3 col-form-label" for="Is1988" translate>Is1988</label>
-      <div class="col-sm-9">
-        <p-checkbox [(ngModel)]="plotManagment.iS1988" 
-          name="Is1988" id="Is1988"  binary="true" ></p-checkbox>
-      </div>
-    </div>
-    <div class="form-group row col-md-7">
-      <label class="col-sm-3 col-form-label" for="Is1997" translate>Is1997</label>
-      <div class="col-sm-9">
-        <p-checkbox [(ngModel)]="plotManagment.iS1997" 
-          name="Is1997" id="Is1997"  binary="true"></p-checkbox>
-      </div>
-    </div>
-    <div class="form-group row col-md-7">
-      <label class="col-sm-3 col-form-label" for="Is2023" translate>Is2003</label>
-      <div class="col-sm-9">
-        <p-checkbox [(ngModel)]="plotManagment.iS2023" 
-          name="Is2023" id="Is2023"  binary="true" ></p-checkbox>
-      </div>
-    </div>
+<div class="form-group row col-md-7">
+  <label class="col-sm-3 col-form-label" for="Is1988" translate>Is 1988</label>
+  <div class="col-sm-9">
+
+
+      <p-checkbox [(ngModel)]="plotManagment.iS1988" (click)="checkRadioButtons('1988')"  name="Is1988"
+        id="Is1988" binary="true"></p-checkbox>
+  </div>
+</div>
+<div class="form-group row col-md-7">
+  <label class="col-sm-3 col-form-label" for="Is1997" translate>Is 1997</label>
+  <div class="col-sm-9">
+
+      <p-checkbox [(ngModel)]="plotManagment.iS1997" (click)="checkRadioButtons('1997')"  name="Is1997"
+        id="Is1997" binary="true"></p-checkbox>
+  </div>
+</div>
+<div class="form-group row col-md-7">
+  <!-- <label class="col-sm-3 col-form-label" for="Is2023" translate>Is 2003</label>
+  <div class="col-sm-9">
+      <p-checkbox [(ngModel)]="plotManagment.iS2023" (click)="checkRadioButtons('2023')" 
+        name="Is2023" id="Is2023" binary="true"></p-checkbox>
+  </div>
+ -->
+  <span *ngIf="!(plotManagment.iS1988 || plotManagment.iS1997 || plotManagment.iS2023) && serviceService.serviceisundoumneted" class="text-danger">
+    for Issuance Title deed of ownership confirmation of possession held until May 1988 and Issuance of Title deed,
+    possession for properties held without permission from the appropriate body
+    Please select one of the options.
+  </span>
+</div>
+
+
   </div>
   <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!isnew && !disable" (click)="checkplothavecertificet()"
     translate>Update</button>

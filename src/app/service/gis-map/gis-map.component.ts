@@ -89,6 +89,8 @@ export class GisMapComponent implements AfterViewInit {
   screenshot: any;
   simpleMapScreenshoter: any;
   screenshotBase64: any;
+  alllatlongPlot: any[] = [];
+  limitedAreaBounds: any;
 
   constructor(
     public ServiceService: ServiceService,
@@ -1581,26 +1583,75 @@ export class GisMapComponent implements AfterViewInit {
     const drawControl = new L.Control.Draw(optionss);
     this.map.addControl(drawControl);
 
+    // Initialize an array to hold all the vertices of the polygons
+
+    // Add an event listener for the draw:created event
+    // this.map.on("draw:created", (e) => {
+    //   console.log("Shape created:", e, this.ServiceService.check);
+    //   const layer = e.layer;
+    //   let allVertices = [];
+
+    //   // Iterate over each array in alllatlongPlot to extract the vertices of each polygon
+    //   this.alllatlongPlot.forEach((array) => {
+    //     console.log("🚀 ~ this.alllatlongPlot.forEach ~ array:", array);
+    //     let vertices = array.map((coord) => {
+    //       return L.latLng(coord.lat, coord.lng);
+    //     });
+    //     allVertices = allVertices.concat(vertices);
+    //     console.log(
+    //       "🚀 ~ this.alllatlongPlot.forEach ~ allVertices:",
+    //       allVertices
+    //     );
+    //   });
+
+    //   // Create a Leaflet polygon (limitedAreaBounds) using the array of vertices collected from all polygons
+    //   this.limitedAreaBounds = L.polygon(allVertices);
+
+    //   // Check if the drawn polygon is within the bounds of limitedAreaBounds
+    //   if (this.limitedAreaBounds.getBounds().contains(layer.getBounds())) {
+    //     // If the drawn polygon is within the bounds, add it to the map
+    //     this.map.addLayer(layer);
+
+    //     // Rest of your code for handling the drawn polygon...
+    //   } else {
+    //     // If the drawn polygon is outside the bounds, show a warning message
+    //     const toast = this.notificationsService.warn(
+    //       "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡"
+    //     );
+    //   }
+    // });
     this.map.on("draw:created", (e) => {
       console.log("Shape created:", e, this.ServiceService.check);
       const layer = e.layer;
 
       if (!this.ServiceService.check) {
-        console.log("Shape created:alllatlong", this.alllatlong);
-        if (this.alllatlong.length === 0) {
+        console.log("Shape created:alllatlong", this.alllatlongPlot);
+        if (this.alllatlongPlot.length === 0) {
           const toast = this.notificationsService.warn(
             "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡"
           );
           return;
         }
-        // Assuming limited area bounds as a polygon
-        const limitedAreaBounds = L.polygon(this.alllatlong[0][0]).addTo(
-          this.map
-        );
+        let allVertices = [];
 
-        console.log(limitedAreaBounds);
+        // Iterate over each array in alllatlongPlot to extract the vertices of each polygon
+        this.alllatlongPlot.forEach((array) => {
+          console.log("🚀 ~ this.alllatlongPlot.forEach ~ array:", array);
+          let vertices = array.map((coord) => {
+            return L.latLng(coord.lat, coord.lng);
+          });
+          allVertices = allVertices.concat(vertices);
+          console.log(
+            "🚀 ~ this.alllatlongPlot.forEach ~ allVertices:",
+            allVertices
+          );
+        });
+
+        // Create a Leaflet polygon (limitedAreaBounds) using the array of vertices collected from all polygons
+        this.limitedAreaBounds = L.polygon(allVertices);
+
         if (layer instanceof L.Polygon) {
-          if (limitedAreaBounds.getBounds().contains(layer.getBounds())) {
+          if (this.limitedAreaBounds.getBounds().contains(layer.getBounds())) {
             this.map.addLayer(layer);
 
             this.coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the polygon
@@ -1666,7 +1717,7 @@ export class GisMapComponent implements AfterViewInit {
             //this.drawnShapes.push(this.coordinates);
 
             // Do something with the coordinates, such as displaying or processing them
-
+            this.editableLayers.addLayer(layer);
             this.ServiceService.coordinate = this.utmCoordinates;
             // this.ServiceService.coordinateForwgs84 =
             //  this.ServiceService.shapes = this.aaa.push(this.drawnShape);
@@ -1819,8 +1870,6 @@ export class GisMapComponent implements AfterViewInit {
 
           //this.drawnShape.bindPopup("This is a polyline!");
         }
-
-        this.editableLayers.addLayer(layer);
       } else {
         if (layer instanceof L.Polygon) {
           this.coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the polygon
@@ -2905,14 +2954,28 @@ export class GisMapComponent implements AfterViewInit {
       }
       return false;
     });
+
     combinedData.push(uniqueData);
 
-    // Now, combinedData contains the latLng and shapeProperties in each object
+    // Check if there is any shape property with plot_ID
+    const hasPlotID = shapeProperties.some((item) => item.ploteId);
+    console.log(
+      "🚀 ~ processcoordinates ~ shapeProperties:",
+      shapeProperties,
+      hasPlotID
+    );
 
-    console.log("shapeProperties", combinedData);
-
+    if (hasPlotID) {
+      this.alllatlongPlot.push(latLngs);
+    }
     this.alllatlong.push(combinedData);
+    console.log("🚀 ~ processcoordinates ~ alllatlong:", this.alllatlong);
+    console.log(
+      "🚀 ~ processcoordinates ~ alllatlongPlot:",
+      this.alllatlongPlot
+    );
   }
+
   public processcoordinatesForPlot(data: any[]): void {
     // Remove the header row from the data
     const coordinates = data.slice(1);
@@ -3063,8 +3126,16 @@ export class GisMapComponent implements AfterViewInit {
       if (
         dataofproperty.ploteId == undefined ||
         (dataofproperty.ploteId == null &&
-          dataofproperty.property_ID == this.ServiceService.selectedproperty)
+          dataofproperty.ploteId == this.ServiceService.selectedplotid)
       ) {
+        this.editableLayers.addLayer(this.drawnShape);
+        const utmCoordinates = this.convertCoordinatesToUTM(latslng);
+        this.ServiceService.coordinateForwgs84 =
+          this.mapToPolygonFormat(latslng);
+        utmCoordinates.push(utmCoordinates[0]);
+        this.ServiceService.coordinate = utmCoordinates;
+        console.log(utmCoordinates);
+      } else {
         this.editableLayers.addLayer(this.drawnShape);
         const utmCoordinates = this.convertCoordinatesToUTM(latslng);
         this.ServiceService.coordinateForwgs84 =

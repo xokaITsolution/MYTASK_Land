@@ -251,6 +251,7 @@ export class ServiceService {
   freeholdsize: any;
   leaseOwnerShip: LeaseOwnerShip;
   isfreeholdselected: boolean;
+  serviceisundoumneted: boolean = false;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -1184,6 +1185,9 @@ export class ServiceService {
   }
   getcustomerby() {
     return this.http.get(this.customerUrl);
+  }
+  getcustomerbycusid(custID) {
+    return this.http.get(this.customerUrl + "/" + custID);
   }
 }
 

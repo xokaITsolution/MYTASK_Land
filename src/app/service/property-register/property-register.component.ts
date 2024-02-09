@@ -241,6 +241,14 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       });
   }
   async save() {
+    if (
+      this.propertyRegister.property_Type_ID == 2 &&
+      this.propertyRegister.property_Parent_ID == 0
+    ) {
+      const toastt = this.notificationsService.warn(
+        "Please note that you cannot add የጋራ መኖርያ ቤቶች/Appartments/Condominiums without first adding a parent building. Kindly ensure that you add the building details before proceeding with adding the apartments"
+      );
+    }
     if (this.serviceService.isproportinal == true) {
       let totalsize =
         parseInt(this.propertyRegister.building_Size_M2) +
@@ -667,6 +675,14 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   }
 
   async add() {
+    if (
+      this.propertyRegister.property_Type_ID == 2 &&
+      this.propertyRegister.property_Parent_ID == 0
+    ) {
+      const toastt = this.notificationsService.warn(
+        "Please note that you cannot add የጋራ መኖርያ ቤቶች/Appartments/Condominiums without first adding a parent building. Kindly ensure that you add the building details before proceeding with adding the apartments"
+      );
+    }
     if (this.serviceService.isproportinal == true) {
       let totalsize =
         parseInt(this.propertyRegister.building_Size_M2) +
@@ -1015,29 +1031,69 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       return multiPoint;
     }
   }
+  // convertPolygonCoordinates(polygonString: string, data): any[] {
+  //   const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
+
+  //   const result = [];
+
+  //   if (coordinates) {
+  //     for (const coord of coordinates) {
+  //       console.log("coordcoordcoord", coord);
+
+  //       const [easting, northing, hemisphere, zone] = coord.split(" ");
+
+  //       result.push({
+  //         northing: northing,
+  //         easting: easting,
+  //         hemisphere: hemisphere,
+  //         zone: zone,
+  //       });
+  //     }
+  //   }
+
+  //   console.log("result", result);
+  //   this.convertCoordinates(result, data);
+
+  //   return result;
+  // }
   convertPolygonCoordinates(polygonString: string, data): any[] {
     const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
+    console.log("🚀 ~ convertPolygonCoordinates ~ coordinates:", coordinates);
 
     const result = [];
 
     if (coordinates) {
+      const uniqueCoordinates = new Set(); // Using a Set to store unique coordinates
       for (const coord of coordinates) {
-        console.log("coordcoordcoord", coord);
-
         const [easting, northing, hemisphere, zone] = coord.split(" ");
 
-        result.push({
-          northing: northing,
-          easting: easting,
-          hemisphere: hemisphere,
-          zone: zone,
-        });
+        // Check if the coordinate is unique before adding it to the result
+        const uniqueCoordString = `${easting},${northing}`;
+        if (!uniqueCoordinates.has(uniqueCoordString)) {
+          uniqueCoordinates.add(uniqueCoordString);
+
+          result.push({
+            northing: northing,
+            easting: easting,
+            hemisphere: hemisphere,
+            zone: zone,
+          });
+        }
       }
     }
+
+    // Validating the polygon
+    const isValidPolygon =
+      result.length >= 3 &&
+      result[0].northing === result[result.length - 1].northing &&
+      result[0].easting === result[result.length - 1].easting;
+
     console.log("result", result);
+    console.log("isValidPolygon", isValidPolygon);
+
     this.convertCoordinates(result, data);
 
-    return result;
+    return isValidPolygon ? result : [];
   }
 
   convertCoordinates(data, prop) {
@@ -1248,6 +1304,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     reader.readAsDataURL(File);
     reader.addEventListener("loadend", (e) => {
       base64file = reader.result;
+      console.log("🚀 ~ reader.addEventListener ~ base64file:", base64file);
       this.pictoShow = base64file;
       this.pictoShow = this.sanitizer.bypassSecurityTrustResourceUrl(
         this.pictoShow

@@ -289,6 +289,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   }
 
   async add() {
+    this.titleDeedRegistration.pay_Capital_Gain = true;
     if (this.language === "amharic") {
       this.titleDeedRegistration.date = await this.getEthiopianToGregorian(
         this.titleDeedRegistration.date

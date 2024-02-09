@@ -70,6 +70,7 @@ export class PlotComponent implements OnChanges {
   processedPlotIDs = new Set();
   processedPlotIDsCoordinates = new Set();
   isfreehoadinsert: boolean;
+  serviceisundoumneted: boolean;
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -99,6 +100,15 @@ export class PlotComponent implements OnChanges {
       this.PlotManagementListfinal,
       this.serviceService.Service_ID
     );
+    if (
+      this.serviceService.Service_ID ===
+        "de330170-550b-4bf2-9908-dc557f92a7cc" ||
+      this.serviceService.Service_ID === "449a14bd-e0c0-4eda-92f5-68b3fcf83433"
+    ) {
+      this.serviceService.serviceisundoumneted = true;
+    } else {
+      this.serviceService.serviceisundoumneted = false;
+    }
     this.PlotManagementListfinal = [];
     this.noinvalidplot = 0;
     console.log(
@@ -207,7 +217,10 @@ export class PlotComponent implements OnChanges {
             this.plotloc[0].geowithzone,
             this.plotloc[0]
           );
-          if (this.plotloc[0].geoForwgs84 != null) {
+          if (
+            this.plotloc[0].geoForwgs84 != null &&
+            this.plotloc[0].freholdgis
+          ) {
             this.convertPolygonCoordinates(
               this.plotloc[0].geoForwgs84,
               plot_ID
@@ -234,6 +247,8 @@ export class PlotComponent implements OnChanges {
     this.ismodaEnable = true;
     this.serviceService.check = true;
     this.isfreehoadinsert = true;
+    localStorage.setItem("PolygonAreaname", "" + 0);
+    localStorage.setItem("PolygonAreanameFrehold", "" + 0);
   }
   calculateUTMPolygonArea(
     utmPoints: { northing: number; easting: number }[]
@@ -254,38 +269,78 @@ export class PlotComponent implements OnChanges {
 
     return Math.abs(area); // Take the absolute value to ensure a positive area
   }
-  convertPolygonCoordinates(polygonString: string, plot_ID): any[] {
-    console.log(
-      "🚀 ~ PlotComponent ~ convertPolygonCoordinates ~ polygonString:",
-      polygonString
-    );
+  // convertPolygonCoordinates(polygonString: string, plot_ID): any[] {
+  //   console.log(
+  //     "🚀 ~ PlotComponent ~ convertPolygonCoordinates ~ polygonString:",
+  //     polygonString
+  //   );
 
+  //   const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
+  //   console.log(
+  //     "🚀 ~ PlotComponent ~ convertPolygonCoordinates ~ d:",
+  //     coordinates
+  //   );
+
+  //   const result = [];
+
+  //   if (coordinates) {
+  //     for (const coord of coordinates) {
+  //       console.log("coordcoordcoord", coord);
+
+  //       const [easting, northing, hemisphere, zone] = coord.split(" ");
+
+  //       result.push({
+  //         northing: northing,
+  //         easting: easting,
+  //         hemisphere: hemisphere,
+  //         zone: zone,
+  //       });
+  //     }
+  //   }
+  //   console.log("resultresult", result);
+  //   this.convertCoordinates(result, plot_ID);
+
+  //   return result;
+  // }
+
+  convertPolygonCoordinates(polygonString: string, data): any[] {
     const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
-    console.log(
-      "🚀 ~ PlotComponent ~ convertPolygonCoordinates ~ d:",
-      coordinates
-    );
+    console.log("🚀 ~ convertPolygonCoordinates ~ coordinates:", coordinates);
 
     const result = [];
 
     if (coordinates) {
+      const uniqueCoordinates = new Set(); // Using a Set to store unique coordinates
       for (const coord of coordinates) {
-        console.log("coordcoordcoord", coord);
-
         const [easting, northing, hemisphere, zone] = coord.split(" ");
 
-        result.push({
-          northing: northing,
-          easting: easting,
-          hemisphere: hemisphere,
-          zone: zone,
-        });
+        // Check if the coordinate is unique before adding it to the result
+        const uniqueCoordString = `${easting},${northing}`;
+        if (!uniqueCoordinates.has(uniqueCoordString)) {
+          uniqueCoordinates.add(uniqueCoordString);
+
+          result.push({
+            northing: northing,
+            easting: easting,
+            hemisphere: hemisphere,
+            zone: zone,
+          });
+        }
       }
     }
-    console.log("resultresult", result);
-    this.convertCoordinates(result, plot_ID);
 
-    return result;
+    // Validating the polygon
+    const isValidPolygon =
+      result.length >= 3 &&
+      result[0].northing === result[result.length - 1].northing &&
+      result[0].easting === result[result.length - 1].easting;
+
+    console.log("result", result);
+    console.log("isValidPolygon", isValidPolygon);
+
+    this.convertCoordinates(result, data);
+
+    return isValidPolygon ? result : [];
   }
   convertCoordinatesToObjects(coordinates: string[], plot_ID): any[] {
     const result = [];
@@ -674,8 +729,8 @@ export class PlotComponent implements OnChanges {
     // Remove the last point if it's identical to the first point
     if (
       points.length > 1 &&
-      points[0].easting === points[points.length - 1].easting &&
-      points[0].northing === points[points.length - 1].northing
+      points[0].easting === points[points.length - 2].easting &&
+      points[0].northing === points[points.length - 2].northing
     ) {
       points.pop();
     }

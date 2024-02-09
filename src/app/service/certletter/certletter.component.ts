@@ -411,7 +411,7 @@ export class CertletterComponent implements OnChanges {
             //   }
             // }
 
-            if (this.cerlettrformList != undefined) {
+            if (this.cerlettrformList.length > 0) {
               this.disable_new = true;
             } else {
               this.disable_new = false;

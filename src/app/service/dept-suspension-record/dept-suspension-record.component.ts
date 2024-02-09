@@ -183,6 +183,10 @@ export class DeptSuspensionRecordComponent implements OnChanges {
     console.log("deptdept", dept);
 
     this.deptSuspensionRecord = dept;
+    console.log(
+      "🚀 ~ DeptSuspensionRecordComponent ~ selectdeed ~ deptSuspensionRecord:",
+      this.deptSuspensionRecord
+    );
     if (this.deptSuspensionRecord.suspend_Start_Date != null) {
       this.deptSuspensionRecord.suspend_Start_Date =
         this.deptSuspensionRecord.suspend_Start_Date.split("T")[0];
@@ -193,15 +197,18 @@ export class DeptSuspensionRecordComponent implements OnChanges {
     if (this.deptSuspensionRecord.is_Released) {
       this.selectOption("released");
     }
-    //  if(){
-    //    this.deptSuspensionRecord.Letter_Ref_Date =
-    //     this.deptSuspensionRecord.Letter_Ref_Date.split("T")[0];
-    //   this.deptSuspensionRecord.Suspend_End_Date =
-    //     this.deptSuspensionRecord.Suspend_End_Date.split("T")[0];
-    //   this.deptSuspensionRecord.Suspend_Start_Date =
-    //     this.deptSuspensionRecord.Suspend_Start_Date.split("T")[0];
-    //  }
-    this.getcustomer(this.deptSuspensionRecord.suspended_By);
+
+    this.serviceService
+      .getcustomerbycusid(this.deptSuspensionRecord.suspended_By)
+      .subscribe((res: any) => {
+        this.customerdata = res.procCustomers;
+        console.log(
+          "🚀 ~ DeptSuspensionRecordComponent ~ .subscribe ~ res:",
+          this.customerdata
+        );
+      });
+    // this.getcustomer(this.deptSuspensionRecord.suspended_By);
+
     this.deptForm = true;
   }
 
