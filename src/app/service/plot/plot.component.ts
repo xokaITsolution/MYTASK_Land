@@ -247,7 +247,7 @@ export class PlotComponent implements OnChanges {
     this.ismodaEnable = true;
     this.serviceService.check = true;
     this.isfreehoadinsert = true;
-    localStorage.setItem("PolygonAreaname", "" + 0);
+    //localStorage.setItem("PolygonAreaname", "" + 0);
     localStorage.setItem("PolygonAreanameFrehold", "" + 0);
   }
   calculateUTMPolygonArea(
@@ -901,6 +901,8 @@ export class PlotComponent implements OnChanges {
         this.serviceService.totalsizeformerage
       );
     }
+    localStorage.setItem("PolygonAreaname", "" + 0);
+    localStorage.setItem("PolygonAreanameFrehold", "" + 0);
   }
   getPlotManagement(Licence_Service_ID) {
     let a;

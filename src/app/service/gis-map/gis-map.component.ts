@@ -1491,7 +1491,7 @@ export class GisMapComponent implements AfterViewInit {
 
         // Add HTML content for the North arrow
         container.innerHTML =
-          '<img src="http://job.xokait.com.et/datepicker/img/northarow.png" alt="North Arrow">';
+          '<img src="http://ct.addisland.gov.et/datepicker/img/northarow.png" alt="North Arrow">';
 
         // Set up a click event on the container to rotate the map to north
         container.onclick = function () {

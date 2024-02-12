@@ -49,10 +49,8 @@ export class ServiceService {
     environment.rootpath2 + "GetApplicationNumberByUser";
   private getRequerdURL =
     environment.rootpath2 + "getRequrementDocumentOfTasks";
-  private All_Service =
-    "http://197.156.93.110/XOKA.eoffice.bpel_Land/api/" + "BPEL/Service";
-  private Task_Service =
-    "http://197.156.93.110/XOKA.eoffice.bpel_Land/api/" + "BPEL/getTasks";
+  private All_Service = environment.rootpath2 + "Service";
+  private Task_Service = environment.rootpath2 + "getTasks";
   private All_Org = environment.rootpath2 + "AllOrg";
   public customerUrl = environment.rootPathApi + "Customer/procCustomer";
   public Username =
