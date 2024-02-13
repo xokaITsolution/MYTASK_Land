@@ -686,9 +686,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     if (this.serviceService.isproportinal == true) {
       let totalsize =
         parseInt(this.propertyRegister.building_Size_M2) +
-        // parseInt(this.propertyRegister.proportional_from_Compound_Size) +
-        // parseInt(this.propertyRegister.parking_Area_M2) +
-        parseInt(this.propertyRegister.size_In_Proportional);
+        parseInt(this.propertyRegister.proportional_from_Compound_Size);
+      // parseInt(this.propertyRegister.parking_Area_M2) +
+      //parseInt(this.propertyRegister.size_In_Proportional);
       console.log("totalsize", totalsize);
 
       this.serviceService
@@ -701,9 +701,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
               if (element.property_ID != "No Parent") {
                 let totalsize =
                   parseInt(element.building_Size_M2) +
-                  // parseInt(element.proportional_from_Compound_Size) +
-                  // parseInt(element.parking_Area_M2) +
-                  parseInt(element.size_In_Proportional);
+                  parseInt(element.proportional_from_Compound_Size);
+                // parseInt(element.parking_Area_M2) +
+                //parseInt(element.size_In_Proportional);
 
                 this.totlaizeproportinal += totalsize;
               }
@@ -795,9 +795,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     } else {
       let totalsize =
         parseInt(this.propertyRegister.building_Size_M2) +
-        // parseInt(this.propertyRegister.proportional_from_Compound_Size) +
-        // parseInt(this.propertyRegister.parking_Area_M2) +
-        parseInt(this.propertyRegister.size_In_Proportional);
+        parseInt(this.propertyRegister.proportional_from_Compound_Size);
+      // parseInt(this.propertyRegister.parking_Area_M2) +
+      //parseInt(this.propertyRegister.size_In_Proportional);
       console.log(parseInt(this.serviceService.Plot_Size_M2));
 
       if (

@@ -19,6 +19,7 @@ import {
   FormGroup,
   FormsModule,
   FormBuilder,
+  Validators,
 } from "@angular/forms";
 import { JsonPipe, formatDate } from "@angular/common";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -202,7 +203,7 @@ export class RecordComponent implements OnChanges {
     SDP: new FormControl(),
     date: new FormControl(new Date().toISOString().substr(0, 10)),
     Org: new FormControl(),
-    Woreda: new FormControl(),
+    Woreda: ["", Validators.required],
     selectedService: new FormControl(),
   });
   ngOnChanges() {
