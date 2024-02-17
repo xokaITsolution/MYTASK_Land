@@ -50,7 +50,9 @@ export class GisMapComponent implements AfterViewInit {
   @Output() completed = new EventEmitter();
   @ViewChild("tree", { static: false }) tree: any; // Replace 'any' with the actual type of your tree if available
   @ViewChild("fileInputt", { static: false }) fileInputt: ElementRef;
+  @Input() disable;
   nodes: CustomTreeNode[];
+  Centralspatial: Layer[] = [];
   polylinee: any;
   datum: string;
   defaultLayer: any;
@@ -91,6 +93,11 @@ export class GisMapComponent implements AfterViewInit {
   screenshotBase64: any;
   alllatlongPlot: any[] = [];
   limitedAreaBounds: any;
+  central_base: any;
+  centralsublayers: any;
+  cntralplanlayers: any;
+  layer: any;
+  fetchedGroups: any[] = [];
 
   constructor(
     public ServiceService: ServiceService,
@@ -237,47 +244,533 @@ export class GisMapComponent implements AfterViewInit {
     return "#" + Math.floor(Math.random() * 16777215).toString(16);
   }
 
-  toggleLayer_Checked(event) {
-    const zoomLevel = 3; // Adjust this to your desired zoom level
+  // toggleLayer_Checked(event) {
+  //   const zoomLevel = 3; // Adjust this to your desired zoom level
 
-    // Specify the duration of the flyTo animation in seconds
-    const flyToDuration = 5; // 2 seconds
+  //   // Specify the duration of the flyTo animation in seconds
+  //   const flyToDuration = 5; // 2 seconds
 
-    // Use the flyTo method to animate the map
+  //   console.log("event", event);
 
-    // if (this.subcity == "bole_AddisLand") {
-    //   this.map.flyTo([8.967201, 38.797822], 2);
-    // } else if (this.subcity == "yeka_AddisLand") {
-    //   this.map.flyTo([9.060803, 38.804322], 2);
-    // } else if (this.subcity == "addisk_AddisLand") {
-    //   this.map.flyTo([9.051497, 38.723454], 2);
-    // } else if (this.subcity == "akakyk_AddisLand") {
-    //   this.map.flyTo([8.859807, 38.798065], 2);
-    // } else if (this.subcity == "kolfek_AddisLand") {
-    //   this.map.flyTo([8.998647, 38.691922], 0);
-    // } else if (this.subcity == "kirkos_AddisLand") {
-    //   this.map.flyTo([9.004158, 38.772317], 0);
-    // } else if (this.subcity == "lemik_AddisLand") {
-    //   this.map.flyTo([9.004772, 38.884051], 0);
-    // } else if (this.subcity == "lideta_AddisLand") {
-    //   this.map.flyTo([9.003426, 38.731568], 0);
-    // } else if (this.subcity == "gullele_AddisLand") {
-    //   this.map.flyTo([9.02497, 38.74689], 0);
-    // } else if (this.subcity == "nifass_AddisLand") {
-    //   this.map.flyTo([8.949258, 38.728618], 0);
-    // } else if (this.subcity == "arada_AddisLand") {
-    //   this.map.flyTo([9.02497, 38.74689], zoomLevel, {
-    //     duration: flyToDuration,
-    //   });
+  //   // Generate a random color
+  //   // this.randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+
+  //   // // Apply styles only to the selected node
+  //   event.styleClass = "custom-selected-node";
+  //   // // this.activeNode = [event.node];
+  //   if (event.children.length == 0 && event.children != undefined) {
+  //     if (event.children) {
+  //       // Deselect all the children nodes
+  //       event.children.forEach((child) => {
+  //         console.log("child", child);
+  //         this.toggleLayer_UnChecked(child);
+  //       });
+  //     }
+
+  //     // const visibility = event;
+  //     console.log("event", event.label);
+
+  //     const layerName = event.label;
+  //     const layer = this.layers.find((l) => l.name === layerName);
+  //     console.log(
+  //       "🚀 ~ file: gis-map.component.ts:209 ~ GisMapComponent ~ toggleLayer_Checked ~ layer:",
+  //       layer
+  //     );
+  //     //
+
+  //     if (layer && layer.vectorLayer) {
+  //       event.randomColor =
+  //         layer.vectorLayer.options.style.color === null
+  //           ? this.generateRandomColor()
+  //           : layer.vectorLayer.options.style.color;
+  //       // if (visibility) {
+
+  //       this.map.addLayer(layer.vectorLayer);
+  //       // this.map.addLayer(layer.tileLayer);
+  //       console.log("vectorlayer", layer.vectorLayer);
+  //       //this.onDatumChange()
+
+  //       // } else {
+  //       //   console.log("vectorlayer", layer.vectorLayer);
+
+  //       //   this.map.removeLayer(layer.vectorLayer);
+  //       //   this.map.removeLayer(layer.tileLayer);
+  //       // }
+  //     } else if (layer && layer.tileLayer) {
+  //       event.randomColor = this.generateRandomColor();
+
+  //       // if (visibility) {
+  //       console.log("tilelayer", layer.tileLayer);
+  //       this.map.addLayer(layer.tileLayer);
+  //       //this.onDatumChange();
+
+  //       // }
+  //       // else {
+  //       //   console.log("tilelayer", layer.tileLayer);
+  //       //   this.map.removeLayer(layer.tileLayer);
+
+  //       // }
+  //     }
+  //   } else {
+  //     event.randomColor = "#85cc18";
+  //   }
+  // }
+
+  onLabelClick(event) {
+    console.log("lableselected", event);
+  }
+  // toggleLayer_UnChecked(event) {
+  //   // Remove styles for unselected node
+  //   event.node.styleClass = "";
+  //   event.node.style = {};
+
+  //   // Remove the unselected node from the array
+  //   //this.activeNode = this.activeNode.filter((node) => node !== event.node);
+  //   // const visibility = event;
+  //   console.log("event", event.node.label);
+
+  //   const layerName = event.node.label;
+  //   const layer = this.layers.find((l) => l.name === layerName);
+  //   //
+  //   if (layer && layer.vectorLayer) {
+  //     // if (visibility) {
+  //     //   console.log("vectorlayer", layer.vectorLayer);
+
+  //     //   this.map.addLayer(layer.vectorLayer);
+  //     //   this.map.addLayer(layer.tileLayer);
+  //     //   //this.onDatumChange()
+
+  //     // } else {
+  //     console.log("vectorlayer", layer.vectorLayer);
+
+  //     this.map.removeLayer(layer.vectorLayer);
+  //     this.map.removeLayer(layer.tileLayer);
+  //     // }
+  //   } else if (layer && layer.tileLayer) {
+  //     // if (visibility) {
+  //     //   console.log("tilelayer", layer.tileLayer);
+  //     //   this.map.addLayer(layer.tileLayer);
+  //     //   //this.onDatumChange();
+
+  //     // }
+  //     // else {
+  //     console.log("tilelayer", layer.tileLayer);
+  //     this.map.removeLayer(layer.tileLayer);
+
+  //     // }
+  //   }
+  // }
+
+  // getGroupLayers(): void {
+  //   const storedTreeDataString = localStorage.getItem("treeformap");
+  //   const storedtreedatalayerString = localStorage.getItem("treedatalayer");
+  //   const storedtreedatalayersubString =
+  //     localStorage.getItem("treeformapsubcity");
+
+  //   console.log("treeformap", environment.parentWorkspace);
+
+  //   this.geoser
+  //     .fetchGroupLayers(environment.parentWorkspace)
+  //     .subscribe((data: any) => {
+  //       //
+  //       this.groupLayers = data.layerGroups.layerGroup;
+  //       // console.log("Agroup", this.groupLayers);
+  //       for (let index = 0; index < this.groupLayers.length; index++) {
+  //         const element = this.groupLayers[index].name;
+  //         // this.subcities[index].name = element[1];
+  //         // if (element === this.parentGroupName) {
+  //         if (typeof this.groupLayers[index] === "object") {
+  //           if (Array.isArray(this.groupLayers[index])) {
+  //             // console.log('Variable is an array');
+  //             this.groupLayer = this.groupLayers[index];
+  //           } else {
+  //             this.groupLayer = this.json2array(this.groupLayers[index]);
+  //             // console.log("parent", this.groupLayer);
+  //           }
+  //         }
+  //         // console.log("AddisLand", this.groupLayers[index]);
+  //         if (
+  //           storedTreeDataString != null &&
+  //           environment.SubcityName === storedtreedatalayersubString
+  //         ) {
+  //           this.nodes = JSON.parse(storedTreeDataString);
+  //           this.getcapablities(environment.parentWorkspace);
+  //           this.getcapablities(environment.SubcityName);
+  //           // this.layers = JSON.parse(storedtreedatalayerString);
+  //         } else {
+  //           this.getTree(this.groupLayer);
+  //         }
+  //       }
+  //       // }
+  //     });
+  // }
+  getGroupLayers(): void {
+    //
+    this.geoser
+      .fetchGroupLayers(environment.parentWorkspace)
+      .subscribe((data: any) => {
+        this.groupLayers = data.layerGroups.layerGroup;
+        // console.log("Agroup", this.groupLayers);
+
+        for (let index = 0; index < this.groupLayers.length; index++) {
+          const element = this.groupLayers[index].name;
+          //
+          if (element == "AddisLand") {
+            if (typeof this.groupLayers[index] === "object") {
+              if (Array.isArray(this.groupLayers[index])) {
+                // console.log('Variable is an array');
+                this.groupLayer = this.groupLayers[index];
+              } else {
+                this.groupLayer = this.json2array(this.groupLayers[index]);
+                // console.log("parent", this.groupLayer);
+              }
+            }
+            //
+            // console.log("AddisLand", this.groupLayers[index]);
+            //this.nodes = JSON.parse(storedTreeDataString);
+            this.getTree(this.groupLayer);
+          }
+        }
+      });
     // }
-    console.log("event", event);
+    //  this.getcapablities(this.subcity)
+  }
+  async toggleLayer_expand(event) {
+    if (this.subcity == "central_AddisLand") {
+    } else {
+      //
+      console.log("event", event);
+      if (
+        event.node.parent == undefined ||
+        event.node.parent == "central spatial data"
+      ) {
+        // this.fetchedGroups.push(event.node.label);
+        const group = this.fetchedGroups.find(
+          (fetched) => fetched === event.node.label
+        );
+        // if (event.node.parent == "AddisLand") {
+        //   console.log("🚀 ~ toggleLayer_expand ~ parent:", event.node.parent)
+        // }
+        if (event.node.parent == "central spatial data") {
+          if (group) {
+            console.log("🚀 ~ toggleLayer_expand ~ group:", group);
+          } else {
+            this.fetchedGroups.push(event.node.label);
+            var AddisLand = await this.geoser
+              .getLayersFromGeoserver(event.node.value)
+              .toPromise();
+            let keys = Object.keys(AddisLand);
+            if (keys[0] == "layer") {
+              const newLayer: Layer = {
+                name: AddisLand.layername,
+                vectorLayer: null,
+                tileLayer: null,
+              };
+              this.GetFeatureCapablities(
+                AddisLand.layername,
+                newLayer,
+                event.node.workspace
+              );
+              this.Centralspatial.push(newLayer);
+            }
+            var AddisLandGroups = AddisLand.layerGroup.publishables.published;
+            // if (typeof AddisLandGroups === 'object') {
+            if (Array.isArray(AddisLandGroups)) {
+              console.log(
+                "🚀 ~ toggleLayer_expand ~ AddisLandGroups:",
+                AddisLandGroups
+              );
+            } else {
+              AddisLandGroups = this.json2array(AddisLandGroups);
+              // console.log("subcities", this.subcities);
+            }
+            // }
+            for (let i = 0; i < AddisLandGroups.length; i++) {
+              var centralspatial_sub = await this.geoser
+                .getLayersFromGeoserver(AddisLandGroups[i].value)
+                .toPromise();
+              let keys = Object.keys(centralspatial_sub);
+              if (keys[0] == "layer") {
+                const newLayer: Layer = {
+                  name: centralspatial_sub.layername,
+                  vectorLayer: null,
+                  tileLayer: null,
+                };
+                this.GetFeatureCapablities(
+                  AddisLand.layername,
+                  newLayer,
+                  event.node.workspace
+                );
+                this.Centralspatial.push(newLayer);
+              }
+            }
+          }
+        } else {
+          if (group) {
+            console.log("🚀 ~ toggleLayer_expand ~ group:", group);
+          } else {
+            this.fetchedGroups.push(event.node.label);
+            var AddisLand = await this.geoser
+              .getLayersFromGeoserver(event.node.value)
+              .toPromise();
+            //
+            let keys = Object.keys(AddisLand);
+            var subcityGroups = AddisLand.layerGroup.publishables.published;
+            // if (typeof AddisLandGroups === 'object') {
+            if (Array.isArray(subcityGroups)) {
+              console.log(
+                "🚀 ~ toggleLayer_expand ~ AddisLandGroups:",
+                subcityGroups
+              );
+            } else {
+              subcityGroups = this.json2array(subcityGroups);
+              // console.log("subcities", this.subcities);
+            }
+            // }
+            for (let i = 0; i < subcityGroups.length; i++) {
+              const element = subcityGroups[i].name.split(":");
+              subcityGroups[i].name = element[1];
+              subcityGroups[i].workspace = element[0];
+              const newLayer: Layer = {
+                name: subcityGroups[i].name,
+                vectorLayer: null,
+                tileLayer: null,
+              };
+              this.GetFeatureCapablities(
+                subcityGroups[i].name,
+                newLayer,
+                subcityGroups[i].workspace
+              );
+              this.Centralspatial.push(newLayer);
+              // }
+            }
+          }
+        }
+      } else if (
+        event.node.label == this.subcity ||
+        event.node.parent.label == this.subcity
+      ) {
+        //
+        const group = this.fetchedGroups.find(
+          (fetched) => fetched === event.node.label
+        );
+        if (event.node.parent.label == this.subcity) {
+          if (group) {
+            console.log("🚀 ~ toggleLayer_expand ~ group:", group);
+          } else {
+            //
+            this.fetchedGroups.push(event.node.label);
+            var AddisLand = await this.geoser
+              .getLayersFromGeoserver(event.node.value)
+              .toPromise();
+            let keys = Object.keys(AddisLand);
+            var subcityGroups = AddisLand.layerGroup.publishables.published;
+            if (Array.isArray(subcityGroups)) {
+              console.log(
+                "🚀 ~ toggleLayer_expand ~ AddisLandGroups:",
+                subcityGroups
+              );
+            } else {
+              subcityGroups = this.json2array(subcityGroups);
+              // console.log("subcities", this.subcities);
+            }
+            subcityGroups.forEach(async (item: any) => {
+              // Checking the type of item
+              if (item["@type"] === "layer") {
+                //
+                // console.log("This is a layer:", item.name);
+                // Perform actions for layers
+                const element = item["name"].split(":");
+                const newLayer: Layer = {
+                  name: element[1],
+                  vectorLayer: null,
+                  tileLayer: null,
+                };
+                this.GetFeatureCapablities(element[1], newLayer, element[0]);
+                this.layers.push(newLayer);
+              } else {
+                //
+                console.log("This is layergroup:", item.name);
+                // Perform actions for groups or other types
+                var woredalayers = await this.geoser
+                  .getLayersFromGeoserver(item.href)
+                  .toPromise();
+                // let keys = Object.keys(woredalayers)
+                var woredalayers =
+                  woredalayers.layerGroup.publishables.published;
+                //;
+                if (Array.isArray(woredalayers)) {
+                  console.log(
+                    "🚀 ~ toggleLayer_expand ~ AddisLandGroups:",
+                    woredalayers
+                  );
+                } else {
+                  woredalayers = this.json2array(woredalayers);
+                  // console.log("subcities", this.subcities);
+                }
+                woredalayers.forEach(async (item: any) => {
+                  // Checking the type of item
+                  if (item["@type"] === "layer") {
+                    // console.log("This is a layer:", item.name);
+                    // Perform actions for layers
+                    const element = item["name"].split(":");
+                    const newLayer: Layer = {
+                      name: element[1],
+                      vectorLayer: null,
+                      tileLayer: null,
+                    };
+                    this.GetFeatureCapablities(
+                      element[1],
+                      newLayer,
+                      element[0]
+                    );
+                    this.layers.push(newLayer);
+                  } else {
+                    console.log("layerGroup");
+                  }
+                });
+              }
+            });
+          }
+        } else {
+          if (group) {
+            console.log("🚀 ~ toggleLayer_expand ~ group:", group);
+          } else {
+            this.fetchedGroups.push(event.node.label);
+            var AddisLand = await this.geoser
+              .getLayersFromGeoserver(event.node.value)
+              .toPromise();
+            let keys = Object.keys(AddisLand);
+            var subcityGroups = AddisLand.layerGroup.publishables.published;
+            // if (typeof AddisLandGroups === 'object') {
+            if (Array.isArray(subcityGroups)) {
+              console.log(
+                "🚀 ~ toggleLayer_expand ~ AddisLandGroups:",
+                subcityGroups
+              );
+            } else {
+              subcityGroups = this.json2array(subcityGroups);
+              // console.log("subcities", this.subcities);
+            }
+            subcityGroups.forEach((item: any) => {
+              // Checking the type of item
+              if (item["@type"] === "layer") {
+                // console.log("This is a layer:", item.name);
+                // Perform actions for layers
+                const element = item["name"].split(":");
 
-    // Generate a random color
-    // this.randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
-
+                // element[0]
+                //
+                const newLayer: Layer = {
+                  name: element[1],
+                  vectorLayer: null,
+                  tileLayer: null,
+                };
+                this.GetFeatureCapablities(element[1], newLayer, element[0]);
+                this.layers.push(newLayer);
+              } else {
+                console.log("This is layergroup:", item.name);
+                // Perform actions for groups or other types
+              }
+            });
+          }
+        }
+      }
+      // else{}
+    }
+  }
+  toggleLayer_Checked(event) {
+    //console.log("event", event.node.workspace);
+    //
+    // if (this.subcity == "central_AddisLand") {
+    //   if (
+    //     event.node.workspace == "AddisAbaba_AddisLand" &&
+    //     this.AddisAbabaworkspace == undefined
+    //   ) {
+    //     this.getcapablities(event.node.workspace);
+    //     this.AddisAbabaworkspace = event.node.workspace;
+    //   } else if (
+    //     event.node.workspace == "arada_AddisLand" &&
+    //     this.aradaworkspace == undefined
+    //   ) {
+    //     this.getcapablities(event.node.workspace);
+    //     this.aradaworkspace = event.node.workspace;
+    //   } else if (
+    //     event.node.workspace == "bole_AddisLand" &&
+    //     this.boleworkspace == undefined
+    //   ) {
+    //     this.getcapablities(event.node.workspace);
+    //     this.boleworkspace = event.node.workspace;
+    //   } else if (
+    //     event.node.workspace == "addisk_AddisLand" &&
+    //     this.addiskworkspace == undefined
+    //   ) {
+    //     this.getcapablities(event.node.workspace);
+    //     this.addiskworkspace = event.node.workspace;
+    //   } else if (
+    //     event.node.workspace == "akakyk_AddisLand" &&
+    //     this.akakykworkspace == undefined
+    //   ) {
+    //     this.getcapablities(event.node.workspace);
+    //     this.akakykworkspace = event.node.workspace;
+    //   } else if (
+    //     event.node.workspace == "gullele_AddisLand" &&
+    //     this.gulleleworkspace == undefined
+    //   ) {
+    //     this.getcapablities(event.node.workspace);
+    //     this.gulleleworkspace = event.node.workspace;
+    //   } else if (
+    //     event.node.workspace == "kirkos_AddisLand" &&
+    //     this.kirkosworkspace == undefined
+    //   ) {
+    //     this.getcapablities(event.node.workspace);
+    //     this.kirkosworkspace = event.node.workspace;
+    //   } else if (
+    //     event.node.workspace == "kolfek_AddisLand" &&
+    //     this.kolfekworkspace == undefined
+    //   ) {
+    //     this.getcapablities(event.node.workspace);
+    //     this.kolfekworkspace = event.node.workspace;
+    //   } else if (
+    //     event.node.workspace == "lemik_AddisLand" &&
+    //     this.lemikworkspace == undefined
+    //   ) {
+    //     this.getcapablities(event.node.workspace);
+    //     this.lemikworkspace = event.node.workspace;
+    //   } else if (
+    //     event.node.workspace == "lideta_AddisLand" &&
+    //     this.lidetaworkspace == undefined
+    //   ) {
+    //     this.getcapablities(event.node.workspace);
+    //     this.lidetaworkspace = event.node.workspace;
+    //   } else if (
+    //     event.node.workspace == "nifass_AddisLand" &&
+    //     this.nifassworkspace == undefined
+    //   ) {
+    //     this.getcapablities(event.node.workspace);
+    //     this.nifassworkspace = event.node.workspace;
+    //   } else if (
+    //     event.node.workspace == "yeka_AddisLand" &&
+    //     this.yekaworkspace == undefined
+    //   ) {
+    //     this.getcapablities(event.node.workspace);
+    //     this.yekaworkspace = event.node.workspace;
+    //   }
+    // }
+    // else {
+    //   if (event.node.workspace == "AddisAbaba_AddisLand" && this.AddisAbabaworkspace == undefined) {
+    //     this.getcapablities(event.node.workspace);
+    //     this.AddisAbabaworkspace = event.node.workspace;
+    //   }
+    //   else if (event.node.workspace != "AddisAbaba_AddisLand" && this.subcutyworkspace == undefined) {
+    //     this.getcapablities(event.node.workspace);
+    //     this.subcutyworkspace = event.node.workspace;
+    //   }
+    // }
     // // Apply styles only to the selected node
     event.styleClass = "custom-selected-node";
     // // this.activeNode = [event.node];
+
     if (event.children.length == 0 && event.children != undefined) {
       if (event.children) {
         // Deselect all the children nodes
@@ -286,371 +779,129 @@ export class GisMapComponent implements AfterViewInit {
           this.toggleLayer_UnChecked(child);
         });
       }
-
-      // const visibility = event;
-      console.log("event", event.label);
-
+      console.log("event", event);
       const layerName = event.label;
-      const layer = this.layers.find((l) => l.name === layerName);
-      console.log(
-        "🚀 ~ file: gis-map.component.ts:209 ~ GisMapComponent ~ toggleLayer_Checked ~ layer:",
-        layer
-      );
-      //
+      if (event.workspace == "AddisAbaba_AddisLand") {
+        this.layer = this.Centralspatial.find((l) => l.name === layerName);
+      } else {
+        this.layer = this.layers.find((l) => l.name === layerName);
+        // ;
+      }
 
-      if (layer && layer.vectorLayer) {
+      if (this.layer && this.layer.vectorLayer) {
+        // event.node.randomColor =
+        //   layer.vectorLayer.options.style.color === null
+        //     ? this.generateRandomColor()
+        //     : layer.vectorLayer.options.style.color;
         event.randomColor =
-          layer.vectorLayer.options.style.color === null
+          this.layer.vectorLayer.options.style === null
             ? this.generateRandomColor()
-            : layer.vectorLayer.options.style.color;
-        // if (visibility) {
-
-        this.map.addLayer(layer.vectorLayer);
+            : (this.layer.vectorLayer.options.style as L.PathOptions).color;
+        //
+        this.map.addLayer(this.layer.vectorLayer);
         // this.map.addLayer(layer.tileLayer);
-        console.log("vectorlayer", layer.vectorLayer);
-        //this.onDatumChange()
-
-        // } else {
-        //   console.log("vectorlayer", layer.vectorLayer);
-
-        //   this.map.removeLayer(layer.vectorLayer);
-        //   this.map.removeLayer(layer.tileLayer);
-        // }
-      } else if (layer && layer.tileLayer) {
-        event.randomColor = this.generateRandomColor();
-
-        // if (visibility) {
-        console.log("tilelayer", layer.tileLayer);
-        this.map.addLayer(layer.tileLayer);
-        //this.onDatumChange();
-
-        // }
-        // else {
-        //   console.log("tilelayer", layer.tileLayer);
-        //   this.map.removeLayer(layer.tileLayer);
-
-        // }
+        console.log("vectorlayer", this.layer.vectorLayer);
+      } else if (this.layer && this.layer.tileLayer) {
+        event.randomColor = "#7f7f7f";
+        console.log("tilelayer", this.layer.tileLayer);
+        this.map.addLayer(this.layer.tileLayer);
       }
     } else {
-      event.randomColor = "#85cc18";
+      event.randomColor = "#c1cdcd";
     }
-  }
+    // }
+    // // Apply styles only to the selected node
+    // event.node.styleClass = "custom-selected-node";
+    //  // this.activeNode = [event.node];
 
-  onLabelClick(event) {
-    console.log("lableselected", event);
+    // if (event.node.children.length == 0 && event.node.children != undefined) {
+    //   if (event.node.children) {
+    //     // Deselect all the children nodes
+    //     event.node.children.forEach((child) => {
+    //       console.log("child", child);
+    //       this.toggleLayer_UnChecked(child);
+    //     });
+    //   }
+    //   console.log("event", event.node.label);
+    //   const layerName = event.node.label;
+    //   const layer = this.layers.find((l) => l.name === layerName);
+    //   if (layer && layer.vectorLayer) {
+    //     // event.node.randomColor =
+    //     //   layer.vectorLayer.options.style.color === null
+    //     //     ? this.generateRandomColor()
+    //     //     : layer.vectorLayer.options.style.color;
+    //     event.node.randomColor =
+    //       layer.vectorLayer.options.style === null
+    //         ? this.generateRandomColor()
+    //         : (layer.vectorLayer.options.style as L.PathOptions).color;
+    //
+    //     this.map.addLayer(layer.vectorLayer);
+    //     // this.map.addLayer(layer.tileLayer);
+    //     console.log("vectorlayer", layer.vectorLayer);
+
+    //   } else if (layer && layer.tileLayer) {
+    //     event.node.randomColor = "#7f7f7f";
+    //     console.log("tilelayer", layer.tileLayer);
+    //     this.map.addLayer(layer.tileLayer);
+    //   }
+    // } else {
+    //   event.node.randomColor = "#c1cdcd";
+    // }
   }
   toggleLayer_UnChecked(event) {
-    // Remove styles for unselected node
-    event.node.styleClass = "";
-    event.node.style = {};
-
-    // Remove the unselected node from the array
-    //this.activeNode = this.activeNode.filter((node) => node !== event.node);
+    // if(event.node.workspace==this.subcity || event.node.workspace=="central_AddisLand"){
+    event.styleClass = "";
+    event.style = {};
     // const visibility = event;
-    console.log("event", event.node.label);
+    console.log("event", event);
 
     const layerName = event.node.label;
-    const layer = this.layers.find((l) => l.name === layerName);
+    // const layer = this.layers.find(l => l.name === layerName);
+    if (event.workspace == "AddisAbaba_AddisLand") {
+      this.layer = this.Centralspatial.find((l) => l.name === layerName);
+    } else {
+      this.layer = this.layers.find((l) => l.name === layerName);
+    }
     //
-    if (layer && layer.vectorLayer) {
-      // if (visibility) {
-      //   console.log("vectorlayer", layer.vectorLayer);
+    if (this.layer && this.layer.vectorLayer) {
+      console.log("vectorlayer", this.layer.vectorLayer);
 
-      //   this.map.addLayer(layer.vectorLayer);
-      //   this.map.addLayer(layer.tileLayer);
-      //   //this.onDatumChange()
-
-      // } else {
-      console.log("vectorlayer", layer.vectorLayer);
-
-      this.map.removeLayer(layer.vectorLayer);
-      this.map.removeLayer(layer.tileLayer);
+      this.map.removeLayer(this.layer.vectorLayer);
+      this.map.removeLayer(this.layer.tileLayer);
       // }
-    } else if (layer && layer.tileLayer) {
-      // if (visibility) {
-      //   console.log("tilelayer", layer.tileLayer);
-      //   this.map.addLayer(layer.tileLayer);
-      //   //this.onDatumChange();
-
-      // }
-      // else {
-      console.log("tilelayer", layer.tileLayer);
-      this.map.removeLayer(layer.tileLayer);
-
-      // }
+    } else if (this.layer && this.layer.tileLayer) {
+      console.log("tilelayer", this.layer.tileLayer);
+      this.map.removeLayer(this.layer.tileLayer);
     }
-  }
+    // }
+    // else{
+    //   event.node.styleClass = "";
+    //   event.node.style = {};
+    //   // const visibility = event;
+    //   console.log("event", event.node);
 
-  getGroupLayers(): void {
-    const storedTreeDataString = localStorage.getItem("treeformap");
-    const storedtreedatalayerString = localStorage.getItem("treedatalayer");
-    const storedtreedatalayersubString =
-      localStorage.getItem("treeformapsubcity");
+    //   const layerName = event.node.label;
+    //   const layer = this.layers_1988_1997_2003.find(l => l.name === layerName);
+    //   //
+    //   if (layer && layer.vectorLayer) {
+    //     console.log("vectorlayer", layer.vectorLayer);
 
-    console.log("treeformap", environment.parentWorkspace);
+    //     this.map.removeLayer(layer.vectorLayer);
+    //     this.map.removeLayer(layer.tileLayer);
+    //     // }
+    //   }
+    //   else if (layer && layer.tileLayer) {
+    //     console.log("tilelayer", layer.tileLayer);
+    //     this.map.removeLayer(layer.tileLayer);
 
-    this.geoser
-      .fetchGroupLayers(environment.parentWorkspace)
-      .subscribe((data: any) => {
-        // debugger
-        this.groupLayers = data.layerGroups.layerGroup;
-        // console.log("Agroup", this.groupLayers);
-        for (let index = 0; index < this.groupLayers.length; index++) {
-          const element = this.groupLayers[index].name;
-          // this.subcities[index].name = element[1];
-          // if (element === this.parentGroupName) {
-          if (typeof this.groupLayers[index] === "object") {
-            if (Array.isArray(this.groupLayers[index])) {
-              // console.log('Variable is an array');
-              this.groupLayer = this.groupLayers[index];
-            } else {
-              this.groupLayer = this.json2array(this.groupLayers[index]);
-              // console.log("parent", this.groupLayer);
-            }
-          }
-          // console.log("AddisLand", this.groupLayers[index]);
-          if (
-            storedTreeDataString != null &&
-            environment.SubcityName === storedtreedatalayersubString
-          ) {
-            this.nodes = JSON.parse(storedTreeDataString);
-            this.getcapablities(environment.parentWorkspace);
-            this.getcapablities(environment.SubcityName);
-            // this.layers = JSON.parse(storedtreedatalayerString);
-          } else {
-            this.getTree(this.groupLayer);
-          }
-        }
-        // }
-      });
-  }
-  async getTreebk(grouplist) {
-    this.nodes = [];
-    //
-
-    // console.log("this.groupLayer", this.groupLayer);
-
-    for (let i = 0; i < this.groupLayer.length; i++) {
-      let a: AssignedBodyTree = {
-        label: "",
-        workspace: "",
-        value: "",
-        children: "",
-        randomColor: "",
-      };
-      //
-      // console.log("hhhe", a)
-      a["label"] = this.groupLayer[i].name;
-      a["workspace"] = "";
-      a["value"] = this.groupLayer[i].href;
-      a.children = [];
-      var sub = await this.geoser
-        .getLayersFromGeoserver(this.groupLayer[i].href)
-        .toPromise();
-      let keys = Object.keys(sub);
-      // console.log("wor.key", keys);
-
-      if (keys[0] == "layer") {
-        // console.log("wor.layer.name", sub.layer.name);
-        continue;
-      }
-
-      if (this.subcity == "central_AddisLand") {
-        //
-        this.subcities = this.central_AddisLand;
-      } else {
-        this.subcities = sub.layerGroup.publishables.published;
-      }
-
-      if (typeof this.subcities === "object") {
-        if (Array.isArray(this.subcities)) {
-          // console.log('Variable is an array');
-        } else {
-          this.subcities = this.json2array(
-            sub.layerGroup.publishables.published
-          );
-          // console.log("subcities", this.subcities);
-        }
-      }
-      const l11 = Object.assign([], this.subcities);
-      // console.log("subb", this.subcities.length);
-
-      for (let j = 0; j < this.subcities.length; j++) {
-        let b: AssignedBodyTree = {
-          label: "",
-          workspace: "",
-          value: "",
-          children: "",
-          randomColor: "",
-        };
-        const element = this.subcities[j].name.split(":");
-        this.subcities[j].name = element[1];
-        this.subcities[j].workspace = element[0];
-        b["label"] = this.subcities[j].name;
-        b["workspace"] = this.subcities[j].workspace;
-        b["value"] = this.subcities[j].href;
-        b.children = [];
-        a.children.push(b);
-        //
-        this.getcapablities(this.subcities[j].workspace);
-        var wor = await this.geoser
-          .getLayersFromGeoserver(this.subcities[j].href)
-          .toPromise();
-        let keys = Object.keys(wor);
-        // console.log("wor.key", keys);
-
-        if (keys[0] == "layer") {
-          // console.log("wor.layer.name", wor.layer.name);
-          continue;
-        }
-        this.woredas = wor.layerGroup.publishables.published;
-        if (typeof this.woredas === "object") {
-          if (Array.isArray(this.woredas)) {
-            // console.log('Variable is an array');
-          } else {
-            this.woredas = this.json2array(
-              wor.layerGroup.publishables.published
-            );
-            // console.log("subcities", this.woredas);
-          }
-        }
-        // console.log("this.files111", this.woredas);
-        const l1 = Object.assign([], this.woredas);
-
-        for (let k = 0; k < this.woredas.length; k++) {
-          let c: AssignedBodyTree = {
-            label: "",
-            workspace: "",
-            value: "",
-            children: "",
-            randomColor: "",
-          };
-          const element = this.woredas[k].name.split(":");
-          this.woredas[k].name = element[1];
-          this.woredas[k].workspace = element[0];
-          c["label"] = this.woredas[k].name;
-          c["workspace"] = this.woredas[k].workspace;
-          c["value"] = this.woredas[k].href;
-          c.children = [];
-          b.children.push(c);
-          //
-          var worlay = await this.geoser
-            .getLayersFromGeoserver(this.woredas[k].href)
-            .toPromise();
-          // console.log("worlay",worlay.layer.name);
-          let keys = Object.keys(worlay);
-          // console.log("wor.key", keys);
-
-          if (keys[0] == "layer") {
-            // console.log("wor.layer.name", worlay.layer.name);
-            continue;
-          }
-          // console.log("worlay", worlay.layerGroup.publishables.published);
-          this.woredaLayers = worlay.layerGroup.publishables.published;
-          // console.log('ddd', this.woredaLayers);
-
-          if (typeof this.woredaLayers === "object") {
-            if (Array.isArray(this.woredaLayers)) {
-              // console.log('Variable is an array');
-            } else {
-              this.woredaLayers = this.json2array(
-                worlay.layerGroup.publishables.published
-              );
-              // console.log("subcities", this.woredaLayers);
-            }
-          }
-          // console.log("this11", this.woredaLayers);
-          const l1 = Object.assign([], this.woredaLayers);
-
-          for (let l = 0; l < this.woredaLayers.length; l++) {
-            let d: AssignedBodyTree = {
-              label: "",
-              workspace: "",
-              value: "",
-              children: "",
-              randomColor: "",
-            };
-            const element = this.woredaLayers[l].name.split(":");
-            this.woredaLayers[l].name = element[1];
-            this.woredaLayers[l].workspace = element[0];
-            d["label"] = this.woredaLayers[l].name;
-            d["workspace"] = this.woredaLayers[l].workspace;
-            d["value"] = this.woredaLayers[l].href;
-            d.children = [];
-            c.children.push(d);
-            //
-            var worlayonebyone = await this.geoser
-              .getLayersFromGeoserver(this.woredaLayers[l].href)
-              .toPromise();
-            // console.log("worlay",worlay.layer.name);
-            let keys = Object.keys(worlayonebyone);
-            // console.log("wor.key", keys);
-
-            if (keys[0] == "layer") {
-              // console.log("wor.layer.name", worlayonebyone.layer.name);
-              continue;
-            }
-            // console.log("worlayonebyone", worlayonebyone.layerGroup.publishables.published);
-            this.woredaLayersOneByOne =
-              worlayonebyone.layerGroup.publishables.published;
-            // console.log('ddd', this.woredaLayersOneByOne);
-
-            if (typeof this.woredaLayersOneByOne === "object") {
-              if (Array.isArray(this.woredaLayersOneByOne)) {
-                // console.log('Variable is an array');
-              } else {
-                this.woredaLayersOneByOne = this.json2array(
-                  worlayonebyone.layerGroup.publishables.published
-                );
-                // console.log("woredaLayersOneByOne", this.woredaLayersOneByOne);
-              }
-            }
-            // console.log("this11", this.woredaLayersOneByOne);
-            // const l1 = Object.assign([], this.woredaLayersOneByOne);
-
-            for (let m = 0; m < this.woredaLayersOneByOne.length; m++) {
-              let e: AssignedBodyTree2 = {
-                label: "",
-                workspace: "",
-                value: "",
-                randomColor: "",
-              };
-              //
-              const element = this.woredaLayersOneByOne[m].name.split(":");
-              this.woredaLayersOneByOne[m].name = element[1];
-              this.woredaLayersOneByOne[m].workspace = element[0];
-              e["label"] = this.woredaLayersOneByOne[m].name;
-              e["workspace"] = this.woredaLayersOneByOne[m].workspace;
-              e.label = this.woredaLayersOneByOne[m].name;
-              e.value = this.woredaLayersOneByOne[m].href;
-              this.woredaLayersOneByOne[l].children = [];
-              d.children.push(e);
-            }
-          }
-        }
-      }
-      this.nodes.push(a);
-      const uniqueJobMatchIDs = {};
-      const uniqueData = this.nodes.filter((item) => {
-        if (!uniqueJobMatchIDs[item.label]) {
-          uniqueJobMatchIDs[item.label] = true;
-          return true;
-        }
-        return false;
-      });
-      this.nodes = uniqueData;
-    }
-    const aradaImageMNode: CustomTreeNode | undefined =
-      this.findAradaImageMNode(this.nodes);
-    if (aradaImageMNode) {
-      //console.log(aradaImageMNode);
-      const layer = this.layers.find((l) => l.name === aradaImageMNode.label);
-      this.map.addLayer(layer.tileLayer);
-    }
+    //     }
+    // }
   }
   async getTree(parentgroup) {
-    const storedtreedatalayerString = localStorage.getItem("treedatalayer");
     this.nodes = [];
+    //
+    // this.geoser.isLoading = new BehaviorSubject<boolean>(true);
+    // console.log ("this.groupLayer", this.groupLayer);
 
     for (let i = 0; i < parentgroup.length; i++) {
       let a: AssignedBodyTree = {
@@ -658,24 +909,25 @@ export class GisMapComponent implements AfterViewInit {
         workspace: "",
         value: "",
         children: "",
-        randomColor: "#85cc18",
+        randomColor: "",
       };
-
       a["label"] = parentgroup[0].name;
       a["workspace"] = "";
       a["value"] = parentgroup[0].href;
       a.children = [];
-
+      //
       // this.getcapablities(this.subcities[i].workspace);
       var centralcity = await this.geoser
         .getLayersFromGeoserver(parentgroup[0].href)
         .toPromise();
       let keys = Object.keys(centralcity);
-
-      // debugger
+      // console.log("wor.key", keys);
       if (keys[0] == "layer") {
+        //
+        // console.log("wor.layer.name", sub.layer.name);
         continue;
       }
+
       this.centralAddis = centralcity.layerGroup.publishables.published;
       if (typeof this.centralAddis === "object") {
         if (Array.isArray(this.centralAddis)) {
@@ -688,6 +940,7 @@ export class GisMapComponent implements AfterViewInit {
         }
       }
       const l11 = Object.assign([], this.centralAddis);
+
       // console.log("subb", this.subcities.length);
       for (let n = 0; n < this.centralAddis.length; n++) {
         let f: AssignedBodyTree = {
@@ -695,9 +948,8 @@ export class GisMapComponent implements AfterViewInit {
           workspace: "",
           value: "",
           children: "",
-          randomColor: "#85cc18",
+          randomColor: "",
         };
-        // debugger
         // console.log("hhhe", a)
         const element = this.centralAddis[n].name.split(":");
         this.centralAddis[n].name = element[1];
@@ -707,24 +959,162 @@ export class GisMapComponent implements AfterViewInit {
         f["value"] = this.centralAddis[n].href;
         f.children = [];
         a.children.push(f);
-        this.getcapablities(this.centralAddis[n].workspace);
-        // var sub = await this.geoser.fetchGroupLayers(this.subcity).toPromise();
-        // let keys = Object.keys(sub)
-        // console.log("wor.key", keys);
-        // debugger
+        if (this.centralAddis[n].name == "central spatial data") {
+          var central = await this.geoser
+            .getLayersFromGeoserver(this.centralAddis[n].href)
+            .toPromise();
+          // let keys = Object.keys(sub)
+          var central = await this.geoser
+            .getLayersFromGeoserver(this.centralAddis[n].href)
+            .toPromise();
+          let keys = Object.keys(central);
+          if (keys[0] == "layer") {
+            // console.log("wor.layer.name", sub.layer.name);
+            continue;
+          }
+          // this.groupLayerss = central.layerGroup.publishables.published;
+          //
+          this.central_base = central.layerGroup.publishables.published;
+          if (typeof this.central_base === "object") {
+            if (Array.isArray(this.central_base)) {
+              // console.log('Variable is an array');
+            } else {
+              this.central_base = this.json2array(
+                central.layerGroup.publishables.published
+              );
+            }
+          }
+          //
+          const l1 = Object.assign([], this.central_base);
+          for (let x = 0; x < this.central_base.length; x++) {
+            let y: AssignedBodyTree = {
+              label: "",
+              workspace: "",
+              value: "",
+              children: "",
+              randomColor: "",
+            };
+            const element = this.central_base[x].name.split(":");
+            this.central_base[x].name = element[1];
+            this.central_base[x].workspace = element[0];
+            y["label"] = this.central_base[x].name;
+            y["workspace"] = this.central_base[x].workspace;
+            y["value"] = this.central_base[x].href;
+            y.children = [];
+            f.children.push(y);
+
+            var centralsub = await this.geoser
+              .getLayersFromGeoserver(this.central_base[x].href)
+              .toPromise();
+            // console.log("worlay",worlay.layer.name);
+            let keys = Object.keys(centralsub);
+            // console.log("wor.key", keys);
+
+            if (keys[0] == "layer") {
+              // console.log("wor.layer.name", worlay.layer.name);
+              continue;
+            }
+            // console.log("worlay", worlay.layerGroup.publishables.published);
+            this.centralsublayers =
+              centralsub.layerGroup.publishables.published;
+            // console.log('ddd', this.woredaLayers);
+            //
+            if (typeof this.centralsublayers === "object") {
+              if (Array.isArray(this.centralsublayers)) {
+                // console.log('Variable is an array');
+              } else {
+                this.centralsublayers = this.json2array(
+                  centralsub.layerGroup.publishables.published
+                );
+                // console.log("subcities", this.woredaLayers);
+              }
+            }
+            // console.log("this11", this.woredaLayers);
+            const l1 = Object.assign([], this.centralsublayers);
+
+            for (let m = 0; m < this.centralsublayers.length; m++) {
+              let z: AssignedBodyTree = {
+                label: "",
+                workspace: "",
+                value: "",
+                children: "",
+                randomColor: "",
+              };
+              const element = this.centralsublayers[m].name.split(":");
+              this.centralsublayers[m].name = element[1];
+              this.centralsublayers[m].workspace = element[0];
+              z["label"] = this.centralsublayers[m].name;
+              z["workspace"] = this.centralsublayers[m].workspace;
+              z["value"] = this.centralsublayers[m].href;
+              z.children = [];
+              y.children.push(z);
+
+              var cntralplan = await this.geoser
+                .getLayersFromGeoserver(this.centralsublayers[m].href)
+                .toPromise();
+              // console.log("worlay",worlay.layer.name);
+              let keys = Object.keys(cntralplan);
+              // console.log("wor.key", keys);
+
+              if (keys[0] == "layer") {
+                // console.log("wor.layer.name", worlay.layer.name);
+                continue;
+              }
+              // console.log("worlay", worlay.layerGroup.publishables.published);
+              this.cntralplanlayers =
+                cntralplan.layerGroup.publishables.published;
+              // console.log('ddd', this.woredaLayers);
+              //
+              if (typeof this.cntralplanlayers === "object") {
+                if (Array.isArray(this.cntralplanlayers)) {
+                  // console.log('Variable is an array');
+                } else {
+                  this.cntralplanlayers = this.json2array(
+                    cntralplan.layerGroup.publishables.published
+                  );
+                  // console.log("subcities", this.woredaLayers);
+                }
+              }
+              // console.log("this11", this.woredaLayers);
+              const l1 = Object.assign([], this.cntralplanlayers);
+              //
+              for (let q = 0; q < this.cntralplanlayers.length; q++) {
+                let p: AssignedBodyTree = {
+                  label: "",
+                  workspace: "",
+                  value: "",
+                  children: "",
+                  randomColor: "",
+                };
+                const element = this.cntralplanlayers[q].name.split(":");
+                this.cntralplanlayers[q].name = element[1];
+                this.cntralplanlayers[q].workspace = element[0];
+                p["label"] = this.cntralplanlayers[q].name;
+                p["workspace"] = this.cntralplanlayers[q].workspace;
+                p["value"] = this.cntralplanlayers[q].href;
+                p.children = [];
+                z.children.push(p);
+              }
+            }
+          }
+        }
+        //
 
         if (keys[0] == "layer") {
           // console.log("wor.layer.name", sub.layer.name);
           continue;
         }
+
         if (this.subcity == "central_AddisLand") {
-          // debugger
+          //
           this.subcities = this.central_AddisLand;
         } else {
+          //
           var sub = await this.geoser
             .fetchGroupLayers(this.subcity)
             .toPromise();
           let keys = Object.keys(sub);
+          //
           this.groupLayerss = sub.layerGroups.layerGroup;
           // console.log("Agroup", this.groupLayers);
           for (let index = 0; index < this.groupLayerss.length; index++) {
@@ -741,29 +1131,19 @@ export class GisMapComponent implements AfterViewInit {
                 }
               }
             }
-            // console.log("AddisLand", this.groupLayers[index]);
-            // this.getTree(this.groupLayer);
           }
-          // this.subcities = sub.layerGroup.publishables.published;
         }
-        // if (typeof this.subcities === 'object') {
-        //   if (Array.isArray(this.subcities)) {
-        //     // console.log('Variable is an array');
-        //   } else {
-        //     this.subcities = this.json2array(sub.layerGroup.publishables.published);
-        //     // console.log("subcities", this.subcities);
-        //   }
-        // }
         const l11 = Object.assign([], this.subcities);
         // console.log("subb", this.subcities.length);
         if (n == this.centralAddis.length - 1) {
+          //
           for (let j = 0; j < this.subcities.length; j++) {
             let b: AssignedBodyTree = {
               label: "",
               workspace: "",
               value: "",
               children: "",
-              randomColor: "#85cc18",
+              randomColor: "",
             };
 
             if (this.subcity == "central_AddisLand") {
@@ -778,18 +1158,20 @@ export class GisMapComponent implements AfterViewInit {
             b["value"] = this.subcities[j].href;
             b.children = [];
             a.children.push(b);
-            // debugger
-            this.getcapablities(this.subcities[j].workspace);
+            //
+            // this.getcapablities(this.subcities[j].workspace);
             var wor = await this.geoser
               .getLayersFromGeoserver(this.subcities[j].href)
               .toPromise();
             let keys = Object.keys(wor);
             // console.log("wor.key", keys);
-            //debugger;
+
             if (keys[0] == "layer") {
+              //
               // console.log("wor.layer.name", wor.layer.name);
               continue;
             }
+            //
             this.woredas = wor.layerGroup.publishables.published;
             if (typeof this.woredas === "object") {
               if (Array.isArray(this.woredas)) {
@@ -810,7 +1192,7 @@ export class GisMapComponent implements AfterViewInit {
                 workspace: "",
                 value: "",
                 children: "",
-                randomColor: "#85cc18",
+                randomColor: "",
               };
               const element = this.woredas[k].name.split(":");
               this.woredas[k].name = element[1];
@@ -820,7 +1202,7 @@ export class GisMapComponent implements AfterViewInit {
               c["value"] = this.woredas[k].href;
               c.children = [];
               b.children.push(c);
-              // debugger
+              //
               var worlay = await this.geoser
                 .getLayersFromGeoserver(this.woredas[k].href)
                 .toPromise();
@@ -829,13 +1211,14 @@ export class GisMapComponent implements AfterViewInit {
               // console.log("wor.key", keys);
 
               if (keys[0] == "layer") {
+                //
                 // console.log("wor.layer.name", worlay.layer.name);
                 continue;
               }
               // console.log("worlay", worlay.layerGroup.publishables.published);
               this.woredaLayers = worlay.layerGroup.publishables.published;
               // console.log('ddd', this.woredaLayers);
-
+              //
               if (typeof this.woredaLayers === "object") {
                 if (Array.isArray(this.woredaLayers)) {
                   // console.log('Variable is an array');
@@ -855,7 +1238,7 @@ export class GisMapComponent implements AfterViewInit {
                   workspace: "",
                   value: "",
                   children: "",
-                  randomColor: "#85cc18",
+                  randomColor: "",
                 };
                 const element = this.woredaLayers[l].name.split(":");
                 this.woredaLayers[l].name = element[1];
@@ -865,18 +1248,20 @@ export class GisMapComponent implements AfterViewInit {
                 d["value"] = this.woredaLayers[l].href;
                 d.children = [];
                 c.children.push(d);
-                // debugger
+                //
                 var worlayonebyone = await this.geoser
                   .getLayersFromGeoserver(this.woredaLayers[l].href)
                   .toPromise();
                 // console.log("worlay",worlay.layer.name);
                 let keys = Object.keys(worlayonebyone);
                 // console.log("wor.key", keys);
-
+                //
                 if (keys[0] == "layer") {
+                  //
                   // console.log("wor.layer.name", worlayonebyone.layer.name);
                   continue;
                 }
+                //
                 // console.log("worlayonebyone", worlayonebyone.layerGroup.publishables.published);
                 this.woredaLayersOneByOne =
                   worlayonebyone.layerGroup.publishables.published;
@@ -901,9 +1286,9 @@ export class GisMapComponent implements AfterViewInit {
                     workspace: "",
                     value: "",
                     children: "",
-                    randomColor: "#85cc18",
+                    randomColor: "",
                   };
-                  // debugger
+                  //
                   const element = this.woredaLayersOneByOne[m].name.split(":");
                   this.woredaLayersOneByOne[m].name = element[1];
                   this.woredaLayersOneByOne[m].workspace = element[0];
@@ -912,7 +1297,7 @@ export class GisMapComponent implements AfterViewInit {
                   e.label = this.woredaLayersOneByOne[m].name;
                   e.value = this.woredaLayersOneByOne[m].href;
                   e.children = [];
-                  //this.woredaLayersOneByOne[l].children = [];
+                  // this.woredaLayersOneByOne[l].children = [];
                   d.children.push(e);
                 }
               }
@@ -921,19 +1306,299 @@ export class GisMapComponent implements AfterViewInit {
         }
       }
       this.nodes.push(a);
-      console.log("fdgd", this.nodes);
-
-      const treedata = JSON.stringify(this.nodes);
-      localStorage.setItem("treeformap", treedata);
-      localStorage.setItem("treeformapsubcity", this.subcity);
-      // console.log("treeformap", treedata);
-      // const treedatalayer = [];
-      // treedatalayer.push(this.layers);
-
-      // localStorage.setItem("treedatalayer", JSON.stringify(treedatalayer));
-      // console.log("treeformap", localStorage.getItem("treedatalayer"));
     }
+    // this.geoser.isLoading = new BehaviorSubject<boolean>(
+    //   false
+    // );
+
+    console.log("this.files", this.nodes);
   }
+  // async getTree(parentgroup) {
+  //   const storedtreedatalayerString = localStorage.getItem("treedatalayer");
+  //   this.nodes = [];
+
+  //   for (let i = 0; i < parentgroup.length; i++) {
+  //     let a: AssignedBodyTree = {
+  //       label: "",
+  //       workspace: "",
+  //       value: "",
+  //       children: "",
+  //       randomColor: "#85cc18",
+  //     };
+
+  //     a["label"] = parentgroup[0].name;
+  //     a["workspace"] = "";
+  //     a["value"] = parentgroup[0].href;
+  //     a.children = [];
+
+  //     // this.getcapablities(this.subcities[i].workspace);
+  //     var centralcity = await this.geoser
+  //       .getLayersFromGeoserver(parentgroup[0].href)
+  //       .toPromise();
+  //     let keys = Object.keys(centralcity);
+
+  //     //
+  //     if (keys[0] == "layer") {
+  //       continue;
+  //     }
+  //     this.centralAddis = centralcity.layerGroup.publishables.published;
+  //     if (typeof this.centralAddis === "object") {
+  //       if (Array.isArray(this.centralAddis)) {
+  //         // console.log('Variable is an array');
+  //       } else {
+  //         this.centralAddis = this.json2array(
+  //           centralcity.layerGroup.publishables.published
+  //         );
+  //         // console.log("subcities", this.subcities);
+  //       }
+  //     }
+  //     const l11 = Object.assign([], this.centralAddis);
+  //     // console.log("subb", this.subcities.length);
+  //     for (let n = 0; n < this.centralAddis.length; n++) {
+  //       let f: AssignedBodyTree = {
+  //         label: "",
+  //         workspace: "",
+  //         value: "",
+  //         children: "",
+  //         randomColor: "#85cc18",
+  //       };
+  //       //
+  //       // console.log("hhhe", a)
+  //       const element = this.centralAddis[n].name.split(":");
+  //       this.centralAddis[n].name = element[1];
+  //       this.centralAddis[n].workspace = element[0];
+  //       f["label"] = this.centralAddis[n].name;
+  //       f["workspace"] = this.centralAddis[n].workspace;
+  //       f["value"] = this.centralAddis[n].href;
+  //       f.children = [];
+  //       a.children.push(f);
+  //       this.getcapablities(this.centralAddis[n].workspace);
+  //       // var sub = await this.geoser.fetchGroupLayers(this.subcity).toPromise();
+  //       // let keys = Object.keys(sub)
+  //       // console.log("wor.key", keys);
+  //       //
+
+  //       if (keys[0] == "layer") {
+  //         // console.log("wor.layer.name", sub.layer.name);
+  //         continue;
+  //       }
+  //       if (this.subcity == "central_AddisLand") {
+  //         //
+  //         this.subcities = this.central_AddisLand;
+  //       } else {
+  //         var sub = await this.geoser
+  //           .fetchGroupLayers(this.subcity)
+  //           .toPromise();
+  //         let keys = Object.keys(sub);
+  //         this.groupLayerss = sub.layerGroups.layerGroup;
+  //         // console.log("Agroup", this.groupLayers);
+  //         for (let index = 0; index < this.groupLayerss.length; index++) {
+  //           let elements = this.groupLayerss[index].name;
+  //           // this.subcities[index].name = element[1];
+  //           if (elements === this.subcity) {
+  //             if (typeof this.groupLayerss[index] === "object") {
+  //               if (Array.isArray(this.groupLayerss[index])) {
+  //                 // console.log('Variable is an array');
+  //                 this.subcities = this.groupLayerss[index];
+  //               } else {
+  //                 this.subcities = this.json2array(this.groupLayerss[index]);
+  //                 // console.log("parent", this.groupLayer);
+  //               }
+  //             }
+  //           }
+  //           // console.log("AddisLand", this.groupLayers[index]);
+  //           // this.getTree(this.groupLayer);
+  //         }
+  //         // this.subcities = sub.layerGroup.publishables.published;
+  //       }
+  //       // if (typeof this.subcities === 'object') {
+  //       //   if (Array.isArray(this.subcities)) {
+  //       //     // console.log('Variable is an array');
+  //       //   } else {
+  //       //     this.subcities = this.json2array(sub.layerGroup.publishables.published);
+  //       //     // console.log("subcities", this.subcities);
+  //       //   }
+  //       // }
+  //       const l11 = Object.assign([], this.subcities);
+  //       // console.log("subb", this.subcities.length);
+  //       if (n == this.centralAddis.length - 1) {
+  //         for (let j = 0; j < this.subcities.length; j++) {
+  //           let b: AssignedBodyTree = {
+  //             label: "",
+  //             workspace: "",
+  //             value: "",
+  //             children: "",
+  //             randomColor: "#85cc18",
+  //           };
+
+  //           if (this.subcity == "central_AddisLand") {
+  //             const element = this.subcities[j].name.split(":");
+  //             this.subcities[j].name = element[1];
+  //             this.subcities[j].workspace = element[0];
+  //           } else {
+  //             this.subcities[j].workspace = this.subcities[j].name;
+  //           }
+  //           b["label"] = this.subcities[j].name;
+  //           b["workspace"] = this.subcities[j].workspace;
+  //           b["value"] = this.subcities[j].href;
+  //           b.children = [];
+  //           a.children.push(b);
+  //           //
+  //           this.getcapablities(this.subcities[j].workspace);
+  //           var wor = await this.geoser
+  //             .getLayersFromGeoserver(this.subcities[j].href)
+  //             .toPromise();
+  //           let keys = Object.keys(wor);
+  //           // console.log("wor.key", keys);
+  //           //;
+  //           if (keys[0] == "layer") {
+  //             // console.log("wor.layer.name", wor.layer.name);
+  //             continue;
+  //           }
+  //           this.woredas = wor.layerGroup.publishables.published;
+  //           if (typeof this.woredas === "object") {
+  //             if (Array.isArray(this.woredas)) {
+  //               // console.log('Variable is an array');
+  //             } else {
+  //               this.woredas = this.json2array(
+  //                 wor.layerGroup.publishables.published
+  //               );
+  //               // console.log("subcities", this.woredas);
+  //             }
+  //           }
+  //           // console.log("this.files111", this.woredas);
+  //           const l1 = Object.assign([], this.woredas);
+
+  //           for (let k = 0; k < this.woredas.length; k++) {
+  //             let c: AssignedBodyTree = {
+  //               label: "",
+  //               workspace: "",
+  //               value: "",
+  //               children: "",
+  //               randomColor: "#85cc18",
+  //             };
+  //             const element = this.woredas[k].name.split(":");
+  //             this.woredas[k].name = element[1];
+  //             this.woredas[k].workspace = element[0];
+  //             c["label"] = this.woredas[k].name;
+  //             c["workspace"] = this.woredas[k].workspace;
+  //             c["value"] = this.woredas[k].href;
+  //             c.children = [];
+  //             b.children.push(c);
+  //             //
+  //             var worlay = await this.geoser
+  //               .getLayersFromGeoserver(this.woredas[k].href)
+  //               .toPromise();
+  //             // console.log("worlay",worlay.layer.name);
+  //             let keys = Object.keys(worlay);
+  //             // console.log("wor.key", keys);
+
+  //             if (keys[0] == "layer") {
+  //               // console.log("wor.layer.name", worlay.layer.name);
+  //               continue;
+  //             }
+  //             // console.log("worlay", worlay.layerGroup.publishables.published);
+  //             this.woredaLayers = worlay.layerGroup.publishables.published;
+  //             // console.log('ddd', this.woredaLayers);
+
+  //             if (typeof this.woredaLayers === "object") {
+  //               if (Array.isArray(this.woredaLayers)) {
+  //                 // console.log('Variable is an array');
+  //               } else {
+  //                 this.woredaLayers = this.json2array(
+  //                   worlay.layerGroup.publishables.published
+  //                 );
+  //                 // console.log("subcities", this.woredaLayers);
+  //               }
+  //             }
+  //             // console.log("this11", this.woredaLayers);
+  //             const l1 = Object.assign([], this.woredaLayers);
+
+  //             for (let l = 0; l < this.woredaLayers.length; l++) {
+  //               let d: AssignedBodyTree = {
+  //                 label: "",
+  //                 workspace: "",
+  //                 value: "",
+  //                 children: "",
+  //                 randomColor: "#85cc18",
+  //               };
+  //               const element = this.woredaLayers[l].name.split(":");
+  //               this.woredaLayers[l].name = element[1];
+  //               this.woredaLayers[l].workspace = element[0];
+  //               d["label"] = this.woredaLayers[l].name;
+  //               d["workspace"] = this.woredaLayers[l].workspace;
+  //               d["value"] = this.woredaLayers[l].href;
+  //               d.children = [];
+  //               c.children.push(d);
+  //               //
+  //               var worlayonebyone = await this.geoser
+  //                 .getLayersFromGeoserver(this.woredaLayers[l].href)
+  //                 .toPromise();
+  //               // console.log("worlay",worlay.layer.name);
+  //               let keys = Object.keys(worlayonebyone);
+  //               // console.log("wor.key", keys);
+
+  //               if (keys[0] == "layer") {
+  //                 // console.log("wor.layer.name", worlayonebyone.layer.name);
+  //                 continue;
+  //               }
+  //               // console.log("worlayonebyone", worlayonebyone.layerGroup.publishables.published);
+  //               this.woredaLayersOneByOne =
+  //                 worlayonebyone.layerGroup.publishables.published;
+  //               // console.log('ddd', this.woredaLayersOneByOne);
+
+  //               if (typeof this.woredaLayersOneByOne === "object") {
+  //                 if (Array.isArray(this.woredaLayersOneByOne)) {
+  //                   // console.log('Variable is an array');
+  //                 } else {
+  //                   this.woredaLayersOneByOne = this.json2array(
+  //                     worlayonebyone.layerGroup.publishables.published
+  //                   );
+  //                   // console.log("woredaLayersOneByOne", this.woredaLayersOneByOne);
+  //                 }
+  //               }
+  //               // console.log("this11", this.woredaLayersOneByOne);
+  //               // const l1 = Object.assign([], this.woredaLayersOneByOne);
+
+  //               for (let m = 0; m < this.woredaLayersOneByOne.length; m++) {
+  //                 let e: AssignedBodyTree = {
+  //                   label: "",
+  //                   workspace: "",
+  //                   value: "",
+  //                   children: "",
+  //                   randomColor: "#85cc18",
+  //                 };
+  //                 //
+  //                 const element = this.woredaLayersOneByOne[m].name.split(":");
+  //                 this.woredaLayersOneByOne[m].name = element[1];
+  //                 this.woredaLayersOneByOne[m].workspace = element[0];
+  //                 e["label"] = this.woredaLayersOneByOne[m].name;
+  //                 e["workspace"] = this.woredaLayersOneByOne[m].workspace;
+  //                 e.label = this.woredaLayersOneByOne[m].name;
+  //                 e.value = this.woredaLayersOneByOne[m].href;
+  //                 e.children = [];
+  //                 //this.woredaLayersOneByOne[l].children = [];
+  //                 d.children.push(e);
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //     this.nodes.push(a);
+  //     console.log("fdgd", this.nodes);
+
+  //     const treedata = JSON.stringify(this.nodes);
+  //     localStorage.setItem("treeformap", treedata);
+  //     localStorage.setItem("treeformapsubcity", this.subcity);
+  //     // console.log("treeformap", treedata);
+  //     // const treedatalayer = [];
+  //     // treedatalayer.push(this.layers);
+
+  //     // localStorage.setItem("treedatalayer", JSON.stringify(treedatalayer));
+  //     // console.log("treeformap", localStorage.getItem("treedatalayer"));
+  //   }
+  // }
 
   // Function to find the "Arada image_M" node in the tree structure
   findAradaImageMNode(nodes): AssignedBodyTree {
@@ -1101,7 +1766,8 @@ export class GisMapComponent implements AfterViewInit {
 
   Bind_Features(geojson, layerName) {
     if (layerName === "Plot_Locations") {
-      //debugger;
+      //;
+      this.plot_locations_gejon = geojson;
 
       // Filter out features where Is_Active is false or null
       geojson.features = geojson.features.filter(
@@ -1149,7 +1815,6 @@ export class GisMapComponent implements AfterViewInit {
           };
         },
       };
-
       // Create a leaflet vector layer with the modified GeoJSON and styling options
       this.vectorLayer = L.Proj.geoJson(geojson, {
         style: { color: randomColor },
@@ -1163,7 +1828,7 @@ export class GisMapComponent implements AfterViewInit {
       console.log("ddd", geojson.features);
       for (let i = 0; i < geojson.features.length; i++) {
         const coordinates = geojson.features[i].geometry.coordinates[0];
-        // debugger
+        //
         let coordinate = coordinates.map((coord) =>
           coord.map((row) =>
             this.conveUTMToLatLngforshapefilep(
@@ -1294,7 +1959,7 @@ export class GisMapComponent implements AfterViewInit {
           },
         };
 
-        //debugger
+        //
         this.vectorLayer = L.Proj.geoJson(geojson, {
           style: { color: this.generateRandomColor() },
         });
@@ -3256,7 +3921,7 @@ export class GisMapComponent implements AfterViewInit {
       let selectednode = this.findNode(this.nodes[0], "Plot_Locations");
       console.log(
         "🚀 ~ file: gis-map.component.ts:2813 ~ shape.forEach ~ findAradaImageMNode:",
-        selectednode
+        this.plot_locations_gejon
       );
 
       this.toggleLayer_Checked(selectednode);

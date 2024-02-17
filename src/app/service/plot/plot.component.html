@@ -151,7 +151,7 @@
      
       <div class="ngxsmartmodal-body" height="500px">
       
-        <app-gis-map [geo]="geo" [changingg]="changingValue" (completed)="updateplotandlicense($event)"></app-gis-map>
+        <app-gis-map [disable]="disable"  [geo]="geo" [changingg]="changingValue" (completed)="updateplotandlicense($event)"></app-gis-map>
       
        
       </div>
@@ -162,8 +162,8 @@
           <button type="button" class="btn btn-primary" (click)="saveplotloc();ismodaEnable=false"
             *ngIf="isplotllocnew && !ischeckPlotaev &&  !disable && serviceService.areaVerified" translate>Save</button>
           
-          <button type="button" *ngIf="!isplotllocnew && !ischeckPlotaev && !isfreehoadinsert" class="btn btn-primary"
-            (click)="updateplotloc();closeModall()" translate>Update</button>
+          <button type="button" *ngIf="!isplotllocnew && !ischeckPlotaev && !isfreehoadinsert && !disable" class="btn btn-primary"
+            (click)="updateplotloc();closeModall()"  translate>Update</button>
           <button type="button" *ngIf="isfreehoadinsert" class="btn btn-primary"
             (click)="updateplotlocfreeHold();closeModall()" translate>Insert FreeHold </button>
           
