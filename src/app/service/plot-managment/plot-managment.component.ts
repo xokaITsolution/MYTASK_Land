@@ -24,6 +24,7 @@ import { GisMapService } from "../gis-map/gis-map.service";
 import { BehaviorSubject, Subject } from "rxjs";
 import * as proj4 from "proj4";
 import { ActivatedRoute } from "@angular/router";
+import { LeaseOwnerShipService } from "../lease-owner-ship/lease-owner-ship.service";
 
 @Component({
   selector: "app-plot-managment",
@@ -76,7 +77,8 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     private routerService: ActivatedRoute,
     private modalService: BsModalService,
     public plotcomponent: PlotComponent,
-    public gisMapService: GisMapService
+    public gisMapService: GisMapService,
+    private leaseOwnerShipService: LeaseOwnerShipService
   ) {
     this.plotManagment = new PlotManagment();
     this.platformLocation = new PlatformLocation();
@@ -902,6 +904,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       });
     }
   }
+
   checkRadioButtons(selected) {
     // Check if one of the radio buttons is checked
     if (selected == 1988) {

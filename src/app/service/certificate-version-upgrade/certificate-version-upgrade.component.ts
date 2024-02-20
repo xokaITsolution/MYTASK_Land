@@ -114,7 +114,7 @@ export class CertificateVersionUpgradeComponent implements OnChanges {
 
   Save() {
     console.log("certificateVersion", this.certificateVersion);
-
+    this.serviceService.currentcertID = this.certificateVersion.title_Deed_No;
     this.certificateVersionService
       .SaveCertificate(this.certificateVersion)
       .subscribe(
@@ -124,7 +124,11 @@ export class CertificateVersionUpgradeComponent implements OnChanges {
           this.serviceService.disablefins = false;
 
           if (!this.Saved) {
-            this.completed.emit();
+            console.log(
+              "🚀 ~ CertificateVersionUpgradeComponent ~ Save ~ certificateVersion:",
+              this.certificateVersion
+            );
+            this.completed.emit(this.certificateVersion);
             this.Saved = true;
           }
         },

@@ -255,12 +255,12 @@
 
   </div>
 
-    <button *ngIf="isnew" type="button" [ngClass]="{'blinking': !serviceService.ispropoertylocation && !serviceService.isagriculture}" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
-      (click)="ismodaEnable=true">Spatial</button>&nbsp;
+    <button *ngIf="isnew" type="button" [ngClass]="{'blinking': !serviceService.ispropoertylocation}" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
+      (click)="ismodaEnable=true;getcurrentlocationdata()">Spatial</button>&nbsp;
 
       <button *ngIf="isnew && !disable"    type="button" [disabled]="!f.valid" class="btn btn-primary" (click)="checkplothavecertificet();"
       translate>update</button>
-      <span style="color:red;font-weight: bolder;font-size: large;" *ngIf="!serviceService.ispropoertylocation && !serviceService.isagriculture"
+      <span style="color:red;font-weight: bolder;font-size: large;" *ngIf="!serviceService.ispropoertylocation"
         translate>you need to save
         Property Location first</span>
   
@@ -323,7 +323,7 @@
             <div class="col-sm-9">
               <p-fileUpload #form1 customUpload="true" (uploadHandler)="planDocument($event,form1)"
                 maxFileSize="25000000" accept="image/*"></p-fileUpload>
-
+              <img [src]="propformLocation.plan_Document" *ngIf="propformLocation.plan_Document" alt="Preview">
               <!-- <div *ngIf="propformLocation.plan_Document">
                 <span translate class="text-danger">Requierd</span>
               </div> -->
@@ -455,7 +455,9 @@
                   <div class="col-sm-9">
                     <p-fileUpload #form1 customUpload="true" (uploadHandler)="planDocument($event,form1)" maxFileSize="25000000"
                       accept="image/*"></p-fileUpload>
-          
+                      <img width="100%" height="50%" [src]="plan_Document" *ngIf="propformLocation.plan_Document" alt="Preview">
+
+                 
       
                   </div>
                 </div>
@@ -464,7 +466,7 @@
                   <div class="col-sm-9">
                     <p-fileUpload #form2 customUpload="true" (uploadHandler)="pictureNorth($event,form2)" maxFileSize="25000000"
                       accept="image/*"></p-fileUpload>
-          
+                      <img width="100%" height="50%" [src]="picture_North" *ngIf="propformLocation.picture_North" alt="Preview">
           
                   </div>
                 </div>
@@ -474,7 +476,8 @@
                     <p-fileUpload #form3 customUpload="true" (uploadHandler)="pictureEast($event,form3)" maxFileSize="25000000"
                       accept="image/*"></p-fileUpload>
           
-                
+                    <img width="100%" height="50%" [src]="picture_East" *ngIf="propformLocation.picture_East"
+                      alt="Preview">
                   </div>
                 </div>
                 <div class="form-group row col-md-6">
@@ -482,7 +485,8 @@
                   <div class="col-sm-9">
                     <p-fileUpload #form4 customUpload="true" (uploadHandler)="pictureSouth($event,form4)" maxFileSize="25000000"
                       accept="image/*"></p-fileUpload>
-          
+              <img width="100%" height="50%" [src]="picture_South" *ngIf="propformLocation.picture_South"
+                alt="Preview">
           
                  
                   </div>
@@ -492,7 +496,8 @@
                   <div class="col-sm-9">
                     <p-fileUpload #form5 customUpload="true" (uploadHandler)="pictureWest($event,form5)" maxFileSize="25000000"
                       accept="image/*"></p-fileUpload>
-          
+                  <img width="100%" height="50%" [src]="picture_West" *ngIf="propformLocation.picture_West"
+                    alt="Preview">
                     
                   </div>
                 </div>
@@ -516,10 +521,10 @@
             <div *ngIf="Hight_Meter.invalid">
               <span translate class="text-danger">Requierd</span>
             </div>
-            <button type="button" class="btn btn-primary" (click)="saveproploc();ismodaEnable=false" *ngIf="!isproplocnew &&  !disable && !serviceService.isagriculture"
+            <button type="button" class="btn btn-primary" (click)="saveproploc();ismodaEnable=false" *ngIf="!isproplocnew &&  !disable"
               [disabled]="!location.valid" translate>Save</button>
             <button type="button" class="btn btn-primary" (click)="updateproploc();ismodaEnable=false"
-              *ngIf="isproplocnew &&  !disable && !serviceService.isagriculture" [disabled]="!location.valid" translate>Update</button>
+              *ngIf="isproplocnew &&  !disable" [disabled]="!location.valid" translate>Update</button>
             <button type="button" class="btn btn-danger" (click)="ismodaEnable=false" translate>Close</button>
           </div>
       </div>

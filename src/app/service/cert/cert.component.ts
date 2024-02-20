@@ -605,14 +605,32 @@ export class CertComponent implements OnChanges {
     this.displayDeed = false;
   }
 
-  EnableFins() {
+  EnableFins(event) {
     this.disableTab = true;
-    if (!this.Saved) {
-      this.completed.emit();
-      this.Saved = true;
-    }
-    //this.serviceService.disablefins = false;
-    this.certverForm = true;
+    console.log("🚀 ~ CertComponent ~ EnableFins ~ disableTab:", event);
+
+    this.serviceService
+      .getCertificateVersion1(this.SelectedBase.title_Deed_No)
+      .subscribe((CertificateVersion: any) => {
+        this.CertificateVersion = CertificateVersion.procCertificate_Versions;
+        var img = this.CertificateVersion.filter((x) => x.is_Active == true);
+        if (img.length > 0) {
+          console.log("img", img[0].certificate_Image);
+          if (img[0].certificate_Image) {
+            if (!this.Saved) {
+              this.completed.emit();
+              this.serviceService.disablefins = false;
+              this.Saved = true;
+            }
+            //this.serviceService.disablefins = false;
+            this.certverForm = true;
+          } else {
+            const toast = this.notificationsService.warn(
+              `Must update  for this plot: ${this.CertificateVersion.title_Deed_No}`
+            );
+          }
+        }
+      });
     this.getCertificateVersion(this.SelectedBase);
   }
 }

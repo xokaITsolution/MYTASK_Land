@@ -1037,6 +1037,7 @@ export class PlotComponent implements OnChanges {
   }
   async SelectPLot(plot) {
     this.SelectedPlot = plot;
+    this.serviceService.fornewplotinsert = false;
     console.log("dfghgfd", plot);
     this.plot_ID = this.SelectedPlot.plot_ID;
     this.serviceService.selectedplotid = this.plot_ID;
@@ -1393,7 +1394,7 @@ export class PlotComponent implements OnChanges {
     // this.getPloat();
   }
 
-  DoneNew() {
+  async DoneNew() {
     this.serviceService.getPlotloc(this.plot_ID).subscribe((response: any) => {
       let plotloc = response.procPlot_Locations;
       if (plotloc.length > 0) {
@@ -1404,49 +1405,76 @@ export class PlotComponent implements OnChanges {
         return;
       }
     });
-    this.leaseOwnerShipService
-      .getAll(this.plot_ID)
-      .subscribe((CertificateVersion: any) => {
-        let tasks = CertificateVersion;
-        tasks = Object.assign([], tasks.list);
-        const totalsize = tasks
-          .filter((x) => parseInt(x.Status) === 1)
-          .reduce((sum, node) => {
-            sum +=
-              parseFloat(node.Free_Hold_M2) + parseFloat(node.Lease_Hold_M2);
+    for (let i = 0; i < this.PlotManagementListfinal.length; i++) {
+      const element: any = this.PlotManagementListfinal[i];
+      const isdeedchildren = await this.checkLease_and_Owned_Land(element);
 
-            return sum;
-          }, 0);
-        console.log(
-          "leaseOwnerShipService",
-          tasks,
-          this.serviceService.Totalarea,
-          totalsize
+      if (!isdeedchildren) {
+        const toast = this.notificationsService.warn(
+          `Must add  Lease awned  for this plot: ${element.plot_ID}`
         );
+        return;
+      } else {
+        this.leaseOwnerShipService
+          .getAll(this.plot_ID)
+          .subscribe((CertificateVersion: any) => {
+            let tasks = CertificateVersion;
+            tasks = Object.assign([], tasks.list);
+            const totalsize = tasks
+              .filter((x) => parseInt(x.Status) === 1)
+              .reduce((sum, node) => {
+                sum +=
+                  parseFloat(node.Free_Hold_M2) +
+                  parseFloat(node.Lease_Hold_M2);
 
-        if (tasks.length > 0) {
-          if (totalsize === this.serviceService.Totalarea) {
-            this.completed.emit();
-          } else {
-            const toast = this.notificationsService.warn(
-              `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
-          በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት`
+                return sum;
+              }, 0);
+            console.log(
+              "leaseOwnerShipService",
+              tasks,
+              this.serviceService.Totalarea,
+              totalsize
             );
-            return;
-          }
-        } else {
-          const toast = this.notificationsService.warn(
-            "before submit the form you have to register lease ownershipቅጹን ከማቅረቡ በፊት የሊዝ ባለቤትነት መመዝገብ አለብዎት"
-          );
-          return;
-        }
-      });
+
+            if (tasks.length > 0) {
+              if (totalsize === this.serviceService.Totalarea) {
+                this.completed.emit();
+              } else {
+                const toast = this.notificationsService.warn(
+                  `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
+                  በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት`
+                );
+                return;
+              }
+            } else {
+              const toast = this.notificationsService.warn(
+                "before submit the form you have to register lease ownershipቅጹን ከማቅረቡ በፊት የሊዝ ባለቤትነት መመዝገብ አለብዎት"
+              );
+              return;
+            }
+          });
+      }
+    }
 
     //this.serviceService.disablefins = false;
     this.plotForm = false;
     this.isvalidated();
     this.toLease = false;
     this.CanDone = false;
+  }
+  async getlese(plotID) {
+    var a: any = this.leaseOwnerShipService.getAll(plotID).toPromise();
+
+    return a;
+  }
+  async checkLease_and_Owned_Land(element) {
+    let b = await this.getlese(element.plot_ID);
+    b = Object.assign([], b.list);
+    if (b.length === 0) {
+      return false; // No deed record for current property
+    }
+
+    return true; // All children and descendants have deed records
   }
 
   EnableFinsLise() {

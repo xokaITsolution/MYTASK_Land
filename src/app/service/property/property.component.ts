@@ -992,30 +992,30 @@ export class PropertyComponent implements OnChanges {
     };
     let prop = await this.getPropertyList();
 
-    let treedibth = await this.getTreeDepth(this.serviceService.files);
-    if (
-      "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() ==
-        this.serviceService.Service_ID ||
-      "2B1FC99A-9705-4799-96B9-164BD3B1077E".toLocaleLowerCase() ==
-        this.serviceService.Service_ID
-    ) {
-      if (treedibth == 2) {
-      } else {
-        if (treedibth == 0) {
-          const toast = this.notificationsService.warn(
-            `must add one  floor for building/ለግንባታ አንድ ወለል መጨመር አለበት`
-          );
-        }
-        if (treedibth == 1) {
-          const toast = this.notificationsService.warn(
-            `must add one  room for  floor / ለአንድ ወለል አንድ ክፍል መጨመር አለበት`
-          );
-        }
-        return;
-      }
-    } else {
-      this.DoneNew();
-    }
+    // let treedibth = await this.getTreeDepth(this.serviceService.files);
+    // if (
+    //   "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() ==
+    //     this.serviceService.Service_ID ||
+    //   "2B1FC99A-9705-4799-96B9-164BD3B1077E".toLocaleLowerCase() ==
+    //     this.serviceService.Service_ID
+    // ) {
+    //   if (treedibth == 2) {
+    //   } else {
+    //     if (treedibth == 0) {
+    //       const toast = this.notificationsService.warn(
+    //         `must add one  floor for building/ለግንባታ አንድ ወለል መጨመር አለበት`
+    //       );
+    //     }
+    //     if (treedibth == 1) {
+    //       const toast = this.notificationsService.warn(
+    //         `must add one  room for  floor / ለአንድ ወለል አንድ ክፍል መጨመር አለበት`
+    //       );
+    //     }
+    //     return;
+    //   }
+    // } else {
+    //   this.DoneNew();
+    // }
   }
 
   EnabledelFinspro() {
