@@ -677,26 +677,34 @@ export class PropertyComponent implements OnChanges {
     return null; // Element not found
   }
 
-  AddNew() {
-    this.getpro.emit();
-    this.isnew = true;
-    this.propertyregForm = true;
-    this.selectedprofromtree = {};
-    if (this.selectedFile) {
-      this.selectedprofromtree.property_Parent_ID =
-        this.selectedFile.property_ID;
-      //this.selectedprofromtree.property_Type_ID = 2;
+  async AddNew() {
+    const isdeedchildren = await this.checkpropertyType();
+
+    if (!isdeedchildren) {
+      this.propertyregForm = false;
+      this.isnew = false;
+      return;
     } else {
-      // this.selectedprofromtree.property_Type_ID = 1;
+      this.getpro.emit();
+      this.isnew = true;
+      this.propertyregForm = true;
+      this.selectedprofromtree = {};
+      if (this.selectedFile) {
+        this.selectedprofromtree.property_Parent_ID =
+          this.selectedFile.property_ID;
+        //this.selectedprofromtree.property_Type_ID = 2;
+      } else {
+        // this.selectedprofromtree.property_Type_ID = 1;
+      }
+
+      console.log("plotManagment", this.SelectedProperty.plot_ID);
+
+      this.selectedprofromtree.plot_ID = this.SelectedProperty.plot_ID;
+      this.selectedprofromtree.compound_Size_M2 =
+        this.SelectedProperty.plot_Size_M2;
+
+      this.selectedprofromtree.licence_Service_ID = this.Licence_Service_ID;
     }
-
-    console.log("plotManagment", this.SelectedProperty.plot_ID);
-
-    this.selectedprofromtree.plot_ID = this.SelectedProperty.plot_ID;
-    this.selectedprofromtree.compound_Size_M2 =
-      this.SelectedProperty.plot_Size_M2;
-
-    this.selectedprofromtree.licence_Service_ID = this.Licence_Service_ID;
   }
   selectedTab = 0;
   tab1;
@@ -1217,6 +1225,31 @@ export class PropertyComponent implements OnChanges {
     }
 
     this.CanDone = true;
+  }
+  async checkpropertyType() {
+    this.serviceService
+      .getPropertyLists(this.SelectedProperty.plot_ID)
+      .subscribe(async (PropertyList: any) => {
+        console.log(
+          "🚀 ~ PropertyComponent ~ .subscribe ~ PropertyList:",
+          PropertyList
+        );
+        if (PropertyList.procProperty_Registrations.length > 0) {
+          PropertyList.procProperty_Registrations.forEach((element) => {
+            if (element.property_Type_ID === 1) {
+              const toast = this.notificationsService.warn(
+                "in one plot you can not add more than one   property if property type   residence/በአንድ መሬት ውስጥ የንብረት ዓይነት መኖሪያ ከሆነ ከአንድ በላይ ንብረት ማከል አይችሉም"
+              );
+              return false;
+            } else {
+              return true;
+            }
+          });
+        } else {
+          return true;
+        }
+      });
+    return false;
   }
   async checkProperty(element) {
     if (element.property_ID !== "No Parent") {
