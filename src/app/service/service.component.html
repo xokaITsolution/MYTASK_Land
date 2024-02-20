@@ -223,15 +223,23 @@
                   [Fields]="prepareCertificateFields">
                 </app-cert>
               </div>
+             
 
               <div *ngIf="ID==5;">
                 <app-payment [disable]="false" (completed)="EnableFins();saveFormm2('{}');" (send)="payment()"
                   [tskID]="tskID" [AppNo]="AppNo" [todoid]="todoID"></app-payment>
               </div>
-              <div *ngIf="ID==7">
+              <!-- <div *ngIf="ID==7">
                 <app-certletter [disable]="false" (completed)="EnableFins();saveFormm2('{}');" [AppNo]="AppNo"
                   [certCode]="licenceData.Certificate_Code" [licenceData]="licenceData"></app-certletter>
                   
+              </div> -->
+              <div *ngIf="ID==7">
+              <app-certversionupgrade [disable]="false" (completed)="EnableFins();saveFormm2('{}');" [licenceData]="licenceData" [todoid]="todoID"
+                  [Certificate_Code]="licenceData.Certificate_Code" [disable]="false" [AppNo]="AppNo"
+                  [Fields]="prepareCertificateFields">
+               </app-certversionupgrade>
+               
               </div>
               <div *ngIf="ID==12">
                
@@ -458,7 +466,7 @@
               
               </div>
               <!-- <div *ngIf="preAppID==6" id="dform">
-                <app-cert [disable]="true" (completed)="EnableFins()" [licenceData]="licenceData" [todoid]="todoID"
+                < [disable]="true" (completed)="EnableFins()" [licenceData]="licenceData" [todoid]="todoID"
                   [Certificate_Code]="licenceData.Certificate_Code" [AppNo]="AppNo"></app-cert>
               </div>
               <div *ngIf="preAppID==5" id="dform">

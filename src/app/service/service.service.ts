@@ -250,6 +250,7 @@ export class ServiceService {
   leaseOwnerShip: LeaseOwnerShip;
   isfreeholdselected: boolean;
   serviceisundoumneted: boolean = false;
+  currentcertID: any;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);

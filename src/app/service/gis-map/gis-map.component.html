@@ -9,7 +9,7 @@
       <div class="sidebar">
         <!-- ... Your existing sidebar content ... -->
         <h5 class="sub">Addis Ababa</h5>
-        <p-tree [value]="nodes" [metaKeySelection]="false" selectionMode="multiple" [(selection)]="selectedNode"
+        <!-- <p-tree [value]="nodes" [metaKeySelection]="false" selectionMode="multiple" [(selection)]="selectedNode"
           (onNodeSelect)="toggleLayer_Checked($event.node);" (onNodeUnselect)="toggleLayer_UnChecked($event)">
           <ng-template let-node pTemplate="default">
             <span [ngClass]="{'custom-selected-node': node.styleClass === 'custom-selected-node'?custom-selected-node:''}"
@@ -18,7 +18,17 @@
               {{node.label}}
             </span>
           </ng-template>
-        </p-tree>
+        </p-tree> -->
+                <p-tree [value]="nodes" [metaKeySelection]="false" selectionMode="multiple"
+                  (onNodeSelect)="toggleLayer_Checked($event.node);" (onNodeExpand)="toggleLayer_expand($event);"
+                  (onNodeUnselect)="toggleLayer_UnChecked($event.node)">
+                  <ng-template let-node pTemplate="default">
+                    <span [ngClass]="{'custom-selected-node': node.styleClass === 'custom-selected-node'?custom-selected-node:''}"
+                      [style.background-color]="node.styleClass === 'custom-selected-node' ? node.randomColor : ''">
+                      {{node.label}}
+                    </span>
+                  </ng-template>
+                </p-tree>
       </div>
     </div>
 
@@ -151,16 +161,16 @@
       </div>
 
       <div class="d-flex justify-content-between mt-3">
-        <button type="button" class="btn btn-primary mb-2" (click)="drawShape()">
+        <button type="button" class="btn btn-primary mb-2" *ngIf="!disable" (click)="drawShape()">
           Add Point
         </button>
-        <button type="button" class="btn btn-success mb-2" (click)="drawPolygon()">
+        <button type="button" class="btn btn-success mb-2" *ngIf="!disable" (click)="drawPolygon()">
           Draw Shape
         </button>
-        <button type="button" class="btn btn-danger mb-2" (click)="removeShape()">
+        <button type="button" class="btn btn-danger mb-2" *ngIf="!disable" (click)="removeShape()">
           Remove Shape
         </button>
-        <button type="button" class="btn btn-info mb-2" (click)="convertToExcel(utmCoordinates)">
+        <button type="button" class="btn btn-info mb-2" *ngIf="!disable" (click)="convertToExcel(utmCoordinatesforallexcel)">
           Convert to Excel
         </button>
        

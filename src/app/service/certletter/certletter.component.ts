@@ -131,48 +131,6 @@ export class CertletterComponent implements OnChanges {
       console.log("this.urlParams", this.urlParams);
       this.printtasktskID = this.urlParams.tskID;
       console.log("PlotManagementList", this.licenceData);
-
-      // if (
-      //   "EFCDA235-2B2B-4B77-AFDD-1443FEF7D823".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase() ||
-      //   "BD5FDEC1-3E68-4719-A3C3-1C0D951225A5".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase() ||
-      //   "A4B2A168-F4A3-4E13-94DF-1F325B85A115".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase() ||
-      //   "66EB2750-1710-438E-8F9B-2190BB03651D".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase() ||
-      //   "DF21EA5E-9CAA-473A-A4F5-361E319A0919".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase() ||
-      //   "FF63AE6D-7B09-443D-AAA0-62C36B16DBE3".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase() ||
-      //   "409AAC9A-A49B-4E7A-9BBB-6DB20D4FED54".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase() ||
-      //   "C3C6F487-744C-480D-9994-79975E3786B0".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase() ||
-      //   "C795E41E-5CA7-4D54-9FC0-7E7BC406641A".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase() ||
-      //   "3781CCDD-B1C8-4B86-8B09-A731DFCFCC8F".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase() ||
-      //   "FECC04B0-C33D-4FD2-A89B-A97523857C1D".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase() ||
-      //   "E1CD24F0-3905-4FA2-B758-B2B0F0977BE6".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase() ||
-      //   "27BE4E00-14CA-45BD-B0E8-B87307127363".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase() ||
-      //   "B6E1235A-D1AD-4B7B-B2D4-CD5A042C8432".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase() ||
-      //   "AF89F3BD-A2B0-4EC5-A93A-D1DC55574CE1".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase() ||
-      //   "B131DA74-17E6-415A-BD0A-DAD1A636036E".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase() ||
-      //   "53D146B9-B110-4FC6-8E17-DF70438E2183".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase() ||
-      //   "C6373566-C31A-4429-A95A-FD81C1D37367".toLowerCase() ===
-      //     this.printtasktskID.toLowerCase()
-      // ) {
-      //   this.isprintedtask = true;
-
-      // }
     });
     this.BaseTable = [];
     this.basefinal = [];

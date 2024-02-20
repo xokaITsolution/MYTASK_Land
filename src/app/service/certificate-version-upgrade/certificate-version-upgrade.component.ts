@@ -6,7 +6,7 @@ import {
   Output,
 } from "@angular/core";
 import { MessageService } from "primeng/api";
-import { CertificateVersionService } from "./certificate-version.service";
+
 import { ServiceComponent } from "../service.component";
 import { NotificationsService } from "angular2-notifications";
 import { NgxSmartModalService } from "ngx-smart-modal";
@@ -14,14 +14,15 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { ServiceService } from "../service.service";
 import { CertComponent } from "../cert/cert.component";
 import { BehaviorSubject } from "rxjs";
+import { CertificateVersionService } from "../certificate-version/certificate-version.service";
 
 @Component({
-  selector: "app-certificate-version",
-  templateUrl: "./certificate-version.component.html",
-  styleUrls: ["./certificate-version.component.css"],
+  selector: "app-certificate-version-upgrade",
+  templateUrl: "./certificate-version-upgrade.component.html",
+  styleUrls: ["./certificate-version-upgrade.component.css"],
   providers: [MessageService],
 })
-export class CertificateVersionComponent implements OnChanges {
+export class CertificateVersionUpgradeComponent implements OnChanges {
   @Output() completed = new EventEmitter();
   public certificateVersion: CertificateVersion;
   ID = 0;
@@ -43,7 +44,7 @@ export class CertificateVersionComponent implements OnChanges {
   constructor(
     private ngxSmartModalService: NgxSmartModalService,
     private messageService: MessageService,
-    public CertComponent: CertComponent,
+    // public CertComponent: CertComponent,
     public serviceService: ServiceService,
     private certificateVersionService: CertificateVersionService,
     private sanitizer: DomSanitizer,
@@ -113,7 +114,7 @@ export class CertificateVersionComponent implements OnChanges {
 
   Save() {
     console.log("certificateVersion", this.certificateVersion);
-
+    this.serviceService.currentcertID = this.certificateVersion.title_Deed_No;
     this.certificateVersionService
       .SaveCertificate(this.certificateVersion)
       .subscribe(
@@ -122,8 +123,12 @@ export class CertificateVersionComponent implements OnChanges {
           const toast = this.notificationsService.success("Sucess edited ");
           this.serviceService.disablefins = false;
 
-          this.completed.emit();
           if (!this.Saved) {
+            console.log(
+              "🚀 ~ CertificateVersionUpgradeComponent ~ Save ~ certificateVersion:",
+              this.certificateVersion
+            );
+            this.completed.emit(this.certificateVersion);
             this.Saved = true;
           }
         },
@@ -153,9 +158,9 @@ export class CertificateVersionComponent implements OnChanges {
       .subscribe(
         (message) => {
           console.log("message", message);
-          this.CertComponent.disableTab = true;
+          //this.CertComponent.disableTab = true;
           const toast = this.notificationsService.success("Sucess saved");
-          //this.serviceService.disablefins = false;
+          this.serviceService.disablefins = false;
           this.completed.emit();
 
           if (!this.Saved) {

@@ -81,6 +81,10 @@ export class PropertyComponent implements OnChanges {
       this.language = "english";
     }
     this.propertyForm = false;
+    console.log(
+      "🚀 ~ PropertyComponent ~ ngOnChanges ~ propertyForm:",
+      this.serviceService.Service_ID
+    );
     this.propertyregForm = false;
     this.PlotManagementList = [];
     this.novalidprops = 0;
@@ -543,6 +547,28 @@ export class PropertyComponent implements OnChanges {
       selectedChild
     );
   }
+  async getTreeDepth(PropertyList) {
+    let maxDepth = 0;
+
+    const calculateDepth = (node, depth) => {
+      if (depth > maxDepth) {
+        maxDepth = depth;
+      }
+
+      if (node.children && node.children.length > 0) {
+        node.children.forEach((child) => {
+          calculateDepth(child, depth + 1);
+        });
+      }
+    };
+
+    PropertyList.forEach((node) => {
+      calculateDepth(node, 0);
+    });
+
+    console.log("🚀 ~ PropertyComponent ~ getTreeDepth ~ maxDepth:", maxDepth);
+    return maxDepth;
+  }
 
   async getTreeForeach(PropertyList) {
     const files = [];
@@ -696,6 +722,7 @@ export class PropertyComponent implements OnChanges {
   }
 
   async nodeSelect(data) {
+    this.getTreeDepth(this.serviceService.files);
     if (data != "1") {
       data.node.styleClass = "custom-selected-node";
       this.selectedFile = data.node;
@@ -963,8 +990,32 @@ export class PropertyComponent implements OnChanges {
     this.selectedprofromtree = {
       property_ID: this.serviceService.insertedProperty,
     };
-    await this.getPropertyList();
-    this.DoneNew();
+    let prop = await this.getPropertyList();
+
+    // let treedibth = await this.getTreeDepth(this.serviceService.files);
+    // if (
+    //   "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() ==
+    //     this.serviceService.Service_ID ||
+    //   "2B1FC99A-9705-4799-96B9-164BD3B1077E".toLocaleLowerCase() ==
+    //     this.serviceService.Service_ID
+    // ) {
+    //   if (treedibth == 2) {
+    //   } else {
+    //     if (treedibth == 0) {
+    //       const toast = this.notificationsService.warn(
+    //         `must add one  floor for building/ለግንባታ አንድ ወለል መጨመር አለበት`
+    //       );
+    //     }
+    //     if (treedibth == 1) {
+    //       const toast = this.notificationsService.warn(
+    //         `must add one  room for  floor / ለአንድ ወለል አንድ ክፍል መጨመር አለበት`
+    //       );
+    //     }
+    //     return;
+    //   }
+    // } else {
+    //   this.DoneNew();
+    // }
   }
 
   EnabledelFinspro() {
@@ -980,7 +1031,8 @@ export class PropertyComponent implements OnChanges {
   }
 
   async DoneNew() {
-    this.serviceService.files.length;
+    let treedibth = await this.getTreeDepth(this.serviceService.files);
+
     console.log("EnableFinstitlefiles", this.serviceService.files.length);
     const sumOfPropertiess: any = this.serviceService.files.filter(
       (node: ExtendedTreeNode) => node.level === 0 && node.label != "No Parent"
@@ -1028,6 +1080,31 @@ export class PropertyComponent implements OnChanges {
             const toast = this.notificationsService.warn(
               `Must add title deed For this property: ${element.property_ID}`
             );
+            if (
+              "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() ==
+                this.serviceService.Service_ID ||
+              "2B1FC99A-9705-4799-96B9-164BD3B1077E".toLocaleLowerCase() ==
+                this.serviceService.Service_ID
+            ) {
+              console.log(
+                "🚀 ~ PropertyComponent ~ DoneNew ~ treedibth:",
+                treedibth
+              );
+              if (treedibth == 2) {
+              } else {
+                if (treedibth == 0) {
+                  const toast = this.notificationsService.warn(
+                    `must add one  floor for building/ለግንባታ አንድ ወለል መጨመር አለበት`
+                  );
+                }
+                if (treedibth == 1) {
+                  const toast = this.notificationsService.warn(
+                    `must add one  room for  floor / ለአንድ ወለል አንድ ክፍል መጨመር አለበት`
+                  );
+                }
+                return;
+              }
+            }
 
             return;
           } else {
@@ -1142,39 +1219,71 @@ export class PropertyComponent implements OnChanges {
     this.CanDone = true;
   }
   async checkProperty(element) {
-    if (element.property_ID != "No Parent") {
-      const a: any = await this.getmeasurment(element.property_ID);
-      const b: any = await this.getdeed(element.property_ID);
-      const ameasurmnet = Object.assign([], a.list);
+    if (element.property_ID !== "No Parent") {
+      const b = await this.getdeed(element.property_ID);
       const bdeed = b.procDeed_Registrations.filter(
         (x) => x.property_ID === element.property_ID
       );
-      if (element.children.length == 0) {
-        if (ameasurmnet.length === 0 && bdeed.length === 0) {
-          return false;
-        } else {
-          return true;
-        }
-      } else {
-        for (const elementchildren of element.children) {
-          const c: any = await this.getmeasurment(elementchildren.property_ID);
-          const d: any = await this.getdeed(elementchildren.property_ID);
-          const cmeasurmnet = Object.assign([], c.list);
-          const ddeed = d.procDeed_Registrations.filter(
-            (x) => x.property_ID === elementchildren.property_ID
-          );
-          console.log("sub property", cmeasurmnet, ddeed);
-          if (cmeasurmnet.length === 0 && ddeed.length === 0) {
-            // const toast = this.notificationsService.warn(
-            //   `Must add title deed for this property: ${elementchildren.property_ID}`
-            // );
-            return false;
-          }
-        }
-        return true;
+
+      if (bdeed.length === 0) {
+        return false; // No deed record for current property
       }
+
+      for (const elementchildren of element.children) {
+        const childCheck = await this.checkProperty(elementchildren);
+        if (!childCheck) {
+          return false; // At least one child or descendant has no deed record
+        }
+      }
+
+      return true; // All children and descendants have deed records
+    } else {
+      const toast = this.notificationsService.warn(
+        "must add one property for this /applicationለዚህ መተግበሪያ አንድ ንብረት ማከል አለበት።"
+      );
+      return false; // Property has "No Parent", return true
     }
   }
+
+  // async checkProperty(element) {
+  //   if (element.property_ID != "No Parent") {
+  //     // const a: any = await this.getmeasurment(element.property_ID);
+  //     const b: any = await this.getdeed(element.property_ID);
+  //     // const ameasurmnet = Object.assign([], a.list);
+  //     const bdeed = b.procDeed_Registrations.filter(
+  //       (x) => x.property_ID === element.property_ID
+  //     );
+  //     if (element.children.length == 0) {
+  //       if (bdeed.length === 0) {
+  //         return false;
+  //       } else {
+  //         return true;
+  //       }
+  //       // if (ameasurmnet.length === 0 && bdeed.length === 0) {
+  //       //   return false;
+  //       // } else {
+  //       //   return true;
+  //       // }
+  //     } else {
+  //       for (const elementchildren of element.children) {
+  //         // const c: any = await this.getmeasurment(elementchildren.property_ID);
+  //         const d: any = await this.getdeed(elementchildren.property_ID);
+  //         // const cmeasurmnet = Object.assign([], c.list);
+  //         const ddeed = d.procDeed_Registrations.filter(
+  //           (x) => x.property_ID === elementchildren.property_ID
+  //         );
+  //         // console.log("sub property", cmeasurmnet, ddeed);
+  //         if (ddeed.length === 0) {
+  //           // const toast = this.notificationsService.warn(
+  //           //   `Must add title deed for this property: ${elementchildren.property_ID}`
+  //           // );
+  //           return false;
+  //         }
+  //       }
+  //       return true;
+  //     }
+  //   }
+  // }
   checkPropertylocationAll() {
     console.log(
       "🚀 ~ file: property.component.ts:1273 ~ PropertyComponent ~ checkPropertylocationAll ~ PlotManagementListfinal:",
