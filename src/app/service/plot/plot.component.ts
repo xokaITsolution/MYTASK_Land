@@ -1415,44 +1415,57 @@ export class PlotComponent implements OnChanges {
         );
         return;
       } else {
-        this.leaseOwnerShipService
-          .getAll(this.plot_ID)
-          .subscribe((CertificateVersion: any) => {
-            let tasks = CertificateVersion;
-            tasks = Object.assign([], tasks.list);
-            const totalsize = tasks
-              .filter((x) => parseInt(x.Status) === 1)
-              .reduce((sum, node) => {
-                sum +=
-                  parseFloat(node.Free_Hold_M2) +
-                  parseFloat(node.Lease_Hold_M2);
+        if (
+          "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() !=
+            this.serviceService.Service_ID ||
+          "2B1FC99A-9705-4799-96B9-164BD3B1077E".toLocaleLowerCase() !=
+            this.serviceService.Service_ID
+        ) {
+          this.leaseOwnerShipService
+            .getAll(this.plot_ID)
+            .subscribe((CertificateVersion: any) => {
+              let tasks = CertificateVersion;
+              tasks = Object.assign([], tasks.list);
+              const uniquePlotIDs = new Set();
+              const totalsize = tasks
+                .filter((x) => parseInt(x.Status) === 1)
+                .reduce((sum, node) => {
+                  if (!uniquePlotIDs.has(node.Plot_ID)) {
+                    sum +=
+                      parseFloat(node.Free_Hold_M2) +
+                      parseFloat(node.Lease_Hold_M2);
+                    uniquePlotIDs.add(node.Plot_ID);
+                  }
 
-                return sum;
-              }, 0);
-            console.log(
-              "leaseOwnerShipService",
-              tasks,
-              this.serviceService.Totalarea,
-              totalsize
-            );
+                  return sum;
+                }, 0);
+              console.log(
+                "leaseOwnerShipService",
+                tasks,
+                this.serviceService.Totalarea,
+                totalsize
+              );
 
-            if (tasks.length > 0) {
-              if (totalsize === this.serviceService.Totalarea) {
-                this.completed.emit();
+              if (tasks.length > 0) {
+                if (totalsize === this.serviceService.Totalarea) {
+                  this.completed.emit();
+                } else {
+                  const toast = this.notificationsService.warn(
+                    `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
+                  በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት`
+                  );
+                  return;
+                }
               } else {
                 const toast = this.notificationsService.warn(
-                  `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
-                  በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት`
+                  "before submit the form you have to register lease ownershipቅጹን ከማቅረቡ በፊት የሊዝ ባለቤትነት መመዝገብ አለብዎት"
                 );
                 return;
               }
-            } else {
-              const toast = this.notificationsService.warn(
-                "before submit the form you have to register lease ownershipቅጹን ከማቅረቡ በፊት የሊዝ ባለቤትነት መመዝገብ አለብዎት"
-              );
-              return;
-            }
-          });
+            });
+        } else {
+          this.completed.emit();
+        }
       }
     }
 

@@ -2231,22 +2231,55 @@ this.moreDetail.toggle=true
           element.RoleId ==
             "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase() ||
           element.RoleId ==
-            "8ACA5AE9-7CE3-4964-AF89-F92A9DF3C2E2".toLocaleLowerCase()
+            "8ACA5AE9-7CE3-4964-AF89-F92A9DF3C2E2".toLocaleLowerCase() ||
+          element.RoleId ==
+            "90F92BDA-AE31-4E85-BE8A-0D24D91FD883".toLocaleLowerCase() ||
+          element.RoleId ==
+            "4C36A953-9F11-4511-AC3B-8699803306C8".toLocaleLowerCase()
         ) {
-          if (this.licenceData.Parcel_ID) {
-            this.getplotlist(this.licenceData.Parcel_ID);
-          }
-          if (this.licenceData.Plot_Merge_1) {
-            this.getplotlist(this.licenceData.Plot_Merge_1);
-          }
-          if (this.licenceData.Plot_Merge_2) {
-            this.getplotlist(this.licenceData.Plot_Merge_2);
-          }
-          if (this.licenceData.Plot_Merge_3) {
-            this.getplotlist(this.licenceData.Plot_Merge_3);
-          }
-          if (this.licenceData.Plot_Merge_4) {
-            this.getplotlist(this.licenceData.Plot_Merge_4);
+          if (
+            "05bf5de7-7170-43ce-8320-c747748d40e5".toLocaleLowerCase() ==
+              this.serviceService.Service_ID ||
+            "81f8770b-2c1e-4255-8be1-341089703fa1".toLocaleLowerCase() ==
+              this.serviceService.Service_ID ||
+            "de330170-550b-4bf2-9908-dc557f92a7cc".toLocaleLowerCase() ==
+              this.serviceService.Service_ID ||
+            "449a14bd-e0c0-4eda-92f5-68b3fcf83433".toLocaleLowerCase() ==
+              this.serviceService.Service_ID ||
+            "5fe58d7f-6e9f-452e-b85b-8cd501f020be".toLocaleLowerCase() ==
+              this.serviceService.Service_ID
+          ) {
+            if (this.licenceData.Parcel_ID) {
+              this.getplotlist(this.licenceData.Parcel_ID);
+            }
+            if (this.licenceData.Plot_Merge_1) {
+              this.getplotlist(this.licenceData.Plot_Merge_1);
+            }
+            if (this.licenceData.Plot_Merge_2) {
+              this.getplotlist(this.licenceData.Plot_Merge_2);
+            }
+            if (this.licenceData.Plot_Merge_3) {
+              this.getplotlist(this.licenceData.Plot_Merge_3);
+            }
+            if (this.licenceData.Plot_Merge_4) {
+              this.getplotlist(this.licenceData.Plot_Merge_4);
+            }
+          } else {
+            if (this.licenceData.Parcel_ID) {
+              this.getplotlist(this.licenceData.Parcel_ID);
+            }
+            if (this.licenceData.Plot_Merge_1) {
+              this.getplotlist(this.licenceData.Plot_Merge_1);
+            }
+            if (this.licenceData.Plot_Merge_2) {
+              this.getplotlist(this.licenceData.Plot_Merge_2);
+            }
+            if (this.licenceData.Plot_Merge_3) {
+              this.getplotlist(this.licenceData.Plot_Merge_3);
+            }
+            if (this.licenceData.Plot_Merge_4) {
+              this.getplotlist(this.licenceData.Plot_Merge_4);
+            }
           }
         } else {
           console.log("responseresponseresponse", element);
@@ -2388,6 +2421,37 @@ this.moreDetail.toggle=true
             //   }
             // }
             this.serviceService.getUserRole().subscribe((response: any) => {
+              // for (let index = 0; index < response.length; index++) {
+              //   const element = response[index];
+              //   if (
+              //     element.RoleId ==
+              //       "F8DDA85E-F967-4AC5-BF79-4D989ECFB863".toLocaleLowerCase() ||
+              //     element.RoleId ==
+              //       "5B3B5DD4-3CEF-4696-AC19-442BA531A7DD".toLocaleLowerCase ||
+              //     element.RoleId ==
+              //       "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase() ||
+              //     element.RoleId ==
+              //       "8ACA5AE9-7CE3-4964-AF89-F92A9DF3C2E2".toLocaleLowerCase()
+              //   ) {
+              //     if (this.licenceData.Parcel_ID) {
+              //       this.getplotlist(this.licenceData.Parcel_ID);
+              //     }
+              //     if (this.licenceData.Plot_Merge_1) {
+              //       this.getplotlist(this.licenceData.Plot_Merge_1);
+              //     }
+              //     if (this.licenceData.Plot_Merge_2) {
+              //       this.getplotlist(this.licenceData.Plot_Merge_2);
+              //     }
+              //     if (this.licenceData.Plot_Merge_3) {
+              //       this.getplotlist(this.licenceData.Plot_Merge_3);
+              //     }
+              //     if (this.licenceData.Plot_Merge_4) {
+              //       this.getplotlist(this.licenceData.Plot_Merge_4);
+              //     }
+              //   } else {
+              //     console.log("responseresponseresponse", element);
+              //   }
+              // }
               for (let index = 0; index < response.length; index++) {
                 const element = response[index];
                 if (
@@ -2398,22 +2462,55 @@ this.moreDetail.toggle=true
                   element.RoleId ==
                     "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase() ||
                   element.RoleId ==
-                    "8ACA5AE9-7CE3-4964-AF89-F92A9DF3C2E2".toLocaleLowerCase()
+                    "8ACA5AE9-7CE3-4964-AF89-F92A9DF3C2E2".toLocaleLowerCase() ||
+                  element.RoleId ==
+                    "90F92BDA-AE31-4E85-BE8A-0D24D91FD883".toLocaleLowerCase() ||
+                  element.RoleId ==
+                    "4C36A953-9F11-4511-AC3B-8699803306C8".toLocaleLowerCase()
                 ) {
-                  if (this.licenceData.Parcel_ID) {
-                    this.getplotlist(this.licenceData.Parcel_ID);
-                  }
-                  if (this.licenceData.Plot_Merge_1) {
-                    this.getplotlist(this.licenceData.Plot_Merge_1);
-                  }
-                  if (this.licenceData.Plot_Merge_2) {
-                    this.getplotlist(this.licenceData.Plot_Merge_2);
-                  }
-                  if (this.licenceData.Plot_Merge_3) {
-                    this.getplotlist(this.licenceData.Plot_Merge_3);
-                  }
-                  if (this.licenceData.Plot_Merge_4) {
-                    this.getplotlist(this.licenceData.Plot_Merge_4);
+                  if (
+                    "05bf5de7-7170-43ce-8320-c747748d40e5".toLocaleLowerCase() ==
+                      this.serviceService.Service_ID ||
+                    "81f8770b-2c1e-4255-8be1-341089703fa1".toLocaleLowerCase() ==
+                      this.serviceService.Service_ID ||
+                    "de330170-550b-4bf2-9908-dc557f92a7cc".toLocaleLowerCase() ==
+                      this.serviceService.Service_ID ||
+                    "449a14bd-e0c0-4eda-92f5-68b3fcf83433".toLocaleLowerCase() ==
+                      this.serviceService.Service_ID ||
+                    "5fe58d7f-6e9f-452e-b85b-8cd501f020be".toLocaleLowerCase() ==
+                      this.serviceService.Service_ID
+                  ) {
+                    if (this.licenceData.Parcel_ID) {
+                      this.getplotlist(this.licenceData.Parcel_ID);
+                    }
+                    if (this.licenceData.Plot_Merge_1) {
+                      this.getplotlist(this.licenceData.Plot_Merge_1);
+                    }
+                    if (this.licenceData.Plot_Merge_2) {
+                      this.getplotlist(this.licenceData.Plot_Merge_2);
+                    }
+                    if (this.licenceData.Plot_Merge_3) {
+                      this.getplotlist(this.licenceData.Plot_Merge_3);
+                    }
+                    if (this.licenceData.Plot_Merge_4) {
+                      this.getplotlist(this.licenceData.Plot_Merge_4);
+                    }
+                  } else {
+                    if (this.licenceData.Parcel_ID) {
+                      this.getplotlist(this.licenceData.Parcel_ID);
+                    }
+                    if (this.licenceData.Plot_Merge_1) {
+                      this.getplotlist(this.licenceData.Plot_Merge_1);
+                    }
+                    if (this.licenceData.Plot_Merge_2) {
+                      this.getplotlist(this.licenceData.Plot_Merge_2);
+                    }
+                    if (this.licenceData.Plot_Merge_3) {
+                      this.getplotlist(this.licenceData.Plot_Merge_3);
+                    }
+                    if (this.licenceData.Plot_Merge_4) {
+                      this.getplotlist(this.licenceData.Plot_Merge_4);
+                    }
                   }
                 } else {
                   console.log("responseresponseresponse", element);
