@@ -858,6 +858,31 @@ export class ServiceComponent implements OnInit {
               SavedFiles[j].requirement_code
             ) {
               try {
+                if (
+                  this.RequerdDocspre[i].description_en.indexOf("DAR") !==
+                  -1
+                ) { const binaryData = atob(SavedFiles[j].document);
+                  const arrayBuffer = new ArrayBuffer(binaryData.length);
+                  const uint8Array = new Uint8Array(arrayBuffer);
+                  
+                  for (let i = 0; i < binaryData.length; i++) {
+                    uint8Array[i] = binaryData.charCodeAt(i);
+                  }
+                  
+                  // Create Blob
+                  const blob = new Blob([uint8Array], { type: 'application/pdf' });
+                  
+                  // Set Blob URL as iframe source
+                  // this.documentupload =  this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
+                  this.RequerdDocspre[i].mimeType = "application/pdf"
+                  this.RequerdDocspre[i].File =
+                    this.sanitizer.bypassSecurityTrustResourceUrl(
+                      URL.createObjectURL(blob)
+                    );
+  
+                  this.RequerdDocspre[i].document_code =
+                    SavedFiles[j].document_code;}
+                else{
                 let fileData = JSON.parse(atob(SavedFiles[j].document));
 
                 let { type, data } = fileData;
@@ -873,7 +898,7 @@ export class ServiceComponent implements OnInit {
                   );
 
                 this.RequerdDocspre[i].document_code =
-                  SavedFiles[j].document_code;
+                  SavedFiles[j].document_code;}
               } catch (e) {
                 console.error(e);
               }
@@ -1061,7 +1086,7 @@ export class ServiceComponent implements OnInit {
   EnableFinss() {
     //  this.serviceService.disablefins = false;
     // console.log("enableningggg....", this.validated);
-this.moreDetail.toggle=true
+this._opened=true
     // this.saveForm(this.jsonempty);
     this.validated = true;
     this.isvalidateds(
@@ -1375,7 +1400,7 @@ this.moreDetail.toggle=true
               //   (message.loaded / message.total) * 100
               // );
               console.log(`Uploaded! ${this.progress}%`);
-
+              this.serviceService.disablefins=false
               fild.clear();
               const toast = this.notificationsService.success(
                 "Success",
