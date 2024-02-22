@@ -340,23 +340,49 @@ export class LeaseOwnerShipComponent implements OnChanges {
   }
 
   addLease() {
-    this.serviceService.isleaseForm = true;
-    this.serviceService.leaseOwnerShip = new LeaseOwnerShip();
-    this.serviceService.leaseOwnerShip.ID = Guid.create().toString();
-    this.serviceService.leaseOwnerShip.Plot_ID = this.SelectedPlot.plot_ID;
-    this.serviceService.leaseOwnerShip.To_Do_ID = this.todoidcurrent;
-    this.serviceService.leaseOwnerShip.Application_No = this.applicationo;
+    if (
+      "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() ==
+        this.serviceService.Service_ID ||
+      "2B1FC99A-9705-4799-96B9-164BD3B1077E".toLocaleLowerCase() ==
+        this.serviceService.Service_ID
+    ) {
+      this.serviceService.isleaseForm = true;
+      this.serviceService.leaseOwnerShip = new LeaseOwnerShip();
+      this.serviceService.leaseOwnerShip.ID = Guid.create().toString();
+      this.serviceService.leaseOwnerShip.Plot_ID = this.SelectedPlot.plot_ID;
+      this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+        this.SelectedPlot.plot_Size_M2;
+      this.serviceService.leaseOwnerShip.Free_Hold_M2 = 0;
+      this.serviceService.leaseOwnerShip.Type_ID = 1;
 
-    // this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
-    //   localStorage.getItem("PolygonAreaname");
-    this.serviceService.currentplotsize = parseFloat(
-      localStorage.getItem("PolygonAreaname")
-    );
-    // this.serviceService.leaseOwnerShip.SDP_ID = this.LicenceData.SDP_ID;
-    this.serviceService.leaseOwnerShip.SDP_ID =
-      this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
-    this.addnew = true;
-    this.leaseForm = true;
+      this.serviceService.leaseOwnerShip.To_Do_ID = this.todoidcurrent;
+      this.serviceService.leaseOwnerShip.Application_No = this.applicationo;
+      this.serviceService.leaseOwnerShip.Lease_No = this.applicationo;
+
+      // this.serviceService.leaseOwnerShip.SDP_ID = this.LicenceData.SDP_ID;
+      this.serviceService.leaseOwnerShip.SDP_ID =
+        this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
+      this.addnew = true;
+      this.leaseForm = true;
+    } else {
+      this.serviceService.isleaseForm = true;
+      this.serviceService.leaseOwnerShip = new LeaseOwnerShip();
+      this.serviceService.leaseOwnerShip.ID = Guid.create().toString();
+      this.serviceService.leaseOwnerShip.Plot_ID = this.SelectedPlot.plot_ID;
+      this.serviceService.leaseOwnerShip.To_Do_ID = this.todoidcurrent;
+      this.serviceService.leaseOwnerShip.Application_No = this.applicationo;
+      this.serviceService.leaseOwnerShip.Lease_No = this.applicationo;
+      // this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+      //   localStorage.getItem("PolygonAreaname");
+      this.serviceService.currentplotsize = parseFloat(
+        localStorage.getItem("PolygonAreaname")
+      );
+      // this.serviceService.leaseOwnerShip.SDP_ID = this.LicenceData.SDP_ID;
+      this.serviceService.leaseOwnerShip.SDP_ID =
+        this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
+      this.addnew = true;
+      this.leaseForm = true;
+    }
   }
 
   Refresh() {
@@ -696,12 +722,22 @@ export class LeaseOwnerShipComponent implements OnChanges {
         console.log("leaselist", tasks);
         if (tasks.length > 0) {
           tasks.forEach((element) => {
-            if (element.Plot_ID != this.serviceService.leaseOwnerShip.Plot_ID) {
-              let totalsizeeach =
-                parseFloat(element.Free_Hold_M2) +
-                parseFloat(element.Lease_Hold_M2);
+            if (
+              "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() ==
+                this.serviceService.Service_ID ||
+              "2B1FC99A-9705-4799-96B9-164BD3B1077E".toLocaleLowerCase() ==
+                this.serviceService.Service_ID
+            ) {
+            } else {
+              if (
+                element.Plot_ID != this.serviceService.leaseOwnerShip.Plot_ID
+              ) {
+                let totalsizeeach =
+                  parseFloat(element.Free_Hold_M2) +
+                  parseFloat(element.Lease_Hold_M2);
 
-              this.totalsizeofleaseeach += totalsizeeach;
+                this.totalsizeofleaseeach += totalsizeeach;
+              }
             }
           });
           this.totalsizeoflease = totalsum - this.totalsizeofleaseeach;
@@ -709,12 +745,12 @@ export class LeaseOwnerShipComponent implements OnChanges {
           this.totalsizeoflease = totalsum;
         }
       });
-    if (this.totalsizeoflease < totalsize) {
-      const toast = this.notificationsService.warn(
-        "the sum of Leasehold and Freehold is must not greater than total  plot size/የሊዝ ይዞታ እና ነፃ ይዞታ ድምር ከጠቅላላ የቦታ መጠን መብለጥ የለበትም"
-      );
-      return;
-    } else {
+    if (
+      "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() ==
+        this.serviceService.Service_ID ||
+      "2B1FC99A-9705-4799-96B9-164BD3B1077E".toLocaleLowerCase() ==
+        this.serviceService.Service_ID
+    ) {
       if (this.language == "amharic") {
         this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
           await this.getEthiopianToGregorian(
@@ -800,7 +836,105 @@ export class LeaseOwnerShipComponent implements OnChanges {
             }
           }
         );
-      console.log("saveing....");
+    } else {
+      if (this.totalsizeoflease < totalsize) {
+        const toast = this.notificationsService.warn(
+          "the sum of Leasehold and Freehold is must not greater than total  plot size/የሊዝ ይዞታ እና ነፃ ይዞታ ድምር ከጠቅላላ የቦታ መጠን መብለጥ የለበትም"
+        );
+        return;
+      } else {
+        if (this.language == "amharic") {
+          this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+            await this.getEthiopianToGregorian(
+              this.serviceService.leaseOwnerShip.Date_of_final_lease_payment
+            );
+        }
+        this.leaseOwnerShipService
+          .Add(this.serviceService.leaseOwnerShip)
+          .subscribe(
+            async (deptSuspension) => {
+              console.log("deptSuspension", deptSuspension);
+              const toast = this.notificationsService.success(
+                "Sucess",
+                deptSuspension
+              );
+              localStorage.setItem("PolygonAreaname", "" + 0);
+              localStorage.setItem("PolygonAreanameFrehold", "" + 0);
+
+              this.serviceService.Totalarea =
+                parseFloat(this.serviceService.leaseOwnerShip.Lease_Hold_M2) +
+                parseFloat(this.serviceService.leaseOwnerShip.Free_Hold_M2);
+              this.getleaseOwnerShip(
+                this.serviceService.leaseOwnerShip.Plot_ID
+              );
+              const maxAreaDifferences =
+                environment.Totalareatolerance * this.serviceService.Totalarea;
+
+              const areaDifferences = Math.abs(totalsize - totalsum);
+
+              if (areaDifferences <= maxAreaDifferences) {
+                this.serviceService.plotsizenotequal = false;
+              } else {
+                this.serviceService.plotsizenotequal = false;
+                //     const toast = this.notificationsService.warn(
+                //       `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
+                // በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
+                //  ${Math.abs(totalsize - totalsum)}`
+                //     );
+              }
+
+              if (this.language == "amharic") {
+                this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+                  await this.getgregorianToEthiopianDate(
+                    this.serviceService.leaseOwnerShip
+                      .Date_of_final_lease_payment
+                  );
+              }
+
+              //this.serviceService.disablefins = false;
+
+              this.leaseForm = false;
+              this.serviceService.isleaseForm = false;
+              if (!this.Saved) {
+                this.addnew = false;
+                //this.completed.emit();
+                this.Saved = true;
+                this.serviceService.isleaseForm = false;
+              }
+              // const warningMessage = "የሊዝ ወይም የነባር ይዞታ መመዝገቡን አረጋግጥ/Check lease or freehold record is active for this plot";
+              // const toastWarning = this.notificationsService.warn(
+              //   "Warning",
+              //   warningMessage
+              // );
+            },
+            async (error) => {
+              console.log(error);
+
+              if (error.status == "400") {
+                const toast = this.notificationsService.error(
+                  "Error",
+                  error.error.InnerException.Errors[0].message
+                );
+                this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+                  await this.getgregorianToEthiopianDate(
+                    this.serviceService.leaseOwnerShip
+                      .Date_of_final_lease_payment
+                  );
+              } else {
+                const toast = this.notificationsService.error(
+                  "Error",
+                  "SomeThing Went Wrong"
+                );
+                this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+                  await this.getgregorianToEthiopianDate(
+                    this.serviceService.leaseOwnerShip
+                      .Date_of_final_lease_payment
+                  );
+              }
+            }
+          );
+        console.log("saveing....");
+      }
     }
   }
 
@@ -832,13 +966,13 @@ export class LeaseOwnerShipComponent implements OnChanges {
 
 export class LeaseOwnerShip {
   public ID: string;
-  public Type_ID: string;
-  public Lease_No: string;
-  public Lease_Price: string;
+  public Type_ID: any;
+  public Lease_No: any;
+  public Lease_Price: any;
   public Free_Hold_M2: any;
   public Lease_Hold_M2: any;
-  public Customer_ID: string;
-  public Plot_ID: string;
+  public Customer_ID: any;
+  public Plot_ID: any;
   public Status;
   public SDP_ID;
   public To_Do_ID;
@@ -849,4 +983,6 @@ export class LeaseOwnerShip {
   public Amount_of_the_annual_lease_payment;
   public Lease_period_in_Year;
   public Date_of_final_lease_payment;
+  public Current_lease_bid_price;
+  public Remaining_lease_payment;
 }

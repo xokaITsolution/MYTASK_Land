@@ -323,7 +323,7 @@
             <div class="col-sm-9">
               <p-fileUpload #form1 customUpload="true" (uploadHandler)="planDocument($event,form1)"
                 maxFileSize="25000000" accept="image/*"></p-fileUpload>
-              <img [src]="propformLocation.plan_Document" *ngIf="propformLocation.plan_Document" alt="Preview">
+              <!-- <img [src]="plan_Document" *ngIf="propformLocation.plan_Document" alt="Preview"> -->
               <!-- <div *ngIf="propformLocation.plan_Document">
                 <span translate class="text-danger">Requierd</span>
               </div> -->
@@ -455,7 +455,7 @@
                   <div class="col-sm-9">
                     <p-fileUpload #form1 customUpload="true" (uploadHandler)="planDocument($event,form1)" maxFileSize="25000000"
                       accept="image/*"></p-fileUpload>
-                      <img width="100%" height="50%" [src]="plan_Document" *ngIf="propformLocation.plan_Document" alt="Preview">
+                      <img width="100%" height="50%" [src]="plan_Document" *ngIf="plan_Document" alt="Preview">
 
                  
       
@@ -466,7 +466,7 @@
                   <div class="col-sm-9">
                     <p-fileUpload #form2 customUpload="true" (uploadHandler)="pictureNorth($event,form2)" maxFileSize="25000000"
                       accept="image/*"></p-fileUpload>
-                      <img width="100%" height="50%" [src]="picture_North" *ngIf="propformLocation.picture_North" alt="Preview">
+                      <img width="100%" height="50%" [src]="picture_North" *ngIf="picture_North" alt="Preview">
           
                   </div>
                 </div>
@@ -476,7 +476,7 @@
                     <p-fileUpload #form3 customUpload="true" (uploadHandler)="pictureEast($event,form3)" maxFileSize="25000000"
                       accept="image/*"></p-fileUpload>
           
-                    <img width="100%" height="50%" [src]="picture_East" *ngIf="propformLocation.picture_East"
+                    <img width="100%" height="50%" [src]="picture_East" *ngIf="picture_East"
                       alt="Preview">
                   </div>
                 </div>
@@ -485,7 +485,7 @@
                   <div class="col-sm-9">
                     <p-fileUpload #form4 customUpload="true" (uploadHandler)="pictureSouth($event,form4)" maxFileSize="25000000"
                       accept="image/*"></p-fileUpload>
-              <img width="100%" height="50%" [src]="picture_South" *ngIf="propformLocation.picture_South"
+              <img width="100%" height="50%" [src]="picture_South" *ngIf="picture_South"
                 alt="Preview">
           
                  
@@ -496,7 +496,7 @@
                   <div class="col-sm-9">
                     <p-fileUpload #form5 customUpload="true" (uploadHandler)="pictureWest($event,form5)" maxFileSize="25000000"
                       accept="image/*"></p-fileUpload>
-                  <img width="100%" height="50%" [src]="picture_West" *ngIf="propformLocation.picture_West"
+                  <img width="100%" height="50%" [src]="picture_West" *ngIf="picture_West"
                     alt="Preview">
                     
                   </div>

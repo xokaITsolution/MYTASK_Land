@@ -627,7 +627,7 @@ export class CertComponent implements OnChanges {
             this.certverForm = true;
           } else {
             const toast = this.notificationsService.warn(
-              `Must update  for this plot: ${this.CertificateVersion.title_Deed_No}`
+              `Must update plot map to submit form .click edit the above/ቅጽ ለማስገባት የፕላን ካርታ ማዘመን አለበት .ከላይ ያለውን አዘምን የሚለውን ጠቅ ያድርጉ ${this.CertificateVersion.title_Deed_No}`
             );
           }
         }

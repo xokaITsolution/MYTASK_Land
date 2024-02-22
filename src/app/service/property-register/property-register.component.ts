@@ -72,6 +72,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   picture_East: any;
   picture_South: any;
   picture_West: any;
+  proploceach: any;
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -247,12 +248,13 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   }
   async save() {
     if (
-      this.propertyRegister.property_Type_ID == 2 &&
-      this.propertyRegister.property_Parent_ID == 0
+      parseInt(this.propertyRegister.property_Type_ID) == 2 &&
+      parseInt(this.propertyRegister.property_Parent_ID) == 0
     ) {
       const toastt = this.notificationsService.warn(
         "Please note that you cannot add የጋራ መኖርያ ቤቶች/Appartments/Condominiums without first adding a parent building. Kindly ensure that you add the building details before proceeding with adding the apartments"
       );
+      return;
     }
     if (this.serviceService.isproportinal == true) {
       let totalsize =
@@ -680,13 +682,19 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   }
 
   async add() {
+    console.log(
+      "🚀 ~ add ~ property_Type_ID:",
+      this.propertyRegister.property_Type_ID,
+      this.propertyRegister.property_Parent_ID
+    );
     if (
-      this.propertyRegister.property_Type_ID == 2 &&
-      this.propertyRegister.property_Parent_ID == 0
+      parseInt(this.propertyRegister.property_Type_ID) == 2 &&
+      this.propertyRegister.property_Parent_ID == "No Parent"
     ) {
       const toastt = this.notificationsService.warn(
         "Please note that you cannot add የጋራ መኖርያ ቤቶች/Appartments/Condominiums without first adding a parent building. Kindly ensure that you add the building details before proceeding with adding the apartments"
       );
+      return;
     }
     if (this.serviceService.isproportinal == true) {
       let totalsize =
@@ -876,50 +884,51 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     }
   }
   getcurrentlocationdata() {
-    this.propformLocation = new PropformLocation();
     this.serviceService
       .getProploc(this.selectedpro.property_ID)
       .subscribe((response: any) => {
-        this.proploc = response.procProporty_Locations;
-        this.propformLocation = this.proploc[0];
+        this.proploceach = response.procProporty_Locations;
         console.log(
           "🚀 ~ .subscribe ~ propformLocation:",
           this.propformLocation
         );
-        if (this.propformLocation.plan_Document) {
-          this.plan_Document =
-            "data:image/jpg;base64, " + this.propformLocation.plan_Document;
-          this.plan_Document = this.sanitizer.bypassSecurityTrustResourceUrl(
-            this.plan_Document
-          );
-        }
-        if (this.propformLocation.picture_North) {
-          this.picture_North =
-            "data:image/jpg;base64, " + this.propformLocation.picture_North;
-          this.picture_North = this.sanitizer.bypassSecurityTrustResourceUrl(
-            this.picture_North
-          );
-        }
-        if (this.propformLocation.picture_East) {
-          this.propformLocation.picture_East =
-            "data:image/jpg;base64, " + this.propformLocation.picture_East;
-          this.picture_East = this.sanitizer.bypassSecurityTrustResourceUrl(
-            this.picture_East
-          );
-        }
-        if (this.propformLocation.picture_South) {
-          this.propformLocation.picture_South =
-            "data:image/jpg;base64, " + this.propformLocation.picture_South;
-          this.picture_South = this.sanitizer.bypassSecurityTrustResourceUrl(
-            this.picture_South
-          );
-        }
-        if (this.propformLocation.picture_West) {
-          this.picture_West =
-            "data:image/jpg;base64, " + this.propformLocation.picture_West;
-          this.picture_West = this.sanitizer.bypassSecurityTrustResourceUrl(
-            this.picture_West
-          );
+        if (this.proploceach.length > 0) {
+          this.propformLocation = this.proploceach[0];
+          if (this.propformLocation.plan_Document) {
+            this.plan_Document =
+              "data:image/jpg;base64, " + this.propformLocation.plan_Document;
+            this.plan_Document = this.sanitizer.bypassSecurityTrustResourceUrl(
+              this.plan_Document
+            );
+          }
+          if (this.propformLocation.picture_North) {
+            this.picture_North =
+              "data:image/jpg;base64, " + this.propformLocation.picture_North;
+            this.picture_North = this.sanitizer.bypassSecurityTrustResourceUrl(
+              this.picture_North
+            );
+          }
+          if (this.propformLocation.picture_East) {
+            this.propformLocation.picture_East =
+              "data:image/jpg;base64, " + this.propformLocation.picture_East;
+            this.picture_East = this.sanitizer.bypassSecurityTrustResourceUrl(
+              this.picture_East
+            );
+          }
+          if (this.propformLocation.picture_South) {
+            this.propformLocation.picture_South =
+              "data:image/jpg;base64, " + this.propformLocation.picture_South;
+            this.picture_South = this.sanitizer.bypassSecurityTrustResourceUrl(
+              this.picture_South
+            );
+          }
+          if (this.propformLocation.picture_West) {
+            this.picture_West =
+              "data:image/jpg;base64, " + this.propformLocation.picture_West;
+            this.picture_West = this.sanitizer.bypassSecurityTrustResourceUrl(
+              this.picture_West
+            );
+          }
         }
       });
   }

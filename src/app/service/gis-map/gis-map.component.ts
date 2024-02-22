@@ -841,7 +841,7 @@ export class GisMapComponent implements AfterViewInit {
           this.map.getPane("vectorPane").style.zIndex = "490"; // VectorLayer pane
           // Add the layers to the map
           this.map.addLayer(this.layer.vectorLayer);
-          this.map.addLayer(this.layer.tileLayer);
+          // this.map.addLayer(this.layer.tileLayer);
         }
       } else if (this.layer && this.layer.tileLayer) {
         event.randomColor = "#7f7f7f";
@@ -914,7 +914,7 @@ export class GisMapComponent implements AfterViewInit {
       console.log("vectorlayer", this.layer.vectorLayer);
 
       this.map.removeLayer(this.layer.vectorLayer);
-      this.map.removeLayer(this.layer.tileLayer);
+      //this.map.removeLayer(this.layer.tileLayer);
       // }
     } else if (this.layer && this.layer.tileLayer) {
       console.log("tilelayer", this.layer.tileLayer);

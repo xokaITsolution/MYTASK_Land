@@ -679,11 +679,14 @@ export class PropertyComponent implements OnChanges {
 
   async AddNew() {
     const isdeedchildren = await this.checkpropertyType();
+    console.log(
+      "🚀 ~ PropertyComponent ~ AddNew ~ isdeedchildren:",
+      isdeedchildren
+    );
 
     if (!isdeedchildren) {
       this.propertyregForm = false;
       this.isnew = false;
-      return;
     } else {
       this.getpro.emit();
       this.isnew = true;
@@ -1226,31 +1229,38 @@ export class PropertyComponent implements OnChanges {
 
     this.CanDone = true;
   }
-  async checkpropertyType() {
-    this.serviceService
+  async getPropertylis() {
+    var a: any = this.serviceService
       .getPropertyLists(this.SelectedProperty.plot_ID)
-      .subscribe(async (PropertyList: any) => {
-        console.log(
-          "🚀 ~ PropertyComponent ~ .subscribe ~ PropertyList:",
-          PropertyList
-        );
-        if (PropertyList.procProperty_Registrations.length > 0) {
-          PropertyList.procProperty_Registrations.forEach((element) => {
-            if (element.property_Type_ID === 1) {
-              const toast = this.notificationsService.warn(
-                "in one plot you can not add more than one   property if property type   residence/በአንድ መሬት ውስጥ የንብረት ዓይነት መኖሪያ ከሆነ ከአንድ በላይ ንብረት ማከል አይችሉም"
-              );
-              return false;
-            } else {
-              return true;
-            }
-          });
-        } else {
-          return true;
-        }
-      });
-    return false;
+      .toPromise();
+
+    return a;
   }
+  async checkpropertyType() {
+    let PropertyListtim = await this.getPropertylis();
+    console.log(
+      "🚀 ~ PropertyComponent ~ checkpropertyType ~ PropertyListtim:",
+      PropertyListtim
+    );
+    let finapropertylist = PropertyListtim.procProperty_Registrations;
+    if (finapropertylist.length > 0) {
+      console.log(
+        "🚀 ~ PropertyComponent ~ checkpropertyType ~ finapropertylist:",
+        finapropertylist
+      );
+
+      for (let i = 0; i < finapropertylist.length; i++) {
+        if (finapropertylist[i].property_Type_ID === 1) {
+          const toast = this.notificationsService.warn(
+            "in one plot you can not add more than one   property if property type   residence/በአንድ መሬት ውስጥ የንብረት ዓይነት መኖሪያ ከሆነ ከአንድ በላይ ንብረት ማከል አይችሉም"
+          );
+          return false;
+        }
+      }
+    }
+    return true; // Return true if no warning condition is met
+  }
+
   async checkProperty(element) {
     if (element.property_ID !== "No Parent") {
       const b = await this.getdeed(element.property_ID);
@@ -1364,9 +1374,9 @@ export class PropertyComponent implements OnChanges {
                 );
 
                 if (!isdeedchildren) {
-                  const toast = this.notificationsService.warn(
-                    `Must add property location  for this property: ${element.property_ID}`
-                  );
+                  // const toast = this.notificationsService.warn(
+                  //   `Must add property location  for this property: ${element.property_ID}`
+                  // );
 
                   return;
                 } else {
@@ -1402,31 +1412,91 @@ export class PropertyComponent implements OnChanges {
             return true;
           }
         } else {
-          for (const elementchildren of element.children) {
+          // for (const elementchildren of element.children) {
+          //   console.log(
+          //     "🚀 ~ PropertyComponent ~ checkPropertylocation ~ elementchildren:",
+          //     elementchildren
+          //   );
+
+          //   const d: any = await this.getProploc(elementchildren.property_ID);
+          //   const f = Object.assign([], d);
+
+          //   const dlocation = f.procProporty_Locations.find(
+          //     (x) => x.Proporty_Id === elementchildren.property_ID
+          //   );
+          //   console.log(
+          //     "🚀 ~ PropertyComponent ~ checkPropertylocation ~ dlocation:",
+          //     dlocation
+          //   );
+          //   if (dlocation != undefined) {
+          //     if (dlocation.length === 0) {
+          //       const toast = this.notificationsService.warn(
+          //         `Must add title deed for this property: ${elementchildren.property_ID}`
+          //       );
+          //       return false;
+          //     }
+          //   }
+          // }
+          for (const elementChild of element.children) {
             console.log(
-              "🚀 ~ PropertyComponent ~ checkPropertylocation ~ elementchildren:",
-              elementchildren
+              "🚀 ~ PropertyComponent ~ checkPropertyLocation ~ elementChild:",
+              elementChild
             );
 
-            const d: any = await this.getProploc(elementchildren.property_ID);
-            const f = Object.assign([], d);
+            // Check if elementChild has children
+            if (
+              elementChild.children &&
+              Array.isArray(elementChild.children) &&
+              elementChild.children.length > 0
+            ) {
+              // elementChild has children, iterate over them
+              for (const subChild of elementChild.children) {
+                const subChildLocation: any = await this.getProploc(
+                  subChild.property_ID
+                );
+                const e = Object.assign([], subChildLocation);
+                console.log(
+                  "🚀 ~ PropertyComponent ~ checkPropertylocation ~ subChildLocation:",
+                  subChildLocation,
+                  subChild.property_ID,
+                  e
+                );
 
-            const dlocation = f.procProporty_Locations.find(
-              (x) => x.Proporty_Id === elementchildren.property_ID
-            );
-            console.log(
-              "🚀 ~ PropertyComponent ~ checkPropertylocation ~ dlocation:",
-              dlocation
-            );
-            if (dlocation != undefined) {
-              if (dlocation.length === 0) {
+                const subDLocation = e.procProporty_Locations.find(
+                  (x) => x.proporty_Id === subChild.property_ID
+                );
+                console.log(
+                  "🚀 ~ PropertyComponent ~ checkPropertyLocation ~ subDLocation:",
+                  subDLocation
+                );
+                if (!subDLocation || subDLocation.length === 0) {
+                  const toast = this.notificationsService.warn(
+                    `Must add property location for this property: ${subChild.property_ID}`
+                  );
+                  return false;
+                }
+              }
+            } else {
+              // elementChild does not have children
+              const childLocation: any = await this.getProploc(
+                elementChild.property_ID
+              );
+              const dLocation = childLocation.procProporty_Locations.find(
+                (x) => x.Proporty_Id === elementChild.property_ID
+              );
+              console.log(
+                "🚀 ~ PropertyComponent ~ checkPropertyLocation ~ dLocation:",
+                dLocation
+              );
+              if (!dLocation || dLocation.length === 0) {
                 const toast = this.notificationsService.warn(
-                  `Must add title deed for this property: ${elementchildren.property_ID}`
+                  `Must add property location for this property: ${elementChild.property_ID}`
                 );
                 return false;
               }
             }
           }
+
           return true;
         }
       }

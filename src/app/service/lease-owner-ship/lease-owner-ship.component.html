@@ -70,7 +70,7 @@
       <label for="LeaseContractNo" class="col-sm-3 col-form-label" translate>Lease Contract No</label>
       <div class="col-sm-9">
         <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="serviceService.leaseOwnerShip.Lease_No"
-          name="LeaseContractNo" id="LeaseContractNo" [placeholder]="'Lease Contract No' | translate">
+          name="LeaseContractNo" id="LeaseContractNo" [placeholder]="'Lease Contract No' | translate" readonly>
       </div>
     </div>
     <div class="form-group row col-md-6">
@@ -113,6 +113,26 @@
           name="Total_lease_amount_to_be_paid" id="Total_lease_amount_to_be_paid"
           [placeholder]="'Total lease amount to be paid' | translate"
           [ngClass]="{ 'is-invalid': Total_lease_amount_to_be_paid.invalid }" min="0">
+      </div>
+    </div>
+    <div class="form-group row col-md-6" *ngIf="islease">
+      <label for="Current_lease_bid_price" class="col-sm-3 col-form-label" translate>Current lease bid price</label>
+      <div class="col-sm-9">
+        <input type="number" class="form-control" [disabled]="disable"
+          [(ngModel)]="serviceService.leaseOwnerShip.Current_lease_bid_price" #Current_lease_bid_price="ngModel"
+          name="Current_lease_bid_price" id="Current_lease_bid_price"
+          [placeholder]="'Current lease bid price' | translate"
+          [ngClass]="{ 'is-invalid': Current_lease_bid_price.invalid }" min="0" [required]="serviceService.serviceisundoumneted">
+      </div>
+    </div>
+    <div class="form-group row col-md-6" *ngIf="islease">
+      <label for="Remaining_lease_payment" class="col-sm-3 col-form-label" translate>Remaining lease payment</label>
+      <div class="col-sm-9">
+        <input type="number" class="form-control" [disabled]="disable"
+          [(ngModel)]="serviceService.leaseOwnerShip.Remaining_lease_payment" #Remaining_lease_payment="ngModel"
+          name="Remaining_lease_payment" id="Remaining_lease_payment"
+          [placeholder]="'Current lease bid price' | translate"
+          [ngClass]="{ 'is-invalid': Remaining_lease_payment.invalid }" min="0" [required]="serviceService.serviceisundoumneted">
       </div>
     </div>
     <div class="form-group row col-md-6">
@@ -188,7 +208,7 @@
       <!--<th scope="col" translate>free hold</th>-->
       <th scope="col" translate>lease hold area</th>
       <th scope="col">
-        <button type="button" class="btn btn-primary" (click)=" addLease()" *ngIf="!disable" translate>Add New</button>
+        <button type="button" class="btn btn-primary" (click)="addLease()" *ngIf="!disable" translate>Add New</button>
       </th>
     </tr>
   </ng-template>
