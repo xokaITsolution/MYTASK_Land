@@ -28,7 +28,7 @@
 
         <input type="text" class="form-control" [disabled]="disable"  [(ngModel)]="serviceService.leaseOwnerShip.Free_Hold_M2"
           name="FreeHold" id="FreeHold" [placeholder]="'Free Hold' | translate" #FreeHold="ngModel"
-          [ngClass]="{ 'is-invalid': FreeHold.invalid }"  appNumberOnly required [readonly]="isfreehole">
+          [ngClass]="{ 'is-invalid': FreeHold.invalid }"  appNumberOnly required readonly>
           <span *ngIf="FreeHold.invalid " style="color: red;">accept only numbers and float numbers</span>
       
       </div>
@@ -62,7 +62,7 @@
       <div class="col-sm-9">
     <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="serviceService.leaseOwnerShip.Lease_Hold_M2" name="LandHold"
       id="LandHold" [placeholder]="'lease hold area' | translate" #LandHold="ngModel"
-      [ngClass]="{ 'is-invalid': LandHold.invalid }" appNumberOnly required  [readonly]="iislease">
+      [ngClass]="{ 'is-invalid': LandHold.invalid }" appNumberOnly required  readonly>
        <span *ngIf="LandHold.invalid " style="color: red;">accept only numbers and float numbers</span>
         </div>
     </div>
@@ -228,7 +228,12 @@
       </select>
       </td>
       <td>{{lease.Lease_No}}</td>
-      <td>{{lease.Amount_of_the_annual_lease_payment}}</td>
+      <td><select class="form-select" disabled [(ngModel)]="lease.Status" name="Status"
+        id="Status">
+    
+        <option *ngFor="let Status of serviceComponent.Lease_Stuts_Lookup;" [value]="Status.ID">{{Status.Status}}
+        </option>
+      </select></td>
      <!--<td>{{lease.Free_Hold_M2}}</td>--> 
       <td>{{lease.Lease_Hold_M2}}</td>
       <td>

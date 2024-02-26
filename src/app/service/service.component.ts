@@ -449,6 +449,20 @@ export class ServiceComponent implements OnInit {
             this.getAll(this.AppNo);
             const toast = this.notificationsService.success("Success", "Saved");
             this.validated = true;
+            if (
+              "5de49606-4dc6-4fb1-8f37-0cfc948fdc83".toLocaleLowerCase() ===
+                this.serviceService.Service_ID ||
+              "81f8770b-2c1e-4255-8be1-341089703fa1".toLocaleLowerCase() ===
+                this.serviceService.Service_ID ||
+              "8a8588ae-0267-48b7-88ac-f3f18ac02167".toLocaleLowerCase() ===
+                this.serviceService.Service_ID ||
+              "1c3d5a79-350e-4214-a343-d79e92a86e0f".toLocaleLowerCase() ===
+                this.serviceService.Service_ID
+            ) {
+              this._opened = true;
+            } else {
+              this.serviceService.disablefins = false;
+            }
           },
           (error) => {
             console.log("save-form-error", error);
@@ -859,46 +873,49 @@ export class ServiceComponent implements OnInit {
             ) {
               try {
                 if (
-                  this.RequerdDocspre[i].description_en.indexOf("DAR") !==
-                  -1
-                ) { const binaryData = atob(SavedFiles[j].document);
+                  this.RequerdDocspre[i].description_en.indexOf("DAR") !== -1
+                ) {
+                  const binaryData = atob(SavedFiles[j].document);
                   const arrayBuffer = new ArrayBuffer(binaryData.length);
                   const uint8Array = new Uint8Array(arrayBuffer);
-                  
+
                   for (let i = 0; i < binaryData.length; i++) {
                     uint8Array[i] = binaryData.charCodeAt(i);
                   }
-                  
+
                   // Create Blob
-                  const blob = new Blob([uint8Array], { type: 'application/pdf' });
-                  
+                  const blob = new Blob([uint8Array], {
+                    type: "application/pdf",
+                  });
+
                   // Set Blob URL as iframe source
                   // this.documentupload =  this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
-                  this.RequerdDocspre[i].mimeType = "application/pdf"
+                  this.RequerdDocspre[i].mimeType = "application/pdf";
                   this.RequerdDocspre[i].File =
                     this.sanitizer.bypassSecurityTrustResourceUrl(
                       URL.createObjectURL(blob)
                     );
-  
+
                   this.RequerdDocspre[i].document_code =
-                    SavedFiles[j].document_code;}
-                else{
-                let fileData = JSON.parse(atob(SavedFiles[j].document));
+                    SavedFiles[j].document_code;
+                } else {
+                  let fileData = JSON.parse(atob(SavedFiles[j].document));
 
-                let { type, data } = fileData;
+                  let { type, data } = fileData;
 
-                this.RequerdDocspre[i].mimeType = type;
-                this.RequerdDocspre[i].File =
-                  "data:" + type + ";base64, " + data;
-                console.log("this.RequerdDocspre[i].File", SavedFiles[j]);
+                  this.RequerdDocspre[i].mimeType = type;
+                  this.RequerdDocspre[i].File =
+                    "data:" + type + ";base64, " + data;
+                  console.log("this.RequerdDocspre[i].File", SavedFiles[j]);
 
-                this.RequerdDocspre[i].File =
-                  this.sanitizer.bypassSecurityTrustResourceUrl(
-                    this.RequerdDocspre[i].File
-                  );
+                  this.RequerdDocspre[i].File =
+                    this.sanitizer.bypassSecurityTrustResourceUrl(
+                      this.RequerdDocspre[i].File
+                    );
 
-                this.RequerdDocspre[i].document_code =
-                  SavedFiles[j].document_code;}
+                  this.RequerdDocspre[i].document_code =
+                    SavedFiles[j].document_code;
+                }
               } catch (e) {
                 console.error(e);
               }
@@ -985,7 +1002,6 @@ export class ServiceComponent implements OnInit {
     });
   }
   plot() {
-
     if (!this.Saved) {
       this.saveForm3("{}");
       this.Saved = true;
@@ -1086,7 +1102,7 @@ export class ServiceComponent implements OnInit {
   EnableFinss() {
     //  this.serviceService.disablefins = false;
     // console.log("enableningggg....", this.validated);
-this._opened=true
+
     // this.saveForm(this.jsonempty);
     this.validated = true;
     this.isvalidateds(
@@ -1381,6 +1397,7 @@ this._opened=true
 
       this.documentupload = base64FileData;
       this.previewdocumnet(base64FileData);
+
       console.log("this.DocID", base64file);
       this.serviceService
         .saveFile(
@@ -1400,13 +1417,29 @@ this._opened=true
               //   (message.loaded / message.total) * 100
               // );
               console.log(`Uploaded! ${this.progress}%`);
-              this.serviceService.disablefins=false
+              this.serviceService.disablefins = false;
               fild.clear();
               const toast = this.notificationsService.success(
                 "Success",
                 "Uploaded successfully"
               );
-              this.updated.emit({ docs: this.RequerdDocs });
+              for (let i = 0; i < this.RequerdDocs.length; i++) {
+                if (
+                  this.RequerdDocs[i].requirement_code ==
+                  RequiredDoc.requirement_code
+                ) {
+                  this.RequerdDocs[i].mimeType = type;
+                  this.RequerdDocs[i].File =
+                    "data:" + type + ";base64, " + base64file;
+
+                  this.RequerdDocs[i].File =
+                    this.sanitizer.bypassSecurityTrustResourceUrl(
+                      this.RequerdDocspreeach[i].File
+                    );
+                }
+              }
+
+              //this.updated.emit({ docs: this.RequerdDocs });
             } else {
               console.log("error");
               const toast = this.notificationsService.error(
@@ -1932,7 +1965,9 @@ this._opened=true
       this.preAppID = 8;
     } else if (task.form_code == "da8c5bd4-ea3d-4f02-b1b2-38cf26d6d1ff") {
       this.preAppID = 9;
-    } else if (task.form_code == "da8c5bd4-ea3d-4f02-b1b2-38cf26d6d1f") {
+    } else if (task.form_code == "cc71e78d-ef6f-4b93-8d8e-3996f1043fba") {
+      this.preAppID = 12;
+    } else if (task.form_code == "") {
       this.preAppID = 10;
     } else {
       this.preAppID = 1;
@@ -2066,7 +2101,7 @@ this._opened=true
       )
       .subscribe(
         (message) => {
-         // this.serviceService.disablefins = false;
+          // this.serviceService.disablefins = false;
           this.AppCode = message[0];
           this.DocID = message[1];
           this.todoID = message[2];
@@ -2080,6 +2115,20 @@ this._opened=true
               "Success",
               "Successfully Saved"
             );
+            if (
+              "5de49606-4dc6-4fb1-8f37-0cfc948fdc83".toLocaleLowerCase() ===
+                this.serviceService.Service_ID ||
+              "81f8770b-2c1e-4255-8be1-341089703fa1".toLocaleLowerCase() ===
+                this.serviceService.Service_ID ||
+              "8a8588ae-0267-48b7-88ac-f3f18ac02167".toLocaleLowerCase() ===
+                this.serviceService.Service_ID ||
+              "1c3d5a79-350e-4214-a343-d79e92a86e0f".toLocaleLowerCase() ===
+                this.serviceService.Service_ID
+            ) {
+              this._opened = true;
+            } else {
+              this.serviceService.disablefins = false;
+            }
           }
           this.validated = true;
         },
@@ -2141,7 +2190,9 @@ this._opened=true
             element.RoleId ==
               "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase() ||
             element.RoleId ==
-              "8ACA5AE9-7CE3-4964-AF89-F92A9DF3C2E2".toLocaleLowerCase()
+              "8ACA5AE9-7CE3-4964-AF89-F92A9DF3C2E2".toLocaleLowerCase() ||
+            element.RoleId ==
+              "8FF2B096-78E0-44A8-AB14-DA4CEB40D095".toLocaleLowerCase()
           ) {
             this.serviceService
               .getPropertyLists(this.licenceData.Parcel_ID)
@@ -2258,53 +2309,22 @@ this._opened=true
           element.RoleId ==
             "8ACA5AE9-7CE3-4964-AF89-F92A9DF3C2E2".toLocaleLowerCase() ||
           element.RoleId ==
-            "90F92BDA-AE31-4E85-BE8A-0D24D91FD883".toLocaleLowerCase() ||
-          element.RoleId ==
-            "4C36A953-9F11-4511-AC3B-8699803306C8".toLocaleLowerCase()
+            "8FF2B096-78E0-44A8-AB14-DA4CEB40D095".toLocaleLowerCase()
         ) {
-          if (
-            "05bf5de7-7170-43ce-8320-c747748d40e5".toLocaleLowerCase() ==
-              this.serviceService.Service_ID ||
-            "81f8770b-2c1e-4255-8be1-341089703fa1".toLocaleLowerCase() ==
-              this.serviceService.Service_ID ||
-            "de330170-550b-4bf2-9908-dc557f92a7cc".toLocaleLowerCase() ==
-              this.serviceService.Service_ID ||
-            "449a14bd-e0c0-4eda-92f5-68b3fcf83433".toLocaleLowerCase() ==
-              this.serviceService.Service_ID ||
-            "5fe58d7f-6e9f-452e-b85b-8cd501f020be".toLocaleLowerCase() ==
-              this.serviceService.Service_ID
-          ) {
-            if (this.licenceData.Parcel_ID) {
-              this.getplotlist(this.licenceData.Parcel_ID);
-            }
-            if (this.licenceData.Plot_Merge_1) {
-              this.getplotlist(this.licenceData.Plot_Merge_1);
-            }
-            if (this.licenceData.Plot_Merge_2) {
-              this.getplotlist(this.licenceData.Plot_Merge_2);
-            }
-            if (this.licenceData.Plot_Merge_3) {
-              this.getplotlist(this.licenceData.Plot_Merge_3);
-            }
-            if (this.licenceData.Plot_Merge_4) {
-              this.getplotlist(this.licenceData.Plot_Merge_4);
-            }
-          } else {
-            if (this.licenceData.Parcel_ID) {
-              this.getplotlist(this.licenceData.Parcel_ID);
-            }
-            if (this.licenceData.Plot_Merge_1) {
-              this.getplotlist(this.licenceData.Plot_Merge_1);
-            }
-            if (this.licenceData.Plot_Merge_2) {
-              this.getplotlist(this.licenceData.Plot_Merge_2);
-            }
-            if (this.licenceData.Plot_Merge_3) {
-              this.getplotlist(this.licenceData.Plot_Merge_3);
-            }
-            if (this.licenceData.Plot_Merge_4) {
-              this.getplotlist(this.licenceData.Plot_Merge_4);
-            }
+          if (this.licenceData.Parcel_ID) {
+            this.getplotlist(this.licenceData.Parcel_ID);
+          }
+          if (this.licenceData.Plot_Merge_1) {
+            this.getplotlist(this.licenceData.Plot_Merge_1);
+          }
+          if (this.licenceData.Plot_Merge_2) {
+            this.getplotlist(this.licenceData.Plot_Merge_2);
+          }
+          if (this.licenceData.Plot_Merge_3) {
+            this.getplotlist(this.licenceData.Plot_Merge_3);
+          }
+          if (this.licenceData.Plot_Merge_4) {
+            this.getplotlist(this.licenceData.Plot_Merge_4);
           }
         } else {
           console.log("responseresponseresponse", element);
@@ -2487,55 +2507,22 @@ this._opened=true
                   element.RoleId ==
                     "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase() ||
                   element.RoleId ==
-                    "8ACA5AE9-7CE3-4964-AF89-F92A9DF3C2E2".toLocaleLowerCase() ||
-                  element.RoleId ==
-                    "90F92BDA-AE31-4E85-BE8A-0D24D91FD883".toLocaleLowerCase() ||
-                  element.RoleId ==
-                    "4C36A953-9F11-4511-AC3B-8699803306C8".toLocaleLowerCase()
+                    "8ACA5AE9-7CE3-4964-AF89-F92A9DF3C2E2".toLocaleLowerCase()
                 ) {
-                  if (
-                    "05bf5de7-7170-43ce-8320-c747748d40e5".toLocaleLowerCase() ==
-                      this.serviceService.Service_ID ||
-                    "81f8770b-2c1e-4255-8be1-341089703fa1".toLocaleLowerCase() ==
-                      this.serviceService.Service_ID ||
-                    "de330170-550b-4bf2-9908-dc557f92a7cc".toLocaleLowerCase() ==
-                      this.serviceService.Service_ID ||
-                    "449a14bd-e0c0-4eda-92f5-68b3fcf83433".toLocaleLowerCase() ==
-                      this.serviceService.Service_ID ||
-                    "5fe58d7f-6e9f-452e-b85b-8cd501f020be".toLocaleLowerCase() ==
-                      this.serviceService.Service_ID
-                  ) {
-                    if (this.licenceData.Parcel_ID) {
-                      this.getplotlist(this.licenceData.Parcel_ID);
-                    }
-                    if (this.licenceData.Plot_Merge_1) {
-                      this.getplotlist(this.licenceData.Plot_Merge_1);
-                    }
-                    if (this.licenceData.Plot_Merge_2) {
-                      this.getplotlist(this.licenceData.Plot_Merge_2);
-                    }
-                    if (this.licenceData.Plot_Merge_3) {
-                      this.getplotlist(this.licenceData.Plot_Merge_3);
-                    }
-                    if (this.licenceData.Plot_Merge_4) {
-                      this.getplotlist(this.licenceData.Plot_Merge_4);
-                    }
-                  } else {
-                    if (this.licenceData.Parcel_ID) {
-                      this.getplotlist(this.licenceData.Parcel_ID);
-                    }
-                    if (this.licenceData.Plot_Merge_1) {
-                      this.getplotlist(this.licenceData.Plot_Merge_1);
-                    }
-                    if (this.licenceData.Plot_Merge_2) {
-                      this.getplotlist(this.licenceData.Plot_Merge_2);
-                    }
-                    if (this.licenceData.Plot_Merge_3) {
-                      this.getplotlist(this.licenceData.Plot_Merge_3);
-                    }
-                    if (this.licenceData.Plot_Merge_4) {
-                      this.getplotlist(this.licenceData.Plot_Merge_4);
-                    }
+                  if (this.licenceData.Parcel_ID) {
+                    this.getplotlist(this.licenceData.Parcel_ID);
+                  }
+                  if (this.licenceData.Plot_Merge_1) {
+                    this.getplotlist(this.licenceData.Plot_Merge_1);
+                  }
+                  if (this.licenceData.Plot_Merge_2) {
+                    this.getplotlist(this.licenceData.Plot_Merge_2);
+                  }
+                  if (this.licenceData.Plot_Merge_3) {
+                    this.getplotlist(this.licenceData.Plot_Merge_3);
+                  }
+                  if (this.licenceData.Plot_Merge_4) {
+                    this.getplotlist(this.licenceData.Plot_Merge_4);
                   }
                 } else {
                   console.log("responseresponseresponse", element);
@@ -2662,17 +2649,6 @@ this._opened=true
               }
             });
         }
-        this.ApplicationNumberlist.sort((a, b) => {
-          if (a.application_Date > b.application_Date) {
-            // console.log("sttatattgs", this.ApplicationNumberlist);
-            return -1;
-          } else if (a.application_Date < b.application_Date) {
-            //  console.log("sttatattgs", this.ApplicationNumberlist);
-            return 1;
-          } else {
-            return 0;
-          }
-        });
 
         //this.AppNoList;
         const uniqueJobMatchIDs = {};
@@ -2685,6 +2661,17 @@ this._opened=true
         });
         this.ApplicationNumberlist = uniqueData;
         console.log("finalystatuslist", this.ApplicationNumberlist);
+        this.ApplicationNumberlist.sort((a, b) => {
+          if (a.application_Date > b.application_Date) {
+            // console.log("sttatattgs", this.ApplicationNumberlist);
+            return -1;
+          } else if (a.application_Date < b.application_Date) {
+            //  console.log("sttatattgs", this.ApplicationNumberlist);
+            return 1;
+          } else {
+            return 0;
+          }
+        });
       });
   }
 

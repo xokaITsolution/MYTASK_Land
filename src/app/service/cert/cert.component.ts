@@ -17,6 +17,7 @@ import { BsModalRef, BsModalService } from "ngx-bootstrap";
 
 import { BehaviorSubject } from "rxjs";
 import { DomSanitizer } from "@angular/platform-browser";
+import { filter } from "jszip";
 
 @Component({
   selector: "app-cert",
@@ -70,6 +71,7 @@ export class CertComponent implements OnChanges {
   isnew: boolean;
   isnews: boolean;
   ceertform: any;
+  PropertyLists: any;
 
   constructor(
     private serviceService: ServiceService,
@@ -276,21 +278,7 @@ export class CertComponent implements OnChanges {
     this.certificateVersionService.getDeedTable(plotID).subscribe(
       (DeedTable: any) => {
         this.DeedTable = DeedTable;
-        // console.log(
-        //   "DeedTable =>> plaot id " + plotID + "  //  DeedTable" + DeedTable
-        // );
-        // if (this.DeedTable != undefined || this.DeedTable != null) {
-        //   for (let i = 0; i < this.DeedTable.length; i++) {
-        //     for (let j = 0; j < this.BaseTable.length; j++) {
-        //       if (
-        //         this.DeedTable[i].Title_Deed_No ==
-        //         this.BaseTable[j].Title_Deed_No
-        //       ) {
-        //         this.DeedTable.splice(i, 1);
-        //       }
-        //     }
-        //   }
-        // }
+
         this.DeedTable = this.DeedTable.filter((x) => x.Is_Active == true);
         console.log(
           "🚀 ~ CertComponent ~ getDeed ~ DeedTable:",
@@ -306,8 +294,35 @@ export class CertComponent implements OnChanges {
         });
         this.DeedTable = uniqueData;
         this.showFullForm = false;
+        this.serviceService
+          .getPropertyLists(plotID)
+          .subscribe(async (PropertyList: any) => {
+            this.PropertyLists = PropertyList.procProperty_Registrations;
+            this.PropertyLists = Object.assign([], this.PropertyLists);
+            console.log(
+              "🚀 ~ CertComponent ~ .subscribe ~ PropertyLists:",
+              this.PropertyLists,
+              this.DeedTable
+            );
+
+            this.DeedTable.forEach((deed) => {
+              const property = this.PropertyLists.filter(
+                (x) => x.property_ID === deed.Property_ID
+              );
+              console.log(
+                "🚀 ~ CertComponent ~ this.DeedTable.forEach ~ property:",
+                property
+              );
+              if (property) {
+                deed.property_Parent_ID = property[0].property_Parent_ID;
+              } else {
+                // Handle the case where no matching property is found for the deed
+                deed.property_Parent_ID = null; // or any default value as needed
+              }
+            });
+          });
         // this.DeedTable = (Object.assign([], this.DeedTable));
-        console.log("DeedTable", DeedTable);
+        console.log("DeedTable", this.DeedTable);
       },
       (error) => {
         console.log("error");
@@ -319,6 +334,7 @@ export class CertComponent implements OnChanges {
     this.serviceService.getBaseTable(ploat).subscribe(
       async (BaseTable: any) => {
         if (BaseTable) {
+          console.log("🚀 ~ CertComponent ~ BaseTable:", BaseTable);
           if (this.language == "amharic") {
             BaseTable[0].Registration_Date =
               await this.getgregorianToEthiopianDate(
@@ -329,18 +345,22 @@ export class CertComponent implements OnChanges {
         // this.BaseTable = (Object.assign([], this.BaseTable));
         const uniqueJobMatchIDs = {};
         const uniqueData = BaseTable.filter((item) => {
-          if (!uniqueJobMatchIDs[item.Ownership_ID]) {
-            uniqueJobMatchIDs[item.Ownership_ID] = true;
+          if (!uniqueJobMatchIDs[item.Title_Deed_No]) {
+            uniqueJobMatchIDs[item.Title_Deed_No] = true;
             return true;
           }
           return false;
         });
+        console.log(
+          "🚀 ~ CertComponent ~ uniqueData ~ uniqueData:",
+          uniqueData
+        );
         this.BaseTable = uniqueData;
         if (this.BaseTable.length > 0) {
           this.BaseTablefinal.push(this.BaseTable[0]);
           this.BaseTablefinal = this.BaseTablefinal.filter(
             (item, index, self) =>
-              self.findIndex((i) => i.Ownership_ID === item.Ownership_ID) ===
+              self.findIndex((i) => i.Title_Deed_No === item.Title_Deed_No) ===
               index
           );
           console.log("BaseTable", this.BaseTablefinal);
@@ -530,6 +550,7 @@ export class CertComponent implements OnChanges {
   SelectBase(base) {
     this.SelectedBase = base;
     this.DeedTableview = true;
+    this.disableTab = true;
     this.getCertificateVersion(base);
     console.log("base", base);
   }

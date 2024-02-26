@@ -232,17 +232,33 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     }
   }
   regionSelectedd(events) {
-    Regions.find((region) => {
-      if (region.orgCode == events) {
-        console.log("bbbb", events);
-        this.zoneOptions = region.woredas;
-        this.selectedRegion = region;
-        this.woredas = [];
-        this.plotManagment.land_Grade_ID;
-        return true;
-      }
-      return false;
+    this.serviceService.getworedabysubcity(events).subscribe((x: any) => {
+      this.zoneOptions = x.procWoreda_Lookups;
+      console.log(
+        "🚀 ~ PlotManagmentComponent ~ this.serviceService.getworedabysubcity ~ zoneOptions:",
+        this.zoneOptions
+      );
+      this.selectedRegion = this.zoneOptions[0];
+      //      if (region.orgCode == events) {
+      //   console.log("bbbb", events);
+      //   this.zoneOptions = region.woredas;
+      //   this.selectedRegion = region;
+      //   this.woredas = [];
+      //   this.plotManagment.land_Grade_ID;
+      //   return true;
+      // }
     });
+    // Regions.find((region) => {
+    //   if (region.orgCode == events) {
+    //     console.log("bbbb", events);
+    //     this.zoneOptions = region.woredas;
+    //     this.selectedRegion = region;
+    //     this.woredas = [];
+    //     this.plotManagment.land_Grade_ID;
+    //     return true;
+    //   }
+    //   return false;
+    // });
   }
   regionSelected(event) {
     Regions.find((region) => {
@@ -771,6 +787,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         this.serviceService.toMess = true;
         const toast = this.notificationsService.success("Success");
         this.plotManagment.plot_ID = deptSuspension[0].plot_ID;
+        this.serviceService.selectedplotid = this.plotManagment.plot_ID;
         this.plotManagment.parcel_No = deptSuspension[0].plot_ID;
         const warningMessage =
           "የሊዝ ወይም የነባር ይዞታ መመዝገቡን አረጋግጥ/Check lease or freehold record is active for this plot";

@@ -1,0 +1,218 @@
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-md-3" style="height: 400px; overflow-y: auto; width: fit-content;">
+            <div class="sidebar">
+                <!-- ... Your existing sidebar content ... -->
+                <h5 class="sub">Addis Ababa</h5>
+                <!-- <p-tree [value]="nodes" [metaKeySelection]="false" selectionMode="multiple" [(selection)]="selectedNode"
+          (onNodeSelect)="toggleLayer_Checked($event.node);" (onNodeUnselect)="toggleLayer_UnChecked($event)">
+          <ng-template let-node pTemplate="default">
+            <span [ngClass]="{'custom-selected-node': node.styleClass === 'custom-selected-node'?custom-selected-node:''}"
+              [style.background-color]="node.styleClass === 'custom-selected-node' ? node.randomColor : ''"
+              (click)="onLabelClick(node)">
+              {{node.label}}
+            </span>
+          </ng-template>
+        </p-tree> -->
+                <p-tree [value]="nodes" [metaKeySelection]="false" selectionMode="multiple"
+                    (onNodeSelect)="toggleLayer_Checked($event.node);" (onNodeExpand)="toggleLayer_expand($event);"
+                    (onNodeUnselect)="toggleLayer_UnChecked($event.node)">
+                    <ng-template let-node pTemplate="default">
+                        <span
+                            [ngClass]="{'custom-selected-node': node.styleClass === 'custom-selected-node'?custom-selected-node:''}"
+                            [style.background-color]="node.styleClass === 'custom-selected-node' ? node.randomColor : ''">
+                            {{node.label}}
+                        </span>
+                    </ng-template>
+                </p-tree>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="form-row">
+                <!-- ... Your existing form content ... -->
+                <div class="form-group row col-md-6">
+                    <label for="PlotID" class="col-sm-3 col-form-label" translate>Enter Coordinates</label>
+                    <div class="col-sm-9">
+                        <select disabled [(ngModel)]="selectedDatum" (change)="onDatumChange()" class="form-control">
+                            <option *ngFor="let datum of datums" [value]="datum">
+                                {{ datum }}
+                            </option>
+                        </select>
+                        <div *ngIf="selectedDatum">
+                            <!-- Define input boxes based on selected datum -->
+                            <div *ngIf="
+                              selectedDatum === 'Adindan / UTM zone 36N' ||
+                              selectedDatum === 'Adindan / UTM zone 37N' ||
+                              selectedDatum === 'Adindan / UTM zone 38N'
+                            ">
+                                <!-- Add input boxes with type for Adindan / UTM zone 36N, 37N, and 38N -->
+                                <div class="form-group input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">X</span>
+                                    </div>
+                                    <input type="number" class="form-control" [(ngModel)]="latitude" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">N</span>
+                                    </div>
+                                </div>
+                                <div class="form-group input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Y</span>
+                                    </div>
+                                    <input type="number" class="form-control" [(ngModel)]="longitude" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">E</span>
+                                    </div>
+                                </div>
+                                <div *ngIf="ispointadd" class="form-group input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Number of Add point</span>
+                                    </div>
+                                    <input type="number" readonly class="form-control" [(ngModel)]="numberOFaddpoint" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">P</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="selectedDatum === 'GCS Adindan'">
+                                <!-- Add input boxes with type for GCS Adindan -->
+                                <div class="form-group input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Latitude</span>
+                                    </div>
+                                    <input type="number" [(ngModel)]="latitudeDegrees" class="form-control" />
+                                    <input type="number" class="form-control" [(ngModel)]="latitudeMinutes" />
+                                    <input type="number" class="form-control" [(ngModel)]="latitudeSeconds" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">DMS</span>
+                                    </div>
+                                </div>
+                                <div class="form-group input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Longitude</span>
+                                    </div>
+                                    <input type="number" [(ngModel)]="longitudeDegrees" class="form-control" />
+                                    <input type="number" class="form-control" [(ngModel)]="longitudeMinutes" />
+                                    <input type="number" class="form-control" [(ngModel)]="longitudeSeconds" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">DMS</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="
+                              selectedDatum === 'WGS 1984 UTM Zone 36' ||
+                              selectedDatum === 'WGS 1984 UTM Zone 37' ||
+                              selectedDatum === 'WGS 1984 UTM Zone 38'
+                            ">
+                                <!-- Add input boxes with type for WGS 1984 UTM Zone 36, 37, and 38 -->
+                                <div class="form-group input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">X</span>
+                                    </div>
+                                    <input type="number" class="form-control" [(ngModel)]="latitude" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">E</span>
+                                    </div>
+                                </div>
+                                <div class="form-group input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Y</span>
+                                    </div>
+                                    <input type="number" class="form-control" [(ngModel)]="longitude" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">N</span>
+                                    </div>
+                                </div>
+                                <div *ngIf="ispointadd" class="form-group input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Number of Add point</span>
+                                    </div>
+                                    <input type="number" readonly class="form-control" [(ngModel)]="numberOFaddpoint" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">P</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-group row col-md-6">
+                    <label for="import" class="col-sm-4 col-form-label">Import From Excel:</label>
+                    <div class="col-sm-8">
+                        <input name="import" id="import" type="file" #fileInput (change)="importShapes($event)"
+                            accept=".xlsx" class="form-control" />
+                    </div>
+                    <label for="importt" class="col-sm-4 col-form-label">Import From shape File:</label>
+                    <div class="col-sm-8">
+                        <input name="import" id="importt" type="file" #fileInputt (change)="onFileSelected($event)"
+                            accept=".zip" class="form-control" required />
+                        <span style="color: red">
+                            Please upload a zip file containing .shp, .shx, and .dbf files.
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-3">
+                <button type="button" class="btn btn-primary mb-2" *ngIf="!disable" (click)="drawShape()">
+                    Add Point
+                </button>
+                <button type="button" class="btn btn-success mb-2" *ngIf="!disable" (click)="drawPolygon()">
+                    Draw Shape
+                </button>
+                <button type="button" class="btn btn-danger mb-2" *ngIf="!disable" (click)="removeShape()">
+                    Remove Shape
+                </button>
+                <button type="button" class="btn btn-info mb-2" *ngIf="!disable"
+                    (click)="convertToExcel(utmCoordinatesforallexcel)">
+                    Convert to Excel
+                </button>
+
+            </div>
+
+            <div id="mapp" style="width: 100%; height: 700px;"></div>
+
+            <div id="coordinateInfo" style="
+        bottom: 10px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 5px;
+      "></div>
+
+            <div *ngFor="let arrayof of arrayFoPolygonarea">
+                <li>
+                    {{ arrayof[0].Name }} :&nbsp;{{ arrayof[0].area }} &nbsp;{{
+                    arrayof[0].mesurment
+                    }}
+                </li>
+            </div>
+
+            <p>Total area: {{ ServiceService.Totalarea }}M<sup>2</sup></p>
+            <!-- <button (click)="saveMapAsImage()">Start Screenshot</button> -->
+        </div>
+    </div>
+</div>
+
+
+<p-dialog [header]="'Confirmation' | translate" [(visible)]="ServiceService.isconfirmsave " [responsive]="true"
+    [width]="300" [minY]="40" [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                         'max-height': '80vh','min-height':'50px'}">
+    <p translate>
+        {{message | translate}}
+    </p>
+
+    <p-footer>
+        <button type="button" pButton icon="pi pi-check"
+            (click)="ServiceService.isconfirmsave =false;updateplote(arrayproporty)"
+            [label]="'yes' | translate"></button>
+        <button type="button" pButton icon="pi pi-close" (click)="ServiceService.isconfirmsave =true;checkvalidetion()"
+            [label]="'no'| translate " class="ui-button-secondary"></button>
+    </p-footer>
+</p-dialog>
+<simple-notifications></simple-notifications>
+
+<!-- <button type="button" (click)="takeScreenshot()"> takeScreenshot</button> -->
+<!-- <button type="button" (click)="checkUTMtolatlong()">UTMTOLATLONG</button> -->

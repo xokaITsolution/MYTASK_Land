@@ -6,7 +6,7 @@
       <ng-template pTemplate="header">
         <tr>
           <th scope="col" translate>Title Deed No</th>
-          <th scope="col" translate>Registration Date</th>
+          <!-- <th scope="col" translate>Registration Date</th> -->
           <th scope="col" translate>{{Fields.FIELD_ONE}}</th>
           <th scope="col">
             <div *ngIf="BaseTablefinal">
@@ -21,8 +21,8 @@
       <ng-template pTemplate="body" let-Base let-rowData>
         <tr class="aaaa" 
          (click)='SelectedBase = rowData;' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === SelectedBase">
-          <td class="fit-content-cell">{{Base.Title_Deed_No}}</td>
-          <td class="fit-content-cell">{{Base.Registration_Date}}</td>
+          <td>{{Base.Title_Deed_No}}</td>
+          <!-- <td class="fit-content-cell">{{Base.Registration_Date | date}}</td> -->
           <td class="fit-content-cell">
             <select disabled class="form-control" [disabled]="disable" [(ngModel)]="Base.SDP_ID" name="SubCity"
               id="SubCity">
@@ -53,8 +53,8 @@
             <th scope="col" translate>Transfer ID</th>
             <th scope="col" translate>Version No</th>
             <th scope="col" translate>Is Active</th>
-            <th scope="col" translate>Is printed</th>
-            <th scope="col" translate>Is issued</th>
+            <!-- <th scope="col" translate>Is printed</th>
+            <th scope="col" translate>Is issued</th> -->
             <th scope="col">
               <button type="button" class="btn btn-primary" *ngIf="!disable" (click)="addversion()" translate>Add New</button>
             </th>
@@ -69,14 +69,14 @@
               <p-checkbox [disabled]="true" [(ngModel)]="version.is_Active" name="IsActive1" id="IsActive1"
                 binary="true"></p-checkbox>
             </td>
-            <td class="fit-content-cell">
+            <!-- <td class="fit-content-cell">
               <p-checkbox [disabled]="true" [(ngModel)]="version.is_Printed" name="IsActive1" id="IsActive1"
                 binary="true"></p-checkbox>
             </td>
             <td class="fit-content-cell">
               <p-checkbox [disabled]="true" [(ngModel)]="version.is_Issued" name="IsActive1" id="IsActive1"
                 binary="true"></p-checkbox>
-            </td>
+            </td> -->
             <td class="fit-content-cell">
               <button type="button" class="btn btn-primary" (click)="Selectversion(version)" translate>select</button>
             </td><td  *ngIf="isnews">
@@ -243,7 +243,7 @@
           <td>{{Deed.Ownership_ID}}</td>
           <td>{{Deed.Plot_ID}}</td>
           <td>{{Deed.Property_ID}}</td>
-          <td>{{Deed.Date}}</td>
+          <td>{{Deed.Date | date}}</td>
         </tr>
       </ng-template>
     </p-table>
@@ -277,25 +277,29 @@
           <th translate>Ownership ID</th>
           <th translate>Plot ID</th>
           <th translate>Property ID</th>
-          <th translate>Date</th>
+          <th translate>property_Parent_ID</th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-Deed>
-        <tr (click)="closedeedModal(Deed,'deed')">
-          <td class="fit-content-cell">{{Deed.Ownership_ID}}</td>
-          <td class="fit-content-cell">{{Deed.Plot_ID}}</td>
-          <td class="fit-content-cell">{{Deed.Property_ID}}</td>
-          <td class="fit-content-cell">{{Deed.Date}}</td>
-        </tr>
-      </ng-template>
+    <ng-template pTemplate="body" let-Deed>
+      <tr (click)="closedeedModal(Deed, 'deed')">
+        <td class="fit-content-cell">{{Deed.Ownership_ID}}</td>
+        <td class="fit-content-cell">{{Deed.Plot_ID}}</td>
+        <td class="fit-content-cell">{{Deed.Property_ID}}</td>
+        <td class="fit-content-cell"
+          [ngClass]="{'different-parent': Deed.property_Parent_ID !== '0' || Deed.property_Parent_ID == Deed.Property_ID }">{{Deed.property_Parent_ID}}</td>
+  
+      </tr>
+    </ng-template>
+
     </p-table>
   </div>
 </p-dialog>
 
+
 <p-dialog [(visible)]="ismodaEnable" 
   [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
  [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
-                         'max-height': '80vh','min-height':'250px'}">
+                         'max-height': '80vh','min-height':'700px'}">
   <div class="container">
 
     <iframe  class="responsive-iframe" [src]="ceertform" ></iframe>

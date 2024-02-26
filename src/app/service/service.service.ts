@@ -60,6 +60,8 @@ export class ServiceService {
     "view/View_GetcustomerAllWithVitalId/Customer_ID/";
   public CustomerByColumn =
     environment.rootPathApi + "Customer/procCustomer/Column/";
+  public woredabysubcity =
+    environment.rootPathApi + "Woreda_Lookup/procWoreda_Lookup";
   public QRcode = environment.rootPathApi + "QRCode/QRCode";
   public CustomerByColumn1 =
     environment.rootPathApi +
@@ -290,7 +292,8 @@ export class ServiceService {
     return this.http.get(this.DocumentArc);
   }
   getDocumentArcbyid(RID) {
-    return this.http.get(this.DocumentArc + "/" + RID);
+    const url = `${this.DocumentArc}/?=${RID}`;
+    return this.http.get(url);
   }
   getDocIdByAppNo(AppNo) {
     return this.http.get(this.DocByAppNo + AppNo);
@@ -370,6 +373,9 @@ export class ServiceService {
   }
   getCustomerByCols(col) {
     return this.http.get(this.CustomerByColumn + col);
+  }
+  getworedabysubcity(col) {
+    return this.http.get(this.woredabysubcity + "/" + col);
   }
   getuserName(Appno) {
     return this.http.get(this.getusernameUrl + Appno);

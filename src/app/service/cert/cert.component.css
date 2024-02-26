@@ -24,3 +24,7 @@
       height: 100%;
       border: none;
       }
+            .different-parent {
+            color: rgb(255, 0, 0);
+              pointer-events: none;
+            }

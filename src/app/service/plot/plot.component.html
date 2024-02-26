@@ -157,23 +157,58 @@
       </div>
       <div class="ngxsmartmodal-footer" *ngIf="!serviceService.isconfirmsave">
         <!-- Modal footer content -->
-        <div class="modal-footer">
-          <button type="button" *ngIf="ischeckPlotaev" class="btn btn-primary" (click)="Savetempora()" translate>Save</button>
-          <button type="button" class="btn btn-primary" (click)="saveplotloc();ismodaEnable=false"
+       
+          <button type="button" style="float: right;" *ngIf="ischeckPlotaev" class="btn btn-primary m-2" (click)="Savetempora()" translate>Save</button>
+          <button type="button" style="float: right;" class="btn btn-primary m-2" (click)="saveplotloc();ismodaEnable=false"
             *ngIf="isplotllocnew && !ischeckPlotaev &&  !disable && serviceService.areaVerified" translate>Save</button>
           
-          <button type="button" *ngIf="!isplotllocnew && !ischeckPlotaev && !isfreehoadinsert && !disable" class="btn btn-primary"
+          <button type="button" style="float: right;" *ngIf="!isplotllocnew && !ischeckPlotaev && !isfreehoadinsert && !disable" class="btn btn-primary m-2"
             (click)="updateplotloc();closeModall()"  translate>Update</button>
-          <button type="button" *ngIf="isfreehoadinsert" class="btn btn-primary"
+          <button type="button" style="float: right;" *ngIf="isfreehoadinsert" class="btn btn-primary m-2"
             (click)="updateplotlocfreeHold();closeModall()" translate>Insert FreeHold </button>
           
-          <button type="button" class="btn btn-danger" (click)="ismodaEnable=false" translate>Close</button>
-        </div>
+          <button type="button" style="float: right;" class="btn btn-danger m-2" (click)="ismodaEnable=false" translate>Close</button>
+      
       </div>
     </div>
   </div>
 </div>
 
+<!-- Button trigger modal
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" (click)="getAllplotLocation();serviceService.check = true">
+  Launch demo modal
+</button>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <app-gis-map [disable]="disable" [geo]="geo" [changingg]="changingValue"
+            (completed)="updateplotandlicense($event)"
+            [mapConfig]="mapConfig" (mapLoaded)="handleMapLoaded($event)"></app-gis-map>
+      </div>
+      <div class="modal-footer">
+          <button type="button" *ngIf="ischeckPlotaev" class="btn btn-primary" (click)="Savetempora()" translate>Save</button>
+          <button type="button" class="btn btn-primary" (click)="saveplotloc();ismodaEnable=false"
+            *ngIf="isplotllocnew && !ischeckPlotaev &&  !disable && serviceService.areaVerified" translate>Save</button>
+          
+          <button type="button" *ngIf="!isplotllocnew && !ischeckPlotaev && !isfreehoadinsert && !disable" class="btn btn-primary"
+            (click)="updateplotloc();closeModall()" translate>Update</button>
+          <button type="button" *ngIf="isfreehoadinsert" class="btn btn-primary" (click)="updateplotlocfreeHold();closeModall()"
+            translate>Insert FreeHold </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+     
+      </div>
+    </div>
+  </div>
+</div> -->
 
 
 

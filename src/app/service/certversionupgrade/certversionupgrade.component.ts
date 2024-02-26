@@ -381,7 +381,7 @@ export class CertversionupgradeComponent implements OnChanges {
           this.BaseTablefinal.push(this.BaseTable[0]);
           this.BaseTablefinal = this.BaseTablefinal.filter(
             (item, index, self) =>
-              self.findIndex((i) => i.Ownership_ID === item.Ownership_ID) ===
+              self.findIndex((i) => i.Title_Deed_No === item.Title_Deed_No) ===
               index
           );
           console.log("BaseTable", this.BaseTablefinal);

@@ -58,6 +58,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
   iscanEdite: boolean;
   Lease_Type_Lookup: any;
   plotIdselected: any;
+  iseditablesize: boolean;
   constructor(
     private ngxSmartModalService: NgxSmartModalService,
     private leaseOwnerShipService: LeaseOwnerShipService,
@@ -201,6 +202,16 @@ export class LeaseOwnerShipComponent implements OnChanges {
         this.serviceService.leaseOwnerShip.Lease_Hold_M2;
       // leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
     }
+    if (
+      "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() ==
+        this.serviceService.Service_ID ||
+      "2B1FC99A-9705-4799-96B9-164BD3B1077E".toLocaleLowerCase() ==
+        this.serviceService.Service_ID
+    ) {
+      this.iseditablesize = true;
+    } else {
+      this.iseditablesize = false;
+    }
   }
   getcustomer(globvar) {
     console.log(globvar);
@@ -238,6 +249,16 @@ export class LeaseOwnerShipComponent implements OnChanges {
     }
   }
   async selectLease(task) {
+    if (
+      "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() ==
+        this.serviceService.Service_ID ||
+      "2B1FC99A-9705-4799-96B9-164BD3B1077E".toLocaleLowerCase() ==
+        this.serviceService.Service_ID
+    ) {
+      this.iseditablesize = true;
+    } else {
+      this.iseditablesize = false;
+    }
     console.log("tasktasktasktask", task);
     this.plotIdselected = task.Plot_ID;
     this.serviceService.Totalarea = task.Lease_Hold_M2 + task.Free_Hold_M2;
@@ -248,7 +269,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
     this.serviceService.currentplotsize =
       this.serviceService.leaseOwnerShip.Lease_Hold_M2 +
       this.serviceService.leaseOwnerShip.Lease_Hold_M2;
-
+    this.serviceService.leaseOwnerShip.Current_lease_bid_price = 0;
+    this.serviceService.leaseOwnerShip.Remaining_lease_payment = 0;
     this.addnew = false;
     // this.leaseForm = true;
     if (this.language == "amharic") {
@@ -344,6 +366,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
       "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() ==
         this.serviceService.Service_ID ||
       "2B1FC99A-9705-4799-96B9-164BD3B1077E".toLocaleLowerCase() ==
+        this.serviceService.Service_ID ||
+      "1c3d5a79-350e-4214-a343-d79e92a86e0f".toLocaleLowerCase() ==
         this.serviceService.Service_ID
     ) {
       this.serviceService.isleaseForm = true;
@@ -372,16 +396,29 @@ export class LeaseOwnerShipComponent implements OnChanges {
       this.serviceService.leaseOwnerShip.To_Do_ID = this.todoidcurrent;
       this.serviceService.leaseOwnerShip.Application_No = this.applicationo;
       this.serviceService.leaseOwnerShip.Lease_No = this.applicationo;
-      // this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
-      //   localStorage.getItem("PolygonAreaname");
-      this.serviceService.currentplotsize = parseFloat(
-        localStorage.getItem("PolygonAreaname")
-      );
+      if (this.SelectedPlot.plot_Size_M2 > 0) {
+        this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+          this.SelectedPlot.plot_Size_M2;
+      } else {
+        this.serviceService.currentplotsize = parseFloat(
+          localStorage.getItem("PolygonAreaname")
+        );
+      }
       // this.serviceService.leaseOwnerShip.SDP_ID = this.LicenceData.SDP_ID;
       this.serviceService.leaseOwnerShip.SDP_ID =
         this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
       this.addnew = true;
       this.leaseForm = true;
+    }
+    if (
+      "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() ==
+        this.serviceService.Service_ID ||
+      "2B1FC99A-9705-4799-96B9-164BD3B1077E".toLocaleLowerCase() ==
+        this.serviceService.Service_ID
+    ) {
+      this.iseditablesize = true;
+    } else {
+      this.iseditablesize = false;
     }
   }
 
@@ -585,18 +622,18 @@ export class LeaseOwnerShipComponent implements OnChanges {
               maxAreaDifferences
             );
 
-            if (areaDifferences <= maxAreaDifferences) {
-              this.serviceService.plotsizenotequal = false;
-            } else {
-              this.serviceService.plotsizenotequal = true;
-              const toast = this.notificationsService.warn(
-                `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
-          በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
-           ${Math.abs(
-             totalsize - parseInt(localStorage.getItem("PolygonAreaname"))
-           )}`
-              );
-            }
+            //   if (areaDifferences <= maxAreaDifferences) {
+            //     this.serviceService.plotsizenotequal = false;
+            //   } else {
+            //     this.serviceService.plotsizenotequal = true;
+            //     const toast = this.notificationsService.warn(
+            //       `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
+            // በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
+            //  ${Math.abs(
+            //    totalsize - parseInt(localStorage.getItem("PolygonAreaname"))
+            //  )}`
+            //     );
+            //   }
             // if (this.language == "amharic") {
             //   this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
             //     await this.getgregorianToEthiopianDate(
@@ -685,6 +722,16 @@ export class LeaseOwnerShipComponent implements OnChanges {
   //}
 
   async add() {
+    if (
+      this.serviceService.leaseOwnerShip.Customer_ID ===
+      "00000000-0000-0000-0000-000000000000"
+    ) {
+      const toast = this.notificationsService.warn(
+        "LEASE OWNERSHIP MUST HAVE CUSTOMER ID ,ድጋሜ ደንበኛን ይምረጡ "
+      );
+
+      return;
+    }
     const maxAreaDifferences =
       environment.Totalareatolerance * this.serviceService.currentplotsize;
     let totalpoltsize =
@@ -945,6 +992,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
   closeModal(customer) {
     this.visible = false;
     this.serviceService.leaseOwnerShip.Customer_ID = customer.customer_ID;
+
     if (this.language == "amharic") {
       this.Customer_NAME =
         customer.applicant_First_Name_AM +
