@@ -1,9 +1,5 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-<<<<<<< HEAD
-// import { ExplorationLicenseComponent } from "./exploration-license/exploration-license.component";
-=======
->>>>>>> 176174424cffe5ab114866905ac2fb5f7be4eea3
 import { GisComponent } from "./gis/gis.component";
 import { ServiceComponent } from "./service.component";
 import { CertletterComponent } from "./certletter/certletter.component";

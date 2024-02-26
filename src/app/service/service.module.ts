@@ -77,10 +77,6 @@ import { ReportDialogComponent } from "./report-dialog/report-dialog.component";
 //material
 import { ProgressSpinnerModule } from "primeng/progressspinner";
 import { NgxDocViewerModule } from "ngx-doc-viewer";
-<<<<<<< HEAD
-// import { ExplorationLicenseComponent } from "./exploration-license/exploration-license.component";
-=======
->>>>>>> 176174424cffe5ab114866905ac2fb5f7be4eea3
 import { NgxSimplePrintDirective } from "./ngx-simple-print.directive";
 import { GisMapComponent } from "./gis-map/gis-map.component";
 import { GisMapService } from "./gis-map/gis-map.service";
