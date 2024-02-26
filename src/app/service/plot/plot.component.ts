@@ -65,7 +65,12 @@ export class PlotComponent implements OnChanges {
   isMaximized: boolean;
   PlotManagementListfinal = [];
   maxheight: string = "500px";
-
+  convertedCoordinates: any = [];
+  plotidlist: any;
+  processedPlotIDs = new Set();
+  processedPlotIDsCoordinates = new Set();
+  isfreehoadinsert: boolean;
+  serviceisundoumneted: boolean;
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -81,6 +86,7 @@ export class PlotComponent implements OnChanges {
       "🚀 ~ file: plot.component.ts:79 ~ PlotComponent ~ ngOnChanges ~ allLicenceData:",
       this.serviceService.allLicenceData
     );
+
     //this.serviceService.disablefins = true;
     this.serviceService.toMes = true;
     if (environment.Lang_code === "am-et") {
@@ -94,6 +100,15 @@ export class PlotComponent implements OnChanges {
       this.PlotManagementListfinal,
       this.serviceService.Service_ID
     );
+    if (
+      this.serviceService.Service_ID ===
+        "de330170-550b-4bf2-9908-dc557f92a7cc" ||
+      this.serviceService.Service_ID === "449a14bd-e0c0-4eda-92f5-68b3fcf83433"
+    ) {
+      this.serviceService.serviceisundoumneted = true;
+    } else {
+      this.serviceService.serviceisundoumneted = false;
+    }
     this.PlotManagementListfinal = [];
     this.noinvalidplot = 0;
     console.log(
@@ -118,16 +133,23 @@ export class PlotComponent implements OnChanges {
     );
   }
 
+  // tellChild(aa) {
+  //   console.log("value is changing", aa);
+  //   const coordinatesarea = this.convertCoordinatesformatd(aa);
+
+  //   let areas = this.calculateUTMPolygonArea(coordinatesarea);
+  //   localStorage.setItem("PolygonAreaname", "" + areas.toFixed(2));
+
+  //   console.log("coordinatesarea", coordinatesarea, areas);
+  //   this.geo = aa;
+  //   this.serviceService.check = true;
+  //   this.changingValue.next(aa);
+  // }
   tellChild(aa) {
-    console.log("value is changing", aa);
-    const coordinatesarea = this.convertCoordinatesformatd(aa);
-
-    let areas = this.calculateUTMPolygonArea(coordinatesarea);
-    localStorage.setItem("PolygonAreaname", "" + areas.toFixed(2));
-
-    console.log("coordinatesarea", coordinatesarea, areas);
-    this.geo = aa;
-    this.serviceService.check = true;
+    this.convertedCoordinates.push(aa);
+    this.geo = this.convertedCoordinates;
+    console.log("value is changingg", this.geo);
+    this.serviceService.check = false;
     this.changingValue.next(aa);
   }
   convertCoordinatesformatd(inputData: any[][]): any[] {
@@ -146,6 +168,33 @@ export class PlotComponent implements OnChanges {
     }
     return outputData;
   }
+  getAllplotLocationafter() {
+    // if (this.PlotManagementListfinal.length > 0) {
+    //   this.SelectPLot(this.PlotManagementListfinal[0]);
+    // }
+    this.serviceService.fornewplotinsert = true;
+
+    this.ischeckPlotaev = true;
+    this.ismodaEnable = true;
+    this.serviceService.check = true;
+    this.calculettotal();
+  }
+  getAllplotLocation() {
+    this.isfreehoadinsert = false;
+    this.PlotManagementListfinal.forEach((element) => {
+      console.log(
+        "🚀 ~ PlotComponent ~ this.PlotManagementListfinal.forEach ~ element:",
+        element
+      );
+
+      // Check if the plot_ID has already been processed
+      if (!this.processedPlotIDs.has(element.plot_ID)) {
+        this.getplotlocbyid(element.plot_ID);
+        // Add the plot_ID to the set of processed plot IDs
+        this.processedPlotIDs.add(element.plot_ID);
+      }
+    });
+  }
 
   getplotlocbyid(plot_ID) {
     this.serviceService.check = true;
@@ -160,14 +209,46 @@ export class PlotComponent implements OnChanges {
         this.isplotllocnew = true;
       } else {
         this.platformLocation = this.plotloc[0];
-        console.log(this.plotloc[0]);
+        console.log("plotloc:plotloc:", this.plotloc[0]);
 
-        this.convertPolygonCoordinates(this.plotloc[0].geowithzone);
+        // Check if the plot_ID has already been processed before calling the method
+        if (!this.processedPlotIDsCoordinates.has(plot_ID)) {
+          this.convertPolygonCoordinates(
+            this.plotloc[0].geowithzone,
+            this.plotloc[0]
+          );
+          if (
+            this.plotloc[0].geoForwgs84 != null &&
+            this.plotloc[0].freholdgis
+          ) {
+            this.convertPolygonCoordinates(
+              this.plotloc[0].geoForwgs84,
+              plot_ID
+            );
+          }
 
-        this.isplotllocnew = false;
-        this.isfinished = true;
+          // Add the plot_ID to the set of processed plot IDs
+          this.processedPlotIDsCoordinates.add(plot_ID);
+        }
+        if (this.SelectedPlot) {
+          if (this.SelectedPlot.plot_ID == plot_ID) {
+            this.isplotllocnew = false;
+            this.isfinished = true;
+          }
+        }
       }
     });
+  }
+
+  openGIsFreehold() {
+    console.log("checkd openGIsFreehold");
+
+    this.ischeckPlotaev = false;
+    this.ismodaEnable = true;
+    this.serviceService.check = true;
+    this.isfreehoadinsert = true;
+    //localStorage.setItem("PolygonAreaname", "" + 0);
+    localStorage.setItem("PolygonAreanameFrehold", "" + 0);
   }
   calculateUTMPolygonArea(
     utmPoints: { northing: number; easting: number }[]
@@ -188,34 +269,156 @@ export class PlotComponent implements OnChanges {
 
     return Math.abs(area); // Take the absolute value to ensure a positive area
   }
-  convertPolygonCoordinates(polygonString: string): any[] {
+  // convertPolygonCoordinates(polygonString: string, plot_ID): any[] {
+  //   console.log(
+  //     "🚀 ~ PlotComponent ~ convertPolygonCoordinates ~ polygonString:",
+  //     polygonString
+  //   );
+
+  //   const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
+  //   console.log(
+  //     "🚀 ~ PlotComponent ~ convertPolygonCoordinates ~ d:",
+  //     coordinates
+  //   );
+
+  //   const result = [];
+
+  //   if (coordinates) {
+  //     for (const coord of coordinates) {
+  //       console.log("coordcoordcoord", coord);
+
+  //       const [easting, northing, hemisphere, zone] = coord.split(" ");
+
+  //       result.push({
+  //         northing: northing,
+  //         easting: easting,
+  //         hemisphere: hemisphere,
+  //         zone: zone,
+  //       });
+  //     }
+  //   }
+  //   console.log("resultresult", result);
+  //   this.convertCoordinates(result, plot_ID);
+
+  //   return result;
+  // }
+
+  convertPolygonCoordinates(polygonString: string, data): any[] {
     const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
+    console.log("🚀 ~ convertPolygonCoordinates ~ coordinates:", coordinates);
 
     const result = [];
 
     if (coordinates) {
+      const uniqueCoordinates = new Set(); // Using a Set to store unique coordinates
       for (const coord of coordinates) {
-        console.log("coordcoordcoord", coord);
-
         const [easting, northing, hemisphere, zone] = coord.split(" ");
+
+        // Check if the coordinate is unique before adding it to the result
+        const uniqueCoordString = `${easting},${northing}`;
+        if (!uniqueCoordinates.has(uniqueCoordString)) {
+          uniqueCoordinates.add(uniqueCoordString);
+
+          result.push({
+            northing: northing,
+            easting: easting,
+            hemisphere: hemisphere,
+            zone: zone,
+          });
+        }
+      }
+    }
+
+    // Validating the polygon
+    const isValidPolygon =
+      result.length >= 3 &&
+      result[0].northing === result[result.length - 1].northing &&
+      result[0].easting === result[result.length - 1].easting;
+
+    console.log("result", result);
+    console.log("isValidPolygon", isValidPolygon);
+
+    this.convertCoordinates(result, data);
+
+    return isValidPolygon ? result : [];
+  }
+  convertCoordinatesToObjects(coordinates: string[], plot_ID): any[] {
+    const result = [];
+
+    if (coordinates) {
+      for (const coord of coordinates) {
+        const coordsArray = coord.trim().split(/\s+/);
+        console.log(
+          "🚀 ~ PlotComponent ~ convertCoordinatesToObjects ~ coordsArray:",
+          coordsArray
+        );
+
+        const [easting, northing, hemisphere, zone] =
+          coordsArray.map(parseFloat);
 
         result.push({
           northing: northing,
           easting: easting,
-          hemisphere: hemisphere,
-          zone: zone,
+          hemisphere: "P",
+          zone: 37,
         });
       }
     }
-    console.log("result", result);
-    this.convertCoordinates(result);
-
+    console.log(
+      "🚀 ~ PlotComponent ~ convertCoordinatesToObjects ~ result:",
+      result
+    );
+    this.convertCoordinates(result, plot_ID);
     return result;
   }
-  convertCoordinates(data) {
+  extractAndConvertPolygon(polygonString: string, plot_ID): any[] {
+    const coordinatesRegex = /\((.*?)\)/;
+    const coordinatesMatch = polygonString.match(coordinatesRegex);
+    console.log(
+      "🚀 ~ PlotComponent ~ extractAndConvertPolygon ~ coordinatesMatch:",
+      coordinatesMatch
+    );
+
+    if (!coordinatesMatch) {
+      // Handle invalid input
+      return [];
+    }
+
+    const coordinatesString = coordinatesMatch[1];
+    const coordinatesArray = coordinatesString.split(", ");
+
+    return this.convertCoordinatesToObjects(coordinatesArray, plot_ID);
+  }
+
+  // convertCoordinates(data) {
+  //   const convertedCoordinates = [];
+  //   // Convert UTM coordinates to the desired format
+  //   convertedCoordinates.push(["northing", "easting", "hemisphere", "zone"]);
+
+  //   for (const coord of data) {
+  //     convertedCoordinates.push([
+  //       coord.northing,
+  //       coord.easting,
+  //       coord.hemisphere,
+  //       coord.zone,
+  //     ]);
+  //   }
+  //   this.tellChild(convertedCoordinates);
+  //   console.log(
+  //     "convertedCconvertedCoordinatesoordinates",
+  //     convertedCoordinates
+  //   );
+  // }
+  convertCoordinates(data, plot_ID) {
     const convertedCoordinates = [];
     // Convert UTM coordinates to the desired format
-    convertedCoordinates.push(["northing", "easting", "hemisphere", "zone"]);
+    convertedCoordinates.push([
+      "northing",
+      "easting",
+      "hemisphere",
+      "zone",
+      "plot_ID",
+    ]);
 
     for (const coord of data) {
       convertedCoordinates.push([
@@ -223,17 +426,28 @@ export class PlotComponent implements OnChanges {
         coord.easting,
         coord.hemisphere,
         coord.zone,
+        plot_ID,
       ]);
     }
-    this.tellChild(convertedCoordinates);
-    console.log(
-      "convertedCconvertedCoordinatesoordinates",
-      convertedCoordinates
-    );
+
+    const arrayOfArrays = [];
+
+    arrayOfArrays.push(convertedCoordinates);
+    console.log("convertedCconvertedCoordinatesoordinates", arrayOfArrays);
+    this.tellChild(arrayOfArrays);
   }
   closeModall() {
     // console.log('closeing.....');
     //this.modalRef.hide();
+    // Check if the value retrieved from localStorage is not null for Free_Hold_M2
+    const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
+    this.serviceService.leaseOwnerShip.Free_Hold_M2 =
+      freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
+
+    // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
+    const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+    this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+      leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
   }
   updateplotloc() {
     console.log("coordinatcoordinat", this.serviceService.coordinate);
@@ -244,8 +458,8 @@ export class PlotComponent implements OnChanges {
       );
       this.platformLocation.geo = coordinate2;
       this.platformLocation.geowithzone = coordinate;
-      this.platformLocation.geoForwgs84 =
-        this.serviceService.coordinateForwgs84;
+      // this.platformLocation.geoForwgs84 =
+      //   this.serviceService.coordinateForwgs84;
       this.platformLocation.ploteId = this.Parcel_ID;
       this.serviceService.getUserRole().subscribe((response: any) => {
         console.log("responseresponseresponse", response, response[0].RoleId);
@@ -276,12 +490,22 @@ export class PlotComponent implements OnChanges {
               "Sucess",
               "Succesfully Upadted"
             );
+            const freeHoldM2Value = localStorage.getItem(
+              "PolygonAreanameFrehold"
+            );
+            let freeHoldM2Valuesize =
+              freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
+
+            // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
+            const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+            let leaseHoldM2Valuesize =
+              leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
             const maxAreaDifferences =
               environment.Totalareatolerance * this.serviceService.Totalarea;
 
             const areaDifferences = Math.abs(
               this.SelectedPlot.plot_Size_M2 -
-                parseFloat(localStorage.getItem("PolygonAreaname"))
+                (leaseHoldM2Valuesize + freeHoldM2Valuesize)
             );
 
             if (areaDifferences <= maxAreaDifferences) {
@@ -293,13 +517,79 @@ export class PlotComponent implements OnChanges {
           በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
            ${Math.abs(
              this.SelectedPlot.plot_Size_M2 -
-               parseInt(localStorage.getItem("PolygonAreaname"))
+               (leaseHoldM2Valuesize + freeHoldM2Valuesize)
            )}`
               );
             }
             this.ismodaEnable = false;
 
-            this.getplotlocbyid(this.platformLocation.ploteId);
+            this.getAllplotLocation();
+          },
+          (error) => {
+            console.log("error");
+            const toast = this.notificationsService.error(
+              "error",
+              `unable to Update ${
+                error["status"] == 0
+                  ? error["message"]
+                  : JSON.stringify(JSON.stringify(error["error"]))
+              }`
+            );
+          }
+        );
+      });
+    }
+  }
+  updateplotlocfreeHold() {
+    this.serviceService.leaseOwnerShip.Free_Hold_M2 = parseFloat(
+      localStorage.getItem("PolygonAreanameFrehold")
+    );
+    console.log(
+      "coordinatcoordinat",
+      this.serviceService.leaseOwnerShip.Free_Hold_M2
+    );
+    if (this.serviceService.coordinate) {
+      let coordinatefreehold = this.convertToMultiPoints(
+        this.serviceService.coordinate
+      );
+      let coordinate = this.convertToMultiPoint(this.serviceService.coordinate);
+      this.platformLocation.geo = this.platformLocation.geo;
+      this.platformLocation.freholdgis = coordinatefreehold;
+      this.platformLocation.geoForwgs84 = coordinate;
+      this.platformLocation.ploteId = this.Parcel_ID;
+      this.serviceService.getUserRole().subscribe((response: any) => {
+        console.log("responseresponseresponse", response, response[0].RoleId);
+        this.platformLocation.updated_By = response[0].UserId;
+        this.platformLocation.updated_Date = new Date();
+        if (response[0].RoleId == "f8dda85e-f967-4ac5-bf79-4d989ecfb863") {
+          this.platformLocation.team_Leader_Approved_By = response[0].UserId;
+          this.platformLocation.team_Leader_Approved = true;
+          console.log(
+            this.platformLocation.team_Leader_Approved_By,
+            this.platformLocation.team_Leader_Approved
+          );
+        } else if (
+          response[0].RoleId == "fe7be2e0-e717-4230-b732-5b810a8bb875"
+        ) {
+          this.platformLocation.baseMap_Approved_By = response[0].UserId;
+          this.platformLocation.baseMap_Approved = true;
+          console.log(
+            this.platformLocation.team_Leader_Approved_By,
+            this.platformLocation.team_Leader_Approved
+          );
+        }
+        this.serviceService.updatePlotloc(this.platformLocation).subscribe(
+          (CustID) => {
+            this.serviceService.toMes = false;
+            //this.getplotloc(this.platformLocation.ploteId);
+            const toast = this.notificationsService.success(
+              "Sucess",
+              "Succesfully insert"
+            );
+
+            this.ismodaEnable = false;
+
+            this.getAllplotLocation();
           },
           (error) => {
             console.log("error");
@@ -337,12 +627,17 @@ export class PlotComponent implements OnChanges {
                 this.platformLocation.legal_Approved_By = element.userId;
                 this.platformLocation.legal_Approved = true;
               } else if (
-                element.roleId == "3ba734c5-d75a-44c7-8c47-5233431372ba"
+                element.roleId == "3ba734c5-d75a-44c7-8c47-5233431372ba" ||
+                element.roleId ==
+                  "1A4A2E38-E6A2-45CE-9BFB-B44B7541618C".toLocaleLowerCase()
               ) {
                 console.log(
                   "🚀 ~ file: plot-managment.component.ts:822 ~ response.forEach ~ element:",
                   element
                 );
+                this.platformLocation.tech_Approved_By = element.userId;
+                this.platformLocation.tech_Approved = true;
+              } else {
                 this.platformLocation.tech_Approved_By = element.userId;
                 this.platformLocation.tech_Approved = true;
               }
@@ -357,8 +652,8 @@ export class PlotComponent implements OnChanges {
           this.serviceService.coordinate
         );
         this.platformLocation.geowithzone = coordinate;
-        this.platformLocation.geoForwgs84 =
-          this.serviceService.coordinateForwgs84;
+        // this.platformLocation.geoForwgs84 =
+        //   this.serviceService.coordinateForwgs84;
         console.log("responseresponseresponse", response, response[0].RoleId);
 
         this.platformLocation.ploteId = this.Parcel_ID;
@@ -367,7 +662,7 @@ export class PlotComponent implements OnChanges {
         this.serviceService.savePlotloc(this.platformLocation).subscribe(
           (CustID) => {
             //this.getplotloc(this.platformLocation.ploteId);
-            this.getplotlocbyid(this.plot_ID);
+            this.getAllplotLocation();
             // this.serviceService.toMes = false;
             // this.serviceService.toMess = false;
             const toast = this.notificationsService.success(
@@ -391,6 +686,26 @@ export class PlotComponent implements OnChanges {
     }
   }
 
+  // convertToMultiPoint(
+  //   points: {
+  //     easting: number;
+  //     northing: number;
+  //     hemisphere: string;
+  //     zone: number;
+  //   }[]
+  // ): string {
+  //   const multiPointArray = points
+  //     .map(
+  //       (point) =>
+  //         `${point.easting} ${point.northing} ${point.hemisphere} ${point.zone}`
+  //     )
+  //     .join(", ");
+
+  //   // const multiPointString = `MULTIPOINT(${multiPointArray})`;
+  //   const multiPointString = `POLYGON((${multiPointArray}))`;
+
+  //   return multiPointString;
+  // }
   convertToMultiPoint(
     points: {
       easting: number;
@@ -399,6 +714,27 @@ export class PlotComponent implements OnChanges {
       zone: number;
     }[]
   ): string {
+    // Check if the input points form a valid polygon
+    if (
+      points.length < 3 || // At least three points are required for a polygon
+      points[0].easting !== points[points.length - 1].easting || // Check if the first and last points are the same
+      points[0].northing !== points[points.length - 1].northing
+    ) {
+      const toast = this.notificationsService.warn(
+        "Invalid polygon: The first and last points must be the same."
+      );
+      return;
+    }
+
+    // Remove the last point if it's identical to the first point
+    if (
+      points.length > 1 &&
+      points[0].easting === points[points.length - 2].easting &&
+      points[0].northing === points[points.length - 2].northing
+    ) {
+      points.pop();
+    }
+
     const multiPointArray = points
       .map(
         (point) =>
@@ -406,11 +742,11 @@ export class PlotComponent implements OnChanges {
       )
       .join(", ");
 
-    // const multiPointString = `MULTIPOINT(${multiPointArray})`;
     const multiPointString = `POLYGON((${multiPointArray}))`;
 
     return multiPointString;
   }
+
   convertToMultiPoints(
     points: { easting: number; northing: number }[]
   ): string {
@@ -565,6 +901,8 @@ export class PlotComponent implements OnChanges {
         this.serviceService.totalsizeformerage
       );
     }
+    localStorage.setItem("PolygonAreaname", "" + 0);
+    localStorage.setItem("PolygonAreanameFrehold", "" + 0);
   }
   getPlotManagement(Licence_Service_ID) {
     let a;
@@ -699,50 +1037,17 @@ export class PlotComponent implements OnChanges {
   }
   async SelectPLot(plot) {
     this.SelectedPlot = plot;
+    this.serviceService.fornewplotinsert = false;
     console.log("dfghgfd", plot);
     this.plot_ID = this.SelectedPlot.plot_ID;
+    this.serviceService.selectedplotid = this.plot_ID;
     this.serviceService.Totalarea = this.SelectedPlot.plot_Size_M2;
-    // const maxAreaDifferences =
-    //   environment.Totalareatolerance * this.serviceService.Totalarea;
-
-    // const areaDifferences = Math.abs(
-    //   this.SelectedPlot.plot_Size_M2 -
-    //     parseFloat(localStorage.getItem("PolygonAreaname"))
-    // );
-    // console.log(
-    //   maxAreaDifferences,
-    //   areaDifferences,
-    //   this.serviceService.leaselist
-    // );
-    this.getplotlocbyid(plot.plot_ID);
-    let totalleas = 0;
-    // this.serviceService.leaselist[0].Lease_Hold_M2 +
-    //   this.serviceService.leaselist[0].Free_Hold_M2;
-    // this.serviceService.leaselist.forEach((element) => {
-    //   let totalleaseach = element.Lease_Hold_M2 + element.Free_Hold_M2;
-    //   totalleas = totalleaseach + totalleas;
-    // });
-    // if (this.SelectedPlot.plot_Size_M2 <= totalleas) {
-    //   this.serviceService.plotsizenotequal = false;
-    // } else {
-    //   this.serviceService.plotsizenotequal = true;
-    //   const toast = this.notificationsService.warn(
-    //     `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
-    //       በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
-    //        ${Math.abs(
-    //          this.SelectedPlot.plot_Size_M2 -
-    //            parseInt(localStorage.getItem("PolygonAreaname"))
-    //        )}`
-    //   );
-    //}
-
     plot.SDP_ID = this.serviceComponent.licenceData.SDP_ID;
     plot.Licence_Service_ID = this.LicenceData.Licence_Service_ID;
     plot.Application_No = this.AppNo;
     if (this.language != "amharic") {
       plot.registration_Date = plot.registration_Date.split("T")[0];
-    }
-    if (this.language == "amharic") {
+    } else if (this.language == "amharic") {
       plot.registration_Date = await this.getgregorianToEthiopianDate(
         plot.registration_Date
       );
@@ -758,6 +1063,18 @@ export class PlotComponent implements OnChanges {
       }
     }
     // this.plotForm = true;
+    this.PlotManagementListfinal.forEach((element) => {
+      console.log(
+        "🚀 ~ PlotComponent ~ this.PlotManagementListfinal.forEach ~ element:",
+        element
+      );
+      // Check if the plot_ID has already been processed
+      if (!this.processedPlotIDs.has(element.plot_ID)) {
+        this.getplotlocbyid(element.plot_ID);
+        // Add the plot_ID to the set of processed plot IDs
+        this.processedPlotIDs.add(element.plot_ID);
+      }
+    });
   }
   highlighted;
   tab1;
@@ -1077,7 +1394,7 @@ export class PlotComponent implements OnChanges {
     // this.getPloat();
   }
 
-  DoneNew() {
+  async DoneNew() {
     this.serviceService.getPlotloc(this.plot_ID).subscribe((response: any) => {
       let plotloc = response.procPlot_Locations;
       if (plotloc.length > 0) {
@@ -1088,49 +1405,89 @@ export class PlotComponent implements OnChanges {
         return;
       }
     });
-    this.leaseOwnerShipService
-      .getAll(this.plot_ID)
-      .subscribe((CertificateVersion: any) => {
-        let tasks = CertificateVersion;
-        tasks = Object.assign([], tasks.list);
-        const totalsize = tasks
-          .filter((x) => parseInt(x.Status) === 1)
-          .reduce((sum, node) => {
-            sum +=
-              parseFloat(node.Free_Hold_M2) + parseFloat(node.Lease_Hold_M2);
+    for (let i = 0; i < this.PlotManagementListfinal.length; i++) {
+      const element: any = this.PlotManagementListfinal[i];
+      const isdeedchildren = await this.checkLease_and_Owned_Land(element);
 
-            return sum;
-          }, 0);
-        console.log(
-          "leaseOwnerShipService",
-          tasks,
-          this.serviceService.Totalarea,
-          totalsize
+      if (!isdeedchildren) {
+        const toast = this.notificationsService.warn(
+          `Must add  Lease awned  for this plot: ${element.plot_ID}`
         );
+        return;
+      } else {
+        if (
+          "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() !=
+            this.serviceService.Service_ID ||
+          "2B1FC99A-9705-4799-96B9-164BD3B1077E".toLocaleLowerCase() !=
+            this.serviceService.Service_ID
+        ) {
+          this.leaseOwnerShipService
+            .getAll(this.plot_ID)
+            .subscribe((CertificateVersion: any) => {
+              let tasks = CertificateVersion;
+              tasks = Object.assign([], tasks.list);
+              const uniquePlotIDs = new Set();
+              const totalsize = tasks
+                .filter((x) => parseInt(x.Status) === 1)
+                .reduce((sum, node) => {
+                  if (!uniquePlotIDs.has(node.Plot_ID)) {
+                    sum +=
+                      parseFloat(node.Free_Hold_M2) +
+                      parseFloat(node.Lease_Hold_M2);
+                    uniquePlotIDs.add(node.Plot_ID);
+                  }
 
-        if (tasks.length > 0) {
-          if (totalsize === this.serviceService.Totalarea) {
-            this.completed.emit();
-          } else {
-            const toast = this.notificationsService.warn(
-              `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
-          በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት`
-            );
-            return;
-          }
+                  return sum;
+                }, 0);
+              console.log(
+                "leaseOwnerShipService",
+                tasks,
+                this.serviceService.Totalarea,
+                totalsize
+              );
+
+              if (tasks.length > 0) {
+                if (totalsize === this.serviceService.Totalarea) {
+                  this.completed.emit();
+                } else {
+                  const toast = this.notificationsService.warn(
+                    `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
+                  በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት`
+                  );
+                  return;
+                }
+              } else {
+                const toast = this.notificationsService.warn(
+                  "before submit the form you have to register lease ownershipቅጹን ከማቅረቡ በፊት የሊዝ ባለቤትነት መመዝገብ አለብዎት"
+                );
+                return;
+              }
+            });
         } else {
-          const toast = this.notificationsService.warn(
-            "before submit the form you have to register lease ownershipቅጹን ከማቅረቡ በፊት የሊዝ ባለቤትነት መመዝገብ አለብዎት"
-          );
-          return;
+          this.completed.emit();
         }
-      });
+      }
+    }
 
     //this.serviceService.disablefins = false;
     this.plotForm = false;
     this.isvalidated();
     this.toLease = false;
     this.CanDone = false;
+  }
+  async getlese(plotID) {
+    var a: any = this.leaseOwnerShipService.getAll(plotID).toPromise();
+
+    return a;
+  }
+  async checkLease_and_Owned_Land(element) {
+    let b = await this.getlese(element.plot_ID);
+    b = Object.assign([], b.list);
+    if (b.length === 0) {
+      return false; // No deed record for current property
+    }
+
+    return true; // All children and descendants have deed records
   }
 
   EnableFinsLise() {

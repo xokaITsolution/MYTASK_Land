@@ -492,38 +492,7 @@ th {
   padding: 0;
 }
 
-* {
-  box-sizing: border-box;
-}
 
-*,
-::after,
-::before {
-  box-sizing: border-box;
-}
-
-*,
-::after,
-::before {
-  box-sizing: border-box;
-}
-
-*,
-::after,
-::before {
-  box-sizing: border-box;
-}
-
-* {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
-user agent stylesheet td {
-  display: table-cell;
-  vertical-align: inherit;
-}
 .uistatehighlight {
   background: rgb(13, 34, 75) !important;
   color: white !important;

@@ -144,14 +144,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
     this.routerService.params.subscribe((params) => {
       this.urlParams = params;
     });
-    if (
-      "2b1fc99a-9705-4799-96b9-164bd3b1077e" == this.Service_ID ||
-      "86997006-53c7-4bbd-9f56-e79721b4561e" == this.Service_ID
-    ) {
-      this.Isshow = true;
-    } else {
-      this.Isshow = false;
-    }
+
     this.deedform = false;
     this.getdeed(this.selectedpro.property_ID);
     this.titleDeedRegistration.ownership_ID = this.selectedpro.property_ID;
@@ -195,7 +188,18 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
       }
     );
   }
+  onOptionsSelected(e) {
+    console.log(
+      "🚀 ~ TitleDeedRegistrationComponent ~ onOptionsSelected ~ e:",
+      e
+    );
 
+    if (e == 2014 || e == 2044 || e == 2015) {
+      this.Isshow = true;
+    } else {
+      this.Isshow = false;
+    }
+  }
   // getdeed(propertyid) {
   //   console.log("propertyid", propertyid);
 
@@ -285,6 +289,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   }
 
   async add() {
+    this.titleDeedRegistration.pay_Capital_Gain = true;
     if (this.language === "amharic") {
       this.titleDeedRegistration.date = await this.getEthiopianToGregorian(
         this.titleDeedRegistration.date
@@ -408,6 +413,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
     this.Transfer_From_CustomerName = null;
     this.Transfer_To_CustomerName = null;
     this.titleDeedRegistration = new TitleDeedRegistration();
+    this.titleDeedRegistration.capital_Gain_Value = 0;
     this.titleDeedRegistration.property_ID = this.selectedpro.property_ID;
     this.titleDeedRegistration.is_Active = true;
   }
@@ -446,34 +452,53 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   closeModal(customer) {
     console.log(customer);
     if (
-      this.titleDeedRegistration.transfer_To_Customer == customer.customer_ID
+      this.serviceService.Service_ID !=
+        "793B8814-F845-429E-A472-DC47E797D3FE".toLocaleLowerCase() || //Merge  of two or more bordering plot managed by lease-lease and lease-freehold.
+      this.serviceService.Service_ID !=
+        "5DE49606-4DC6-4FB1-8F37-0CFC948FDC83".toLocaleLowerCase() || //Merge two or more bordering plot managed by the free hold
+      this.serviceService.Service_ID !=
+        "8A8588AE-0267-48B7-88AC-F3F18AC02167".toLocaleLowerCase()
     ) {
-      const toast = this.notificationsService.warn(
-        "warn",
-        "you enter same customer . you must enter different customer "
-      );
-    } else {
-      this.titleDeedRegistration.transfer_From_Customer = customer.customer_ID;
-      console.log("closeing.....");
-      this.Transfer_From_CustomerName = customer.applicant_First_Name_AM;
+      if (
+        this.titleDeedRegistration.transfer_To_Customer == customer.customer_ID
+      ) {
+        const toast = this.notificationsService.warn(
+          "warn",
+          "you enter same customer . you must enter different customer "
+        );
+      } else {
+        this.titleDeedRegistration.transfer_From_Customer =
+          customer.customer_ID;
+        console.log("closeing.....");
+        this.Transfer_From_CustomerName = customer.applicant_First_Name_AM;
+      }
     }
-
     // this.modalRef.hide();
   }
   closeModalTo(customer) {
     console.log(customer);
     if (
-      customer.customer_ID == this.titleDeedRegistration.transfer_From_Customer
+      this.serviceService.Service_ID !=
+        "793B8814-F845-429E-A472-DC47E797D3FE".toLocaleLowerCase() || //Merge  of two or more bordering plot managed by lease-lease and lease-freehold.
+      this.serviceService.Service_ID !=
+        "5DE49606-4DC6-4FB1-8F37-0CFC948FDC83".toLocaleLowerCase() || //Merge two or more bordering plot managed by the free hold
+      this.serviceService.Service_ID !=
+        "8A8588AE-0267-48B7-88AC-F3F18AC02167".toLocaleLowerCase()
     ) {
-      const toast = this.notificationsService.warn(
-        "warn",
-        "you enter same customer . you must enter different customer "
-      );
-    } else {
-      this.titleDeedRegistration.transfer_To_Customer = customer.customer_ID;
-      console.log("closeing.....");
-      this.Transfer_To_CustomerName = customer.applicant_First_Name_AM;
-    }
+      if (
+        customer.customer_ID ==
+        this.titleDeedRegistration.transfer_From_Customer
+      ) {
+        const toast = this.notificationsService.warn(
+          "warn",
+          "you enter same customer . you must enter different customer "
+        );
+      } else {
+        this.titleDeedRegistration.transfer_To_Customer = customer.customer_ID;
+        console.log("closeing.....");
+        this.Transfer_To_CustomerName = customer.applicant_First_Name_AM;
+      }
+    } //Plot Split service for any type of possession
     // this.modalRefTo.hide();
     //this.ngxSmartModalService.getModal(modal).close();
   }

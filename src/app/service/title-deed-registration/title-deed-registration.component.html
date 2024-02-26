@@ -241,8 +241,9 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
     <div class="form-group row col-md-7">
       <label for="TransferType" class="col-sm-3 col-form-label" translate>Transfer Type</label>
       <div class="col-sm-9">
-        <select [disabled]="disable" class="form-control" [(ngModel)]="titleDeedRegistration.transfer_Type" name="TransferType"
-          id="TransferType">
+        <select [disabled]="disable"  #mySelect  (change)='onOptionsSelected(mySelect.value)' class="form-control" [(ngModel)]="titleDeedRegistration.transfer_Type" name="TransferType"
+          id="TransferType" 
+           #TransferType="ngModel" [ngClass]="{ 'is-invalid': TransferType.invalid }" required>
           <option disabled translate>select</option>
           <option *ngFor="let TransferType of serviceComponent.TransferTypeLookUP;" [value]="TransferType.Transfer_ID">
             {{TransferType.Type}}</option>
@@ -257,14 +258,14 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
       </div>
     </div>
   </div>
-    <div class="form-group row col-md-7" *ngIf="Isshow">
+    <!-- <div class="form-group row col-md-7" *ngIf="Isshow">
       <label for="Pay_Capital_Gain" class="col-sm-3 col-form-label" translate="">Pay_Capital_Gain</label>
       <div class="col-sm-9">
     
         <p-checkbox [(ngModel)]="titleDeedRegistration.pay_Capital_Gain" name="Pay_Capital_Gain" id="IsActive1"
           binary="true"></p-checkbox>
       </div>
-    </div>
+    </div> -->
     <button type="button" class="btn btn-primary" *ngIf="!isnew && !disable" (click)="save();" [disabled]="!f.valid"
       translate>update</button>
     <button type="button" class="btn btn-primary" *ngIf="isnew && !disable" (click)="confirmsave();" [disabled]="!f.valid"

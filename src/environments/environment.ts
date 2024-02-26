@@ -13,10 +13,11 @@ export const environment = {
   //username: "BL_Tech_Officer",
   iconpath: window["iconpath"],
   formPath: window["formPath"],
-
-  //username: "AR_Tech_Officer",
-
-  username: "city_mgr",
+  city: window["city"],
+  username: "AR_Tech_Officer",
+  appbase: window["_app_base"],
+  location: window["locations"],
+  //username: "city_mgr",
   //username: "0910156313",
 
   // username: "BL_Cashier",

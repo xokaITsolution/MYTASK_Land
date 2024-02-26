@@ -24,6 +24,7 @@ import { GisMapService } from "../gis-map/gis-map.service";
 import { BehaviorSubject, Subject } from "rxjs";
 import * as proj4 from "proj4";
 import { ActivatedRoute } from "@angular/router";
+import { LeaseOwnerShipService } from "../lease-owner-ship/lease-owner-ship.service";
 
 @Component({
   selector: "app-plot-managment",
@@ -62,6 +63,8 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   plotlistnull: null;
   PlotManagementfilterd: any;
   serachplotExists: boolean;
+  messagefortoast: string;
+  isconfirmsaveplot: boolean;
 
   constructor(
     public serviceService: ServiceService,
@@ -74,7 +77,8 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     private routerService: ActivatedRoute,
     private modalService: BsModalService,
     public plotcomponent: PlotComponent,
-    public gisMapService: GisMapService
+    public gisMapService: GisMapService,
+    private leaseOwnerShipService: LeaseOwnerShipService
   ) {
     this.plotManagment = new PlotManagment();
     this.platformLocation = new PlatformLocation();
@@ -115,17 +119,23 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       console.log("plotManagment", this.SelectedPlot);
 
       this.plotManagment = this.SelectedPlot;
+      this.plotManagment.parcel_No = this.SelectedPlot.Application_No;
       this.plotManagment.plot_Status = 1;
-      this.getplotloc(this.plotManagment.plot_ID);
+      //this.getplotloc(this.plotManagment.plot_ID);
       this.regionSelectedd(this.plotManagment.sdP_ID);
     }
-    console.log("chang detected");
 
-    if (this.plotManagment["plot_ID"]) {
-      this.isnew = this.plotManagment["parcel_No"] ? false : true;
-      this.isploatDisabled = true;
+    console.log("chang detected");
+    if (!this.serviceService.fornewplotinsert) {
+      if (this.plotManagment["plot_ID"]) {
+        this.isnew = this.plotManagment["plot_ID"] ? false : true;
+        this.isploatDisabled = true;
+      } else {
+        this.isnew = this.plotManagment["plot_ID"] ? false : true;
+        this.isploatDisabled = false;
+      }
     } else {
-      this.isnew = this.plotManagment["parcel_No"] ? false : true;
+      this.isnew = true;
       this.isploatDisabled = false;
     }
 
@@ -668,11 +678,27 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       });
     }
   }
+  checkplothavecertificet() {
+    this.serviceService
+      .GetView_ForApicheckcertificateVersion(this.plotManagment.plot_ID)
+      .subscribe((rec: any) => {
+        console.log("🚀 ~ PlotManagmentComponent ~ .subscribe ~ rec:", rec);
+
+        if (rec.length > 0) {
+          this.messagefortoast = `The plot with ID ${rec[0].plot_ID} currently has an active map certificate version identified by the title deed number ${rec[0].title_Deed_No}. Would you like to deactivate the map certificate version? Upon clicking 'Yes,' the map will be deactivated.`;
+          // console.log(
+          // //   "🚀 ~ PlotManagmentComponent ~ .subscribe ~ messagefortoast:",
+          // //   this.messagefortoast
+          // // );
+          this.isconfirmsaveplot = true;
+        } else {
+          this.Delete();
+          this.isconfirmsaveplot = false;
+        }
+      });
+  }
 
   async Delete() {
-    // this.confirmationService.confirm({
-    //   message: 'Are you sure u want to delete this Plot?',
-    //   accept: () => {
     console.log("this.plotManagment", this.plotManagment);
 
     if (this.language === "amharic") {
@@ -680,7 +706,6 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         this.plotManagment.registration_Date
       );
     }
-
     this.plotManagment.is_Deleted = true;
     this.ploatManagmentService.save(this.plotManagment).subscribe(
       async (deptSuspension) => {
@@ -728,7 +753,6 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         }
       }
     );
-    console.log("saveing....");
 
     //   });
   }
@@ -822,11 +846,11 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
 
             console.log("coordinatecoordinate", coordinates);
             this.platformLocation.geo = coordinates;
-            this.platformLocation.geoForwgs84 =
-              this.serviceService.coordinateForwgs84;
+            // this.platformLocation.geoForwgs84 =
+            //   this.serviceService.coordinateForwgs84;
             let coordinate = this.convertToMultiPoint(cordinatetemp);
             this.platformLocation.geowithzone = coordinate;
-            console.log("responseresponseresponse", response, response[0]);
+            console.log("responseresponseresponse", response);
 
             this.platformLocation.ploteId = this.plotManagment.parcel_No;
             this.platformLocation.created_By = response[0].RoleId;
@@ -880,6 +904,23 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       });
     }
   }
+
+  checkRadioButtons(selected) {
+    // Check if one of the radio buttons is checked
+    if (selected == 1988) {
+      this.plotManagment.iS1988 = true;
+      this.plotManagment.iS1997 = false;
+      this.plotManagment.iS2023 = false;
+    } else if (selected == 1997) {
+      this.plotManagment.iS1988 = false;
+      this.plotManagment.iS1997 = true;
+      this.plotManagment.iS2023 = false;
+    } else {
+      this.plotManagment.iS1988 = false;
+      this.plotManagment.iS1997 = false;
+      this.plotManagment.iS2023 = true;
+    }
+  }
 }
 
 export class PlotManagment {
@@ -921,6 +962,9 @@ export class PlotManagment {
   public nortech_No: string;
   public licence_Service_ID;
   public application_No;
+  public iS1988: any;
+  public iS1997: any;
+  public iS2023: any;
 }
 export class PlatformLocation {
   public ploteId: any;
@@ -943,4 +987,5 @@ export class PlatformLocation {
   public tech_Approved_By: any;
   public geowithzone: any;
   public geoForwgs84: any;
+  public freholdgis: any;
 }

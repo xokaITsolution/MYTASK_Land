@@ -217,6 +217,9 @@ export class ServiceComponent implements OnInit {
   hid: boolean;
   procView_RecordAppNoAndDocIdByAppNo: any;
   selectedeachapp: any;
+  eid: any;
+  SuperviedUsers: any;
+  isSuperviedUsers: boolean;
   constructor(
     private modalService: BsModalService,
     private activatedRoute: ActivatedRoute,
@@ -231,43 +234,231 @@ export class ServiceComponent implements OnInit {
   ) {}
 
   hide = true;
-
   saveFormm(formData) {
-    console.log("save-form", JSON.stringify(formData));
-    this.serviceService
-      .saveFormm(
-        this.licenceData
-          ? this.licenceData.Licence_Service_ID
-          : this.Service_ID,
-        this.licenceData
-          ? this.licenceData.Service_ID
-          : "00000000-0000-0000-0000-000000000000",
-        this.tskID,
-        this.SDP_ID,
-        JSON.stringify(formData),
-        this.DocID || "00000000-0000-0000-0000-000000000000",
-        this.todoID || "00000000-0000-0000-0000-000000000000"
-      )
-      .subscribe(
-        (response) => {
-          console.log("save-from-response", response);
+    if ("de4937d8-bdcd-46d6-8749-dc31c9f3adcf" == this.SDP_ID) {
+      if (environment.subcity == "arada") {
+        this.AppNo = "6921d772-3a1c-4641-95a0-0ab320bac3e2";
+      } else if (environment.subcity == "bole") {
+        this.AppNo = "89eb1aec-c875-4a08-aaf6-2c36c0864979";
+      } else if (environment.subcity == "nifasS") {
+        this.AppNo = "f8ea62db-05bc-4f1a-ab30-4e926d43e3fb";
+      } else if (environment.subcity == "gullele") {
+        this.AppNo = "6a8c042f-a3e1-4375-9769-54d94c2312c6";
+      } else if (environment.subcity == "addisK") {
+        this.AppNo = "7101d44d-97d5-41aa-957d-82f36d928c07";
+      } else if (environment.subcity == "lideta") {
+        this.AppNo = "e4d8219e-51f9-40cb-9d53-883c6ca9aaa3";
+      } else if (environment.subcity == "lemiK") {
+        this.AppNo = "f02e9467-1b7d-4350-bee7-9844d4f56da0";
+      } else if (environment.subcity == "yeka") {
+        this.AppNo = "8222f028-5fe3-4047-9a50-b52bfa64c851";
+      } else if (environment.subcity == "akakyK") {
+        this.AppNo = "08f9c927-6366-467a-ba99-c837c5add427";
+      } else if (environment.subcity == "kirkos") {
+        this.AppNo = "aaa5094c-8899-4708-9f7b-d8ff634a3540";
+      } else if (environment.subcity == "kolfeK") {
+        this.AppNo = "930d1c20-9e0e-4a50-9eb2-e542fafbad68";
+      } else if (environment.subcity == "central") {
+        this.AppNo = "275619f2-69c2-4fb7-a053-938f0b62b088";
+      }
+      if (this.Licence_Service_ID == undefined) {
+        this.Licence_Service_ID = "00000000-0000-0000-0000-000000000000";
+        this.DocID = "00000000-0000-0000-0000-000000000000";
+        this.todoID = "00000000-0000-0000-0000-000000000000";
+        this.Service_ID = this.SDP_ID;
+      }
+      //let doc_id = this.serviceService.docId ? this.serviceService.docId : '00000000-0000-0000-0000-000000000000';
+      // this.serviceService.saveForm(this.Licence_Service_ID, this.Service_ID, this.tskID, this.SDP_ID, JSON.stringify(formData), this.DocID, this.todoID).subscribe(message => {
+      this.serviceService
+        .saveForm(
+          this.Licence_Service_ID,
+          this.Service_ID,
+          this.tskID,
+          this.AppNo,
+          JSON.stringify(formData),
+          this.DocID,
+          this.todoID
+        )
+        .subscribe(
+          (message) => {
+            this.serviceService.disablefins = false;
+            this.AppCode = message[0];
+            this.DocID = message[1];
+            this.todoID = message[2];
+            this.getAll(message[0]);
 
-          this.serviceService.disablefins = false;
-          this.AppNo = response[0];
-          this.DocID = response[1];
-          //  this.todoID = response[2];
-          this.getAll(this.AppNo);
-          const toast = this.notificationsService.success("Success", "Saved");
-          this.validated = true;
-        },
-        (error) => {
-          console.log("save-form-error", error);
-          const toast = this.notificationsService.error(
-            "Error",
-            "SomeThing Went Wrong"
-          );
-        }
-      );
+            if (formData == "{}") {
+              const toast = this.notificationsService;
+            } else {
+              const toast = this.notificationsService.success(
+                "Success",
+                "Successfully Saved"
+              );
+            }
+            this.validated = true;
+          },
+
+          (error) => {
+            if (formData == "{}") {
+              const toast = this.notificationsService;
+            } else {
+              const toast = this.notificationsService.error(
+                "Error",
+                "SomeThing Went Wrong"
+              );
+            }
+          }
+        );
+    } else {
+      console.log("save-form", JSON.stringify(formData));
+      this.serviceService
+        .saveFormm(
+          this.licenceData
+            ? this.licenceData.Licence_Service_ID
+            : this.Service_ID,
+          this.licenceData
+            ? this.licenceData.Service_ID
+            : "00000000-0000-0000-0000-000000000000",
+          this.tskID,
+          this.SDP_ID,
+          JSON.stringify(formData),
+          this.DocID || "00000000-0000-0000-0000-000000000000",
+          this.todoID || "00000000-0000-0000-0000-000000000000"
+        )
+        .subscribe(
+          (response) => {
+            console.log("save-from-response", response);
+
+            this.serviceService.disablefins = false;
+            this.AppNo = response[0];
+            this.DocID = response[1];
+            //this.todoID = response[2];
+            this.getAll(this.AppNo);
+            const toast = this.notificationsService.success("Success", "Saved");
+            this.validated = true;
+          },
+          (error) => {
+            console.log("save-form-error", error);
+            const toast = this.notificationsService.error(
+              "Error",
+              "SomeThing Went Wrong"
+            );
+          }
+        );
+    }
+  }
+  saveFormmplot(formData) {
+    if ("de4937d8-bdcd-46d6-8749-dc31c9f3adcf" == this.SDP_ID) {
+      if (environment.subcity == "arada") {
+        this.AppNo = "6921d772-3a1c-4641-95a0-0ab320bac3e2";
+      } else if (environment.subcity == "bole") {
+        this.AppNo = "89eb1aec-c875-4a08-aaf6-2c36c0864979";
+      } else if (environment.subcity == "nifasS") {
+        this.AppNo = "f8ea62db-05bc-4f1a-ab30-4e926d43e3fb";
+      } else if (environment.subcity == "gullele") {
+        this.AppNo = "6a8c042f-a3e1-4375-9769-54d94c2312c6";
+      } else if (environment.subcity == "addisK") {
+        this.AppNo = "7101d44d-97d5-41aa-957d-82f36d928c07";
+      } else if (environment.subcity == "lideta") {
+        this.AppNo = "e4d8219e-51f9-40cb-9d53-883c6ca9aaa3";
+      } else if (environment.subcity == "lemiK") {
+        this.AppNo = "f02e9467-1b7d-4350-bee7-9844d4f56da0";
+      } else if (environment.subcity == "yeka") {
+        this.AppNo = "8222f028-5fe3-4047-9a50-b52bfa64c851";
+      } else if (environment.subcity == "akakyK") {
+        this.AppNo = "08f9c927-6366-467a-ba99-c837c5add427";
+      } else if (environment.subcity == "kirkos") {
+        this.AppNo = "aaa5094c-8899-4708-9f7b-d8ff634a3540";
+      } else if (environment.subcity == "kolfeK") {
+        this.AppNo = "930d1c20-9e0e-4a50-9eb2-e542fafbad68";
+      } else if (environment.subcity == "central") {
+        this.AppNo = "275619f2-69c2-4fb7-a053-938f0b62b088";
+      }
+      if (this.Licence_Service_ID == undefined) {
+        this.Licence_Service_ID = "00000000-0000-0000-0000-000000000000";
+        this.DocID = "00000000-0000-0000-0000-000000000000";
+        this.todoID = "00000000-0000-0000-0000-000000000000";
+        this.Service_ID = this.SDP_ID;
+      }
+      //let doc_id = this.serviceService.docId ? this.serviceService.docId : '00000000-0000-0000-0000-000000000000';
+      // this.serviceService.saveForm(this.Licence_Service_ID, this.Service_ID, this.tskID, this.SDP_ID, JSON.stringify(formData), this.DocID, this.todoID).subscribe(message => {
+      this.serviceService
+        .saveForm(
+          this.Licence_Service_ID,
+          this.Service_ID,
+          this.tskID,
+          this.AppNo,
+          JSON.stringify(formData),
+          this.DocID,
+          this.todoID
+        )
+        .subscribe(
+          (message) => {
+            // this.serviceService.disablefins = false;
+            this.AppCode = message[0];
+            this.DocID = message[1];
+            this.todoID = message[2];
+            this.getAll(message[0]);
+
+            if (formData == "{}") {
+              const toast = this.notificationsService;
+            } else {
+              const toast = this.notificationsService.success(
+                "Success",
+                "Successfully Saved"
+              );
+            }
+            this.validated = true;
+          },
+
+          (error) => {
+            if (formData == "{}") {
+              const toast = this.notificationsService;
+            } else {
+              const toast = this.notificationsService.error(
+                "Error",
+                "SomeThing Went Wrong"
+              );
+            }
+          }
+        );
+    } else {
+      console.log("save-form", JSON.stringify(formData));
+      this.serviceService
+        .saveFormm(
+          this.licenceData
+            ? this.licenceData.Licence_Service_ID
+            : this.Service_ID,
+          this.licenceData
+            ? this.licenceData.Service_ID
+            : "00000000-0000-0000-0000-000000000000",
+          this.tskID,
+          this.SDP_ID,
+          JSON.stringify(formData),
+          this.DocID || "00000000-0000-0000-0000-000000000000",
+          this.todoID || "00000000-0000-0000-0000-000000000000"
+        )
+        .subscribe(
+          (response) => {
+            console.log("save-from-response", response);
+
+            // this.serviceService.disablefins = false;
+            this.AppNo = response[0];
+            this.DocID = response[1];
+            //this.todoID = response[2];
+            this.getAll(this.AppNo);
+            const toast = this.notificationsService.success("Success", "Saved");
+            this.validated = true;
+          },
+          (error) => {
+            console.log("save-form-error", error);
+            const toast = this.notificationsService.error(
+              "Error",
+              "SomeThing Went Wrong"
+            );
+          }
+        );
+    }
   }
   moreDetailToggle() {
     this.moreDetail.toggle = !this.moreDetail.toggle;
@@ -353,37 +544,61 @@ export class ServiceComponent implements OnInit {
     //     });
     // }, 1000);
     this.serviceService.getUserRole().subscribe((response: any) => {
-      for (let index = 0; index < response.length; index++) {
-        const element = response[index];
+      if (response) {
+        for (let index = 0; index < response.length; index++) {
+          const element = response[index];
 
-        if (
-          element.RoleId == "8e759c69-1ed6-445b-b7f8-32c3fd44e8be" ||
-          element.RoleId == "3ba734c5-d75a-44c7-8c47-5233431372ba"
-        ) {
-          this.hideit = true;
-          break;
-        } else {
-          console.log("responseresponseresponse", element);
-          this.hideit = false;
+          if (
+            element.RoleId == "8e759c69-1ed6-445b-b7f8-32c3fd44e8be" ||
+            element.RoleId == "3ba734c5-d75a-44c7-8c47-5233431372ba"
+          ) {
+            this.eid = element.UserId;
+            this.hideit = true;
+            break;
+          } else {
+            this.eid = element.UserId;
+            console.log("responseresponseresponse", element);
+            this.hideit = false;
+          }
         }
       }
     });
     this.serviceService.getUserRole().subscribe((response: any) => {
-      for (let index = 0; index < response.length; index++) {
-        const element = response[index];
+      if (response) {
+        for (let index = 0; index < response.length; index++) {
+          const element = response[index];
 
-        if (
-          element.RoleId ==
-          "8C133397-587E-456F-AB31-9CF5358BE8D2".toLocaleLowerCase()
-        ) {
-          this.serviceService.isRecordDocumentationManager = true;
-          break;
-        } else {
-          console.log("responseresponseresponse", element);
-          this.serviceService.isRecordDocumentationManager = false;
+          if (
+            element.RoleId ==
+              "8C133397-587E-456F-AB31-9CF5358BE8D2".toLocaleLowerCase() ||
+            element.RoleId ==
+              "270F762A-5393-4971-83BA-C7FF7D560BDA".toLocaleLowerCase()
+          ) {
+            this.eid = element.UserId;
+            this.serviceService.isRecordDocumentationManager = true;
+            console.log("responseresponseresponserole", element);
+            break;
+          } else {
+            this.eid = element.UserId;
+            console.log("responseresponseresponse", element);
+            this.serviceService.isRecordDocumentationManager = false;
+          }
         }
       }
     });
+
+    this.serviceService.GetSuperviedUsers().subscribe((SuperviedUsers) => {
+      this.SuperviedUsers = SuperviedUsers;
+      this.SuperviedUsers = Object.assign([], this.SuperviedUsers);
+      this.SuperviedUsers = SuperviedUsers;
+
+      if (this.SuperviedUsers) {
+        this.isSuperviedUsers = true;
+      } else {
+        this.isSuperviedUsers = false;
+      }
+    });
+
     // this.preback();
     if (
       environment.Lang_code === "am-et" ||
@@ -401,7 +616,7 @@ export class ServiceComponent implements OnInit {
       this.formcode = params["formcode"];
       this.AppNo = params["AppNo"];
       this.SDP_ID = params["SDP_ID"];
-
+      this.Service_ID = this.SDP_ID;
       this.getAll(this.AppNo);
       this.tskTyp = params["tskTyp"];
       this.tskID = params["tskID"];
@@ -643,6 +858,31 @@ export class ServiceComponent implements OnInit {
               SavedFiles[j].requirement_code
             ) {
               try {
+                if (
+                  this.RequerdDocspre[i].description_en.indexOf("DAR") !==
+                  -1
+                ) { const binaryData = atob(SavedFiles[j].document);
+                  const arrayBuffer = new ArrayBuffer(binaryData.length);
+                  const uint8Array = new Uint8Array(arrayBuffer);
+                  
+                  for (let i = 0; i < binaryData.length; i++) {
+                    uint8Array[i] = binaryData.charCodeAt(i);
+                  }
+                  
+                  // Create Blob
+                  const blob = new Blob([uint8Array], { type: 'application/pdf' });
+                  
+                  // Set Blob URL as iframe source
+                  // this.documentupload =  this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
+                  this.RequerdDocspre[i].mimeType = "application/pdf"
+                  this.RequerdDocspre[i].File =
+                    this.sanitizer.bypassSecurityTrustResourceUrl(
+                      URL.createObjectURL(blob)
+                    );
+  
+                  this.RequerdDocspre[i].document_code =
+                    SavedFiles[j].document_code;}
+                else{
                 let fileData = JSON.parse(atob(SavedFiles[j].document));
 
                 let { type, data } = fileData;
@@ -658,7 +898,7 @@ export class ServiceComponent implements OnInit {
                   );
 
                 this.RequerdDocspre[i].document_code =
-                  SavedFiles[j].document_code;
+                  SavedFiles[j].document_code;}
               } catch (e) {
                 console.error(e);
               }
@@ -745,8 +985,9 @@ export class ServiceComponent implements OnInit {
     });
   }
   plot() {
+
     if (!this.Saved) {
-      this.saveForm2("{}");
+      this.saveForm3("{}");
       this.Saved = true;
     }
     //this.serviceService.disablefins = true;
@@ -799,7 +1040,33 @@ export class ServiceComponent implements OnInit {
         }
       );
   }
+  isvalidateds(todoID, tskID, plotid, proid, DocID) {
+    this.serviceService
+      .isvalidated(todoID, tskID, plotid, proid, DocID)
+      .subscribe(
+        (Validated) => {
+          // const toast = this.notificationsService.success("success", "successfull");
+          console.log("validateing.... => " + Validated);
 
+          if (Validated == "Validated") {
+            this.validated = true;
+          } else {
+            this.validated = true;
+
+            // this.disablefins = true;
+            // this.validated = false;
+            // const toast = this.notificationsService.warn("Warning", Validated);
+          }
+          // this.RequerdDocs = RequerdDocs;
+
+          // this.getAllDocument();
+          // console.log('RequerdDocs', this.RequerdDocs);
+        },
+        (error) => {
+          console.log("error");
+        }
+      );
+  }
   EnableFins() {
     this.serviceService.disablefins = false;
     console.log("enableningggg....", this.validated);
@@ -816,7 +1083,22 @@ export class ServiceComponent implements OnInit {
 
     // this.disablefins = false;
   }
+  EnableFinss() {
+    //  this.serviceService.disablefins = false;
+    // console.log("enableningggg....", this.validated);
+this._opened=true
+    // this.saveForm(this.jsonempty);
+    this.validated = true;
+    this.isvalidateds(
+      this.todoID,
+      this.tskID,
+      "00000000-0000-0000-0000-000000000000",
+      "00000000-0000-0000-0000-000000000000",
+      this.DocID
+    );
 
+    // this.disablefins = false;
+  }
   changeForm(event) {
     this.CurrentForm = event;
   }
@@ -1118,7 +1400,7 @@ export class ServiceComponent implements OnInit {
               //   (message.loaded / message.total) * 100
               // );
               console.log(`Uploaded! ${this.progress}%`);
-
+              this.serviceService.disablefins=false
               fild.clear();
               const toast = this.notificationsService.success(
                 "Success",
@@ -1763,7 +2045,57 @@ export class ServiceComponent implements OnInit {
         }
       );
   }
+  saveForm3(formData) {
+    if (this.Licence_Service_ID == undefined) {
+      this.Licence_Service_ID = "00000000-0000-0000-0000-000000000000";
+      this.DocID = "00000000-0000-0000-0000-000000000000";
+      this.todoID = "00000000-0000-0000-0000-000000000000";
+      this.Service_ID = this.AppNo;
+    }
+    //let doc_id = this.serviceService.docId ? this.serviceService.docId : '00000000-0000-0000-0000-000000000000';
+    // this.serviceService.saveForm(this.Licence_Service_ID, this.Service_ID, this.tskID, this.SDP_ID, JSON.stringify(formData), this.DocID, this.todoID).subscribe(message => {
+    this.serviceService
+      .saveFormObj(
+        this.Licence_Service_ID,
+        this.Service_ID,
+        this.tskID,
+        this.SDP_ID,
+        JSON.stringify(formData),
+        this.DocID,
+        this.todoID
+      )
+      .subscribe(
+        (message) => {
+         // this.serviceService.disablefins = false;
+          this.AppCode = message[0];
+          this.DocID = message[1];
+          this.todoID = message[2];
+          this.getAll(message[0]);
 
+          if (formData == "{}") {
+            //this.serviceService.disablefins = true;
+            const toast = this.notificationsService;
+          } else {
+            const toast = this.notificationsService.success(
+              "Success",
+              "Successfully Saved"
+            );
+          }
+          this.validated = true;
+        },
+
+        (error) => {
+          if (formData == "{}") {
+            const toast = this.notificationsService;
+          } else {
+            const toast = this.notificationsService.error(
+              "Error",
+              "SomeThing Went Wrong"
+            );
+          }
+        }
+      );
+  }
   getSaveData(event) {
     this.AppNo = event.appCode;
     this.DocID = event.docId;
@@ -1807,7 +2139,9 @@ export class ServiceComponent implements OnInit {
             element.RoleId ==
               "5B3B5DD4-3CEF-4696-AC19-442BA531A7DD".toLocaleLowerCase ||
             element.RoleId ==
-              "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase()
+              "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase() ||
+            element.RoleId ==
+              "8ACA5AE9-7CE3-4964-AF89-F92A9DF3C2E2".toLocaleLowerCase()
           ) {
             this.serviceService
               .getPropertyLists(this.licenceData.Parcel_ID)
@@ -1920,22 +2254,57 @@ export class ServiceComponent implements OnInit {
           element.RoleId ==
             "5B3B5DD4-3CEF-4696-AC19-442BA531A7DD".toLocaleLowerCase ||
           element.RoleId ==
-            "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase()
+            "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase() ||
+          element.RoleId ==
+            "8ACA5AE9-7CE3-4964-AF89-F92A9DF3C2E2".toLocaleLowerCase() ||
+          element.RoleId ==
+            "90F92BDA-AE31-4E85-BE8A-0D24D91FD883".toLocaleLowerCase() ||
+          element.RoleId ==
+            "4C36A953-9F11-4511-AC3B-8699803306C8".toLocaleLowerCase()
         ) {
-          if (this.licenceData.Parcel_ID) {
-            this.getplotlist(this.licenceData.Parcel_ID);
-          }
-          if (this.licenceData.Plot_Merge_1) {
-            this.getplotlist(this.licenceData.Plot_Merge_1);
-          }
-          if (this.licenceData.Plot_Merge_2) {
-            this.getplotlist(this.licenceData.Plot_Merge_2);
-          }
-          if (this.licenceData.Plot_Merge_3) {
-            this.getplotlist(this.licenceData.Plot_Merge_3);
-          }
-          if (this.licenceData.Plot_Merge_4) {
-            this.getplotlist(this.licenceData.Plot_Merge_4);
+          if (
+            "05bf5de7-7170-43ce-8320-c747748d40e5".toLocaleLowerCase() ==
+              this.serviceService.Service_ID ||
+            "81f8770b-2c1e-4255-8be1-341089703fa1".toLocaleLowerCase() ==
+              this.serviceService.Service_ID ||
+            "de330170-550b-4bf2-9908-dc557f92a7cc".toLocaleLowerCase() ==
+              this.serviceService.Service_ID ||
+            "449a14bd-e0c0-4eda-92f5-68b3fcf83433".toLocaleLowerCase() ==
+              this.serviceService.Service_ID ||
+            "5fe58d7f-6e9f-452e-b85b-8cd501f020be".toLocaleLowerCase() ==
+              this.serviceService.Service_ID
+          ) {
+            if (this.licenceData.Parcel_ID) {
+              this.getplotlist(this.licenceData.Parcel_ID);
+            }
+            if (this.licenceData.Plot_Merge_1) {
+              this.getplotlist(this.licenceData.Plot_Merge_1);
+            }
+            if (this.licenceData.Plot_Merge_2) {
+              this.getplotlist(this.licenceData.Plot_Merge_2);
+            }
+            if (this.licenceData.Plot_Merge_3) {
+              this.getplotlist(this.licenceData.Plot_Merge_3);
+            }
+            if (this.licenceData.Plot_Merge_4) {
+              this.getplotlist(this.licenceData.Plot_Merge_4);
+            }
+          } else {
+            if (this.licenceData.Parcel_ID) {
+              this.getplotlist(this.licenceData.Parcel_ID);
+            }
+            if (this.licenceData.Plot_Merge_1) {
+              this.getplotlist(this.licenceData.Plot_Merge_1);
+            }
+            if (this.licenceData.Plot_Merge_2) {
+              this.getplotlist(this.licenceData.Plot_Merge_2);
+            }
+            if (this.licenceData.Plot_Merge_3) {
+              this.getplotlist(this.licenceData.Plot_Merge_3);
+            }
+            if (this.licenceData.Plot_Merge_4) {
+              this.getplotlist(this.licenceData.Plot_Merge_4);
+            }
           }
         } else {
           console.log("responseresponseresponse", element);
@@ -2077,6 +2446,37 @@ export class ServiceComponent implements OnInit {
             //   }
             // }
             this.serviceService.getUserRole().subscribe((response: any) => {
+              // for (let index = 0; index < response.length; index++) {
+              //   const element = response[index];
+              //   if (
+              //     element.RoleId ==
+              //       "F8DDA85E-F967-4AC5-BF79-4D989ECFB863".toLocaleLowerCase() ||
+              //     element.RoleId ==
+              //       "5B3B5DD4-3CEF-4696-AC19-442BA531A7DD".toLocaleLowerCase ||
+              //     element.RoleId ==
+              //       "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase() ||
+              //     element.RoleId ==
+              //       "8ACA5AE9-7CE3-4964-AF89-F92A9DF3C2E2".toLocaleLowerCase()
+              //   ) {
+              //     if (this.licenceData.Parcel_ID) {
+              //       this.getplotlist(this.licenceData.Parcel_ID);
+              //     }
+              //     if (this.licenceData.Plot_Merge_1) {
+              //       this.getplotlist(this.licenceData.Plot_Merge_1);
+              //     }
+              //     if (this.licenceData.Plot_Merge_2) {
+              //       this.getplotlist(this.licenceData.Plot_Merge_2);
+              //     }
+              //     if (this.licenceData.Plot_Merge_3) {
+              //       this.getplotlist(this.licenceData.Plot_Merge_3);
+              //     }
+              //     if (this.licenceData.Plot_Merge_4) {
+              //       this.getplotlist(this.licenceData.Plot_Merge_4);
+              //     }
+              //   } else {
+              //     console.log("responseresponseresponse", element);
+              //   }
+              // }
               for (let index = 0; index < response.length; index++) {
                 const element = response[index];
                 if (
@@ -2085,22 +2485,57 @@ export class ServiceComponent implements OnInit {
                   element.RoleId ==
                     "5B3B5DD4-3CEF-4696-AC19-442BA531A7DD".toLocaleLowerCase ||
                   element.RoleId ==
-                    "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase()
+                    "FE7BE2E0-E717-4230-B732-5B810A8BB875".toLocaleLowerCase() ||
+                  element.RoleId ==
+                    "8ACA5AE9-7CE3-4964-AF89-F92A9DF3C2E2".toLocaleLowerCase() ||
+                  element.RoleId ==
+                    "90F92BDA-AE31-4E85-BE8A-0D24D91FD883".toLocaleLowerCase() ||
+                  element.RoleId ==
+                    "4C36A953-9F11-4511-AC3B-8699803306C8".toLocaleLowerCase()
                 ) {
-                  if (this.licenceData.Parcel_ID) {
-                    this.getplotlist(this.licenceData.Parcel_ID);
-                  }
-                  if (this.licenceData.Plot_Merge_1) {
-                    this.getplotlist(this.licenceData.Plot_Merge_1);
-                  }
-                  if (this.licenceData.Plot_Merge_2) {
-                    this.getplotlist(this.licenceData.Plot_Merge_2);
-                  }
-                  if (this.licenceData.Plot_Merge_3) {
-                    this.getplotlist(this.licenceData.Plot_Merge_3);
-                  }
-                  if (this.licenceData.Plot_Merge_4) {
-                    this.getplotlist(this.licenceData.Plot_Merge_4);
+                  if (
+                    "05bf5de7-7170-43ce-8320-c747748d40e5".toLocaleLowerCase() ==
+                      this.serviceService.Service_ID ||
+                    "81f8770b-2c1e-4255-8be1-341089703fa1".toLocaleLowerCase() ==
+                      this.serviceService.Service_ID ||
+                    "de330170-550b-4bf2-9908-dc557f92a7cc".toLocaleLowerCase() ==
+                      this.serviceService.Service_ID ||
+                    "449a14bd-e0c0-4eda-92f5-68b3fcf83433".toLocaleLowerCase() ==
+                      this.serviceService.Service_ID ||
+                    "5fe58d7f-6e9f-452e-b85b-8cd501f020be".toLocaleLowerCase() ==
+                      this.serviceService.Service_ID
+                  ) {
+                    if (this.licenceData.Parcel_ID) {
+                      this.getplotlist(this.licenceData.Parcel_ID);
+                    }
+                    if (this.licenceData.Plot_Merge_1) {
+                      this.getplotlist(this.licenceData.Plot_Merge_1);
+                    }
+                    if (this.licenceData.Plot_Merge_2) {
+                      this.getplotlist(this.licenceData.Plot_Merge_2);
+                    }
+                    if (this.licenceData.Plot_Merge_3) {
+                      this.getplotlist(this.licenceData.Plot_Merge_3);
+                    }
+                    if (this.licenceData.Plot_Merge_4) {
+                      this.getplotlist(this.licenceData.Plot_Merge_4);
+                    }
+                  } else {
+                    if (this.licenceData.Parcel_ID) {
+                      this.getplotlist(this.licenceData.Parcel_ID);
+                    }
+                    if (this.licenceData.Plot_Merge_1) {
+                      this.getplotlist(this.licenceData.Plot_Merge_1);
+                    }
+                    if (this.licenceData.Plot_Merge_2) {
+                      this.getplotlist(this.licenceData.Plot_Merge_2);
+                    }
+                    if (this.licenceData.Plot_Merge_3) {
+                      this.getplotlist(this.licenceData.Plot_Merge_3);
+                    }
+                    if (this.licenceData.Plot_Merge_4) {
+                      this.getplotlist(this.licenceData.Plot_Merge_4);
+                    }
                   }
                 } else {
                   console.log("responseresponseresponse", element);
@@ -2192,13 +2627,47 @@ export class ServiceComponent implements OnInit {
     this.serviceService
       .GetApplicationNumberByUsers(username, orgcode)
       .subscribe((ApplicationNumber: any) => {
+        console.log("🚀 ~ .subscribe ~ ApplicationNumber:", ApplicationNumber);
         this.ApplicationNumberlist = ApplicationNumber;
+
+        console.log("🚀 ~ .subscribe ~ Parcel_ID:", this.licenceData.Parcel_ID);
+        if (this.licenceData.Parcel_ID != null) {
+          this.serviceService
+            .GetpreviousApplicationNumberByUsers(
+              username,
+              this.licenceData.Parcel_ID
+            )
+            .subscribe((PriveLicence: any) => {
+              console.log("🚀 ~ .subscribe ~ PriveLicence:", PriveLicence);
+              if (PriveLicence.length > 0) {
+                this.serviceService
+                  .GetApplicationNumberByprevious(
+                    PriveLicence[0].title_Deed_No,
+                    PriveLicence[0].previousUserName,
+                    PriveLicence[0].organization_code
+                  )
+                  .subscribe((ApplicationNumber: any) => {
+                    console.log(
+                      "🚀 ~ .subscribe ~ ApplicationNumber:",
+                      ApplicationNumber
+                    );
+                    ApplicationNumber.forEach((element) => {
+                      this.ApplicationNumberlist.push(element);
+                    });
+                  });
+                console.log(
+                  "🚀 ~ .subscribe ~ ApplicationNumberlist:",
+                  this.ApplicationNumberlist
+                );
+              }
+            });
+        }
         this.ApplicationNumberlist.sort((a, b) => {
           if (a.application_Date > b.application_Date) {
-            console.log("sttatattgs", this.ApplicationNumberlist);
+            // console.log("sttatattgs", this.ApplicationNumberlist);
             return -1;
           } else if (a.application_Date < b.application_Date) {
-            console.log("sttatattgs", this.ApplicationNumberlist);
+            //  console.log("sttatattgs", this.ApplicationNumberlist);
             return 1;
           } else {
             return 0;
@@ -2243,7 +2712,11 @@ export class ServiceComponent implements OnInit {
           [],
           this.PropertyTypeLookUP.list
         );
-        // console.log('PropertyTypeLookUP', PropertyTypeLookUP);
+        this.PropertyTypeLookUP.unshift({
+          Property_Type_ID: null,
+          Property_Type: "select",
+        });
+        console.log("PropertyTypeLookUP", this.PropertyTypeLookUP);
       },
       (error) => {
         console.log("error");
@@ -2259,6 +2732,10 @@ export class ServiceComponent implements OnInit {
           [],
           this.PropertyStatusLookUP.list
         );
+        // this.PropertyStatusLookUP.unshift({
+        //   P_Status_ID: null,
+        //   Property_Status: "select",
+        // });
         // console.log('PropertyStatusLookUP', PropertyStatusLookUP);
       },
       (error) => {
@@ -2456,6 +2933,20 @@ export class ServiceComponent implements OnInit {
     this.todoID = event["todoId"];
     this.AppNo = event["appCode"];
     this.getPriveysLicence(this.Application_No);
+  }
+  killtodo() {
+    this.serviceService
+      .killtodo(this.AppNo, this.eid, this.todoID, environment.username, "K")
+      .subscribe((message) => {
+        this.Close();
+      });
+  }
+  Reopentodo() {
+    this.serviceService
+      .Reopentodo(this.AppNo, this.eid, this.todoID, environment.username, "O")
+      .subscribe((message) => {
+        this.Close();
+      });
   }
 
   public getAll(AppNo) {

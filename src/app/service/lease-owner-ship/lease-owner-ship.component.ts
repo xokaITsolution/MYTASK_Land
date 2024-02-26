@@ -24,6 +24,7 @@ import { ActivatedRoute, Params } from "@angular/router";
 })
 export class LeaseOwnerShipComponent implements OnChanges {
   @Output() completed = new EventEmitter();
+  @Output() openGIsFreehold = new EventEmitter();
   @Output() hideLeaseForm: EventEmitter<void> = new EventEmitter<void>();
   tasks;
   leaseForm = false;
@@ -55,6 +56,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
   iislease: boolean;
   todoidcurrent: any;
   iscanEdite: boolean;
+  Lease_Type_Lookup: any;
+  plotIdselected: any;
   constructor(
     private ngxSmartModalService: NgxSmartModalService,
     private leaseOwnerShipService: LeaseOwnerShipService,
@@ -64,8 +67,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
     public serviceService: ServiceService,
     private activatedRoute: ActivatedRoute
   ) {
-    this.leaseOwnerShip = new LeaseOwnerShip();
-    this.leaseOwnerShip.ID = Guid.create().toString();
+    this.serviceService.leaseOwnerShip = new LeaseOwnerShip();
+    this.serviceService.leaseOwnerShip.ID = Guid.create().toString();
   }
   highlighted;
   ngOnChanges() {
@@ -82,21 +85,21 @@ export class LeaseOwnerShipComponent implements OnChanges {
     if (this.SelectedPlot) {
       this.getleaseOwnerShip(this.SelectedPlot.plot_ID);
       if (this.addnew) {
-        this.leaseOwnerShip.Plot_ID = this.SelectedPlot.plot_ID;
+        this.serviceService.leaseOwnerShip.Plot_ID = this.SelectedPlot.plot_ID;
         console.log("lease select", this.SelectedPlot);
         console.log(
           "lease plot id",
-          this.leaseOwnerShip.Plot_ID,
+          this.serviceService.leaseOwnerShip.Plot_ID,
           localStorage.getItem("PolygonAreaname")
         );
 
-        this.leaseOwnerShip.SDP_ID = this.SelectedPlot.sdP_ID;
-        // this.leaseOwnerShip.Lease_Hold_M2 = parseInt(
+        this.serviceService.leaseOwnerShip.SDP_ID = this.SelectedPlot.sdP_ID;
+        // this.serviceService.leaseOwnerShip.Lease_Hold_M2 = parseInt(
         //   localStorage.getItem("PolygonAreaname")
         // );
 
         // this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
-        // if( this.leaseOwnerShip.SDP_ID!=null || this.leaseOwnerShip.SDP_ID!=undefined ){
+        // if( this.serviceService.leaseOwnerShip.SDP_ID!=null || this.serviceService.leaseOwnerShip.SDP_ID!=undefined ){
         //   this.addLease()
         // }
       }
@@ -104,7 +107,20 @@ export class LeaseOwnerShipComponent implements OnChanges {
     }
 
     this.leaseForm = false;
-    //this.leaseOwnerShip = this.SelectedPlot;
+    //this.serviceService.leaseOwnerShip = this.SelectedPlot;
+    this.getLease_Type_Lookup();
+  }
+  getLease_Type_Lookup() {
+    this.serviceService.getLease_Type_Lookup().subscribe(
+      (Lease_Type_Lookup) => {
+        this.Lease_Type_Lookup = Lease_Type_Lookup;
+        this.Lease_Type_Lookup = Object.assign([], this.Lease_Type_Lookup.list);
+        console.log("Lease_Type_Lookup", Lease_Type_Lookup);
+      },
+      (error) => {
+        console.log("error");
+      }
+    );
   }
   ngOnInit() {
     if (environment.Lang_code === "am-et") {
@@ -112,9 +128,9 @@ export class LeaseOwnerShipComponent implements OnChanges {
     } else {
       this.language = "english";
     }
-    this.leaseOwnerShip.SDP_ID =
+    this.serviceService.leaseOwnerShip.SDP_ID =
       this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
-    // if( this.leaseOwnerShip.SDP_ID!=null || this.leaseOwnerShip.SDP_ID!=undefined ){
+    // if( this.serviceService.leaseOwnerShip.SDP_ID!=null || this.serviceService.leaseOwnerShip.SDP_ID!=undefined ){
     //   this.addLease()
     // }
   }
@@ -122,29 +138,68 @@ export class LeaseOwnerShipComponent implements OnChanges {
     console.log(value);
 
     if (value == 2) {
-      this.islease = true;
-      this.iislease = false;
-      this.isfreehole = false;
-      this.leaseOwnerShip.Free_Hold_M2 = 0;
-      this.leaseOwnerShip.Lease_Hold_M2 = parseFloat(
-        localStorage.getItem("PolygonAreaname")
-      );
-    } else if (value == 1) {
-      this.iislease = false;
+      this.openGIsFreehold.emit();
+
+      this.serviceService.isfreeholdselected = true;
+      this.iislease = true;
       this.islease = true;
       this.isfreehole = true;
-      this.leaseOwnerShip.Lease_Hold_M2 = parseFloat(
-        localStorage.getItem("PolygonAreaname")
-      );
-      this.leaseOwnerShip.Free_Hold_M2 = 0;
+      // Check if the value retrieved from localStorage is not null for Free_Hold_M2
+      if (
+        this.serviceService.leaseOwnerShip.Free_Hold_M2 == null ||
+        this.serviceService.leaseOwnerShip.Free_Hold_M2 == 0
+      ) {
+        const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
+        this.serviceService.leaseOwnerShip.Free_Hold_M2 =
+          freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
+      }
+
+      if (
+        this.serviceService.leaseOwnerShip.Lease_Hold_M2 == null ||
+        this.serviceService.leaseOwnerShip.Lease_Hold_M2 == 0
+      ) {
+        const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+        this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+          leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
+      }
+      this.serviceService.isFreeHold = true;
+    } else if (value == 1) {
+      this.iislease = true;
+      this.islease = true;
+      this.isfreehole = true;
+      // Check if the value retrieved from localStorage is not null for Free_Hold_M2
+      const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
+      this.serviceService.leaseOwnerShip.Free_Hold_M2 = 0;
+      // freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
+
+      // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
+      if (
+        this.serviceService.leaseOwnerShip.Lease_Hold_M2 == null ||
+        this.serviceService.leaseOwnerShip.Lease_Hold_M2 == 0
+      ) {
+        const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+        this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+          leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
+      }
     } else if (value == 3) {
       this.islease = false;
       this.iislease = true;
-      this.isfreehole = false;
-      this.leaseOwnerShip.Lease_Hold_M2 = 0;
-      this.leaseOwnerShip.Free_Hold_M2 = parseFloat(
-        localStorage.getItem("PolygonAreaname")
-      );
+      this.isfreehole = true;
+      this.serviceService.leaseOwnerShip.Lease_Hold_M2 = 0;
+      // Check if the value retrieved from localStorage is not null for Free_Hold_M2
+      if (
+        this.serviceService.leaseOwnerShip.Free_Hold_M2 == null ||
+        this.serviceService.leaseOwnerShip.Free_Hold_M2 == 0
+      ) {
+        const freeHoldM2Value = localStorage.getItem("PolygonAreaname");
+        this.serviceService.leaseOwnerShip.Free_Hold_M2 =
+          freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
+      }
+      // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
+      const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+      this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+        this.serviceService.leaseOwnerShip.Lease_Hold_M2;
+      // leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
     }
   }
   getcustomer(globvar) {
@@ -178,22 +233,22 @@ export class LeaseOwnerShipComponent implements OnChanges {
   }
   selectedDateTime(dates: any, selecter) {
     if (selecter == 2) {
-      this.leaseOwnerShip.Date_of_final_lease_payment =
+      this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
         dates[0]._day + "/" + dates[0]._month + "/" + dates[0]._year;
     }
   }
   async selectLease(task) {
     console.log("tasktasktasktask", task);
-
+    this.plotIdselected = task.Plot_ID;
     this.serviceService.Totalarea = task.Lease_Hold_M2 + task.Free_Hold_M2;
-    this.serviceService.currentplotsize = parseFloat(
-      localStorage.getItem("PolygonAreaname")
-    );
-    console.log();
 
-    // if (parseFloat(localStorage.getItem("PolygonAreaname"))) {
-    //   task.Lease_Hold_M2 = parseFloat(localStorage.getItem("PolygonAreaname"));
-    // }
+    console.log();
+    // Check if the value retrieved from localStorage is not null for Free_Hold_M2
+
+    this.serviceService.currentplotsize =
+      this.serviceService.leaseOwnerShip.Lease_Hold_M2 +
+      this.serviceService.leaseOwnerShip.Lease_Hold_M2;
+
     this.addnew = false;
     // this.leaseForm = true;
     if (this.language == "amharic") {
@@ -209,30 +264,50 @@ export class LeaseOwnerShipComponent implements OnChanges {
     }
     if (parseInt(task.Status) == 1 || task.To_Do_ID === this.todoidcurrent) {
       console.log(task.To_Do_ID, task.Status, task.Type_ID);
-
       if (parseInt(task.Type_ID) == 2) {
-        this.islease = true;
-        this.iislease = false;
-        this.isfreehole = false;
-        task.Free_Hold_M2 = 0;
-        task.Lease_Hold_M2 = parseFloat(
-          localStorage.getItem("PolygonAreaname")
-        );
+        this.serviceService.isfreeholdselected = true;
       } else if (parseInt(task.Type_ID) == 1) {
-        this.iislease = false;
-        this.islease = true;
-        this.isfreehole = true;
-        task.Lease_Hold_M2 = parseFloat(
-          localStorage.getItem("PolygonAreaname")
-        );
-        task.Free_Hold_M2 = 0;
+        this.serviceService.isfreeholdselected = false;
       } else if (parseInt(task.Type_ID) == 3) {
-        this.islease = false;
-        this.iislease = true;
-        this.isfreehole = false;
-        task.Lease_Hold_M2 = 0;
-        task.Free_Hold_M2 = parseFloat(localStorage.getItem("PolygonAreaname"));
+        //this.serviceService.isfreeholdselected = true;
       }
+      // if (parseInt(task.Type_ID) == 2) {
+      //   this.islease = true;
+      //   this.iislease = false;
+      //   this.isfreehole = false;
+      //   const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
+      //   task.Free_Hold_M2 =
+      //     freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
+      //   // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
+      //   const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+      //   task.Lease_Hold_M2 =
+      //     leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
+      // } else if (parseInt(task.Type_ID) == 1) {
+      //   this.iislease = false;
+      //   this.islease = true;
+      //   this.isfreehole = true;
+
+      //   const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
+      //   task.Free_Hold_M2 =
+      //     freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
+
+      //   // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
+      //   const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+      //   task.Lease_Hold_M2 =
+      //     leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
+      // } else if (parseInt(task.Type_ID) == 3) {
+      //   this.islease = false;
+      //   this.iislease = true;
+      //   this.isfreehole = false;
+      //   const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
+      //   task.Free_Hold_M2 =
+      //     freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
+
+      //   // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
+      //   const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+      //   task.Lease_Hold_M2 =
+      //     leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
+      // }
     }
 
     this.serviceService.isleaseForm = true;
@@ -260,41 +335,78 @@ export class LeaseOwnerShipComponent implements OnChanges {
             " " +
             customer.applicant_Last_Name_EN;
         }
-        this.leaseOwnerShip = task;
+        this.serviceService.leaseOwnerShip = task;
       });
   }
 
   addLease() {
-    this.serviceService.isleaseForm = true;
-    this.leaseOwnerShip = new LeaseOwnerShip();
-    this.leaseOwnerShip.ID = Guid.create().toString();
-    this.leaseOwnerShip.Plot_ID = this.SelectedPlot.plot_ID;
-    this.leaseOwnerShip.To_Do_ID = this.todoidcurrent;
-    this.leaseOwnerShip.Application_No = this.applicationo;
-    this.leaseOwnerShip.Lease_Hold_M2 = localStorage.getItem("PolygonAreaname");
-    this.serviceService.currentplotsize = parseFloat(
-      localStorage.getItem("PolygonAreaname")
-    );
-    // this.leaseOwnerShip.SDP_ID = this.LicenceData.SDP_ID;
-    this.leaseOwnerShip.SDP_ID =
-      this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
-    this.addnew = true;
-    this.leaseForm = true;
+    if (
+      "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() ==
+        this.serviceService.Service_ID ||
+      "2B1FC99A-9705-4799-96B9-164BD3B1077E".toLocaleLowerCase() ==
+        this.serviceService.Service_ID
+    ) {
+      this.serviceService.isleaseForm = true;
+      this.serviceService.leaseOwnerShip = new LeaseOwnerShip();
+      this.serviceService.leaseOwnerShip.ID = Guid.create().toString();
+      this.serviceService.leaseOwnerShip.Plot_ID = this.SelectedPlot.plot_ID;
+      this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+        this.SelectedPlot.plot_Size_M2;
+      this.serviceService.leaseOwnerShip.Free_Hold_M2 = 0;
+      this.serviceService.leaseOwnerShip.Type_ID = 1;
+
+      this.serviceService.leaseOwnerShip.To_Do_ID = this.todoidcurrent;
+      this.serviceService.leaseOwnerShip.Application_No = this.applicationo;
+      this.serviceService.leaseOwnerShip.Lease_No = this.applicationo;
+
+      // this.serviceService.leaseOwnerShip.SDP_ID = this.LicenceData.SDP_ID;
+      this.serviceService.leaseOwnerShip.SDP_ID =
+        this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
+      this.addnew = true;
+      this.leaseForm = true;
+    } else {
+      this.serviceService.isleaseForm = true;
+      this.serviceService.leaseOwnerShip = new LeaseOwnerShip();
+      this.serviceService.leaseOwnerShip.ID = Guid.create().toString();
+      this.serviceService.leaseOwnerShip.Plot_ID = this.SelectedPlot.plot_ID;
+      this.serviceService.leaseOwnerShip.To_Do_ID = this.todoidcurrent;
+      this.serviceService.leaseOwnerShip.Application_No = this.applicationo;
+      this.serviceService.leaseOwnerShip.Lease_No = this.applicationo;
+      // this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+      //   localStorage.getItem("PolygonAreaname");
+      this.serviceService.currentplotsize = parseFloat(
+        localStorage.getItem("PolygonAreaname")
+      );
+      // this.serviceService.leaseOwnerShip.SDP_ID = this.LicenceData.SDP_ID;
+      this.serviceService.leaseOwnerShip.SDP_ID =
+        this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
+      this.addnew = true;
+      this.leaseForm = true;
+    }
   }
-  // regionSelected(events) {
-  //   Regions.find(
-  //     region => {
-  //       if (region.orgCode == events) {
-  //         console.log('yuiop',events)
 
-  //         this.selectedRegion = region;
+  Refresh() {
+    this.leaseOwnerShipService
+      .getAll(this.plotIdselected)
+      .subscribe((CertificateVersion: any) => {
+        let tasks = CertificateVersion;
+        tasks = Object.assign([], tasks.list);
+        console.log("this.tasksss", tasks);
 
-  //         return true;
-  //       }
-  //       return false;
-  //     }
-  //   );
-  // }
+        this.serviceService.leaseOwnerShip.Free_Hold_M2 = parseFloat(
+          tasks[0].Free_Hold_M2
+        );
+
+        this.serviceService.leaseOwnerShip.Lease_Hold_M2 = parseFloat(
+          tasks[0].Free_Hold_M2
+        );
+        console.log(
+          "this.tasksss",
+          tasks[0].Free_Hold_M2,
+          tasks[0].Lease_Hold_M2
+        );
+      });
+  }
 
   getleaseOwnerShip(plotID) {
     console.log("plotIDplotID", plotID);
@@ -389,25 +501,26 @@ export class LeaseOwnerShipComponent implements OnChanges {
   async save() {
     console.log(
       this.serviceService.currentplotsize,
-      this.leaseOwnerShip.Lease_Hold_M2
+      this.serviceService.leaseOwnerShip.Lease_Hold_M2
     );
     const maxAreaDifference =
       environment.Totalareatolerance * this.serviceService.currentplotsize;
     let toaleplotsize =
-      this.leaseOwnerShip.Lease_Hold_M2 + this.leaseOwnerShip.Free_Hold_M2;
+      this.serviceService.leaseOwnerShip.Lease_Hold_M2 +
+      this.serviceService.leaseOwnerShip.Free_Hold_M2;
     const areaDifference = Math.abs(
       toaleplotsize - parseFloat(localStorage.getItem("PolygonAreaname"))
     );
     console.log(maxAreaDifference, areaDifference);
 
     let totalsize =
-      parseFloat(this.leaseOwnerShip.Free_Hold_M2) +
-      parseFloat(this.leaseOwnerShip.Lease_Hold_M2);
+      parseFloat(this.serviceService.leaseOwnerShip.Free_Hold_M2) +
+      parseFloat(this.serviceService.leaseOwnerShip.Lease_Hold_M2);
 
     console.log("totalsize", totalsize);
 
     this.serviceService
-      .getAll(this.leaseOwnerShip.Plot_ID)
+      .getAll(this.serviceService.leaseOwnerShip.Plot_ID)
       .subscribe((CertificateVersion: any) => {
         let tasks = CertificateVersion;
         tasks = Object.assign([], tasks.list);
@@ -416,7 +529,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
         console.log("leaselist", tasks);
         if (tasks.length > 0) {
           tasks.forEach((element) => {
-            if (element.Plot_ID != this.leaseOwnerShip.Plot_ID) {
+            if (element.Plot_ID != this.serviceService.leaseOwnerShip.Plot_ID) {
               if (parseInt(element.Status) === 1) {
                 let totalsizeeach =
                   parseFloat(element.Free_Hold_M2) +
@@ -440,80 +553,91 @@ export class LeaseOwnerShipComponent implements OnChanges {
       return;
     } else {
       if (this.language == "amharic") {
-        this.leaseOwnerShip.Date_of_final_lease_payment =
+        this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
           await this.getEthiopianToGregorian(
-            this.leaseOwnerShip.Date_of_final_lease_payment
+            this.serviceService.leaseOwnerShip.Date_of_final_lease_payment
           );
       }
 
-      this.leaseOwnerShipService.save(this.leaseOwnerShip).subscribe(
-        async (deptSuspension) => {
-          console.log("deptSuspension", deptSuspension);
-          const toast = this.notificationsService.success(
-            "Sucess",
-            deptSuspension
-          );
+      this.leaseOwnerShipService
+        .save(this.serviceService.leaseOwnerShip)
+        .subscribe(
+          async (deptSuspension) => {
+            console.log("deptSuspension", deptSuspension);
+            const toast = this.notificationsService.success(
+              "Sucess",
+              deptSuspension
+            );
+            // localStorage.setItem("PolygonAreaname", "" + 0);
+            // localStorage.setItem("PolygonAreanameFrehold", "" + 0);
 
-          //this.serviceService.disablefins = false;
-          this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
-          const maxAreaDifferences =
-            environment.Totalareatolerance * this.serviceService.Totalarea;
+            //this.serviceService.disablefins = false;
+            this.getleaseOwnerShip(this.serviceService.leaseOwnerShip.Plot_ID);
+            const maxAreaDifferences =
+              environment.Totalareatolerance * this.serviceService.Totalarea;
 
-          const areaDifferences = Math.abs(
-            totalsize - parseFloat(localStorage.getItem("PolygonAreaname"))
-          );
+            const areaDifferences = Math.abs(
+              totalsize - parseFloat(localStorage.getItem("PolygonAreaname"))
+            );
+            console.log(
+              "🚀 ~ LeaseOwnerShipComponent ~ areaDifferences:",
+              areaDifferences,
+              maxAreaDifferences
+            );
 
-          if (areaDifferences <= maxAreaDifferences) {
-            this.serviceService.plotsizenotequal = false;
-          } else {
-            this.serviceService.plotsizenotequal = true;
-            const toast = this.notificationsService.warn(
-              `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
+            if (areaDifferences <= maxAreaDifferences) {
+              this.serviceService.plotsizenotequal = false;
+            } else {
+              this.serviceService.plotsizenotequal = true;
+              const toast = this.notificationsService.warn(
+                `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
           በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
            ${Math.abs(
              totalsize - parseInt(localStorage.getItem("PolygonAreaname"))
            )}`
-            );
-          }
-          if (this.language == "amharic") {
-            this.leaseOwnerShip.Date_of_final_lease_payment =
-              await this.getgregorianToEthiopianDate(
-                this.leaseOwnerShip.Date_of_final_lease_payment
               );
-          }
-          if (!this.Saved) {
-            //this.completed.emit();
-            this.Saved = true;
-          }
-        },
-        async (error) => {
-          console.log(error);
+            }
+            // if (this.language == "amharic") {
+            //   this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+            //     await this.getgregorianToEthiopianDate(
+            //       this.serviceService.leaseOwnerShip.Date_of_final_lease_payment
+            //     );
+            // }
+            if (!this.Saved) {
+              //this.completed.emit();
+              this.Saved = true;
+            }
+          },
+          async (error) => {
+            console.log(error);
 
-          if (error.status == "400") {
-            const toast = this.notificationsService.error(
-              "Error",
-              error.error.InnerException.Errors[0].message
-            );
-            if (this.language == "amharic") {
-              this.leaseOwnerShip.Date_of_final_lease_payment =
-                await this.getgregorianToEthiopianDate(
-                  this.leaseOwnerShip.Date_of_final_lease_payment
-                );
-            }
-          } else {
-            const toast = this.notificationsService.error(
-              "Error",
-              "SomeThing Went Wrong"
-            );
-            if (this.language == "amharic") {
-              this.leaseOwnerShip.Date_of_final_lease_payment =
-                await this.getgregorianToEthiopianDate(
-                  this.leaseOwnerShip.Date_of_final_lease_payment
-                );
+            if (error.status == "400") {
+              const toast = this.notificationsService.error(
+                "Error",
+                error.error.InnerException.Errors[0].message
+              );
+              if (this.language == "amharic") {
+                this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+                  await this.getgregorianToEthiopianDate(
+                    this.serviceService.leaseOwnerShip
+                      .Date_of_final_lease_payment
+                  );
+              }
+            } else {
+              const toast = this.notificationsService.error(
+                "Error",
+                "SomeThing Went Wrong"
+              );
+              if (this.language == "amharic") {
+                this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+                  await this.getgregorianToEthiopianDate(
+                    this.serviceService.leaseOwnerShip
+                      .Date_of_final_lease_payment
+                  );
+              }
             }
           }
-        }
-      );
+        );
       console.log("saveing....");
     }
   }
@@ -522,37 +646,39 @@ export class LeaseOwnerShipComponent implements OnChanges {
     // this.confirmationService.confirm({
     // message: "Are you sure u want to delete this Lease?",
     //accept: () => {
-    this.leaseOwnerShip.Is_Deleted = true;
-    this.leaseOwnerShipService.Delete(this.leaseOwnerShip.Lease_No).subscribe(
-      (deptSuspension) => {
-        const toast = this.notificationsService.success(
-          "Sucess",
-          deptSuspension
-        );
-
-        this.leaseForm = false;
-        this.addnew = false;
-
-        if (this.SelectedPlot) {
-          this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
-        }
-        //this.completeddel.emit(this.plotManagment);
-      },
-      (error) => {
-        console.log(error);
-        if (error.status == "400") {
-          const toast = this.notificationsService.error(
-            "Error",
-            error.error.InnerException.Errors[0].message
+    this.serviceService.leaseOwnerShip.Is_Deleted = true;
+    this.leaseOwnerShipService
+      .Delete(this.serviceService.leaseOwnerShip.Lease_No)
+      .subscribe(
+        (deptSuspension) => {
+          const toast = this.notificationsService.success(
+            "Sucess",
+            deptSuspension
           );
-        } else {
-          const toast = this.notificationsService.error(
-            "Error",
-            "SomeThing Went Wrong"
-          );
+
+          this.leaseForm = false;
+          this.addnew = false;
+
+          if (this.SelectedPlot) {
+            this.getleaseOwnerShip(this.serviceService.leaseOwnerShip.Plot_ID);
+          }
+          //this.completeddel.emit(this.plotManagment);
+        },
+        (error) => {
+          console.log(error);
+          if (error.status == "400") {
+            const toast = this.notificationsService.error(
+              "Error",
+              error.error.InnerException.Errors[0].message
+            );
+          } else {
+            const toast = this.notificationsService.error(
+              "Error",
+              "SomeThing Went Wrong"
+            );
+          }
         }
-      }
-    );
+      );
     console.log("saveing....");
   }
   //});
@@ -562,26 +688,32 @@ export class LeaseOwnerShipComponent implements OnChanges {
     const maxAreaDifferences =
       environment.Totalareatolerance * this.serviceService.currentplotsize;
     let totalpoltsize =
-      this.leaseOwnerShip.Lease_Hold_M2 + this.leaseOwnerShip.Free_Hold_M2;
-    const areaDifferences = Math.abs(
-      totalpoltsize - parseFloat(localStorage.getItem("PolygonAreaname"))
+      this.serviceService.leaseOwnerShip.Lease_Hold_M2 +
+      this.serviceService.leaseOwnerShip.Free_Hold_M2;
+    let freeHoldM2Value = parseFloat(
+      localStorage.getItem("PolygonAreanameFrehold")
     );
-    console.log(maxAreaDifferences, areaDifferences);
+    // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
+    let leaseHoldM2Value = parseFloat(localStorage.getItem("PolygonAreaname"));
+
+    let totalsum = freeHoldM2Value + leaseHoldM2Value;
+    const areaDifferences = Math.abs(totalpoltsize - totalsum);
+    console.log(maxAreaDifferences, areaDifferences, totalsum);
     if (
-      this.leaseOwnerShip.To_Do_ID == null ||
-      this.leaseOwnerShip.To_Do_ID == undefined
+      this.serviceService.leaseOwnerShip.To_Do_ID == null ||
+      this.serviceService.leaseOwnerShip.To_Do_ID == undefined
     ) {
-      this.leaseOwnerShip.To_Do_ID = this.todoidcurrent;
+      this.serviceService.leaseOwnerShip.To_Do_ID = this.todoidcurrent;
     }
 
     let totalsize =
-      parseFloat(this.leaseOwnerShip.Free_Hold_M2) +
-      parseFloat(this.leaseOwnerShip.Lease_Hold_M2);
+      parseFloat(this.serviceService.leaseOwnerShip.Free_Hold_M2) +
+      parseFloat(this.serviceService.leaseOwnerShip.Lease_Hold_M2);
 
     console.log("totalsize", totalsize);
 
     this.serviceService
-      .getAll(this.leaseOwnerShip.Plot_ID)
+      .getAll(this.serviceService.leaseOwnerShip.Plot_ID)
       .subscribe((CertificateVersion: any) => {
         let tasks = CertificateVersion;
         tasks = Object.assign([], tasks.list);
@@ -590,115 +722,219 @@ export class LeaseOwnerShipComponent implements OnChanges {
         console.log("leaselist", tasks);
         if (tasks.length > 0) {
           tasks.forEach((element) => {
-            if (element.Plot_ID != this.leaseOwnerShip.Plot_ID) {
-              let totalsizeeach =
-                parseFloat(element.Free_Hold_M2) +
-                parseFloat(element.Lease_Hold_M2);
+            if (
+              "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() ==
+                this.serviceService.Service_ID ||
+              "2B1FC99A-9705-4799-96B9-164BD3B1077E".toLocaleLowerCase() ==
+                this.serviceService.Service_ID
+            ) {
+            } else {
+              if (
+                element.Plot_ID != this.serviceService.leaseOwnerShip.Plot_ID
+              ) {
+                let totalsizeeach =
+                  parseFloat(element.Free_Hold_M2) +
+                  parseFloat(element.Lease_Hold_M2);
 
-              this.totalsizeofleaseeach += totalsizeeach;
+                this.totalsizeofleaseeach += totalsizeeach;
+              }
             }
           });
-          this.totalsizeoflease =
-            parseFloat(localStorage.getItem("PolygonAreaname")) -
-            this.totalsizeofleaseeach;
+          this.totalsizeoflease = totalsum - this.totalsizeofleaseeach;
         } else {
-          this.totalsizeoflease = parseFloat(
-            localStorage.getItem("PolygonAreaname")
-          );
+          this.totalsizeoflease = totalsum;
         }
       });
-    if (this.totalsizeoflease < totalsize) {
-      const toast = this.notificationsService.warn(
-        "the sum of Leasehold and Freehold is must not greater than total  plot size/የሊዝ ይዞታ እና ነፃ ይዞታ ድምር ከጠቅላላ የቦታ መጠን መብለጥ የለበትም"
-      );
-      return;
-    } else {
+    if (
+      "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() ==
+        this.serviceService.Service_ID ||
+      "2B1FC99A-9705-4799-96B9-164BD3B1077E".toLocaleLowerCase() ==
+        this.serviceService.Service_ID
+    ) {
       if (this.language == "amharic") {
-        this.leaseOwnerShip.Date_of_final_lease_payment =
+        this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
           await this.getEthiopianToGregorian(
-            this.leaseOwnerShip.Date_of_final_lease_payment
+            this.serviceService.leaseOwnerShip.Date_of_final_lease_payment
           );
       }
-      this.leaseOwnerShipService.Add(this.leaseOwnerShip).subscribe(
-        async (deptSuspension) => {
-          console.log("deptSuspension", deptSuspension);
-          const toast = this.notificationsService.success(
-            "Sucess",
-            deptSuspension
-          );
-
-          this.serviceService.Totalarea =
-            parseFloat(this.leaseOwnerShip.Lease_Hold_M2) +
-            parseFloat(this.leaseOwnerShip.Free_Hold_M2);
-          this.getleaseOwnerShip(this.leaseOwnerShip.Plot_ID);
-          const maxAreaDifferences =
-            environment.Totalareatolerance * this.serviceService.Totalarea;
-
-          const areaDifferences = Math.abs(
-            totalsize - parseFloat(localStorage.getItem("PolygonAreaname"))
-          );
-
-          if (areaDifferences <= maxAreaDifferences) {
-            this.serviceService.plotsizenotequal = false;
-          } else {
-            this.serviceService.plotsizenotequal = true;
-            const toast = this.notificationsService.warn(
-              `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
-          በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
-           ${Math.abs(
-             totalsize - parseInt(localStorage.getItem("PolygonAreaname"))
-           )}`
+      this.leaseOwnerShipService
+        .Add(this.serviceService.leaseOwnerShip)
+        .subscribe(
+          async (deptSuspension) => {
+            console.log("deptSuspension", deptSuspension);
+            const toast = this.notificationsService.success(
+              "Sucess",
+              deptSuspension
             );
-          }
+            localStorage.setItem("PolygonAreaname", "" + 0);
+            localStorage.setItem("PolygonAreanameFrehold", "" + 0);
 
-          if (this.language == "amharic") {
-            this.leaseOwnerShip.Date_of_final_lease_payment =
-              await this.getgregorianToEthiopianDate(
-                this.leaseOwnerShip.Date_of_final_lease_payment
-              );
-          }
+            this.serviceService.Totalarea =
+              parseFloat(this.serviceService.leaseOwnerShip.Lease_Hold_M2) +
+              parseFloat(this.serviceService.leaseOwnerShip.Free_Hold_M2);
+            this.getleaseOwnerShip(this.serviceService.leaseOwnerShip.Plot_ID);
+            const maxAreaDifferences =
+              environment.Totalareatolerance * this.serviceService.Totalarea;
 
-          //this.serviceService.disablefins = false;
+            const areaDifferences = Math.abs(totalsize - totalsum);
 
-          this.leaseForm = false;
-          this.serviceService.isleaseForm = false;
-          if (!this.Saved) {
-            this.addnew = false;
-            //this.completed.emit();
-            this.Saved = true;
+            if (areaDifferences <= maxAreaDifferences) {
+              this.serviceService.plotsizenotequal = false;
+            } else {
+              this.serviceService.plotsizenotequal = false;
+              //     const toast = this.notificationsService.warn(
+              //       `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
+              // በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
+              //  ${Math.abs(totalsize - totalsum)}`
+              //     );
+            }
+
+            if (this.language == "amharic") {
+              this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+                await this.getgregorianToEthiopianDate(
+                  this.serviceService.leaseOwnerShip.Date_of_final_lease_payment
+                );
+            }
+
+            //this.serviceService.disablefins = false;
+
+            this.leaseForm = false;
             this.serviceService.isleaseForm = false;
-          }
-          // const warningMessage = "የሊዝ ወይም የነባር ይዞታ መመዝገቡን አረጋግጥ/Check lease or freehold record is active for this plot";
-          // const toastWarning = this.notificationsService.warn(
-          //   "Warning",
-          //   warningMessage
-          // );
-        },
-        async (error) => {
-          console.log(error);
+            if (!this.Saved) {
+              this.addnew = false;
+              //this.completed.emit();
+              this.Saved = true;
+              this.serviceService.isleaseForm = false;
+            }
+            // const warningMessage = "የሊዝ ወይም የነባር ይዞታ መመዝገቡን አረጋግጥ/Check lease or freehold record is active for this plot";
+            // const toastWarning = this.notificationsService.warn(
+            //   "Warning",
+            //   warningMessage
+            // );
+          },
+          async (error) => {
+            console.log(error);
 
-          if (error.status == "400") {
-            const toast = this.notificationsService.error(
-              "Error",
-              error.error.InnerException.Errors[0].message
-            );
-            this.leaseOwnerShip.Date_of_final_lease_payment =
-              await this.getgregorianToEthiopianDate(
-                this.leaseOwnerShip.Date_of_final_lease_payment
+            if (error.status == "400") {
+              const toast = this.notificationsService.error(
+                "Error",
+                error.error.InnerException.Errors[0].message
               );
-          } else {
-            const toast = this.notificationsService.error(
-              "Error",
-              "SomeThing Went Wrong"
-            );
-            this.leaseOwnerShip.Date_of_final_lease_payment =
-              await this.getgregorianToEthiopianDate(
-                this.leaseOwnerShip.Date_of_final_lease_payment
+              this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+                await this.getgregorianToEthiopianDate(
+                  this.serviceService.leaseOwnerShip.Date_of_final_lease_payment
+                );
+            } else {
+              const toast = this.notificationsService.error(
+                "Error",
+                "SomeThing Went Wrong"
               );
+              this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+                await this.getgregorianToEthiopianDate(
+                  this.serviceService.leaseOwnerShip.Date_of_final_lease_payment
+                );
+            }
           }
+        );
+    } else {
+      if (this.totalsizeoflease < totalsize) {
+        const toast = this.notificationsService.warn(
+          "the sum of Leasehold and Freehold is must not greater than total  plot size/የሊዝ ይዞታ እና ነፃ ይዞታ ድምር ከጠቅላላ የቦታ መጠን መብለጥ የለበትም"
+        );
+        return;
+      } else {
+        if (this.language == "amharic") {
+          this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+            await this.getEthiopianToGregorian(
+              this.serviceService.leaseOwnerShip.Date_of_final_lease_payment
+            );
         }
-      );
-      console.log("saveing....");
+        this.leaseOwnerShipService
+          .Add(this.serviceService.leaseOwnerShip)
+          .subscribe(
+            async (deptSuspension) => {
+              console.log("deptSuspension", deptSuspension);
+              const toast = this.notificationsService.success(
+                "Sucess",
+                deptSuspension
+              );
+              localStorage.setItem("PolygonAreaname", "" + 0);
+              localStorage.setItem("PolygonAreanameFrehold", "" + 0);
+
+              this.serviceService.Totalarea =
+                parseFloat(this.serviceService.leaseOwnerShip.Lease_Hold_M2) +
+                parseFloat(this.serviceService.leaseOwnerShip.Free_Hold_M2);
+              this.getleaseOwnerShip(
+                this.serviceService.leaseOwnerShip.Plot_ID
+              );
+              const maxAreaDifferences =
+                environment.Totalareatolerance * this.serviceService.Totalarea;
+
+              const areaDifferences = Math.abs(totalsize - totalsum);
+
+              if (areaDifferences <= maxAreaDifferences) {
+                this.serviceService.plotsizenotequal = false;
+              } else {
+                this.serviceService.plotsizenotequal = false;
+                //     const toast = this.notificationsService.warn(
+                //       `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
+                // በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
+                //  ${Math.abs(totalsize - totalsum)}`
+                //     );
+              }
+
+              if (this.language == "amharic") {
+                this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+                  await this.getgregorianToEthiopianDate(
+                    this.serviceService.leaseOwnerShip
+                      .Date_of_final_lease_payment
+                  );
+              }
+
+              //this.serviceService.disablefins = false;
+
+              this.leaseForm = false;
+              this.serviceService.isleaseForm = false;
+              if (!this.Saved) {
+                this.addnew = false;
+                //this.completed.emit();
+                this.Saved = true;
+                this.serviceService.isleaseForm = false;
+              }
+              // const warningMessage = "የሊዝ ወይም የነባር ይዞታ መመዝገቡን አረጋግጥ/Check lease or freehold record is active for this plot";
+              // const toastWarning = this.notificationsService.warn(
+              //   "Warning",
+              //   warningMessage
+              // );
+            },
+            async (error) => {
+              console.log(error);
+
+              if (error.status == "400") {
+                const toast = this.notificationsService.error(
+                  "Error",
+                  error.error.InnerException.Errors[0].message
+                );
+                this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+                  await this.getgregorianToEthiopianDate(
+                    this.serviceService.leaseOwnerShip
+                      .Date_of_final_lease_payment
+                  );
+              } else {
+                const toast = this.notificationsService.error(
+                  "Error",
+                  "SomeThing Went Wrong"
+                );
+                this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+                  await this.getgregorianToEthiopianDate(
+                    this.serviceService.leaseOwnerShip
+                      .Date_of_final_lease_payment
+                  );
+              }
+            }
+          );
+        console.log("saveing....");
+      }
     }
   }
 
@@ -708,7 +944,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
   visible;
   closeModal(customer) {
     this.visible = false;
-    this.leaseOwnerShip.Customer_ID = customer.customer_ID;
+    this.serviceService.leaseOwnerShip.Customer_ID = customer.customer_ID;
     if (this.language == "amharic") {
       this.Customer_NAME =
         customer.applicant_First_Name_AM +
@@ -728,15 +964,15 @@ export class LeaseOwnerShipComponent implements OnChanges {
   }
 }
 
-class LeaseOwnerShip {
+export class LeaseOwnerShip {
   public ID: string;
-  public Type_ID: string;
-  public Lease_No: string;
-  public Lease_Price: string;
+  public Type_ID: any;
+  public Lease_No: any;
+  public Lease_Price: any;
   public Free_Hold_M2: any;
   public Lease_Hold_M2: any;
-  public Customer_ID: string;
-  public Plot_ID: string;
+  public Customer_ID: any;
+  public Plot_ID: any;
   public Status;
   public SDP_ID;
   public To_Do_ID;
@@ -747,4 +983,6 @@ class LeaseOwnerShip {
   public Amount_of_the_annual_lease_payment;
   public Lease_period_in_Year;
   public Date_of_final_lease_payment;
+  public Current_lease_bid_price;
+  public Remaining_lease_payment;
 }

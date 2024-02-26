@@ -39,7 +39,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   @Input() selectedpro;
   @Input() disable;
   @Input() LicenceData;
-  pictoShow;
+  pictoShow: any;
   isnew = true;
   Saved = false;
   PropertyList: any;
@@ -65,6 +65,14 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   isbuildingApartama: boolean;
   proprty_Use_lookup: Object;
   maxheight: string;
+  messagefortoast: string;
+  isconfirmsaveplot: boolean;
+  plan_Document: any;
+  picture_North: any;
+  picture_East: any;
+  picture_South: any;
+  picture_West: any;
+  proploceach: any;
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -220,12 +228,39 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       }
     );
   }
+  checkplothavecertificet() {
+    this.serviceService
+      .GetView_ForApicheckcertificateVersionbyproperty(
+        this.propertyRegister.property_ID
+      )
+      .subscribe((rec: any) => {
+        console.log("🚀 ~ .subscribe ~ rec:", rec);
+
+        if (rec.length > 0) {
+          this.messagefortoast = `The property with ID ${rec[0].property_ID} currently has an active map certificate version identified by the title deed number ${rec[0].title_Deed_No}. Would you like to deactivate the map certificate version? Upon clicking 'Yes,' the map will be deactivated.`;
+
+          this.isconfirmsaveplot = true;
+        } else {
+          this.save();
+          this.isconfirmsaveplot = false;
+        }
+      });
+  }
   async save() {
+    if (
+      parseInt(this.propertyRegister.property_Type_ID) == 2 &&
+      parseInt(this.propertyRegister.property_Parent_ID) == 0
+    ) {
+      const toastt = this.notificationsService.warn(
+        "Please note that you cannot add የጋራ መኖርያ ቤቶች/Appartments/Condominiums without first adding a parent building. Kindly ensure that you add the building details before proceeding with adding the apartments"
+      );
+      return;
+    }
     if (this.serviceService.isproportinal == true) {
       let totalsize =
         parseInt(this.propertyRegister.building_Size_M2) +
-        parseInt(this.propertyRegister.proportional_from_Compound_Size) +
-        parseInt(this.propertyRegister.parking_Area_M2) +
+        // parseInt(this.propertyRegister.proportional_from_Compound_Size) +
+        // parseInt(this.propertyRegister.parking_Area_M2) +
         parseInt(this.propertyRegister.size_In_Proportional);
       console.log("totalsize", totalsize);
 
@@ -240,8 +275,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                 if (element.property_ID != this.propertyRegister.property_ID) {
                   let totalsize =
                     parseInt(element.building_Size_M2) +
-                    parseInt(element.proportional_from_Compound_Size) +
-                    parseInt(element.parking_Area_M2) +
+                    // parseInt(element.proportional_from_Compound_Size) +
+                    // parseInt(element.parking_Area_M2) +
                     parseInt(element.size_In_Proportional);
                   this.totlaizeproportinal += totalsize;
                 }
@@ -297,7 +332,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                 console.log("property", property);
                 this.getPropertyList(prop.plot_ID);
                 if (!this.Saved) {
-                  this.completed.emit();
+                  this.completed.emit(prop);
                   this.Saved = true;
                 }
                 this.serviceService.frompropertyUpdate = true;
@@ -346,7 +381,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
           console.log("property", property);
           //this.getPropertyList(prop.plot_ID);
           if (!this.Saved) {
-            this.completed.emit();
+            this.completed.emit(prop);
             this.Saved = true;
           }
           this.serviceService.frompropertyUpdate = true;
@@ -490,7 +525,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             this.getPropertyList(prop.plot_ID);
             const toast = this.notificationsService.success("Sucess", property);
             if (!this.Saved) {
-              this.completed.emit();
+              this.completed.emit(prop);
               this.Saved = true;
             }
           },
@@ -518,6 +553,10 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       (PropertyList: any) => {
         this.PropertyList = PropertyList.procProperty_Registrations;
         this.PropertyList = Object.assign([], this.PropertyList);
+        let currentpro = this.PropertyList.filter(
+          (x) => x.property_ID === this.serviceService.insertedProperty
+        );
+        this.completed.emit(currentpro[0]);
         console.log("PropertyList", PropertyList);
         this.PropertyList.push({ property_ID: "No Parent" });
         //this.getTree(Object.assign([], this.PropertyList));
@@ -643,12 +682,26 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   }
 
   async add() {
+    console.log(
+      "🚀 ~ add ~ property_Type_ID:",
+      this.propertyRegister.property_Type_ID,
+      this.propertyRegister.property_Parent_ID
+    );
+    if (
+      parseInt(this.propertyRegister.property_Type_ID) == 2 &&
+      this.propertyRegister.property_Parent_ID == "No Parent"
+    ) {
+      const toastt = this.notificationsService.warn(
+        "Please note that you cannot add የጋራ መኖርያ ቤቶች/Appartments/Condominiums without first adding a parent building. Kindly ensure that you add the building details before proceeding with adding the apartments"
+      );
+      return;
+    }
     if (this.serviceService.isproportinal == true) {
       let totalsize =
         parseInt(this.propertyRegister.building_Size_M2) +
-        parseInt(this.propertyRegister.proportional_from_Compound_Size) +
-        parseInt(this.propertyRegister.parking_Area_M2) +
-        parseInt(this.propertyRegister.size_In_Proportional);
+        parseInt(this.propertyRegister.proportional_from_Compound_Size);
+      // parseInt(this.propertyRegister.parking_Area_M2) +
+      //parseInt(this.propertyRegister.size_In_Proportional);
       console.log("totalsize", totalsize);
 
       this.serviceService
@@ -661,9 +714,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
               if (element.property_ID != "No Parent") {
                 let totalsize =
                   parseInt(element.building_Size_M2) +
-                  parseInt(element.proportional_from_Compound_Size) +
-                  parseInt(element.parking_Area_M2) +
-                  parseInt(element.size_In_Proportional);
+                  parseInt(element.proportional_from_Compound_Size);
+                // parseInt(element.parking_Area_M2) +
+                //parseInt(element.size_In_Proportional);
 
                 this.totlaizeproportinal += totalsize;
               }
@@ -720,12 +773,13 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                 // }
                 this.serviceService.insertedProperty =
                   deptSuspension[0].property_ID;
-                this.completed.emit();
+
                 this.isnew = true;
                 if (!this.Saved) {
                   this.Saved = true;
                 }
                 this.getPropertyList(prop.plot_ID);
+
                 if (prop.property_Parent_ID != "0") {
                   this.serviceService.hide = false;
                 }
@@ -754,12 +808,15 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     } else {
       let totalsize =
         parseInt(this.propertyRegister.building_Size_M2) +
-        parseInt(this.propertyRegister.proportional_from_Compound_Size) +
-        parseInt(this.propertyRegister.parking_Area_M2) +
-        parseInt(this.propertyRegister.size_In_Proportional);
+        parseInt(this.propertyRegister.proportional_from_Compound_Size);
+      // parseInt(this.propertyRegister.parking_Area_M2) +
+      //parseInt(this.propertyRegister.size_In_Proportional);
       console.log(parseInt(this.serviceService.Plot_Size_M2));
 
-      if (parseInt(this.serviceService.Plot_Size_M2) < totalsize) {
+      if (
+        parseInt(this.serviceService.Plot_Size_M2) !=
+        parseInt(this.serviceService.Plot_Size_M2)
+      ) {
         const toast = this.notificationsService.error(
           "error",
           "the sum of building_Size_M2 , proportional_from_Compound_Size  and parking_Area_M2 must be equle to " +
@@ -798,12 +855,13 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             // }
             this.serviceService.insertedProperty =
               deptSuspension[0].property_ID;
-            this.completed.emit();
+
             this.isnew = true;
             if (!this.Saved) {
               this.Saved = true;
             }
             this.getPropertyList(prop.plot_ID);
+            //this.completed.emit(prop);
             if (prop.property_Parent_ID != "0") {
               this.serviceService.hide = false;
             }
@@ -825,6 +883,55 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       }
     }
   }
+  getcurrentlocationdata() {
+    this.serviceService
+      .getProploc(this.selectedpro.property_ID)
+      .subscribe((response: any) => {
+        this.proploceach = response.procProporty_Locations;
+        console.log(
+          "🚀 ~ .subscribe ~ propformLocation:",
+          this.propformLocation
+        );
+        if (this.proploceach.length > 0) {
+          this.propformLocation = this.proploceach[0];
+          if (this.propformLocation.plan_Document) {
+            this.plan_Document =
+              "data:image/jpg;base64, " + this.propformLocation.plan_Document;
+            this.plan_Document = this.sanitizer.bypassSecurityTrustResourceUrl(
+              this.plan_Document
+            );
+          }
+          if (this.propformLocation.picture_North) {
+            this.picture_North =
+              "data:image/jpg;base64, " + this.propformLocation.picture_North;
+            this.picture_North = this.sanitizer.bypassSecurityTrustResourceUrl(
+              this.picture_North
+            );
+          }
+          if (this.propformLocation.picture_East) {
+            this.propformLocation.picture_East =
+              "data:image/jpg;base64, " + this.propformLocation.picture_East;
+            this.picture_East = this.sanitizer.bypassSecurityTrustResourceUrl(
+              this.picture_East
+            );
+          }
+          if (this.propformLocation.picture_South) {
+            this.propformLocation.picture_South =
+              "data:image/jpg;base64, " + this.propformLocation.picture_South;
+            this.picture_South = this.sanitizer.bypassSecurityTrustResourceUrl(
+              this.picture_South
+            );
+          }
+          if (this.propformLocation.picture_West) {
+            this.picture_West =
+              "data:image/jpg;base64, " + this.propformLocation.picture_West;
+            this.picture_West = this.sanitizer.bypassSecurityTrustResourceUrl(
+              this.picture_West
+            );
+          }
+        }
+      });
+  }
 
   getproplocbyid(plotid) {
     this.convertedCoordinates = [];
@@ -836,6 +943,12 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
           this.plotloc[0].geowithzone,
           this.plotloc[0]
         );
+        if (this.plotloc[0].geoForwgs84 != null) {
+          this.convertPolygonCoordinates(
+            this.plotloc[0].geoForwgs84,
+            this.plotloc[0]
+          );
+        }
 
         this.serviceService.selectedproperty = this.selectedpro.property_ID;
         console.log("this.propformLocation", this.serviceService.PropertyList);
@@ -852,11 +965,18 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                 );
                 if (this.proploc.length > 0) {
                   this.proploc.forEach((elementeach) => {
-                    console.log("this.propformLocation", elementeach);
+                    console.log(
+                      "this.propformLocationelementeach",
+                      elementeach
+                    );
                     if (
                       elementeach.proporty_Id == this.selectedpro.property_ID
                     ) {
                       this.propformLocation = elementeach;
+                      console.log(
+                        "🚀 ~ this.proploc.forEach ~ propformLocation:",
+                        this.propformLocation
+                      );
 
                       this.serviceService.isvalidatedPlotGis = true;
                       this.serviceService.ispropoertylocation = true;
@@ -866,10 +986,11 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                         elementeach.geowithzone,
                         element
                       );
+                      return;
                     } else {
                       this.propformLocation = new PropformLocation();
                       console.log(
-                        "this.propformLocation",
+                        "this.propformLocationcur",
                         this.propformLocation
                       );
                       this.serviceService.isvalidatedPlotGis = false;
@@ -884,7 +1005,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                   });
                 } else {
                   if (element.property_ID == this.selectedpro.property_ID) {
-                    console.log("this.propformLocation", element);
+                    console.log("this.propformLocationcurrent", element);
                     this.propformLocation = new PropformLocation();
 
                     this.serviceService.ispropoertylocation = false;
@@ -898,6 +1019,25 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     });
   }
 
+  // convertToMultiPoint(
+  //   points: {
+  //     easting: number;
+  //     northing: number;
+  //     hemisphere: string;
+  //     zone: number;
+  //   }[]
+  // ): string {
+  //   const multiPointArray = points
+  //     .map(
+  //       (point) =>
+  //         `${point.easting} ${point.northing} ${point.hemisphere} ${point.zone}`
+  //     )
+  //     .join(", ");
+
+  //   const multiPointString = `POLYGON((${multiPointArray}))`;
+
+  //   return multiPointString;
+  // }
   convertToMultiPoint(
     points: {
       easting: number;
@@ -906,6 +1046,27 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       zone: number;
     }[]
   ): string {
+    // Check if the input points form a valid polygon
+    if (
+      points.length < 3 || // At least three points are required for a polygon
+      points[0].easting !== points[points.length - 1].easting || // Check if the first and last points are the same
+      points[0].northing !== points[points.length - 1].northing
+    ) {
+      const toast = this.notificationsService.warn(
+        "Invalid polygon: The first and last points must be the same."
+      );
+      return;
+    }
+
+    // Remove the last point if it's identical to the first point
+    if (
+      points.length > 1 &&
+      points[0].easting === points[points.length - 2].easting &&
+      points[0].northing === points[points.length - 2].northing
+    ) {
+      points.pop();
+    }
+
     const multiPointArray = points
       .map(
         (point) =>
@@ -940,29 +1101,69 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       return multiPoint;
     }
   }
+  // convertPolygonCoordinates(polygonString: string, data): any[] {
+  //   const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
+
+  //   const result = [];
+
+  //   if (coordinates) {
+  //     for (const coord of coordinates) {
+  //       console.log("coordcoordcoord", coord);
+
+  //       const [easting, northing, hemisphere, zone] = coord.split(" ");
+
+  //       result.push({
+  //         northing: northing,
+  //         easting: easting,
+  //         hemisphere: hemisphere,
+  //         zone: zone,
+  //       });
+  //     }
+  //   }
+
+  //   console.log("result", result);
+  //   this.convertCoordinates(result, data);
+
+  //   return result;
+  // }
   convertPolygonCoordinates(polygonString: string, data): any[] {
     const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
+    console.log("🚀 ~ convertPolygonCoordinates ~ coordinates:", coordinates);
 
     const result = [];
 
     if (coordinates) {
+      const uniqueCoordinates = new Set(); // Using a Set to store unique coordinates
       for (const coord of coordinates) {
-        console.log("coordcoordcoord", coord);
-
         const [easting, northing, hemisphere, zone] = coord.split(" ");
 
-        result.push({
-          northing: northing,
-          easting: easting,
-          hemisphere: hemisphere,
-          zone: zone,
-        });
+        // Check if the coordinate is unique before adding it to the result
+        const uniqueCoordString = `${easting},${northing}`;
+        if (!uniqueCoordinates.has(uniqueCoordString)) {
+          uniqueCoordinates.add(uniqueCoordString);
+
+          result.push({
+            northing: northing,
+            easting: easting,
+            hemisphere: hemisphere,
+            zone: zone,
+          });
+        }
       }
     }
+
+    // Validating the polygon
+    const isValidPolygon =
+      result.length >= 3 &&
+      result[0].northing === result[result.length - 1].northing &&
+      result[0].easting === result[result.length - 1].easting;
+
     console.log("result", result);
+    console.log("isValidPolygon", isValidPolygon);
+
     this.convertCoordinates(result, data);
 
-    return result;
+    return isValidPolygon ? result : [];
   }
 
   convertCoordinates(data, prop) {
@@ -996,32 +1197,6 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     console.log("convertedCconvertedCoordinatesoordinates", arrayOfArrays);
     this.tellChild(arrayOfArrays);
   }
-  // convertCoordinates(data, prop) {
-  //   const arrayOfShapes = [];
-
-  //   // Create the header row
-  //   const headerRow = ["northing", "easting", "hemisphere", "zone"];
-
-  //   for (const coord of data) {
-  //     const shape = {
-  //       name: prop,
-  //       coordinates: [
-  //         coord.northing,
-  //         coord.easting,
-  //         coord.hemisphere,
-  //         coord.zone,
-  //       ],
-  //     };
-
-  //     arrayOfShapes.push(shape);
-  //   }
-
-  //   // Insert the header row at the beginning
-  //   arrayOfShapes.unshift(headerRow);
-
-  //   console.log("arrayOfShapes", arrayOfShapes);
-  //   this.tellChild(arrayOfShapes);
-  // }
 
   updateproploc() {
     console.log(
@@ -1111,6 +1286,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         this.propformLocation.proporty_Id =
           this.serviceService.insertedProperty;
         this.propformLocation.created_By = response[0].RoleId;
+        this.propformLocation.created_By = response[0].RoleId;
         this.propformLocation.created_Date = new Date();
 
         this.serviceService.saveProploc(this.propformLocation).subscribe(
@@ -1198,9 +1374,10 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     reader.readAsDataURL(File);
     reader.addEventListener("loadend", (e) => {
       base64file = reader.result;
-      this.pictoShow = base64file;
-      this.pictoShow = this.sanitizer.bypassSecurityTrustResourceUrl(
-        this.pictoShow
+      console.log("🚀 ~ reader.addEventListener ~ base64file:", base64file);
+      this.plan_Document = base64file;
+      this.plan_Document = this.sanitizer.bypassSecurityTrustResourceUrl(
+        this.plan_Document
       );
       const re = /base64,/gi;
       base64file = base64file.replace(re, "");
@@ -1219,9 +1396,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     reader.readAsDataURL(File);
     reader.addEventListener("loadend", (e) => {
       base64file = reader.result;
-      this.pictoShow = base64file;
-      this.pictoShow = this.sanitizer.bypassSecurityTrustResourceUrl(
-        this.pictoShow
+      this.picture_North = base64file;
+      this.picture_North = this.sanitizer.bypassSecurityTrustResourceUrl(
+        this.picture_North
       );
       const re = /base64,/gi;
       base64file = base64file.replace(re, "");
@@ -1240,9 +1417,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     reader.readAsDataURL(File);
     reader.addEventListener("loadend", (e) => {
       base64file = reader.result;
-      this.pictoShow = base64file;
-      this.pictoShow = this.sanitizer.bypassSecurityTrustResourceUrl(
-        this.pictoShow
+      this.picture_East = base64file;
+      this.picture_East = this.sanitizer.bypassSecurityTrustResourceUrl(
+        this.picture_East
       );
       const re = /base64,/gi;
       base64file = base64file.replace(re, "");
@@ -1261,9 +1438,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     reader.readAsDataURL(File);
     reader.addEventListener("loadend", (e) => {
       base64file = reader.result;
-      this.pictoShow = base64file;
-      this.pictoShow = this.sanitizer.bypassSecurityTrustResourceUrl(
-        this.pictoShow
+      this.picture_South = base64file;
+      this.picture_South = this.sanitizer.bypassSecurityTrustResourceUrl(
+        this.picture_South
       );
       const re = /base64,/gi;
       base64file = base64file.replace(re, "");
@@ -1282,9 +1459,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     reader.readAsDataURL(File);
     reader.addEventListener("loadend", (e) => {
       base64file = reader.result;
-      this.pictoShow = base64file;
-      this.pictoShow = this.sanitizer.bypassSecurityTrustResourceUrl(
-        this.pictoShow
+      this.picture_West = base64file;
+      this.picture_West = this.sanitizer.bypassSecurityTrustResourceUrl(
+        this.picture_West
       );
       const re = /base64,/gi;
       base64file = base64file.replace(re, "");

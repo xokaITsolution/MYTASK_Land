@@ -58,6 +58,7 @@
             <th scope="col">
               <button type="button" class="btn btn-primary" *ngIf="!disable" (click)="addversion()" translate>Add New</button>
             </th>
+            <th *ngIf="isnews"></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-version>
@@ -78,6 +79,9 @@
             </td>
             <td class="fit-content-cell">
               <button type="button" class="btn btn-primary" (click)="Selectversion(version)" translate>select</button>
+            </td><td  *ngIf="isnews">
+                <button *ngIf="isnews && !disable" type="button" [ngClass]="{'blinking': isnew}" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
+                (click)="loading2(version);ismodaEnable=true;isnew=false">Edit</button>
             </td>
           </tr>
         </ng-template>
@@ -91,16 +95,16 @@
   <tabset #staticTabs>
     <tab [heading]="'Certificate Version' | translate">
       <div class="mt-3">
-        <app-certificate-version [licenceData]="licenceData" (completed)="EnableFins()" [Selectedcert]='Selectedcert'
+        <app-certificate-version [licenceData]="licenceData" (completed)="EnableFins($event)" [Selectedcert]='Selectedcert'
           [SelectedBase]="SelectedBase" [disable]="disable"></app-certificate-version>
       </div>
     </tab>
-    <tab [heading]="'Them' | translate"  [disabled]="!isThem" >
+    <tab [heading]="'Them' | translate"  [disabled]="!isThem && isnotprint" >
       <div class="mt-3">
         <app-them (completed)="EnableFins()" [Selectedcert]='Selectedcert' [disable]="disable" [licenceData]="licenceData"></app-them>
       </div>
     </tab>
-    <tab [heading]="'Debt/SuspensionRecord' | translate" [disabled]="!isdept"  >  
+    <tab [heading]="'Debt/SuspensionRecord' | translate" [disabled]="!isdept && isnotprint"  >  
       <!-- [disabled]="!isdept" -->
           <div class="mt-3">
             <app-dept-suspension-record  (completed)="EnableFins()" [Selectedcert]='Selectedcert' [disable]="disable" [licenceData]="licenceData"
@@ -286,4 +290,18 @@
       </ng-template>
     </p-table>
   </div>
+</p-dialog>
+
+<p-dialog [(visible)]="ismodaEnable" 
+  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
+ [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                         'max-height': '80vh','min-height':'250px'}">
+  <div class="container">
+
+    <iframe  class="responsive-iframe" [src]="ceertform" ></iframe>
+  </div>
+  <p-footer>
+    <button type="button" (click)="ismodaEnable=false;" class="btn btn-light" translate>Close</button>
+  
+  </p-footer>
 </p-dialog>

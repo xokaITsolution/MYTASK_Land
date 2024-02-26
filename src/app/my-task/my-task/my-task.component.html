@@ -28,15 +28,16 @@
             task.status == 'S' || task.status == 'P' || task.status == 'B'
           " [class.red]="task.Minutes_late > 0">
           <td>{{ task.number }}</td>
-          <td *ngIf="task.status == 'O' || task.status == 'A  '">**********</td>
-          <td *ngIf="task.status !== 'O' && task.status !== 'A  '">
+          <td *ngIf="task.status == 'O' || task.status == 'A  ' || task.status == 'R  '">**********</td>
+          <td *ngIf="task.status !== 'O' && task.status !== 'A  ' && task.status !== 'R  '">
             {{ task.todo_comment }}
           </td>
           <td>{{task.start_date | date :"M/d/yy" }}</td>
           <td>{{task.description}}</td>
           <td>{{task.status}}</td>
-          <td (mouseenter)="task.showButton = true" (mouseleave)="task.showButton = false">
-            <span *ngIf="task.showButton" (click)="showMessage(task.todo_comment, task)" translate>
+          <!-- (mouseenter)="task.showButton = true" (mouseleave)="task.showButton = false" -->
+          <td >
+            <span (click)="showMessage(task.todo_comment, task)" translate>
               <span class="pi pi-comment"></span>
               Show message
             </span>

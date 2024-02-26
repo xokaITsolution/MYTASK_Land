@@ -102,6 +102,8 @@ import { FilesComponent } from "./files/files.component";
 import { ListboxModule } from "primeng/listbox";
 import { BsModalService } from "ngx-bootstrap";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { CertversionupgradeComponent } from "./certversionupgrade/certversionupgrade.component";
+import { CertificateVersionUpgradeComponent } from "./certificate-version-upgrade/certificate-version-upgrade.component";
 @NgModule({
   imports: [
     QRCodeModule,
@@ -126,6 +128,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     BrowserModule,
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     ServiceRoutingModule,
     AngularFontAwesomeModule,
     ProgressSpinnerModule,
@@ -192,6 +195,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     FormDisplayComponent,
     PlotComponent,
     PropertyComponent,
+    CertversionupgradeComponent,
     CertComponent,
     GisComponent,
     TopGridComponent,
@@ -208,6 +212,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     TreeComponentComponent,
     FilePreviewDialogComponent,
     NumberOnlyDirectiveDirective,
+    CertificateVersionUpgradeComponent,
   ],
   entryComponents: [
     GisMapComponent,
@@ -220,6 +225,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     GisMapService,
     MessageService,
     CertificateVersionService,
+    CertificateVersionUpgradeComponent,
     DeptSuspensionRecordService,
     LeaseOwnerShipService,
     MeasurmentService,

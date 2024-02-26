@@ -4,6 +4,7 @@ import { environment } from "../../environments/environment";
 import { TreeNode } from "primeng/api";
 import { Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
+import { LeaseOwnerShip } from "./lease-owner-ship/lease-owner-ship.component";
 
 @Injectable({
   providedIn: "root",
@@ -34,6 +35,12 @@ export class ServiceService {
   private GetApplicationNumberByUserURL =
     environment.rootPathApi +
     "view/View_getUserNameForReviewByApplication/UserName";
+  private GetApplicationNumberBypreviousApplication =
+    environment.rootPathApi +
+    "view/View_getUserNameForReviewByApplication/previousApplication";
+  private GetpreviousApplicationNumberByUserURL =
+    environment.rootPathApi +
+    "view/View_GetPreviceApplicationForReview/current/";
 
   private GetApplicationNumberByUserURLsapi =
     environment.rootPathApi +
@@ -42,10 +49,8 @@ export class ServiceService {
     environment.rootpath2 + "GetApplicationNumberByUser";
   private getRequerdURL =
     environment.rootpath2 + "getRequrementDocumentOfTasks";
-  private All_Service =
-    "http://197.156.93.110/XOKA.eoffice.bpel_Land/api/" + "BPEL/Service";
-  private Task_Service =
-    "http://197.156.93.110/XOKA.eoffice.bpel_Land/api/" + "BPEL/getTasks";
+  private All_Service = environment.rootpath2 + "Service";
+  private Task_Service = environment.rootpath2 + "getTasks";
   private All_Org = environment.rootpath2 + "AllOrg";
   public customerUrl = environment.rootPathApi + "Customer/procCustomer";
   public Username =
@@ -122,6 +127,8 @@ export class ServiceService {
   private nextTaskAcceptOrRejectURl =
     environment.rootPath + "BPEL/nextTaskAcceptOrReject"; // URL to web api
   private SaveDataURL = environment.rootPath + "BPEL/SaveData"; // URL to web api
+  private SaveDataURLkill = environment.rootPath + "BPEL/Kill"; // URL to web api
+  private SaveDataURLreopen = environment.rootPath + "BPEL/reOpen"; // URL to web api
   private GetDataURL = environment.rootPath + "BPEL/GetData"; // URL to web api
 
   private ViewAspNetUsersWorkInfoDetail =
@@ -169,10 +176,13 @@ export class ServiceService {
     environment.rootPath + "Customer_Status_Lookup"; // URL to web api
   private saveCustomeredit = environment.rootPath + "Customer";
   private dbstatus = environment.rootPath + "BPEL/";
-
+  private GetSuperviedUsersUrl =
+    environment.rootPath + "BPEL/Get_SuperviedUsers"; // URL to web api
   private APIForMoreOptionGetCustmerInformationURL =
     environment.rootPathApi +
     "view/View_APIForMoreOptionGetCustmerInformation/application_number?application_number=";
+  private View_ForApicheckcertificateVersionController =
+    environment.rootPathApi + "view/View_ForApicheckcertificateVersion";
   // environment.rootPath + "BPEL/GetApplicationNumberByUser"; // URL to web api
   httpOptions = {
     headers: new HttpHeaders({ "Content-Type": "application/json" }),
@@ -233,6 +243,14 @@ export class ServiceService {
   currentApplicationUsers: any;
   currentsdpid: any;
   licenceData: any;
+  isFreeHold: boolean;
+  selectedplotid: any;
+  fornewplotinsert: any;
+  freeholdsize: any;
+  leaseOwnerShip: LeaseOwnerShip;
+  isfreeholdselected: boolean;
+  serviceisundoumneted: boolean = false;
+  currentcertID: any;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -248,6 +266,11 @@ export class ServiceService {
       this.CustomerLookUP +
         "?" +
         "sortOrder=test&currentFilter&searchString&pageIndex&pageSize"
+    );
+  }
+  GetSuperviedUsers() {
+    return this.http.get(
+      this.GetSuperviedUsersUrl + "?username=" + environment.username
     );
   }
   GetApplicationNumberByUser(username) {
@@ -361,8 +384,36 @@ export class ServiceService {
       this.GetApplicationNumberByUserURL + "/" + username + "/" + orgcod
     );
   }
+  GetApplicationNumberByprevious(Title_Deed_No, Useranem, orgcod) {
+    return this.http.get(
+      this.GetApplicationNumberBypreviousApplication +
+        "/" +
+        Title_Deed_No +
+        "/" +
+        Useranem +
+        "/" +
+        orgcod
+    );
+  }
+  GetpreviousApplicationNumberByUsers(username, Parch_ID) {
+    return this.http.get(
+      this.GetpreviousApplicationNumberByUserURL + username + "/" + Parch_ID
+    );
+  }
   GetApplicationNumberByUserInfo(appno) {
     return this.http.get(this.APIForMoreOptionGetCustmerInformationURL + appno);
+  }
+  GetView_ForApicheckcertificateVersion(plot_ID) {
+    return this.http.get(
+      this.View_ForApicheckcertificateVersionController + "/" + plot_ID
+    );
+  }
+  GetView_ForApicheckcertificateVersionbyproperty(propertyID) {
+    return this.http.get(
+      this.View_ForApicheckcertificateVersionController +
+        "/propertyID/" +
+        propertyID
+    );
   }
   getAppointmentByApp(params): Observable<any> {
     const url = environment.rootPath + "GetAppointementByApp";
@@ -999,6 +1050,38 @@ export class ServiceService {
       null
     );
   }
+  killtodo(appno, eid, todoid, usename, status) {
+    return this.http.post(
+      this.SaveDataURLkill +
+        "?ApplicationNO=" +
+        appno +
+        "&eid=" +
+        eid +
+        "&todoid=" +
+        todoid +
+        "&userName=" +
+        usename +
+        "&status=" +
+        status,
+      null
+    );
+  }
+  Reopentodo(appno, eid, todoid, usename, status) {
+    return this.http.post(
+      this.SaveDataURLreopen +
+        "?ApplicationNO=" +
+        appno +
+        "&eid=" +
+        eid +
+        "&todoid=" +
+        todoid +
+        "&userName=" +
+        usename +
+        "&status=" +
+        status,
+      null
+    );
+  }
 
   GetForm(docid) {
     return this.http.get(this.GetDataURL + "?docid=" + docid);
@@ -1101,6 +1184,9 @@ export class ServiceService {
   }
   getcustomerby() {
     return this.http.get(this.customerUrl);
+  }
+  getcustomerbycusid(custID) {
+    return this.http.get(this.customerUrl + "/" + custID);
   }
 }
 
