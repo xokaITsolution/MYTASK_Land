@@ -77,7 +77,7 @@ import { ReportDialogComponent } from "./report-dialog/report-dialog.component";
 //material
 import { ProgressSpinnerModule } from "primeng/progressspinner";
 import { NgxDocViewerModule } from "ngx-doc-viewer";
-import { ExplorationLicenseComponent } from "./exploration-license/exploration-license.component";
+// import { ExplorationLicenseComponent } from "./exploration-license/exploration-license.component";
 import { NgxSimplePrintDirective } from "./ngx-simple-print.directive";
 import { GisMapComponent } from "./gis-map/gis-map.component";
 import { GisMapService } from "./gis-map/gis-map.service";
@@ -203,7 +203,7 @@ import { CertificateVersionUpgradeComponent } from "./certificate-version-upgrad
     RentContractComponent,
     ContractFormComponent,
     ReportDialogComponent,
-    ExplorationLicenseComponent,
+    // ExplorationLicenseComponent,
     GisMapComponent,
     NgxSimplePrintDirective,
     DatepickerEthiopianDirective,
