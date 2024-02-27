@@ -426,7 +426,8 @@
     <tabset style="margin-right: 30px">
       <tab [heading]="'New' | translate">
         <div class="mt-3">
-          <app-files [RequiredDocs]="RequiredDocs" [hide]="hide" [AppNo]="AppNo" (updated)="UpdateAttachments($event)"
+          <app-files 
+          [RequiredDocs]="RequiredDocs" [hide]="hide" [AppNo]="AppNo" (updated)="UpdateAttachments($event)"
                 [DocID]="DocID" (getalldoc)="getAllDocumentpre(AppNo,DocID,currentTaskelected)"></app-files>
           <!-- <p-table [value]="RequerdDocspre" [tableStyle]="{ 'min-width': '100rem' }">
             <ng-template pTemplate="header">
