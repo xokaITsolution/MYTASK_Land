@@ -450,15 +450,19 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
     this.modalRef.hide();
   }
   closeModal(customer) {
-    console.log(customer);
+    console.log(customer, this.serviceService.Service_ID);
     if (
-      this.serviceService.Service_ID !=
+      this.serviceService.Service_ID ==
         "793B8814-F845-429E-A472-DC47E797D3FE".toLocaleLowerCase() || //Merge  of two or more bordering plot managed by lease-lease and lease-freehold.
-      this.serviceService.Service_ID !=
+      this.serviceService.Service_ID ===
         "5DE49606-4DC6-4FB1-8F37-0CFC948FDC83".toLocaleLowerCase() || //Merge two or more bordering plot managed by the free hold
-      this.serviceService.Service_ID !=
-        "8A8588AE-0267-48B7-88AC-F3F18AC02167".toLocaleLowerCase()
+      this.serviceService.Service_ID ===
+        "8a8588ae-0267-48b7-88ac-f3f18ac02167".toLocaleLowerCase()
     ) {
+      this.titleDeedRegistration.transfer_From_Customer = customer.customer_ID;
+      console.log("closeing.....");
+      this.Transfer_From_CustomerName = customer.applicant_First_Name_AM;
+    } else {
       if (
         this.titleDeedRegistration.transfer_To_Customer == customer.customer_ID
       ) {
@@ -476,31 +480,45 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
     // this.modalRef.hide();
   }
   closeModalTo(customer) {
-    console.log(customer);
-    if (
-      this.serviceService.Service_ID !=
-        "793B8814-F845-429E-A472-DC47E797D3FE".toLocaleLowerCase() || //Merge  of two or more bordering plot managed by lease-lease and lease-freehold.
-      this.serviceService.Service_ID !=
-        "5DE49606-4DC6-4FB1-8F37-0CFC948FDC83".toLocaleLowerCase() || //Merge two or more bordering plot managed by the free hold
-      this.serviceService.Service_ID !=
-        "8A8588AE-0267-48B7-88AC-F3F18AC02167".toLocaleLowerCase()
-    ) {
+    console.log(customer, this.serviceService.Service_ID);
+    if ("00000000-0000-0000-0000-000000000000" == customer.customer_ID) {
+      const toast = this.notificationsService.warn(
+        "warn",
+        "Transferred to  must an existring customer with custmer account"
+      );
+      return;
+    } else {
       if (
-        customer.customer_ID ==
-        this.titleDeedRegistration.transfer_From_Customer
+        this.serviceService.Service_ID ===
+          "793B8814-F845-429E-A472-DC47E797D3FE".toLocaleLowerCase() || //Merge  of two or more bordering plot managed by lease-lease and lease-freehold.
+        this.serviceService.Service_ID ===
+          "5DE49606-4DC6-4FB1-8F37-0CFC948FDC83".toLocaleLowerCase() || //Merge two or more bordering plot managed by the free hold
+        this.serviceService.Service_ID ===
+          "8a8588ae-0267-48b7-88ac-f3f18ac02167".toLocaleLowerCase()
       ) {
-        const toast = this.notificationsService.warn(
-          "warn",
-          "you enter same customer . you must enter different customer "
-        );
-      } else {
         this.titleDeedRegistration.transfer_To_Customer = customer.customer_ID;
         console.log("closeing.....");
         this.Transfer_To_CustomerName = customer.applicant_First_Name_AM;
-      }
-    } //Plot Split service for any type of possession
-    // this.modalRefTo.hide();
-    //this.ngxSmartModalService.getModal(modal).close();
+      } else {
+        if (
+          customer.customer_ID ==
+          this.titleDeedRegistration.transfer_From_Customer
+        ) {
+          const toast = this.notificationsService.warn(
+            "warn",
+            "you enter same customer . you must enter different customer "
+          );
+          return;
+        } else {
+          this.titleDeedRegistration.transfer_To_Customer =
+            customer.customer_ID;
+          console.log("closeing.....");
+          this.Transfer_To_CustomerName = customer.applicant_First_Name_AM;
+        }
+      } //Plot Split service for any type of possession
+      // this.modalRefTo.hide();
+      //this.ngxSmartModalService.getModal(modal).close();
+    }
   }
   getcustomer(globvar) {
     console.log(globvar);

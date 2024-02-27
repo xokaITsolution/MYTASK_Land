@@ -84,9 +84,9 @@
                   <p-fileUpload #fild [id]="'file'+i" name="demo[]" customUpload="true" (uploadHandler)="upload($event, RequerdDocpre, fild);"
                     [auto]="true" accept=".pdf,.jpg,.jfif,.png,.gif,.doc,.docx,.xls,.xlsx,.csv,.geojson,.zip"
                     [chooseLabel]="'UPLOAD'" maxFileSize="2900000" [ngStyle]="RequerdDocpre.required ? {'border': '2px solid red'} : {}">
-                    <!-- Conditionally apply 'required-border' class -->
                   </p-fileUpload>
-      
+               <button type="button" class="btn btn-info mr-2" (click)="displayu = true;sorereuired(RequerdDocpre, fild)" translate><i class='fa fa-file-excel-o'></i>
+              upload </button>
                       <span *ngIf="RequerdDocpre.required" style="color:red ; size: 50px;">ሰነድ ማያያዝ ያስፈልጋል</span>
                     </div>
                     <!-- <div *ngIf="uploadedDocumnet">
@@ -207,3 +207,19 @@
   </div>
 </div>
 
+<p-dialog [(visible)]="displayu" header="Import multi file" [responsive]="true" [width]="900" [minY]="70"
+  [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                         'max-height': '80vh','min-height':'250px'}">
+  <div class="modal-body">
+
+    <app-fileuploader (fileDropped)="onFileDropped($event)"></app-fileuploader>
+    <!-- <input type="file" id="photo" (change)="upload($event)" name="photo" > -->
+
+  </div>
+  <div class="float-right">
+
+    <button type="button" class="btn btn-info m-2" (click)="downloadPDF()" translate>Download Merged PDF</button>
+    <button type="button" class="btn btn-primary m-2" (click)="displayu=false;" translate>close</button>
+
+  </div>
+</p-dialog>

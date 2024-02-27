@@ -77,7 +77,6 @@ import { ReportDialogComponent } from "./report-dialog/report-dialog.component";
 //material
 import { ProgressSpinnerModule } from "primeng/progressspinner";
 import { NgxDocViewerModule } from "ngx-doc-viewer";
-import { ExplorationLicenseComponent } from "./exploration-license/exploration-license.component";
 import { NgxSimplePrintDirective } from "./ngx-simple-print.directive";
 import { GisMapComponent } from "./gis-map/gis-map.component";
 import { GisMapService } from "./gis-map/gis-map.service";
@@ -104,12 +103,17 @@ import { BsModalService } from "ngx-bootstrap";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { CertversionupgradeComponent } from "./certversionupgrade/certversionupgrade.component";
 import { CertificateVersionUpgradeComponent } from "./certificate-version-upgrade/certificate-version-upgrade.component";
+import { GisMapBackupComponent } from "./gis-map-backup/gis-map-backup.component";
+import { DndDirective } from "../shared/fileUploader/dnd.directive";
+import { FileuploaderComponent } from "../shared/fileUploader/fileuploader/fileuploader.component";
+import { ProgressComponent } from "../shared/fileUploader/progress/progress.component";
 @NgModule({
   imports: [
     QRCodeModule,
     //BackButtonDisableModule.forRoot({
     //  preserveScrollPosition: true
     // }),
+
     ReactiveFormsModule,
     NgbModule,
     FormsModule,
@@ -173,6 +177,9 @@ import { CertificateVersionUpgradeComponent } from "./certificate-version-upgrad
   ],
 
   declarations: [
+    ProgressComponent,
+    FileuploaderComponent,
+    DndDirective,
     FilesComponent,
     RecordComponent,
     QrCodeDirective,
@@ -203,7 +210,7 @@ import { CertificateVersionUpgradeComponent } from "./certificate-version-upgrad
     RentContractComponent,
     ContractFormComponent,
     ReportDialogComponent,
-    ExplorationLicenseComponent,
+    // ExplorationLicenseComponent,
     GisMapComponent,
     NgxSimplePrintDirective,
     DatepickerEthiopianDirective,
@@ -213,6 +220,7 @@ import { CertificateVersionUpgradeComponent } from "./certificate-version-upgrad
     FilePreviewDialogComponent,
     NumberOnlyDirectiveDirective,
     CertificateVersionUpgradeComponent,
+    GisMapBackupComponent,
   ],
   entryComponents: [
     GisMapComponent,

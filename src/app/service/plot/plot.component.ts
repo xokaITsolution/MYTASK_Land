@@ -18,6 +18,7 @@ import { BsModalRef, BsModalService } from "ngx-bootstrap";
 import { Subject } from "rxjs";
 
 import { LeaseOwnerShipService } from "../lease-owner-ship/lease-owner-ship.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "app-plot",
@@ -71,11 +72,16 @@ export class PlotComponent implements OnChanges {
   processedPlotIDsCoordinates = new Set();
   isfreehoadinsert: boolean;
   serviceisundoumneted: boolean;
+  mapConfig = {
+    center: [0, 0], // Initial center coordinates
+    zoom: 10, // Initial zoom level
+  };
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService,
     private modalService: BsModalService,
+    private modalsService: NgbModal,
 
     private leaseOwnerShipService: LeaseOwnerShipService
   ) {}
@@ -123,6 +129,9 @@ export class PlotComponent implements OnChanges {
     //   localStorage.getItem("PolygonAreaname")
     // );
     // this.isvalidated();
+  }
+  open(content) {
+    this.modalsService.open(content);
   }
   modalRef: BsModalRef;
   openModall(template: TemplateRef<any>) {
@@ -180,6 +189,7 @@ export class PlotComponent implements OnChanges {
     this.calculettotal();
   }
   getAllplotLocation() {
+    //this.processedPlotIDs = new Set();
     this.isfreehoadinsert = false;
     this.PlotManagementListfinal.forEach((element) => {
       console.log(
@@ -195,8 +205,13 @@ export class PlotComponent implements OnChanges {
       }
     });
   }
+  handleMapLoaded(event: any) {
+    // Handle map loaded event
+    console.log("Map loaded:", event);
+  }
 
   getplotlocbyid(plot_ID) {
+    //this.processedPlotIDsCoordinates = new Set();
     this.serviceService.check = true;
     this.serviceService.getPlotloc(plot_ID).subscribe((response: any) => {
       this.plotloc = response.procPlot_Locations;
@@ -242,7 +257,7 @@ export class PlotComponent implements OnChanges {
 
   openGIsFreehold() {
     console.log("checkd openGIsFreehold");
-
+    this.platformLocation.ploteId = this.serviceService.selectedplotid;
     this.ischeckPlotaev = false;
     this.ismodaEnable = true;
     this.serviceService.check = true;
@@ -556,7 +571,7 @@ export class PlotComponent implements OnChanges {
       this.platformLocation.geo = this.platformLocation.geo;
       this.platformLocation.freholdgis = coordinatefreehold;
       this.platformLocation.geoForwgs84 = coordinate;
-      this.platformLocation.ploteId = this.Parcel_ID;
+      this.platformLocation.ploteId = this.serviceService.selectedplotid;
       this.serviceService.getUserRole().subscribe((response: any) => {
         console.log("responseresponseresponse", response, response[0].RoleId);
         this.platformLocation.updated_By = response[0].UserId;

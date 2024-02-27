@@ -189,26 +189,27 @@
                 <div class="col-sm-8" *ngIf="language !== 'amharic'">
                   <input
                   [hidden]="!getData"
-                  [attr.disabled]="disableDate"
+                  
                     type="date"
                     class="form-control"
                     id="year"
                     formControlName="date"
                     required
+                    [disabled]="disable"
                   />
                   <input
                   [hidden]="getData"
-                  readonly
-                  [attr.disabled]="disableForm"
+                  
                   class="form-control"
                     id="year"
                     formControlName="date"
                     required
+                    [disabled]="disable"
                   />
                 </div>
                 
                 <div class="col-sm-8" *ngIf="language === 'amharic'">
-                  <input readonly
+                  <input 
                   [hidden]="!getData"
                   [attr.disabled]="disableDate"
                     type="text"
@@ -314,6 +315,7 @@
                     class="form-control"
                     placeholder=""
                     formControlName="Woreda"
+                    [disabled]="disable"
                   />
                   <span style="color: red;" *ngIf="!record.get('Woreda').value">
                     woreda is mandatory
@@ -357,7 +359,7 @@
                       type="button"
                       class="btn btn-primary ml-2"
                       (click)="addNew()"
-                      [disabled]="btnDisable"
+                      [disabled]="disable"
                     translate>ADD NEW</button>
                     <button [hidden]="!hideNeww"
                       type="button"
@@ -410,7 +412,6 @@
                   </ng-container>
                 </select>
               </div>
-              
             </div>
           </div>
         </div>
@@ -558,7 +559,7 @@
 	  <div class="form-group row col-12">
 	  <label  class="col-sm-4 col-form-label" translate>Record No</label>
 	  <div class="col-sm-8">
-	  <input class="form-control" [disabled]="disableDoc"   name="DocumentNo" id="DocumentNo" [(ngModel)]="recordDocumnet.document_Number" [placeholder]="'Document No'">
+	  <input class="form-control" [disabled]="disable"  name="DocumentNo" id="DocumentNo" [(ngModel)]="recordDocumnet.document_Number" [placeholder]="'Document No'">
 	</div>
 </div>
 <div class="form-group row col-12">
@@ -621,14 +622,14 @@
     binary="true"></p-checkbox>
   </div></div>
 	<div class=" col-sm-7 pull-right">
-	  <button [hidden]="disableBtn"  type="button" class="btn btn-primary" (click)="update()"translate>Update</button>
+	  <button [disabled]="disable"  [hidden]="disableBtn"  type="button" class="btn btn-primary" (click)="update()"translate>Update</button>
 	</div>
 	<div class=" col-sm-7 pull-right"> 
-	  <button [hidden]="!disableBtn"  type="button" class="btn btn-primary" (click)="add()" translate>Save</button>
+	  <button [disabled]="disable"  [hidden]="!disableBtn"  type="button" class="btn btn-primary" (click)="add()" translate>Save</button>
 	</div></div>
   </form>
 
-  <button style="align-items: left;" type="button" class="btn btn-primary" (click)="documentAddress=false" translate>Close</button>
+  <button   style="align-items: left;" type="button" class="btn btn-primary" (click)="documentAddress=false" translate>Close</button>
 
   <simple-notifications></simple-notifications>
 </p-dialog>
@@ -870,3 +871,28 @@
 	<button class="btn btn-primary" type="submit">Submit form</button>
   </form> -->
 </div>
+
+
+  <button type="button" class="btn btn-info mr-2" (click)="displayu = true" translate><i class='fa fa-file-excel-o'></i>
+    upload </button>
+
+
+<p-dialog [(visible)]="displayu" header="Import multi file" [responsive]="true" [width]="900" [minY]="70"
+  [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                         'max-height': '80vh','min-height':'250px'}">
+  <div class="modal-body" >
+
+  <app-fileuploader (fileDropped)="onFileDropped($event)"></app-fileuploader>
+  <!-- <input type="file" id="photo" (change)="upload($event)" name="photo" > -->
+ 
+</div>
+  <div class="float-right">
+
+    <button type="button" class="btn btn-info m-2" (click)="downloadPDF()" translate>Download Merged PDF</button>
+    <button type="button" class="btn btn-primary m-2" (click)="displayu=false;" translate>close</button>
+  
+  </div>
+</p-dialog>
+
+
+

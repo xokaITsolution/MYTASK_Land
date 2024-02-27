@@ -13,6 +13,7 @@ import { environment } from "src/environments/environment";
 import { DomSanitizer } from "@angular/platform-browser";
 // import { TranslateModule } from "@ngx-translate/core";
 import { RecordComponent } from "../record/record.component";
+import { jsPDF } from "jspdf";
 @Component({
   selector: "app-files",
   templateUrl: "./files.component.html",
@@ -96,6 +97,9 @@ export class FilesComponent implements OnChanges {
   PreviewshowdialogeArrayFor: boolean[] = [];
   selectdiv: any;
   hid = [];
+  mergedPDFBase64: any;
+  currentfild: any;
+  currentreuerdoc: any;
   constructor(
     public serviceService: ServiceService,
     // public serviceComponent: ServiceComponent,
@@ -451,5 +455,163 @@ export class FilesComponent implements OnChanges {
         );
       }
     );
+  }
+  onFileDropped($file) {
+    // Handle the dropped files here
+    console.log("Dropped files:", $file);
+    // Perform any necessary operations with the files
+
+    this.uploadedFile($file);
+  }
+
+  sorereuired(RequerdDocpre, fild) {
+    this.currentreuerdoc = RequerdDocpre;
+    this.currentfild = fild;
+  }
+  uploadedFile(event: any) {
+    const files: FileList = event.target.files;
+    const filePromises: Promise<Uint8Array>[] = [];
+
+    // Read each file and push the promise to the array
+    for (let i = 0; i < files.length; i++) {
+      const fileReader = new FileReader();
+      const filePromise = new Promise<Uint8Array>((resolve, reject) => {
+        fileReader.onload = (e: any) =>
+          resolve(new Uint8Array(e.target.result));
+        fileReader.onerror = (e) => reject(e);
+      });
+
+      fileReader.readAsArrayBuffer(files[i]);
+      filePromises.push(filePromise);
+    }
+
+    // Once all files are read, merge them into a single PDF
+    Promise.all(filePromises)
+      .then((fileUint8Arrays: Uint8Array[]) => {
+        const pdfDoc = new jsPDF(); // Create a new instance of jsPDF
+
+        // Add each file content to the PDF
+        for (const uint8Array of fileUint8Arrays) {
+          pdfDoc.addPage();
+          pdfDoc.addImage({
+            imageData: uint8Array,
+            x: 0,
+            y: 0,
+            width: 210, // A4 width in mm
+            height: 297, // A4 height in mm
+          });
+        }
+
+        // Convert the merged PDF to base64 string
+        const base64String = pdfDoc.output("datauristring");
+
+        // Now you have the merged PDF as a base64 string
+        console.log("Merged PDF Base64:", base64String);
+        this.mergedPDFBase64 = pdfDoc.output("datauristring");
+        // You can perform further operations with the base64 string if needed
+        if (this.mergedPDFBase64) {
+          this.Uploader(
+            this.mergedPDFBase64,
+            this.currentreuerdoc,
+            this.currentfild
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error reading files:", error);
+      });
+  }
+
+  Uploadermlti(File, RequiredDoc, fild) {
+    console.log("RequiredDoc", RequiredDoc);
+    console.log("File ", File);
+    let base64file;
+    let fullbase64;
+    base64file = File;
+    fullbase64 = base64file;
+    const re = /base64,/gi;
+    base64file = base64file.replace(re, "");
+    base64file = base64file.split(";")[1];
+    let type =
+      File.type != ""
+        ? File.type
+        : this.extractExtensionFromFileName(File.name);
+    let base64FileData = btoa(
+      JSON.stringify({
+        type,
+        data: base64file,
+      })
+    );
+    for (let i = 0; i < this.RecordComponent.RequerdDocspre.length; i++) {
+      try {
+        this.disDocument = false;
+        let fileData = JSON.parse(window.atob(base64FileData));
+        let { type, data } = fileData;
+        this.mimeType = type;
+        this.fileupload = "data:" + type + ";base64, " + data;
+        this.uploadedDocumnet = true;
+
+        this.documentupload = this.sanitizer.bypassSecurityTrustResourceUrl(
+          this.fileupload
+        );
+        console.log(this.documentupload);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    console.log("this.DocID", this.DocID);
+    this.serviceService
+      .saveFile(
+        base64FileData,
+        type,
+        this.AppNo,
+        RequiredDoc.requirement_code,
+        "Start",
+        RequiredDoc.description_en,
+        this.DocID
+      )
+      .subscribe(
+        (message) => {
+          console.log("message", message);
+          if (message[0] !== "" || message[1] !== "" || message[2] !== "") {
+            RequiredDoc.File =
+              this.sanitizer.bypassSecurityTrustResourceUrl(fullbase64);
+            RequiredDoc.fileName = File.name;
+            RequiredDoc.mimeType = File.type;
+            RequiredDoc.document_code = message[2];
+            fild.clear();
+            // this.RecordComponent.RequerdDocspre.forEach((item, index) => {
+            //   this.PreviewshowdialogeArray[index] = true; // Initialize all dialog variables to false
+            // });
+            console.log("AppNjjjo", this.AppNo);
+            this.getalldoc.emit({
+              Licence_ID: message[0],
+              DocID: this.DocID,
+            });
+            this.RecordComponent.AppCodeFromFile = this.AppNo;
+            this.RecordComponent.DocIdFromFile = this.DocID;
+            const toast = this.notificationsService.success(
+              "Success",
+              "Uploaded successfully"
+            );
+            this.updated.emit({ docs: this.RecordComponent.RequerdDocspre });
+          } else {
+            console.log("error");
+            const toast = this.notificationsService.error(
+              "Error",
+              "SomeThing Went Wrong"
+            );
+          }
+        },
+        (error) => {
+          console.log("error");
+          const toast = this.notificationsService.error(
+            "Error",
+            "SomeThing Went Wrong"
+          );
+        }
+      );
+    console.log("this.RequiredDocs", this.RecordComponent.RequerdDocspre);
   }
 }

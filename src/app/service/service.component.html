@@ -99,11 +99,15 @@
                            [maxFileSize]="RequiredDoc.size">
                           </p-fileUpload>
                           </div>
-                          <div *ngIf="uploadedDocumnet" [hidden]="disDocument" >
+                          <div *ngIf="uploadedDocumnet && RequiredDoc.File" [hidden]="disDocument" >
                             <div>
                             <iframe width="100%" [src]="documentupload" alt="FileUPloaded"  class="pdf-ifram"></iframe>
                             
-                               </div></div> 
+                               </div>
+                              </div> 
+                              <div class="alert alert-warning" role="alert" *ngIf="!RequiredDoc.File && !loadingPreDoc">
+                                {{language === 'amharic' ? 'ሰነድ አልገባለትም!' : 'Document not uploaded!'}}
+                              </div>
                           <div *ngIf="RequiredDoc.File">
                             <button type="button" class="btn btn-primary" (click)="removeUpload(RequiredDoc)"
                               translate>Remove</button>
@@ -243,7 +247,7 @@
               </div>
               <div *ngIf="ID==12">
                
-                  <app-record [useNamelist]="useNamelist"  (completed)="EnableFins()"></app-record>
+                  <app-record [useNamelist]="useNamelist"  (completed)="saveFormm2()"></app-record>
               </div>
               <div *ngIf="ID==9">
                 <app-property (completed)="saveFormm('{}');" (getpro)="getPropertyTypeLookUP()" [LicenceData]="licenceData"
@@ -467,6 +471,10 @@
                   [Service_ID]="licenceData.Service_ID" [todoid]="todoID" [tskID]="tskID" [DocID]="DocID" [disable]="true" >
           
            </app-property>  
+              
+              </div>
+        <div *ngIf="preAppID==12">
+        <app-record [useNamelist]="useNamelist"  [disable]="true"></app-record>
               
               </div>
               <!-- <div *ngIf="preAppID==6" id="dform">

@@ -30,6 +30,8 @@ import { BsModalRef, BsModalService } from "ngx-bootstrap";
 import { HttpEvent, HttpEventType, HttpParams } from "@angular/common/http";
 import { DomSanitizer } from "@angular/platform-browser";
 import { BehaviorSubject, empty } from "rxjs";
+import { jsPDF } from "jspdf";
+
 @Component({
   selector: "app-record",
   templateUrl: "./record.component.html",
@@ -37,6 +39,8 @@ import { BehaviorSubject, empty } from "rxjs";
 })
 export class RecordComponent implements OnChanges {
   @Input() useNamelist;
+  @Input() disable;
+  displayu: boolean = false;
   bsConfig: Partial<BsDatepickerConfig>;
   @Output() completed = new EventEmitter();
   model: NgbDateStruct;
@@ -139,7 +143,7 @@ export class RecordComponent implements OnChanges {
   selectedTask: any;
   SavedFiles: any;
   recordDocumnet: RecordDocumnet;
-  disable: boolean;
+  ሽ;
   documentAddress: boolean;
   documentArc: any;
   RequiredDocs: any;
@@ -176,6 +180,8 @@ export class RecordComponent implements OnChanges {
   globalDeed: any;
   currentlicenceData: any;
   currentTaskelected: any;
+  upploadd: any;
+  mergedPDFBase64: any;
   switchTab(tab: string) {
     this.activeTab = tab;
   }
@@ -572,6 +578,7 @@ export class RecordComponent implements OnChanges {
     this.btnDisable = false;
     this.RequerdDocspre = [""];
     console.log("this.selectedAppno111111", this.selectedAppno);
+    //this.completed.emit();
     // this.service
     //   .getTodandAppNo(this.selectedAppno.application_number)
     //   .subscribe((PreAppData) => {
@@ -617,7 +624,9 @@ export class RecordComponent implements OnChanges {
               .getDocumentArcbyid(RID)
               .subscribe((DocumentArc: any) => {
                 if (DocumentArc) {
-                  this.DocumentArc = DocumentArc.procDocument_Archives;
+                  this.DocumentArc = DocumentArc.procDocument_Archives.filter(
+                    (x) => x.document_Number == RID
+                  );
                   console.log("this.DocumentArc", DocumentArc);
                   if (this.DocumentArc.length > 0) {
                     this.recordDocumnet = this.DocumentArc[0];
@@ -637,7 +646,7 @@ export class RecordComponent implements OnChanges {
                         "en"
                       );
                     }
-                    this.disableBtn = true;
+                    this.disableBtn = false;
                     this.disableForm = true;
                   }
                   if (this.DocumentArc.length < 0) {
@@ -877,11 +886,14 @@ export class RecordComponent implements OnChanges {
     console.log("event", event);
     console.log("RequiredDoc", RequiredDoc);
     console.log("this.RequerdDocs", this.RequerdDocspre);
-    for (let i = 0; i < this.RequerdDocspre.length; i++) {
-      if (
-        RequiredDoc.requirement_code === this.RequerdDocspre[i].requirement_code
-      ) {
-        this.RequerdDocspre[i].uploded = 1;
+    if (this.RequerdDocspre) {
+      for (let i = 0; i < this.RequerdDocspre.length; i++) {
+        if (
+          RequiredDoc.requirement_code ===
+          this.RequerdDocspre[i].requirement_code
+        ) {
+          this.RequerdDocspre[i].uploded = 1;
+        }
       }
     }
     console.log("files", event.files);
@@ -1073,7 +1085,7 @@ export class RecordComponent implements OnChanges {
         //localStorage.setItem("RID", message[0].document_Number);
         // this.serviceService.disablefins = false;
         // if (!this.Saved) {
-        //   this.completed.emit();
+        this.completed.emit();
         //   this.Saved = true;
         // }
         // this.documentAddress=false
@@ -1205,6 +1217,7 @@ export class RecordComponent implements OnChanges {
     // this.displayTab = false;
     this.taskdisable = true;
     this.documentAddress = true;
+
     this.recordDocumnet.title_Deed_No = this.record.get("Deed").value;
 
     //this.getDocmentArcive(this.record.get("Deed").value);
@@ -1229,9 +1242,63 @@ export class RecordComponent implements OnChanges {
         this.AppNo = this.response[0];
         this.DocID = this.response[1];
         this.getAll(this.AppNo, this.DocID);
-        //this.getAllDocumentpre(this.AppNo, this.DocID);
+        this.service
+          .getLicencebyid(this.service.licenceData.Licence_Service_ID)
+          .subscribe((rec: any) => {
+            console.log("🚀 ~ RecordComponent ~ ).subscribe ~ rec:", rec);
+            let RID;
+            if (rec.procLicense_Services.length > 0) {
+              RID = rec.procLicense_Services[0].recordNo;
+            }
+            //this.getAllDocumentpre(this.AppNo, this.DocID);
+            this.service
+              .getDocumentArcbyid(RID)
+              .subscribe((DocumentArc: any) => {
+                if (DocumentArc) {
+                  this.DocumentArc = DocumentArc.procDocument_Archives.filter(
+                    (x) => x.document_Number == RID
+                  );
+                  console.log("this.DocumentArc", this.DocumentArc);
+                  if (this.DocumentArc.length > 0) {
+                    this.recordDocumnet = this.DocumentArc[0];
+                    this.disableBtn = false;
+                    if (this.language == "amharic") {
+                      this.recordDocumnet.regstration_Date =
+                        this.getgregorianToEthiopianDate(
+                          formatDate(
+                            this.recordDocumnet.regstration_Date,
+                            "yyyy-MM-dd",
+                            "en"
+                          )
+                        );
+                    } else {
+                      this.recordDocumnet.regstration_Date = formatDate(
+                        this.recordDocumnet.regstration_Date,
+                        "yyyy-MM-dd",
+                        "en"
+                      );
+                    }
+                  }
+
+                  this.service
+                    .getTasks(this.licenceData.Service_ID)
+                    .subscribe((ress: any) => {
+                      if (ress) {
+                        this.taskList = ress;
+                        this.taskdisable = true;
+
+                        console.log("taskresponsess", this.taskList);
+                      }
+                    });
+                } else {
+                  this.openArchive = true;
+                }
+              });
+          });
         const toast = this.notificationsService.success("Success", "Saved");
+        this.completed.emit();
       },
+
       (error) => {
         console.log("save-form-error", error);
         const toast = this.notificationsService.error(
@@ -1274,7 +1341,7 @@ export class RecordComponent implements OnChanges {
         // console.log("message", message);
         // this.serviceService.disablefins = false;
         // if (!this.Saved) {
-        //   this.completed.emit();
+        this.completed.emit();
         //   this.Saved = true;
         // }
         // if (this.language == "amharic") {
@@ -1438,6 +1505,69 @@ export class RecordComponent implements OnChanges {
       }
     );
   }
+  onFileDropped($file) {
+    // Handle the dropped files here
+    console.log("Dropped files:", $file);
+    // Perform any necessary operations with the files
+
+    this.uploadedFile($file);
+  }
+  uploadedFile(event: any) {
+    const files: FileList = event.target.files;
+    const filePromises: Promise<Uint8Array>[] = [];
+
+    // Read each file and push the promise to the array
+    for (let i = 0; i < files.length; i++) {
+      const fileReader = new FileReader();
+      const filePromise = new Promise<Uint8Array>((resolve, reject) => {
+        fileReader.onload = (e: any) =>
+          resolve(new Uint8Array(e.target.result));
+        fileReader.onerror = (e) => reject(e);
+      });
+
+      fileReader.readAsArrayBuffer(files[i]);
+      filePromises.push(filePromise);
+    }
+
+    // Once all files are read, merge them into a single PDF
+    Promise.all(filePromises)
+      .then((fileUint8Arrays: Uint8Array[]) => {
+        const pdfDoc = new jsPDF(); // Create a new instance of jsPDF
+
+        // Add each file content to the PDF
+        for (const uint8Array of fileUint8Arrays) {
+          pdfDoc.addPage();
+          pdfDoc.addImage({
+            imageData: uint8Array,
+            x: 0,
+            y: 0,
+            width: 210, // A4 width in mm
+            height: 297, // A4 height in mm
+          });
+        }
+
+        // Convert the merged PDF to base64 string
+        const base64String = pdfDoc.output("datauristring");
+
+        // Now you have the merged PDF as a base64 string
+        console.log("Merged PDF Base64:", base64String);
+        this.mergedPDFBase64 = pdfDoc.output("datauristring");
+        // You can perform further operations with the base64 string if needed
+      })
+      .catch((error) => {
+        console.error("Error reading files:", error);
+      });
+  }
+
+  downloadPDF() {
+    const link = document.createElement("a");
+    link.href = this.mergedPDFBase64;
+    link.download = "merged_pdf.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   public getAll(AppNo, DocID) {
     console.log("appppppp", DocID, AppNo);
 
