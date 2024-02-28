@@ -20,6 +20,7 @@ import { jsPDF } from "jspdf";
   styles: ["./files.component.css"],
 })
 export class FilesComponent implements OnChanges {
+  displayu: boolean = false;
   @Output() updated = new EventEmitter();
   @Output() getalldoc = new EventEmitter<{ Licence_ID: any; DocID: any }>();
   @Input() RequiredDocs;
@@ -467,6 +468,7 @@ export class FilesComponent implements OnChanges {
   sorereuired(RequerdDocpre, fild) {
     this.currentreuerdoc = RequerdDocpre;
     this.currentfild = fild;
+    this.mergedPDFBase64 = null;
   }
   uploadedFile(event: any) {
     const files: FileList = event.target.files;
@@ -509,8 +511,9 @@ export class FilesComponent implements OnChanges {
         console.log("Merged PDF Base64:", base64String);
         this.mergedPDFBase64 = pdfDoc.output("datauristring");
         // You can perform further operations with the base64 string if needed
+
         if (this.mergedPDFBase64) {
-          this.Uploader(
+          this.Uploadermlti(
             this.mergedPDFBase64,
             this.currentreuerdoc,
             this.currentfild
@@ -524,31 +527,40 @@ export class FilesComponent implements OnChanges {
 
   Uploadermlti(File, RequiredDoc, fild) {
     console.log("RequiredDoc", RequiredDoc);
-    console.log("File ", File);
+    // Step 1: Remove the 'base64,' prefix
     let base64file;
     let fullbase64;
-    base64file = File;
-    fullbase64 = base64file;
+
+    // Extract the base64 data from this.mergedPDFBase64
+    base64file = this.mergedPDFBase64.split(",")[1];
+
+    // Remove any potential headers from the base64 data
     const re = /base64,/gi;
     base64file = base64file.replace(re, "");
-    base64file = base64file.split(";")[1];
-    let type =
-      File.type != ""
-        ? File.type
-        : this.extractExtensionFromFileName(File.name);
+    const typeRegex = /data:([^;]+)/;
+    const nameRegex = /filename=([^;]+)/;
+    const typeMatch = this.mergedPDFBase64.match(typeRegex);
+    const nameMatch = this.mergedPDFBase64.match(nameRegex);
+    const type = typeMatch ? typeMatch[1] : "application/pdf";
+    const name = nameMatch ? nameMatch[1] : "mergedfile";
+
     let base64FileData = btoa(
       JSON.stringify({
         type,
         data: base64file,
       })
     );
+    fullbase64 = base64FileData;
+    console.log("🚀 ~ Uploadermlti ~ base64FileData:", base64FileData);
+
     for (let i = 0; i < this.RecordComponent.RequerdDocspre.length; i++) {
       try {
         this.disDocument = false;
         let fileData = JSON.parse(window.atob(base64FileData));
+        console.log("🚀 ~ Uploadermlti ~ fileData:", fileData);
         let { type, data } = fileData;
         this.mimeType = type;
-        this.fileupload = "data:" + type + ";base64, " + data;
+        this.fileupload = "data:" + type + ";base64, " + fullbase64;
         this.uploadedDocumnet = true;
 
         this.documentupload = this.sanitizer.bypassSecurityTrustResourceUrl(
@@ -576,9 +588,9 @@ export class FilesComponent implements OnChanges {
           console.log("message", message);
           if (message[0] !== "" || message[1] !== "" || message[2] !== "") {
             RequiredDoc.File =
-              this.sanitizer.bypassSecurityTrustResourceUrl(fullbase64);
-            RequiredDoc.fileName = File.name;
-            RequiredDoc.mimeType = File.type;
+              this.sanitizer.bypassSecurityTrustResourceUrl(base64FileData);
+            RequiredDoc.fileName = name;
+            RequiredDoc.mimeType = type;
             RequiredDoc.document_code = message[2];
             fild.clear();
             // this.RecordComponent.RequerdDocspre.forEach((item, index) => {
@@ -613,5 +625,13 @@ export class FilesComponent implements OnChanges {
         }
       );
     console.log("this.RequiredDocs", this.RecordComponent.RequerdDocspre);
+  }
+  downloadPDF() {
+    const link = document.createElement("a");
+    link.href = this.mergedPDFBase64;
+    link.download = "merged_pdf.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 }

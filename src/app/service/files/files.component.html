@@ -80,19 +80,19 @@
        
                     </div>
                     <div *ngIf="!RequerdDocpre.File"  >
-              
+<!--               
                   <p-fileUpload #fild [id]="'file'+i" name="demo[]" customUpload="true" (uploadHandler)="upload($event, RequerdDocpre, fild);"
                     [auto]="true" accept=".pdf,.jpg,.jfif,.png,.gif,.doc,.docx,.xls,.xlsx,.csv,.geojson,.zip"
                     [chooseLabel]="'UPLOAD'" maxFileSize="2900000" [ngStyle]="RequerdDocpre.required ? {'border': '2px solid red'} : {}">
-                  </p-fileUpload>
+                  </p-fileUpload> -->
                <button type="button" class="btn btn-info mr-2" (click)="displayu = true;sorereuired(RequerdDocpre, fild)" translate><i class='fa fa-file-excel-o'></i>
               upload </button>
                       <span *ngIf="RequerdDocpre.required" style="color:red ; size: 50px;">ሰነድ ማያያዝ ያስፈልጋል</span>
                     </div>
-                    <!-- <div *ngIf="uploadedDocumnet">
-                      <button type="button" class="btn btn-primary" (click)="removeUpload(RequerdDocpre)" [disabled]="disabled"
-                        translate="">Remove</button>
-                    </div> -->
+                      <div >
+                        <!-- <button type="button" class="btn btn-primary" (click)="removeUpload(RequerdDocpre)" [disabled]="disabled"
+                          translate="">Remove</button> -->
+                      </div>
                     <div *ngIf="RequerdDocpre.required">
                       <input type="hidden" class="form-control" #file="ngModel" [(ngModel)]="RequerdDocpre.File"
                         [name]="RequerdDocpre.description_en" id="NumberOfLift" placeholder="Number of Lift" required>

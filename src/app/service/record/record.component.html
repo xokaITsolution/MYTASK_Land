@@ -159,7 +159,7 @@
                     <option>---select Service Name---</option>
                     <ng-container *ngFor="let Service of Service">
                       <option [value]="Service.service_code">
-                        {{language === 'amharic' ? Service.description_am : Service.description_en}}
+                        {{language === 'amharic' ? Service.Registration_code+Service.description_am : Service.Registration_code+Service.description_en}}
                       </option>
                     </ng-container>
                   </select>
@@ -199,7 +199,7 @@
                   />
                   <input
                   [hidden]="getData"
-                  
+                  type="date"
                   class="form-control"
                     id="year"
                     formControlName="date"
@@ -874,8 +874,8 @@
 </div>
 
 
-  <button type="button" class="btn btn-info mr-2" (click)="displayu = true" translate><i class='fa fa-file-excel-o'></i>
-    upload </button>
+  <!-- <button type="button" class="btn btn-info mr-2" (click)="displayu = true" translate><i class='fa fa-file-excel-o'></i>
+    upload </button> -->
 
 
 <p-dialog [(visible)]="displayu" header="Import multi file" [responsive]="true" [width]="900" [minY]="70"

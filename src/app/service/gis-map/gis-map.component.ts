@@ -2052,7 +2052,7 @@ export class GisMapComponent implements AfterViewInit {
           // Do something with the coordinates, such as displaying or processing them
 
           this.ServiceService.coordinate = this.utmCoordinates;
-          this.utmCoordinatesforallexcel = utmCoordinateslast;
+          this.utmCoordinatesforallexcel = utmCoordinates;
           const area = this.calculateUTMPolygonArea(utmCoordinates);
           this.ServiceService.Totalarea = parseInt(area.toFixed(2));
           // Show the area in a popup
@@ -4212,8 +4212,8 @@ export class GisMapComponent implements AfterViewInit {
     //   lng: latLngCoords.longitude,
     // };
     return {
-      lat: latLngCoords.latitude - 0.001876,
-      lng: latLngCoords.longitude - 0.0008668,
+      lat: latLngCoords.latitude,
+      lng: latLngCoords.longitude,
     };
   }
   conveUTMToLatLngWriteadd(

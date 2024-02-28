@@ -387,7 +387,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     if (this.serviceService.coordinate) {
       let coordinate = this.convertToMultiPoint(this.serviceService.coordinate);
       // let coordinate2= this.convertToMultiPoints(this.serviceService.coordinate)
-      this.plotManagment.plot_ID = this.serviceService.coordinate.toString();
+      //this.plotManagment.plot_ID = this.serviceService.coordinate.toString();
     }
     this.displayGIS = false;
   }

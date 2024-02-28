@@ -88,19 +88,17 @@
       </div>
     </div>
 
-    <div class="form-group row col-md-6">
-      <label for="Woreda" class="col-sm-3 col-form-label" translate>Woreda</label>
-      <div class="col-sm-9">
-        <select [disabled]="disable" class="form-select"  [(ngModel)]="plotManagment.wereda_ID" name="Woreda" id="Woreda" #Woreda="ngModel"
-          [ngClass]="{ 'is-invalid': Woreda.invalid }" required>
-       
-            <option disabled>select</option>
-          <option *ngFor="let zoneOption of zoneOptions;" [value]="zoneOption.woreda_ID">
-            {{zoneOption.woreda_Name}}
-          </option>
-        </select>
-      </div>
-    </div>
+<div class="form-group row col-md-6">
+  <label for="Woreda" class="col-sm-3 col-form-label" translate>Woreda</label>
+  <div class="col-sm-9">
+    <select [disabled]="disable" class="form-select" [(ngModel)]="plotManagment.wereda_ID" name="Woreda" id="Woreda"
+      #Woreda="ngModel" [ngClass]="{ 'is-invalid': Woreda.invalid }" required>
+      <option disabled selected>select</option>
+      <option *ngFor="let zoneOption of zoneOptions;" [value]="zoneOption.woreda_ID">{{zoneOption.woreda_Name}}</option>
+    </select>
+  </div>
+</div>
+
     <div class="form-group row col-md-6">
       <label for="N-PlotID" class="col-sm-3 col-form-label" translate>N-PlotID</label>
       <div class="col-sm-9">
