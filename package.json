@@ -44,7 +44,6 @@
     "file-saver": "^2.0.5",
     "flatted": "^3.2.9",
     "font-awesome": "^4.7.0",
-    "geo-coordinates-parser": "^1.4.1",
     "guid-typescript": "^1.0.9",
     "hammerjs": "^2.0.8",
     "html2canvas": "^1.4.1",
