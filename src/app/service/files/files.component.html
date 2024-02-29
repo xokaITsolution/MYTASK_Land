@@ -111,9 +111,10 @@
                         <iframe width="100%" [src]="documentupload" alt="FileUPloaded"  class="pdf-ifram"></iframe>
                         
                            </div></div>  -->
-                       <div
-                        *ngIf="mimeExtension[RequerdDocpre.mimeType]?.extension == 'pdf' || mimeExtension[RequerdDocpre.mimeType]?.extension == 'geojson' || mimeExtension[RequerdDocpre.mimeType]?.extension == 'xlsx'">
-                        <!-- <div *ngIf="PreviewshowdialogeArray[i]">
+                           <div *ngIf="mimeExtension[RequerdDocpre.mimeType]?.extension !== 'jpg' &&
+                           mimeExtension[RequerdDocpre.mimeType]?.extension !== 'jpeg' &&
+                           mimeExtension[RequerdDocpre.mimeType]?.extension !== 'png' &&
+                           mimeExtension[RequerdDocpre.mimeType]?.extension !== 'gif'">  <!-- <div *ngIf="PreviewshowdialogeArray[i]">
                           <button type="button" [hidden]="hide"  class="btn btn-primary" (click)="removeUpload(RequerdDocpre)" [disabled]="disabled"
                           translate="">Remove</button>
                           
@@ -124,11 +125,11 @@
                           <!-- <div class="alert alert-info" [hidden]="RequerdDocpre.hidden">
                             <p> file uploaded</p> 
                                                       </div> -->
-                                                      <button type="button" [hidden]="!RequerdDocpre.hidden"  class="btn btn-primary" [id]="'r'+ i" (click)="removeUpload(RequerdDocpre);hideCloseBtn=true" [disabled]="disabled"
-                                                      translate="">Remove</button>
+                                                      <!-- <button type="button" *ngIf="userid==RequerdDocpre.hidden"  class="btn btn-primary" [id]="'r'+ i" (click)="removeUpload(RequerdDocpre);hideCloseBtn=true" [disabled]="disabled"
+                                                      translate="">Remove</button> -->
                                                      
                             
-                                                      <button type="button"  class="btn btn-primary" [id]="'p' + i" (click)="showdiv(rowIndex);hideDiv=false" [disabled]="disabled" translate>
+                                                      <button type="button"  class="btn btn-primary" [id]="'p' + i" (click)="showdiv(rowIndex)" [disabled]="disabled" translate="">
                                                         preview
                                                       </button>
                           
@@ -137,7 +138,7 @@
                               <div [id]="'div' + i" *ngIf="selectdiv === rowIndex" [hidden]="hideDiv">
                                 <div>
 
-                                  <iframe width="100%" [src]="RequerdDocpre.File" alt="FileUPloaded" class="pdf-ifram"></iframe>
+                                  <!-- <iframe width="100%" [src]="RequerdDocpre.File" alt="FileUPloaded" class="pdf-ifram"></iframe> -->
                                 <span>File name: {{ RequerdDocpre.fileName }}</span>
                                   
                           <div class="alert alert-info">
@@ -147,8 +148,13 @@
                             </a>
                           </div>
                                 </div>
+                              
                                 <button type="button"   class="btn btn-primary" [id]="'r'+ i" (click)="hideDiv=true" [disabled]="disabled"
-                            translate="">close</button>
+                            translate="">close</button>&nbsp;&nbsp;&nbsp;
+                            <button type="button"  *ngIf="userid==RequerdDocpre.hidden" class="btn btn-primary" [id]="'r'+ i" (click)="removeUpload(RequerdDocpre);hideCloseBtn=true" [disabled]="disabled"
+                            translate="">Remove</button>
+                            <!-- <button type="button"  *ngIf="what" class="btn btn-primary" [id]="'r'+ i" (click)="removeUpload(RequerdDocpre);hideCloseBtn=true" [disabled]="disabled"
+                            translate="">Remove</button> -->
                               </div>
                             </div>
                             
@@ -161,11 +167,10 @@
                           <!-- <div class="alert alert-info" [hidden]="RequerdDocpre.hidden">
                             <p> file uploaded</p> 
                                                       </div> -->
-                                                      <button type="button" [hidden]="!RequerdDocpre.hidden"  class="btn btn-primary" [id]="'r'+ i" (click)="removeUpload(RequerdDocpre);hideCloseBtn=true" [disabled]="disabled"
-                                                      translate="">Remove</button>
+                                                     
                                                      
                             
-                                                      <button type="button"  class="btn btn-primary" [id]="'p' + i" (click)="showdiv(rowIndex);hideDiv=false" [disabled]="disabled" translate="">
+                                                      <button type="button"  class="btn btn-primary" [id]="'p' + i" (click)="showdiv(rowIndex)" [disabled]="disabled" translate="">
                                                         preview
                                                       </button>
                           
@@ -184,8 +189,11 @@
                             </a>
                           </div>
                                 </div>
+                             
                                 <button type="button"   class="btn btn-primary" [id]="'r'+ i" (click)="hideDiv=true" [disabled]="disabled"
                             translate="">close</button>
+                            <button type="button"  *ngIf="userid==RequerdDocpre.hidden"  class="btn btn-primary" [id]="'r'+ i" (click)="removeUpload(RequerdDocpre);hideCloseBtn=true" [disabled]="disabled"
+                            translate="">Remove</button>&nbsp;&nbsp;&nbsp;
                               </div>
                             </div>
                             
@@ -212,7 +220,7 @@
                          'max-height': '80vh','min-height':'250px'}">
   <div class="modal-body">
 
-    <app-fileuploader (fileDropped)="onFileDropped($event)" ></app-fileuploader>
+    <app-fileuploader (fileDropped)="onFileDropped($event)" [cleanupload]="displayu" ></app-fileuploader>
     <!-- <input type="file" id="photo" (change)="upload($event)" name="photo" > -->
 
   </div>

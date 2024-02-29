@@ -1428,7 +1428,7 @@ export class RecordComponent implements OnChanges {
       (SavedFiles) => {
         SavedFiles = SavedFiles.filter((x) => x.tasks_task_code == taskid);
         if (SavedFiles.length > 0) {
-          console.log("SavedFiiiilessssffff", SavedFiles);
+          console.log("SavedFiiiilessssffff", SavedFiles, SavedFiles.length);
 
           this.loadingPreDoc = false;
           this.SavedFilespre = SavedFiles;
@@ -1470,10 +1470,10 @@ export class RecordComponent implements OnChanges {
                     "this.RequerdDocspre[i].File",
                     SavedFiles[j].document
                   );
-                  this.RequerdDocspre[i].hidden = updatedArray[j].is_hidde;
+                  this.RequerdDocspre[i].hidden = SavedFiles[j].UserId;
                   console.log(
                     "updatedArrayyyyy",
-                    this.RequerdDocspre[i].File
+                    this.RequerdDocspre[i].hidden
                   );
 
                   this.RequerdDocspre[i].File =

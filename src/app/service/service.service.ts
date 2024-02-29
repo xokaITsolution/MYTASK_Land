@@ -79,10 +79,13 @@ export class ServiceService {
     environment.rootPathApi + "view/View_DeedRegstration12/Customer_ID";
   public AppbyUserId =
     environment.rootPathApi +
-    "ApplicationLoadByUserId/procApplicationLoadByUserId/";
+    "ApplicationLoadByUserId/procApplicationLoadByUserId/";  
+    public userbyusername=
+    environment.rootPathApi +
+    "view/View_aspuserforapi/UserName?UserName=";
 
   private getTodandAppNoURL = environment.rootpath2 + "TodandAppNo";
-  private RemoveDocURL = environment.rootPath + "Remove_RequrementDocument";
+  private RemoveDocURL = environment.rootPath + "BPEL/Remove_RequrementDocument";
   private License_ServiceURL = environment.rootPath + "License_Service";
   private paymentUrl =
     environment.rootPath +
@@ -308,6 +311,9 @@ export class ServiceService {
   }
   getAppbyUserid(UserId) {
     return this.http.get(this.AppbyUserId + UserId);
+  }
+  getaspnetuser() {
+    return this.http.get(this.userbyusername + environment.username);
   }
   getLicenceService(AppNo) {
     return this.http.get<any[]>(

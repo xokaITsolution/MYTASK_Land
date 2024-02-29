@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, Output, EventEmitter } from "@angular/core";
+import { Component, ViewChild, ElementRef, Output, EventEmitter, Input } from "@angular/core";
 import { NotificationsService } from "angular2-notifications";
 
 
@@ -13,6 +13,7 @@ import { NotificationsService } from "angular2-notifications";
   @ViewChild("fileDropRef", { static: false }) fileDropEl: ElementRef;
   files: any[] = [];
  @Output() fileDropped: EventEmitter<any> = new EventEmitter<any>();
+ @Input() cleanupload
 constructor(  private notificationsService: NotificationsService,){}
   /**
    * on file drop handler
@@ -22,6 +23,13 @@ constructor(  private notificationsService: NotificationsService,){}
   //   this.prepareFilesList($event);
   //     console.log("uploadfile",$event);
   // }
+  ngOnChanges() {
+    console.log('cleanupload', this.cleanupload)
+    this.cleanupload
+    if(this.cleanupload==true){
+      this.files = [];
+    }
+  }
    onFileDropped(files: FileList) {
    
       this.fileDropped.emit(files);

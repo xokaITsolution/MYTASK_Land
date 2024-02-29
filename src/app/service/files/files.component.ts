@@ -104,6 +104,9 @@ export class FilesComponent implements OnChanges {
   mergedfile: any;
   downloadmergedfile: boolean;
   downloadfile: boolean;
+  remove: boolean;
+  username: string;
+  userid: any;
   constructor(
     public serviceService: ServiceService,
     // public serviceComponent: ServiceComponent,
@@ -124,6 +127,10 @@ export class FilesComponent implements OnChanges {
   }
 
   ngOnChanges(changes) {
+    this.username=environment.username
+    this.serviceService.getaspnetuser().subscribe(r=>{
+      this.userid=r[0].userid
+    })
     console.log("appppppppno", this.AppNo);
     console.log("DocdddIDD", this.DocIDlist, this.RequiredDocs, this.hide);
 
@@ -265,13 +272,17 @@ export class FilesComponent implements OnChanges {
       }
     );
   }
-
+  getAllDocumentprebydoc(RequerdDocpre) {
+    // this.loadingPreDoc = true;
+        console.log("pdf filessss", RequerdDocpre);
+      
+      }
   getAllDocumentpre(Licence_Service_ID, DocID) {
     this.loadingPreDoc = true;
     this.serviceService.getAllDocument(Licence_Service_ID, DocID).subscribe(
       (SavedFiles) => {
         this.loadingPreDoc = false;
-        console.log("pdf file", SavedFiles);
+        console.log("pdf fillllle", SavedFiles);
         this.SavedFilespre = SavedFiles;
         for (let i = 0; i < this.RecordComponent.RequerdDocspre.length; i++) {
           for (let j = 0; j < SavedFiles.length; j++) {
@@ -315,7 +326,10 @@ export class FilesComponent implements OnChanges {
     );
   }
   showdiv(i) {
-    this.selectdiv = i;
+      this.selectdiv = i;
+      this.hideDiv=false
+      
+    
     console.log("this.selectdiv", this.selectdiv);
   }
 
@@ -446,6 +460,7 @@ export class FilesComponent implements OnChanges {
           ) {
             this.RecordComponent.RequerdDocspre[i].File = "";
             this.RecordComponent.RequerdDocspre[i].document_code = "";
+            this.hideDiv=true
             this.updated.emit({ docs: this.RecordComponent.RequerdDocspre });
           }
         }
@@ -706,6 +721,7 @@ downloadMergedPdf() {
             RequiredDoc.fileName = name;
             RequiredDoc.mimeType = type;
             RequiredDoc.document_code = message[2];
+            this.getAllDocumentpre(this.licenceData.Licence_Service_ID,this.DocID)
             fild.clear();
             // this.RecordComponent.RequerdDocspre.forEach((item, index) => {
             //   this.PreviewshowdialogeArray[index] = true; // Initialize all dialog variables to false
@@ -721,6 +737,7 @@ downloadMergedPdf() {
               "Success",
               "Uploaded successfully"
             );
+           
             this.updated.emit({ docs: this.RecordComponent.RequerdDocspre });
           } else {
             console.log("error");
