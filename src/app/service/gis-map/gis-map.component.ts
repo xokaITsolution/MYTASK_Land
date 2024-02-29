@@ -2914,6 +2914,8 @@ export class GisMapComponent implements AfterViewInit {
   }
 
   removeShape(): void {
+    this.ispointadd = false;
+    this.numberOFaddpoint = 0;
     this.fileInput.nativeElement.value = "";
     this.map.removeLayer(this.sample);
     this.map.removeLayer(this.drawnShape);
