@@ -170,8 +170,11 @@
         <button type="button" class="btn btn-danger mb-2" *ngIf="!disable" (click)="removeShape()">
           Remove Shape
         </button>
-        <button type="button" class="btn btn-info mb-2" *ngIf="!disable" (click)="convertToExcel(utmCoordinatesforallexcel)">
+        <button type="button" class="btn btn-info mb-2" *ngIf="!disable && !ondrawingshape" (click)="convertToExcel(utmCoordinatesforallexcel)">
           Convert to Excel
+        </button>
+        <button type="button" class="btn btn-info mb-2" *ngIf="!disable && ondrawingshape" (click)="convertToExcelaferdraw(utmCoordinatesforallexcel)">
+          Convert to excel
         </button>
        
       </div>
