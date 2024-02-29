@@ -279,6 +279,7 @@ export class FilesComponent implements OnChanges {
       }
   getAllDocumentpre(Licence_Service_ID, DocID) {
     this.loadingPreDoc = true;
+    let updatedArray: any[] = [];
     this.serviceService.getAllDocument(Licence_Service_ID, DocID).subscribe(
       (SavedFiles) => {
         this.loadingPreDoc = false;
@@ -294,7 +295,7 @@ export class FilesComponent implements OnChanges {
                 let fileData = JSON.parse(atob(SavedFiles[j].document));
 
                 let { type, data } = fileData;
-
+                this.RecordComponent.RequerdDocspre[i].hidden = SavedFiles[j].UserId;
                 this.RecordComponent.RequerdDocspre[i].mimeType = type;
                 this.RecordComponent.RequerdDocspre[i].File =
                   "data:" + type + ";base64, " + data;
@@ -725,7 +726,7 @@ export class FilesComponent implements OnChanges {
             RequiredDoc.fileName = name;
             RequiredDoc.mimeType = type;
             RequiredDoc.document_code = message[2];
-            this.getAllDocumentpre(this.licenceData.Licence_Service_ID,this.DocID)
+            this.getAllDocumentpre( this.AppNo,this.DocID)
             fild.clear();
             // this.RecordComponent.RequerdDocspre.forEach((item, index) => {
             //   this.PreviewshowdialogeArray[index] = true; // Initialize all dialog variables to false
