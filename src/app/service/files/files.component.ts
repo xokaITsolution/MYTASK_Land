@@ -7,7 +7,7 @@ import {
 } from "@angular/core";
 // import { ServiceComponent } from "../service.component";
 import { ServiceService } from "../service.service";
-
+import { PDFDocument } from 'pdf-lib';
 import { NotificationsService } from "angular2-notifications";
 import { environment } from "src/environments/environment";
 import { DomSanitizer } from "@angular/platform-browser";
@@ -101,6 +101,9 @@ export class FilesComponent implements OnChanges {
   mergedPDFBase64: any;
   currentfild: any;
   currentreuerdoc: any;
+  mergedfile: any;
+  downloadmergedfile: boolean;
+  downloadfile: boolean;
   constructor(
     public serviceService: ServiceService,
     // public serviceComponent: ServiceComponent,
@@ -470,60 +473,171 @@ export class FilesComponent implements OnChanges {
     this.currentfild = fild;
     this.mergedPDFBase64 = null;
   }
-  uploadedFile(event: any) {
+  async uploadedFile(event: any) {
     const files: FileList = event.target.files;
-    const filePromises: Promise<Uint8Array>[] = [];
+if(files.length>1){
+  this.downloadmergedfile=true
+     this.mergedfile = await this.mergeFiles(files);
+}
+else if(files.length===1){
+  
+  this.mergedfile= await files[0]
+  this.downloadmergedfile=false
+}
+    // Convert the merged PDF to base64 string
+    const base64String = await this.convertToBase64(this.mergedfile);
 
-    // Read each file and push the promise to the array
-    for (let i = 0; i < files.length; i++) {
-      const fileReader = new FileReader();
-      const filePromise = new Promise<Uint8Array>((resolve, reject) => {
-        fileReader.onload = (e: any) =>
-          resolve(new Uint8Array(e.target.result));
-        fileReader.onerror = (e) => reject(e);
-      });
-
-      fileReader.readAsArrayBuffer(files[i]);
-      filePromises.push(filePromise);
-    }
-
-    // Once all files are read, merge them into a single PDF
-    Promise.all(filePromises)
-      .then((fileUint8Arrays: Uint8Array[]) => {
-        const pdfDoc = new jsPDF(); // Create a new instance of jsPDF
-
-        // Add each file content to the PDF
-        for (const uint8Array of fileUint8Arrays) {
-          pdfDoc.addPage();
-          pdfDoc.addImage({
-            imageData: uint8Array,
-            x: 0,
-            y: 0,
-            width: 210, // A4 width in mm
-            height: 297, // A4 height in mm
-          });
-        }
-
-        // Convert the merged PDF to base64 string
-        const base64String = pdfDoc.output("datauristring");
-
-        // Now you have the merged PDF as a base64 string
-        console.log("Merged PDF Base64:", base64String);
-        this.mergedPDFBase64 = pdfDoc.output("datauristring");
-        // You can perform further operations with the base64 string if needed
-
-        if (this.mergedPDFBase64) {
-          this.Uploadermlti(
-            this.mergedPDFBase64,
-            this.currentreuerdoc,
-            this.currentfild
-          );
-        }
-      })
-      .catch((error) => {
-        console.error("Error reading files:", error);
+   
+    console.log("Merged PDF Base64:", base64String);
+    this.mergedPDFBase64 = base64String;
+    if(this.mergedPDFBase64){
+      this.Uploadermlti(
+        this.mergedPDFBase64,
+          this.currentreuerdoc,
+          this.currentfild
+      );}
+    // Enable the download button
+    this.enableDownloadButton();
+}
+async convertToBase64(content: File | PDFDocument): Promise<string> {
+  if (content instanceof PDFDocument) {
+      return content.saveAsBase64({ dataUri: true });
+  } else {
+      return new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+              const base64String = reader.result as string;
+              resolve(base64String);
+          };
+          reader.onerror = (error) => reject(error);
+          reader.readAsDataURL(content);
       });
   }
+}
+async mergeFiles(files: FileList): Promise<PDFDocument> {
+    const mergedPdf = await PDFDocument.create();
+
+    // Iterate through each file
+    for (let i = 0; i < files.length; i++) {
+        const fileReader = new FileReader();
+
+        // Read the file as ArrayBuffer
+        const fileData = await new Promise<ArrayBuffer>((resolve, reject) => {
+            fileReader.onload = (e: any) => resolve(e.target.result);
+            fileReader.onerror = (e) => reject(e);
+            fileReader.readAsArrayBuffer(files[i]);
+        });
+
+        // Check if the file is PDF or image
+        const fileType = files[i].type;
+        if (fileType === 'application/pdf') {
+            // If the file is PDF, load and merge it
+            const pdf = await PDFDocument.load(fileData);
+            const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+            pages.forEach((page) => mergedPdf.addPage(page));
+        } else if (fileType.startsWith('image/')) {
+            // If the file is an image, convert it to PDF and then merge it
+            const imagePdf = await this.imageToPdf(fileData);
+            const pages = await mergedPdf.copyPages(imagePdf, imagePdf.getPageIndices());
+            pages.forEach((page) => mergedPdf.addPage(page));
+        }
+    }
+    console.log('mergedPdfmergedPdfmergedPdfmergedPdf',mergedPdf)
+ 
+    return mergedPdf;
+}
+
+async imageToPdf(imageData: ArrayBuffer): Promise<PDFDocument> {
+    const imagePdf = await PDFDocument.create();
+    const image = await imagePdf.embedJpg(imageData);
+    const page = imagePdf.addPage([image.width, image.height]);
+    page.drawImage(image, {
+        x: 0,
+        y: 0,
+        width: image.width,
+        height: image.height,
+    });
+    return imagePdf;
+}
+
+enableDownloadButton() {
+    const downloadButton = document.getElementById('downloadButton');
+    if (downloadButton) {
+        downloadButton.removeAttribute('disabled');
+    }
+}
+
+downloadMergedPdf() {
+    if (this.mergedPDFBase64) {
+        // Convert the base64 string back to Uint8Array
+        const bytes = Uint8Array.from(atob(this.mergedPDFBase64.split(',')[1]), c => c.charCodeAt(0));
+        
+        // Create a blob with the PDF data
+        const blob = new Blob([bytes], { type: 'application/pdf' });
+        
+        // Create a download link
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'merged_document.pdf';
+        
+        // Click the link to trigger the download
+        link.click();
+    }
+}
+  // uploadedFile(event: any) {
+  //   const files: FileList = event.target.files;
+  //   const filePromises: Promise<Uint8Array>[] = [];
+
+  //   // Read each file and push the promise to the array
+  //   for (let i = 0; i < files.length; i++) {
+  //     const fileReader = new FileReader();
+  //     const filePromise = new Promise<Uint8Array>((resolve, reject) => {
+  //       fileReader.onload = (e: any) =>
+  //         resolve(new Uint8Array(e.target.result));
+  //       fileReader.onerror = (e) => reject(e);
+  //     });
+
+  //     fileReader.readAsArrayBuffer(files[i]);
+  //     filePromises.push(filePromise);
+  //   }
+
+  //   // Once all files are read, merge them into a single PDF
+  //   Promise.all(filePromises)
+  //     .then((fileUint8Arrays: Uint8Array[]) => {
+  //       const pdfDoc = new jsPDF(); // Create a new instance of jsPDF
+
+  //       // Add each file content to the PDF
+  //       for (const uint8Array of fileUint8Arrays) {
+  //         pdfDoc.addPage();
+  //         pdfDoc.addImage({
+  //           imageData: uint8Array,
+  //           x: 0,
+  //           y: 0,
+  //           width: 210, // A4 width in mm
+  //           height: 297, // A4 height in mm
+  //         });
+  //       }
+
+  //       // Convert the merged PDF to base64 string
+  //       const base64String = pdfDoc.output("datauristring");
+
+  //       // Now you have the merged PDF as a base64 string
+  //       console.log("Merged PDF Base64:", base64String);
+  //       this.mergedPDFBase64 = pdfDoc.output("datauristring");
+  //       // You can perform further operations with the base64 string if needed
+
+  //       if (this.mergedPDFBase64) {
+  //         this.Uploadermlti(
+  //           this.mergedPDFBase64,
+  //           this.currentreuerdoc,
+  //           this.currentfild
+  //         );
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error reading files:", error);
+  //     });
+  // }
 
   Uploadermlti(File, RequiredDoc, fild) {
     console.log("RequiredDoc", RequiredDoc);
@@ -532,7 +646,7 @@ export class FilesComponent implements OnChanges {
     let fullbase64;
 
     // Extract the base64 data from this.mergedPDFBase64
-    base64file = this.mergedPDFBase64.split(",")[1];
+    base64file = File.split(",")[1];
 
     // Remove any potential headers from the base64 data
     const re = /base64,/gi;

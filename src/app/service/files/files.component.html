@@ -128,7 +128,7 @@
                                                       translate="">Remove</button>
                                                      
                             
-                                                      <button type="button"  class="btn btn-primary" [id]="'p' + i" (click)="showdiv(rowIndex);hideDiv=false" [disabled]="disabled" translate="">
+                                                      <button type="button"  class="btn btn-primary" [id]="'p' + i" (click)="showdiv(rowIndex);hideDiv=false" [disabled]="disabled" translate>
                                                         preview
                                                       </button>
                           
@@ -212,13 +212,13 @@
                          'max-height': '80vh','min-height':'250px'}">
   <div class="modal-body">
 
-    <app-fileuploader (fileDropped)="onFileDropped($event)"></app-fileuploader>
+    <app-fileuploader (fileDropped)="onFileDropped($event)" ></app-fileuploader>
     <!-- <input type="file" id="photo" (change)="upload($event)" name="photo" > -->
 
   </div>
   <div class="float-right">
 
-    <button type="button" class="btn btn-info m-2" (click)="downloadPDF()" translate>Download Merged PDF</button>
+    <button type="button" class="btn btn-info m-2" *ngIf="downloadmergedfile" (click)="downloadMergedPdf()"   translate>Download Merged PDF</button>
     <button type="button" class="btn btn-primary m-2" (click)="displayu=false;" translate>close</button>
 
   </div>

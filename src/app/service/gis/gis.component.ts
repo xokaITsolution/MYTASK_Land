@@ -2,7 +2,7 @@ import { Component, AfterViewInit, Output, EventEmitter } from "@angular/core";
 import { EventEmitter as NativeEmitter } from "events";
 import * as L from "leaflet";
 import * as Uniqolor from "uniqolor";
-import * as FastXml from "fast-xml-parser";
+// import * as FastXml from "fast-xml-parser";
 import { GisService } from "./gis.service";
 import { PopupService } from "src/app/pro-service/popup.service";
 

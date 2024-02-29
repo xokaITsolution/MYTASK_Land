@@ -1,4 +1,4 @@
-import * as FastXml from "fast-xml-parser";
+// import * as FastXml from "fast-xml-parser";
 
 export class GisHelper {
   // public static parseXml(capabilities) {
