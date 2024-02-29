@@ -111,8 +111,10 @@
                         <iframe width="100%" [src]="documentupload" alt="FileUPloaded"  class="pdf-ifram"></iframe>
                         
                            </div></div>  -->
-                       <div
-                        *ngIf="mimeExtension[RequerdDocpre.mimeType]?.extension == 'pdf' || mimeExtension[RequerdDocpre.mimeType]?.extension == 'geojson' || mimeExtension[RequerdDocpre.mimeType]?.extension == 'xlsx'">
+                    <div *ngIf="mimeExtension[RequerdDocpre.mimeType]?.extension !== 'jpg' &&
+                                               mimeExtension[RequerdDocpre.mimeType]?.extension !== 'jpeg' &&
+                                               mimeExtension[RequerdDocpre.mimeType]?.extension !== 'png' &&
+                                               mimeExtension[RequerdDocpre.mimeType]?.extension !== 'gif'">
                         <!-- <div *ngIf="PreviewshowdialogeArray[i]">
                           <button type="button" [hidden]="hide"  class="btn btn-primary" (click)="removeUpload(RequerdDocpre)" [disabled]="disabled"
                           translate="">Remove</button>
@@ -137,7 +139,7 @@
                               <div [id]="'div' + i" *ngIf="selectdiv === rowIndex" [hidden]="hideDiv">
                                 <div>
 
-                                  <iframe width="100%" [src]="RequerdDocpre.File" alt="FileUPloaded" class="pdf-ifram"></iframe>
+                                  <!-- <iframe width="100%" [src]="RequerdDocpre.File" alt="FileUPloaded" class="pdf-ifram"></iframe> -->
                                 <span>File name: {{ RequerdDocpre.fileName }}</span>
                                   
                           <div class="alert alert-info">
