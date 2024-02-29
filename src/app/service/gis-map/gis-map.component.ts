@@ -1482,10 +1482,11 @@ export class GisMapComponent implements AfterViewInit {
       "EPSG:20137",
       "+proj=utm +zone=37 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
       {
-        resolutions: [
-          256.0, 128.0, 64.0, 32.0, 16.0, 8.0, 4.0, 2.0, 1.0, 0.5, 0.25, 0.125,
-          0.0625, 0.03125,
-        ],
+        // resolutions: [
+        //   0.03125, 0.0625, 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0,
+        //   64.0, 128.0, 256.0,
+        // ],
+        resolutions: resolutions,
         transformation: new L.Transformation(
           1,
           -20037508.342789244,

@@ -630,29 +630,33 @@ export class CertComponent implements OnChanges {
   EnableFins(event) {
     this.disableTab = true;
     console.log("🚀 ~ CertComponent ~ EnableFins ~ disableTab:", event);
-
-    this.serviceService
-      .getCertificateVersion1(this.SelectedBase.Title_Deed_No)
-      .subscribe((CertificateVersion: any) => {
-        this.CertificateVersion = CertificateVersion.procCertificate_Versions;
-        var img = this.CertificateVersion.filter((x) => x.is_Active == true);
-        if (img.length > 0) {
-          console.log("img", img[0].certificate_Image);
-          if (img[0].certificate_Image) {
-            if (!this.Saved) {
-              this.completed.emit();
-              this.serviceService.disablefins = false;
-              this.Saved = true;
+    for (let index = 0; index < this.BaseTablefinal.length; index++) {
+      const element = this.BaseTablefinal[index];
+      this.serviceService
+        .getCertificateVersion1(element.Title_Deed_No)
+        .subscribe((CertificateVersion: any) => {
+          this.CertificateVersion = CertificateVersion.procCertificate_Versions;
+          var img = this.CertificateVersion.filter((x) => x.is_Active == true);
+          if (img.length > 0) {
+            console.log("img", img[0].certificate_Image);
+            if (img[0].certificate_Image) {
+              if (!this.Saved) {
+                this.completed.emit();
+                this.serviceService.disablefins = false;
+                this.Saved = true;
+              }
+              //this.serviceService.disablefins = false;
+              this.certverForm = true;
+            } else {
+              const toast = this.notificationsService.warn(
+                `Must update plot map to submit form .click edit the above/ቅጽ ለማስገባት የፕላን ካርታ ማዘመን አለበት .ከላይ ያለውን አዘምን የሚለውን ጠቅ ያድርጉ ${element.title_Deed_No}`
+              );
+              return;
             }
-            //this.serviceService.disablefins = false;
-            this.certverForm = true;
-          } else {
-            const toast = this.notificationsService.warn(
-              `Must update plot map to submit form .click edit the above/ቅጽ ለማስገባት የፕላን ካርታ ማዘመን አለበት .ከላይ ያለውን አዘምን የሚለውን ጠቅ ያድርጉ ${this.CertificateVersion.title_Deed_No}`
-            );
           }
-        }
-      });
+        });
+    }
+
     //this.getCertificateVersion(this.SelectedBase);
   }
 }
