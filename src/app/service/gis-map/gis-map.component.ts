@@ -1470,31 +1470,31 @@ export class GisMapComponent implements AfterViewInit {
     ];
 
     // // Define your Leaflet CRS with the updated resolutions
-    // this.EPSG20137 = new L.Proj.CRS(
-    //   "EPSG:20137",
-    //   "+proj=utm +zone=37 +a=6378249.145 +rf=293.465 +towgs84=-165,-11,206,0,0,0,0 +units=m +no_defs +type=crs",
-    //   {
-    //     resolutions: resolutions,
-    //     origin: [166600.5155002516, 375771.9736823894],
-    //   }
-    // );
     this.EPSG20137 = new L.Proj.CRS(
       "EPSG:20137",
-      "+proj=utm +zone=37 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+      "+proj=utm +zone=37 +a=6378249.145 +rf=293.465 +towgs84=-165,-11,206,0,0,0,0 +units=m +no_defs +type=crs",
       {
-        // resolutions: [
-        //   0.03125, 0.0625, 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0,
-        //   64.0, 128.0, 256.0,
-        // ],
         resolutions: resolutions,
-        transformation: new L.Transformation(
-          1,
-          -20037508.342789244,
-          -1,
-          20037508.342789244
-        ),
+        origin: [166600.5155002516, 375771.9736823894],
       }
     );
+    // this.EPSG20137 = new L.Proj.CRS(
+    //   "EPSG:20137",
+    //   "+proj=utm +zone=37 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+    //   {
+    //     // resolutions: [
+    //     //   0.03125, 0.0625, 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0,
+    //     //   64.0, 128.0, 256.0,
+    //     // ],
+    //     resolutions: resolutions,
+    //     transformation: new L.Transformation(
+    //       1,
+    //       -20037508.342789244,
+    //       -1,
+    //       20037508.342789244
+    //     ),
+    //   }
+    // );
 
     const mapContainer = document.getElementById("mapp");
     if (!mapContainer) {
@@ -1793,12 +1793,12 @@ export class GisMapComponent implements AfterViewInit {
             this.map.addLayer(layer);
 
             this.coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the polygon
-            // this.coordinates = this.coordinates.map((coord) => {
-            //   return {
-            //     lat: coord.lat - 0.001876,
-            //     lng: coord.lng - 0.0008668,
-            //   };
-            // });
+            this.coordinates = this.coordinates.map((coord) => {
+              return {
+                lat: coord.lat - 0.001876,
+                lng: coord.lng - 0.0008668,
+              };
+            });
             this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(
               this.coordinates
             );
@@ -2017,12 +2017,12 @@ export class GisMapComponent implements AfterViewInit {
         if (layer instanceof L.Polygon) {
           this.coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the polygon
           console.log("🚀 ~ this.map.on ~ coordinates:befor", this.coordinates);
-          // this.coordinates = this.coordinates.map((coord) => {
-          //   return {
-          //     lat: coord.lat - 0.001876,
-          //     lng: coord.lng - 0.0008668,
-          //   };
-          // });
+          this.coordinates = this.coordinates.map((coord) => {
+            return {
+              lat: coord.lat - 0.001876,
+              lng: coord.lng - 0.0008668,
+            };
+          });
 
           console.log("🚀 ~ this.map.on ~ coordinates:after", this.coordinates);
           this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(
@@ -2357,12 +2357,12 @@ export class GisMapComponent implements AfterViewInit {
           // this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(
           //   this.coordinates
           // );
-          // coordinates = coordinates.map((coord) => {
-          //   return {
-          //     lat: coord.lat - 0.001876,
-          //     lng: coord.lng - 0.0008668,
-          //   };
-          // });
+          coordinates = coordinates.map((coord) => {
+            return {
+              lat: coord.lat - 0.001876,
+              lng: coord.lng - 0.0008668,
+            };
+          });
           console.log(
             "🚀 ~ file: gis-map.component.ts:1630 ~ this.map.on ~ tempcord:",
             this.ServiceService.coordinateForwgs84
@@ -4015,11 +4015,11 @@ export class GisMapComponent implements AfterViewInit {
     const subtract_northing = 207.34388375;
     const subtract_easting = 95.4782061405;
 
-    // utmCoordinateslast = utmCoordinateslast.map((item) => {
-    //   item.northing += subtract_northing;
-    //   item.easting += subtract_easting;
-    //   return item; // Return the modified item
-    // });
+    utmCoordinateslast = utmCoordinateslast.map((item) => {
+      item.northing += subtract_northing;
+      item.easting += subtract_easting;
+      return item; // Return the modified item
+    });
 
     //const utmCoordinateslast = this.convertCoordinatesToUTM(utmToCoor);
     // Create a new workbook and worksheet

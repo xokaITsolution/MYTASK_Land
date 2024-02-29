@@ -1142,18 +1142,18 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         if (!uniqueCoordinates.has(uniqueCoordString)) {
           uniqueCoordinates.add(uniqueCoordString);
 
-          result.push({
-            northing: northing,
-            easting: easting,
-            hemisphere: hemisphere,
-            zone: zone,
-          });
           // result.push({
-          //   northing: (parseFloat(northing) + 207.34388375).toString(),
-          //   easting: (parseFloat(easting) + 95.4782061405).toString(),
+          //   northing: northing,
+          //   easting: easting,
           //   hemisphere: hemisphere,
           //   zone: zone,
           // });
+          result.push({
+            northing: (parseFloat(northing) + 207.34388375).toString(),
+            easting: (parseFloat(easting) + 95.4782061405).toString(),
+            hemisphere: hemisphere,
+            zone: zone,
+          });
         }
       }
     }
