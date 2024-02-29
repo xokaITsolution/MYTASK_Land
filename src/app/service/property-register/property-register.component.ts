@@ -1148,6 +1148,12 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
             hemisphere: hemisphere,
             zone: zone,
           });
+          // result.push({
+          //   northing: (parseFloat(northing) + 207.34388375).toString(),
+          //   easting: (parseFloat(easting) + 95.4782061405).toString(),
+          //   hemisphere: hemisphere,
+          //   zone: zone,
+          // });
         }
       }
     }

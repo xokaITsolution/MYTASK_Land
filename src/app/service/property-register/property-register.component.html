@@ -125,7 +125,7 @@
           id="UpperFloor" [placeholder]="'Upper Floor'|translate" [disabled]="disable">
       </div>
     </div>
-   <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture && isnew">
+   <!-- <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture && isnew">
       <label class="col-sm-3 col-form-label" translate>Map Plan</label>
       <div class="col-sm-9">
         <p-fileUpload *ngIf="!disable" #form customUpload="true" (uploadHandler)="upload($event,form)"
@@ -133,14 +133,14 @@
 
         <input type="hidden" class="form-control" [(ngModel)]="propertyRegister.map_Floor_Plan" name="MapFloorPlan"
           id="MapFloorPlan" [placeholder]="'Map Floor Plan' | translate"  >
-        <!-- <div *ngIf="MapFloorPlan.invalid">
+         <div *ngIf="MapFloorPlan.invalid">
           <span translate class="text-danger">Requierd</span>
-        </div> -->
+        </div> 
         <div *ngIf="pictoShow">
           <button type="button" class="btn btn-primary" (click)="openModal('pic')" translate>Show</button>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
       <label for="ParkingSize" class="col-sm-3 col-form-label" translate>Parking size</label>
       <div class="col-sm-9">
