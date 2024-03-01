@@ -79,13 +79,13 @@ export class ServiceService {
     environment.rootPathApi + "view/View_DeedRegstration12/Customer_ID";
   public AppbyUserId =
     environment.rootPathApi +
-    "ApplicationLoadByUserId/procApplicationLoadByUserId/";  
-    public userbyusername=
-    environment.rootPathApi +
-    "view/View_aspuserforapi/UserName?UserName=";
+    "ApplicationLoadByUserId/procApplicationLoadByUserId/";
+  public userbyusername =
+    environment.rootPathApi + "view/View_aspuserforapi/UserName?UserName=";
 
   private getTodandAppNoURL = environment.rootpath2 + "TodandAppNo";
-  private RemoveDocURL = environment.rootPath + "BPEL/Remove_RequrementDocument";
+  private RemoveDocURL =
+    environment.rootPath + "BPEL/Remove_RequrementDocument";
   private License_ServiceURL = environment.rootPath + "License_Service";
   private paymentUrl =
     environment.rootPath +

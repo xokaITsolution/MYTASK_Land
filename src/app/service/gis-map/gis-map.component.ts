@@ -3153,6 +3153,7 @@ export class GisMapComponent implements AfterViewInit {
     const coordinates = data.slice(1);
     console.log("coordinates", coordinates);
     // Map the data to LatLng objects and their associated shape properties
+
     const combinedData = [];
     const latLngs = coordinates.map((row) =>
       this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])

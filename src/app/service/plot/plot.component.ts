@@ -50,7 +50,7 @@ export class PlotComponent implements OnChanges {
   OnParcle = -1;
   plotId = null;
   Saved = false;
-  ischeckPlotaev: boolean = false;
+  ischeckPlotaev: boolean = true;
   language: string;
   plotloc: any;
   public platformLocation: PlatformLocation;
@@ -157,6 +157,7 @@ export class PlotComponent implements OnChanges {
   tellChild(aa) {
     this.convertedCoordinates.push(aa);
     this.geo = this.convertedCoordinates;
+
     console.log("value is changingg", this.geo);
     this.serviceService.check = false;
     this.changingValue.next(aa);
@@ -452,7 +453,19 @@ export class PlotComponent implements OnChanges {
     }
 
     const arrayOfArrays = [];
-
+    const coordinatesarea =
+      this.convertCoordinatesformatd(convertedCoordinates);
+    console.log(
+      "🚀 ~ PlotComponent ~ tellChild ~ coordinatesarea:",
+      coordinatesarea
+    );
+    const area = this.calculateUTMPolygonArea(coordinatesarea);
+    this.serviceService.Totalarea = parseInt(area.toFixed(2));
+    console.log(
+      "🚀 ~ processcoordinatesForPlot ~ ServiceService:",
+      this.serviceService.Totalarea
+    );
+    localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
     arrayOfArrays.push(convertedCoordinates);
     console.log("convertedCconvertedCoordinatesoordinates", arrayOfArrays);
     this.tellChild(arrayOfArrays);
@@ -936,6 +949,7 @@ export class PlotComponent implements OnChanges {
         }
         console.log("PlotManagementList", this.PlotManagementList);
         if (this.PlotManagementList.length > 0) {
+          this.ischeckPlotaev = false;
           this.PlotManagementListfinal.push(this.PlotManagementList[0]);
           this.PlotManagementListfinal = this.removeDuplicates(
             this.PlotManagementListfinal

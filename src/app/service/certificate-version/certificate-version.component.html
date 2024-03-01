@@ -156,7 +156,7 @@
   
               <div class="col-sm-8">
                 <p-checkbox [(ngModel)]="certificateVersion.is_Active" [disabled]="disable" name="isActive" id="isActive"
-                  binary="true"></p-checkbox>
+                  binary="true" aria-required="true"></p-checkbox>
               </div>
             </div></div>
           </div>
@@ -360,8 +360,9 @@
   </div>
   <button type="button" class="btn btn-primary" *ngIf="!isnew" (click)="Save()" [disabled]="!f.valid"
     translate>Update</button>
-  <button type="button" class="btn btn-primary" *ngIf="isnew" (click)="add()" [disabled]="!f.valid"
+  <button type="button" class="btn btn-primary" *ngIf="isnew" (click)="add()" [disabled]="!certificateVersion.is_Active"
     translate>Save</button>
+    <span style="color: red;" *ngIf="!certificateVersion.is_Active"> click check box is_active is mandatory </span>
 </form>
 
 

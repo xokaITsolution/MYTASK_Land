@@ -6,7 +6,7 @@
         <th scope="col" translate>Status</th>
         <th scope="col" translate>Area_M2</th>
         <th scope="col" translate>Registration Date</th>
-        <th scope="col" *ngIf="multipleplotcanbeadd">
+        <th scope="col" *ngIf="multipleplotcanbeadd && checkAPIstatus">
 
           <button type="button" class="btn btn-primary" (click)="getAllplotLocationafter();ischeckPlotaev=true;ismodaEnable=true;serviceService.check = true;calculettotal()"
             *ngIf="!disable && PlotManagementListfinal.length < 5" translate>Add New</button>
@@ -160,7 +160,7 @@
        
           <button type="button" style="float: right;" *ngIf="ischeckPlotaev" class="btn btn-primary m-2" (click)="Savetempora()" translate>Save</button>
           <button type="button" style="float: right;" class="btn btn-primary m-2" (click)="saveplotloc();ismodaEnable=false"
-            *ngIf="isplotllocnew && !ischeckPlotaev &&  !disable && serviceService.areaVerified" translate>Save</button>
+            *ngIf="isplotllocnew && !ischeckPlotaev &&  !disable" translate>Save</button>
           
           <button type="button" style="float: right;" *ngIf="!isplotllocnew && !ischeckPlotaev && !isfreehoadinsert && !disable" class="btn btn-primary m-2"
             (click)="updateplotloc();closeModall()"  translate>Update</button>
