@@ -6,8 +6,8 @@
         <th scope="col" translate>Status</th>
         <th scope="col" translate>Area_M2</th>
         <th scope="col" translate>Registration Date</th>
-        <th scope="col" *ngIf="multipleplotcanbeadd && checkAPIstatus">
-
+        <th scope="col" *ngIf="multipleplotcanbeadd">
+        
           <button type="button" class="btn btn-primary" (click)="getAllplotLocationafter();ischeckPlotaev=true;ismodaEnable=true;serviceService.check = true;calculettotal()"
             *ngIf="!disable && PlotManagementListfinal.length < 5" translate>Add New</button>
         </th>

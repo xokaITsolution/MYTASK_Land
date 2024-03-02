@@ -76,6 +76,7 @@ export class PlotComponent implements OnChanges {
     center: [0, 0], // Initial center coordinates
     zoom: 10, // Initial zoom level
   };
+  checkAPIstatus: boolean;
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -947,6 +948,7 @@ export class PlotComponent implements OnChanges {
         if (PlotManagementList.length > 0) {
           this.PlotManagementList = this.removeDuplicates(PlotManagementList);
         }
+        this.checkAPIstatus = true;
         console.log("PlotManagementList", this.PlotManagementList);
         if (this.PlotManagementList.length > 0) {
           this.ischeckPlotaev = false;

@@ -173,15 +173,15 @@ export class GisMapComponent implements AfterViewInit {
     const subcityToSDPMapping = {
       arada: "6921d772-3a1c-4641-95a0-0ab320bac3e2",
       bole: "89eb1aec-c875-4a08-aaf6-2c36c0864979",
-      nifasS: "f8ea62db-05bc-4f1a-ab30-4e926d43e3fb",
+      nifass: "f8ea62db-05bc-4f1a-ab30-4e926d43e3fb",
       gullele: "6a8c042f-a3e1-4375-9769-54d94c2312c6",
-      addisK: "7101d44d-97d5-41aa-957d-82f36d928c07",
+      addisk: "7101d44d-97d5-41aa-957d-82f36d928c07",
       lideta: "e4d8219e-51f9-40cb-9d53-883c6ca9aaa3",
-      lemiK: "f02e9467-1b7d-4350-bee7-9844d4f56da0",
+      lemik: "f02e9467-1b7d-4350-bee7-9844d4f56da0",
       yeka: "8222f028-5fe3-4047-9a50-b52bfa64c851",
-      akakyK: "08f9c927-6366-467a-ba99-c837c5add427",
+      akakyk: "08f9c927-6366-467a-ba99-c837c5add427",
       kirkos: "aaa5094c-8899-4708-9f7b-d8ff634a3540",
-      kolfeK: "930d1c20-9e0e-4a50-9eb2-e542fafbad68",
+      kolfek: "930d1c20-9e0e-4a50-9eb2-e542fafbad68",
       central: "275619f2-69c2-4fb7-a053-938f0b62b088",
     };
 
@@ -2853,9 +2853,17 @@ export class GisMapComponent implements AfterViewInit {
     );
     this.drawnShape = L.polygon(this.pinpointedPoints).addTo(this.map);
 
-    const utmCoordinates = this.convertCoordinatesToUTM(this.pinpointedPoints);
+    let utmCoordinates = this.convertCoordinatesToUTM(this.pinpointedPoints);
+    const subtract_northing = 207.34388375;
+    const subtract_easting = 95.4782061405;
 
+    utmCoordinates = utmCoordinates.map((item) => {
+      item.northing -= subtract_northing;
+      item.easting -= subtract_easting;
+      return item; // Return the modified item
+    });
     this.utmCoordinatesforallexcel = utmCoordinates;
+
     const area = this.calculateUTMPolygonArea(utmCoordinates);
     this.ServiceService.Totalarea = parseInt(area.toFixed(2));
     // Show the area in a popup
@@ -3068,13 +3076,18 @@ export class GisMapComponent implements AfterViewInit {
           // Add the converted GeoJSON data to the map
           // L.geoJSON(geoJSONData).addTo(this.map);
         } else {
-          console.error("Invalid GeoJSON data.");
+          const toast = this.notificationsService.warn("Invalid GeoJSON data.");
         }
       } else {
-        console.error("Missing one or more required files in the zip archive.");
+        const toast = this.notificationsService.warn(
+          "Missing one or more required files in the zip archive."
+        );
       }
     } catch (error) {
-      console.error("Error while extracting files from the zip:", error);
+      const toast = this.notificationsService.warn(
+        "Error while extracting files from the zip:",
+        error
+      );
     }
   }
   animateMap(center: [number, number]): void {
@@ -4371,7 +4384,6 @@ export class GisMapComponent implements AfterViewInit {
       zone: utmCoords.zoneNum,
     };
   }
-
   conveUTMToLatLng(
     northing: number,
     easting: number,
