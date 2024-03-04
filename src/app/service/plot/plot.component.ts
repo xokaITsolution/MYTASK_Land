@@ -1485,7 +1485,23 @@ export class PlotComponent implements OnChanges {
 
               if (tasks.length > 0) {
                 if (totalsize === this.serviceService.Totalarea) {
-                  this.completed.emit();
+                  this.serviceService
+                    .GetPlotValidationURL(
+                      this.serviceService.LicenceserviceID,
+                      this.serviceService.Service_ID
+                    )
+                    .subscribe((message: any) => {
+                      if (message == 1) {
+                        this.serviceService.disablefins = false;
+
+                        this.completed.emit();
+                      } else {
+                        const toast = this.notificationsService.error(
+                          "Error",
+                          message
+                        );
+                      }
+                    });
                 } else {
                   const toast = this.notificationsService.warn(
                     `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
@@ -1501,7 +1517,20 @@ export class PlotComponent implements OnChanges {
               }
             });
         } else {
-          this.completed.emit();
+          this.serviceService
+            .GetPlotValidationURL(
+              this.serviceService.LicenceserviceID,
+              this.serviceService.Service_ID
+            )
+            .subscribe((message: any) => {
+              if (message == 1) {
+                this.serviceService.disablefins = false;
+
+                this.completed.emit();
+              } else {
+                const toast = this.notificationsService.error("Error", message);
+              }
+            });
         }
       }
     }

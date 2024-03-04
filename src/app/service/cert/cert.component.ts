@@ -521,8 +521,23 @@ export class CertComponent implements OnChanges {
             this.disableTab = false;
             this.displayGIS = false;
             if (certver.is_Active) {
-              this.completed.emit();
-              this.serviceService.disablefins = false;
+              this.serviceService
+                .GetCertficate_ver_Validation(
+                  this.serviceService.LicenceserviceID,
+                  this.serviceService.Service_ID
+                )
+                .subscribe((message: any) => {
+                  if (message == 1) {
+                    this.serviceService.disablefins = false;
+
+                    this.completed.emit();
+                  } else {
+                    const toast = this.notificationsService.error(
+                      "Error",
+                      message
+                    );
+                  }
+                });
             } else {
               this.serviceService.disablefins = true;
             }
@@ -641,8 +656,25 @@ export class CertComponent implements OnChanges {
             console.log("img", img[0].certificate_Image);
             if (img[0].certificate_Image) {
               if (!this.Saved) {
-                this.completed.emit();
-                this.serviceService.disablefins = false;
+                // this.completed.emit();
+                // this.serviceService.disablefins = false;
+                this.serviceService
+                  .GetCertficate_ver_Validation(
+                    this.serviceService.LicenceserviceID,
+                    this.serviceService.Service_ID
+                  )
+                  .subscribe((message: any) => {
+                    if (message == 1) {
+                      this.serviceService.disablefins = false;
+
+                      this.completed.emit();
+                    } else {
+                      const toast = this.notificationsService.error(
+                        "Error",
+                        message
+                      );
+                    }
+                  });
                 this.Saved = true;
               }
               //this.serviceService.disablefins = false;

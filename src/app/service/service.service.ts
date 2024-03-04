@@ -41,6 +41,15 @@ export class ServiceService {
   private GetpreviousApplicationNumberByUserURL =
     environment.rootPathApi +
     "view/View_GetPreviceApplicationForReview/current/";
+  private Certficate_ver_ValidationURL =
+    environment.rootPathApi +
+    "Certficate_ver_Validation/Certficate_ver_Validation/Certficate_ver_Validation/Certficate_ver_Validation/Applicationcode/servicecode/";
+  private PlotValidationURL =
+    environment.rootPathApi +
+    "PlotValidation/PlotValidation/PlotValidation/PlotValidation/PlotValidation/PlotValidation/Applicationcode/servicecode/";
+  private ProportyValidationURL =
+    environment.rootPathApi +
+    "ProportyValidation/Proporty_Validation/Proporty_Validation/Proporty_Validation/Applicationcode/";
 
   private GetApplicationNumberByUserURLsapi =
     environment.rootPathApi +
@@ -256,6 +265,7 @@ export class ServiceService {
   isfreeholdselected: boolean;
   serviceisundoumneted: boolean = false;
   currentcertID: any;
+  LicenceserviceID: any;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -410,6 +420,17 @@ export class ServiceService {
   GetpreviousApplicationNumberByUsers(username, Parch_ID) {
     return this.http.get(
       this.GetpreviousApplicationNumberByUserURL + username + "/" + Parch_ID
+    );
+  }
+  GetPlotValidationURL(Appno, serviceid) {
+    return this.http.get(this.PlotValidationURL + Appno + "/" + serviceid);
+  }
+  GetProportyValidationURL(Appno) {
+    return this.http.get(this.ProportyValidationURL + Appno);
+  }
+  GetCertficate_ver_Validation(Appno, serviceid) {
+    return this.http.get(
+      this.Certficate_ver_ValidationURL + Appno + "/" + serviceid
     );
   }
   GetApplicationNumberByUserInfo(appno) {

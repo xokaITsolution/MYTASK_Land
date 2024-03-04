@@ -2960,6 +2960,7 @@ export class ServiceComponent implements OnInit {
           this.Licence_Service_ID = this.licenceData.Licence_Service_ID;
           this.AppCode = this.licenceData.Licence_Service_ID; //
           this.AppNo = this.licenceData.Application_No; //
+          this.serviceService.LicenceserviceID = this.Licence_Service_ID;
           console.log("licenceData", this.licenceData);
 
           if (this.licenceData.Certificate_Code > 0) {

@@ -128,7 +128,20 @@ export class PropertyComponent implements OnChanges {
                 `Must add title deed for this property: ${element.property_ID}`
               );
             } else {
-              this.completed.emit();
+              this.serviceService
+                .GetProportyValidationURL(this.serviceService.LicenceserviceID)
+                .subscribe((message: any) => {
+                  if (message == 1) {
+                    this.serviceService.disablefins = false;
+
+                    this.completed.emit();
+                  } else {
+                    const toast = this.notificationsService.error(
+                      "Error",
+                      message
+                    );
+                  }
+                });
             }
           }
         }
@@ -927,7 +940,17 @@ export class PropertyComponent implements OnChanges {
         this.serviceService.totlaizeproportinal ==
         this.serviceService.Plot_Size_M2
       ) {
-        this.completed.emit();
+        this.serviceService
+          .GetProportyValidationURL(this.serviceService.LicenceserviceID)
+          .subscribe((message: any) => {
+            if (message == 1) {
+              this.serviceService.disablefins = false;
+
+              this.completed.emit();
+            } else {
+              const toast = this.notificationsService.error("Error", message);
+            }
+          });
       } else {
         const toast = this.notificationsService.warn(
           "if the lease type is proportional the sum of property built-in size must be equal to lease size/የሊዝ አይነት ተመጣጣኝ ከሆነ አብሮ የተሰራው ንብረት ድምር ከሊዝ መጠን ጋር እኩል መሆን አለበት።"
@@ -958,7 +981,22 @@ export class PropertyComponent implements OnChanges {
                   `Must add title deed for this property: ${element.property_ID}`
                 );
               } else {
-                this.completed.emit();
+                this.serviceService
+                  .GetProportyValidationURL(
+                    this.serviceService.LicenceserviceID
+                  )
+                  .subscribe((message: any) => {
+                    if (message == 1) {
+                      this.serviceService.disablefins = false;
+
+                      this.completed.emit();
+                    } else {
+                      const toast = this.notificationsService.error(
+                        "Error",
+                        message
+                      );
+                    }
+                  });
               }
             }
           }
@@ -976,7 +1014,20 @@ export class PropertyComponent implements OnChanges {
                 `Must add title deed for this property: ${element.property_ID}`
               );
             } else {
-              this.completed.emit();
+              this.serviceService
+                .GetProportyValidationURL(this.serviceService.LicenceserviceID)
+                .subscribe((message: any) => {
+                  if (message == 1) {
+                    this.serviceService.disablefins = false;
+
+                    this.completed.emit();
+                  } else {
+                    const toast = this.notificationsService.error(
+                      "Error",
+                      message
+                    );
+                  }
+                });
             }
           }
         }
@@ -1132,7 +1183,17 @@ export class PropertyComponent implements OnChanges {
             }
           }
         } else {
-          this.completed.emit();
+          this.serviceService
+            .GetProportyValidationURL(this.serviceService.LicenceserviceID)
+            .subscribe((message: any) => {
+              if (message == 1) {
+                this.serviceService.disablefins = false;
+
+                this.completed.emit();
+              } else {
+                const toast = this.notificationsService.error("Error", message);
+              }
+            });
         }
       }
     } else {
@@ -1142,7 +1203,17 @@ export class PropertyComponent implements OnChanges {
         );
         return;
       } else {
-        this.completed.emit();
+        this.serviceService
+          .GetProportyValidationURL(this.serviceService.LicenceserviceID)
+          .subscribe((message: any) => {
+            if (message == 1) {
+              this.serviceService.disablefins = false;
+
+              this.completed.emit();
+            } else {
+              const toast = this.notificationsService.error("Error", message);
+            }
+          });
       }
     }
   }
@@ -1384,7 +1455,22 @@ export class PropertyComponent implements OnChanges {
                   //   `this property have location : ${element.property_ID}`
                   // );
                   if (!isnullplot) {
-                    this.completed.emit();
+                    this.serviceService
+                      .GetProportyValidationURL(
+                        this.serviceService.LicenceserviceID
+                      )
+                      .subscribe((message: any) => {
+                        if (message == 1) {
+                          this.serviceService.disablefins = false;
+
+                          this.completed.emit();
+                        } else {
+                          const toast = this.notificationsService.error(
+                            "Error",
+                            message
+                          );
+                        }
+                      });
                   }
                 }
               }

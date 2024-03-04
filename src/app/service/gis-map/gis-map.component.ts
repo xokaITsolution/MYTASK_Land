@@ -2931,26 +2931,48 @@ export class GisMapComponent implements AfterViewInit {
     this.removeLayerFromMap();
   }
 
+  // importShapes(event: any): void {
+  //   const file: File = event.target.files[0];
+  //   const fileReader: FileReader = new FileReader();
+  //   fileReader.onload = (e: any) => {
+  //     const arrayBuffer: ArrayBuffer = e.target.result;
+  //     const data: Uint8Array = new Uint8Array(arrayBuffer);
+  //     const workbook: XLSX.WorkBook = XLSX.read(data, { type: "array" });
+  //     const sheetName: string = workbook.SheetNames[0];
+  //     const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
+  //     const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet, {
+  //       header: 1,
+  //     });
+  //     console.log("jsonData", jsonData);
+
+  //     // Process the imported shapes and add them to the map
+  //     this.fromexcel = true;
+  //     this.processImportedShapesXLSX(jsonData);
+  //   };
+  //   fileReader.readAsArrayBuffer(file);
+  // }
   importShapes(event: any): void {
     const file: File = event.target.files[0];
     const fileReader: FileReader = new FileReader();
     fileReader.onload = (e: any) => {
-      const arrayBuffer: ArrayBuffer = e.target.result;
-      const data: Uint8Array = new Uint8Array(arrayBuffer);
-      const workbook: XLSX.WorkBook = XLSX.read(data, { type: "array" });
-      const sheetName: string = workbook.SheetNames[0];
-      const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
-      const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet, {
-        header: 1,
-      });
+      const csvData: string = e.target.result;
+
+      // Split CSV data into rows
+      const rows: string[] = csvData.split("\n");
+
+      // Parse each row into an array of values
+      const jsonData: any[] = rows.map((row) => row.split(","));
+
       console.log("jsonData", jsonData);
 
       // Process the imported shapes and add them to the map
       this.fromexcel = true;
+      console.log("🚀 ~ importShapes ~ fromexcel:", jsonData);
       this.processImportedShapesXLSX(jsonData);
     };
-    fileReader.readAsArrayBuffer(file);
+    fileReader.readAsText(file);
   }
+
   async addShapefileToMap(event: any) {
     console.log(event.target.files[0]);
 
@@ -4078,29 +4100,115 @@ export class GisMapComponent implements AfterViewInit {
     link.click();
     window.URL.revokeObjectURL(url);
   }
-  // convertToCSV(data: any[]): void {
-  //   console.log(
-  //     "🚀 ~ file: gis-map.component.ts:3111 ~ convertToCSV ~ data:",
-  //     data
-  //   );
+  convertToCSV(data: any[]): void {
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:3111 ~ convertToCSV ~ data:",
+      data
+    );
 
-  //   // Convert JSON data to CSV format
-  //   const csv = json2csv.parse(data);
+    let utmCoordinateslast = data;
+    const subtract_northing = 207.34388375;
+    const subtract_easting = 95.4782061405;
 
-  //   // Create a Blob containing the CSV data
-  //   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    utmCoordinateslast = utmCoordinateslast.map((item) => {
+      item.northing += subtract_northing;
+      item.easting += subtract_easting;
+      return item; // Return the modified item
+    });
 
-  //   // Save the file
-  //   const fileName = "shapes.csv";
-  //   const url = window.URL.createObjectURL(blob);
-  //   const link = document.createElement("a");
-  //   link.href = url;
-  //   link.setAttribute("download", fileName);
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-  //   window.URL.revokeObjectURL(url);
-  // }
+    // Add constant values
+    const zone = 37;
+    const hemisphere = "P";
+
+    // Convert data to CSV format
+    let csvContent = "";
+
+    const headers = ["northing", "easting", "hemisphere", "zone"];
+    csvContent += headers.join(",") + "\n";
+
+    // Add constant values to each row
+    // Add constant values to each row
+    utmCoordinateslast.forEach((item, index) => {
+      csvContent +=
+        item.northing + "," + item.easting + "," + hemisphere + "," + zone;
+      if (index !== utmCoordinateslast.length - 1) {
+        // Add new line if it's not the last row
+        csvContent += "\n";
+      }
+    });
+    // Create a blob with CSV content
+    const blob = new Blob([csvContent], { type: "text/csv" });
+
+    // Create a temporary URL for the blob
+    const url = window.URL.createObjectURL(blob);
+
+    // Create a link and trigger the download
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "shapes.csv");
+    document.body.appendChild(link);
+    link.click();
+
+    // Cleanup
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
+  convertToCSVondrwaing(data: any[]): void {
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:3111 ~ convertToCSV ~ data:",
+      data
+    );
+
+    let utmCoordinateslast = data;
+    const subtract_northing = 0;
+    const subtract_easting = 0;
+
+    utmCoordinateslast = utmCoordinateslast.map((item) => {
+      item.northing += subtract_northing;
+      item.easting += subtract_easting;
+      return item; // Return the modified item
+    });
+
+    // Add constant values
+    const zone = 37;
+    let hemisphere = "P";
+
+    // Convert data to CSV format
+    let csvContent = "";
+
+    // Add headers to CSV
+    const headers = ["northing", "easting", "hemisphere", "zone"];
+    csvContent += headers.join(",") + "\n";
+
+    // Add constant values to each row
+    // Add constant values to each row
+    utmCoordinateslast.forEach((item, index) => {
+      csvContent +=
+        item.northing + "," + item.easting + "," + hemisphere + "," + zone;
+      if (index !== utmCoordinateslast.length - 1) {
+        // Add new line if it's not the last row
+        csvContent += "\n";
+      }
+    });
+
+    // Create a blob with CSV content
+    const blob = new Blob([csvContent], { type: "text/csv" });
+
+    // Create a temporary URL for the blob
+    const url = window.URL.createObjectURL(blob);
+
+    // Create a link and trigger the download
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "shapes.csv");
+    document.body.appendChild(link);
+    link.click();
+
+    // Cleanup
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
+
   updateMapProjection(): void {
     // Define the projection transformations for each datum
     const wgs84Projection = "+proj=longlat +datum=WGS84 +no_defs";
@@ -4680,6 +4788,79 @@ export class GisMapComponent implements AfterViewInit {
       .catch((error) => {
         console.error("Error taking screenshot:", error);
       });
+  }
+  getCSVTemplate(): void {
+    // Define constant values
+    const zone = 37;
+    const hemisphere = "P";
+
+    // Define headers
+    const headers = ["northing", "easting", "hemisphere", "zone"];
+
+    // Sample data
+    const sampleData = [
+      {
+        northing: 998101.614079862,
+        easting: 473258.9323678574,
+        hemisphere: "P",
+        zone: 37,
+      },
+      {
+        northing: 998115.3640795118,
+        easting: 473256.5873595017,
+        hemisphere: "P",
+        zone: 37,
+      },
+      {
+        northing: 998117.7077959186,
+        easting: 473270.6576056435,
+        hemisphere: "P",
+        zone: 37,
+      },
+      {
+        northing: 998103.3327965328,
+        easting: 473273.0026125555,
+        hemisphere: "P",
+        zone: 37,
+      },
+      {
+        northing: 998101.614079862,
+        easting: 473258.9323678574,
+        hemisphere: "P",
+        zone: 37,
+      },
+    ];
+
+    // Construct CSV template
+    let csvContent = headers.join(",") + "\n";
+    sampleData.forEach((item) => {
+      csvContent +=
+        item.northing +
+        "," +
+        item.easting +
+        ',"' +
+        item.hemisphere +
+        '",' +
+        item.zone +
+        "\n";
+    });
+
+    // Create a blob with CSV content
+    const blob = new Blob([csvContent], { type: "text/csv" });
+
+    // Create a temporary URL for the blob
+    const url = window.URL.createObjectURL(blob);
+
+    // Create a link and trigger the download
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "template.csv");
+    document.body.appendChild(link);
+    link.click();
+
+    // Cleanup
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
   }
 }
 

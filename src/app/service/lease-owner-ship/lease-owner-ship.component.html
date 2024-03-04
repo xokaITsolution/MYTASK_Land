@@ -208,7 +208,7 @@
       <!--<th scope="col" translate>free hold</th>-->
       <th scope="col" translate>lease hold area</th>
       <th scope="col">
-        <button type="button" class="btn btn-primary" (click)="addLease()" *ngIf="!disable" translate>Add New</button>
+        <button type="button" class="btn btn-primary" (click)="addLease()" *ngIf="!disable && multipleplotcanbeadd" translate>Add New</button>
       </th>
     </tr>
   </ng-template>
