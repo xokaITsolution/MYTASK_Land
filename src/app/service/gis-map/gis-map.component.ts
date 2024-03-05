@@ -102,6 +102,7 @@ export class GisMapComponent implements AfterViewInit {
   layer: any;
   fetchedGroups: any[] = [];
   ondrawingshape: boolean = false;
+  ondataloaded: boolean;
 
   constructor(
     public ServiceService: ServiceService,
@@ -203,6 +204,7 @@ export class GisMapComponent implements AfterViewInit {
 
     this.getGroupLayers();
     if (this.geo) {
+      this.ondataloaded = true;
       console.log("value is changing", this.geo);
       if (this.ServiceService.check) {
         for (let index = 0; index < this.geo.length; index++) {
@@ -2102,6 +2104,16 @@ export class GisMapComponent implements AfterViewInit {
 
           this.ServiceService.coordinate = this.utmCoordinates;
           this.utmCoordinatesforallexcel = utmCoordinates;
+          const subtract_northing = 207.34388375;
+          const subtract_easting = 95.4782061405;
+
+          this.utmCoordinatesforallexcel = this.utmCoordinatesforallexcel.map(
+            (item) => {
+              item.northing += subtract_northing;
+              item.easting += subtract_easting;
+              return item; // Return the modified item
+            }
+          );
           const area = this.calculateUTMPolygonArea(utmCoordinates);
           this.ServiceService.Totalarea = parseInt(area.toFixed(2));
           // Show the area in a popup
@@ -2960,8 +2972,12 @@ export class GisMapComponent implements AfterViewInit {
       // Split CSV data into rows
       const rows: string[] = csvData.split("\n");
 
-      // Parse each row into an array of values
-      const jsonData: any[] = rows.map((row) => row.split(","));
+      // Parse each row into an array of values, removing spaces and new lines
+      const jsonData: any[] = rows
+        .map((row) => row.replace(/\s+/g, "").split(","))
+        .filter(
+          (row) => row.length > 0 && row.some((value) => value.trim() !== "")
+        ); // Filter out empty or all-empty arrays
 
       console.log("jsonData", jsonData);
 
@@ -3344,14 +3360,21 @@ export class GisMapComponent implements AfterViewInit {
         this.editableLayers.addLayer(this.drawnShape);
         const utmCoordinates = this.convertCoordinatesToUTM(latslng);
         utmCoordinates.push(utmCoordinates[0]);
-        this.utmCoordinatesforallexcel = utmCoordinates;
+        this.utmCoordinatesforallexcel = this.convertCoordinatesToUTM(latslng);
+        const subtract_northing = 207.34388375;
+        const subtract_easting = 95.4782061405;
+
         this.ServiceService.coordinateForwgs84 =
           this.mapToPolygonFormat(latslng);
         this.ServiceService.coordinate = utmCoordinates;
         console.log(
           "🚀 ~ this.alllatlong.forEach ~ utmCoordinates:",
-          utmCoordinates
+          this.utmCoordinatesforallexcel
         );
+        for (let i = 0; i < this.ServiceService.coordinate.length; i++) {
+          this.ServiceService.coordinate[i].northing -= subtract_northing;
+          this.ServiceService.coordinate[i].easting -= subtract_easting; // Corrected subtraction
+        }
       } else {
         this.editableLayers.addLayer(this.drawnShape);
         const utmCoordinates = this.convertCoordinatesToUTM(latslng);
@@ -3359,7 +3382,7 @@ export class GisMapComponent implements AfterViewInit {
           this.mapToPolygonFormat(latslng);
         utmCoordinates.push(utmCoordinates[0]);
         this.ServiceService.coordinate = utmCoordinates;
-        //this.utmCoordinatesforallexcel = utmCoordinates;
+        this.utmCoordinatesforallexcel = utmCoordinates;
         console.log(
           "🚀 ~ this.alllatlong.forEach ~ utmCoordinates:",
           utmCoordinates
@@ -3671,9 +3694,13 @@ export class GisMapComponent implements AfterViewInit {
     console.log("coordinates", coordinates);
     this.utmCoordinates = coordinates;
 
-    const latLngs = coordinates.map((row) =>
-      this.conveUTMToLatLngWritexlsx(row[0], row[1], row[3], row[2])
-    );
+    const latLngs = coordinates.map((row) => {
+      console.log(row[0], row[1], row[3], row[2]);
+      if (row[0] !== undefined) {
+        return this.conveUTMToLatLngWritexlsx(row[0], row[1], row[3], row[2]);
+      }
+    });
+
     const latLngss = coordinates.map((row) =>
       this.conveUTMToLatLng(row[0], row[1], row[3], row[2])
     );
@@ -3715,6 +3742,10 @@ export class GisMapComponent implements AfterViewInit {
       this.limitedAreaBounds = L.polygon(allVertices);
 
       if (this.alllatlong) {
+        console.log(
+          "🚀 ~ processImportedShapesXLSX ~ alllatlong:",
+          this.alllatlong
+        );
         this.alllatlong.forEach((shape, index) => {
           let randomColor =
             "#" + Math.floor(Math.random() * 16777215).toString(16);
@@ -3743,14 +3774,6 @@ export class GisMapComponent implements AfterViewInit {
         ) {
           this.map.addLayer(this.drawnShape);
 
-          this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(
-            this.coordinates
-          );
-          console.log(
-            "🚀 ~ file: gis-map.component.ts:1630 ~ this.map.on ~ tempcord:",
-            this.ServiceService.coordinateForwgs84
-          );
-          console.log(this.coordinates);
           // Convert each L.LatLng object to [x, y] point
           //this.convertLatLngToUTM(this.coordinates)
 
@@ -3758,22 +3781,13 @@ export class GisMapComponent implements AfterViewInit {
           const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
           utmCoordinates.push(utmCoordinates[0]);
           this.utmCoordinates = utmCoordinates;
-          let isNorthernHemisphere: any = "N";
-          const utmToCoor = this.utmCoordinates.map((row) =>
-            this.conveUTMToLatLngWrite(
-              row.northing,
-              row.easting,
-              37,
-              isNorthernHemisphere
-            )
-          );
+
+          this.ServiceService.coordinate = coordinates;
           console.log(
             "🚀 ~ file: gis-map.component.ts:1569 ~ this.map.on ~ utmToCoor:",
-            utmToCoor
+            this.ServiceService.coordinate
           );
 
-          const utmCoordinateslast = this.convertCoordinatesToUTM(utmToCoor);
-          //this.utmCoordinates = utmCoordinateslast;
           console.log(
             "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
             this.utmCoordinates
@@ -3808,10 +3822,23 @@ export class GisMapComponent implements AfterViewInit {
         }
       }
     }
-    const utmCoordinates = this.convertCoordinatesToUTM(latLngs);
+    let utmCoordinates = this.convertCoordinatesToUTM(latLngs);
+    const subtract_northing = 207.34388375;
+    const subtract_easting = 95.4782061405;
+
+    utmCoordinates = utmCoordinates.map((item) => {
+      item.northing -= subtract_northing;
+      item.easting -= subtract_easting;
+      return item; // Return the modified item
+    });
     this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(latLngs);
     utmCoordinates.push(utmCoordinates[0]);
     this.ServiceService.coordinate = utmCoordinates;
+    console.log(
+      "🚀 ~ processImportedShapesXLSX ~ ServiceService:",
+      this.ServiceService.coordinate
+    );
+
     console.log(utmCoordinates);
     const area = this.calculateUTMPolygonArea(utmCoordinates);
     this.ServiceService.Totalarea = parseInt(area.toFixed(2));
@@ -4154,20 +4181,23 @@ export class GisMapComponent implements AfterViewInit {
     window.URL.revokeObjectURL(url);
   }
   convertToCSVondrwaing(data: any[]): void {
+    const utmCoordinateslast = data;
     console.log(
-      "🚀 ~ file: gis-map.component.ts:3111 ~ convertToCSV ~ data:",
-      data
+      "🚀 ~ convertToCSVondrwaing ~ utmCoordinateslast:",
+      utmCoordinateslast
     );
+    const subtract_northing = 207.34388375;
+    const subtract_easting = 95.4782061405;
 
-    let utmCoordinateslast = data;
-    const subtract_northing = 0;
-    const subtract_easting = 0;
+    for (let i = 0; i < utmCoordinateslast.length; i++) {
+      utmCoordinateslast[i].northing -= subtract_northing;
+      utmCoordinateslast[i].easting -= subtract_easting; // Corrected subtraction
+    }
 
-    utmCoordinateslast = utmCoordinateslast.map((item) => {
-      item.northing += subtract_northing;
-      item.easting += subtract_easting;
-      return item; // Return the modified item
-    });
+    console.log(
+      "🚀 ~ utmCoordinateslast=utmCoordinateslast.map ~ utmCoordinateslast:",
+      utmCoordinateslast
+    );
 
     // Add constant values
     const zone = 37;
@@ -4558,8 +4588,8 @@ export class GisMapComponent implements AfterViewInit {
     //   lng: latLngCoords.longitude,
     // };
     return {
-      lat: latLngCoords.latitude,
-      lng: latLngCoords.longitude,
+      lat: latLngCoords.latitude + 0.001876,
+      lng: latLngCoords.longitude + 0.0008668,
     };
   }
   conveUTMToLatLngWritexlsxexport(

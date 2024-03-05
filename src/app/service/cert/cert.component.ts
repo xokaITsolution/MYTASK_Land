@@ -37,6 +37,8 @@ export class CertComponent implements OnChanges {
   @Input() Isfrompprinttask;
   DeedTable;
   BaseTable;
+  maxheight: string = "500px";
+  maxWidth: string = "1400px";
   // SelectedDeed;
   displayGIS;
   disableTab = false;
@@ -72,6 +74,7 @@ export class CertComponent implements OnChanges {
   isnews: boolean;
   ceertform: any;
   PropertyLists: any;
+  isMaximized: boolean;
 
   constructor(
     private serviceService: ServiceService,
@@ -198,6 +201,16 @@ export class CertComponent implements OnChanges {
     }
 
     //this.getDeed();
+  }
+  openFullModal() {
+    this.isMaximized = true;
+    this.maxWidth = "2000px"; // Set the max width for full modal
+    this.maxheight = "800px";
+  }
+
+  openMiniModal() {
+    this.isMaximized = false;
+    this.maxWidth = "1600px"; // Set the max width for mini modal
   }
   toggleBlink() {
     var button = document.getElementById("myButton");

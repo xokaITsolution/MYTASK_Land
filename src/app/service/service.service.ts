@@ -1007,7 +1007,7 @@ export class ServiceService {
     return this.http.get(
       this.PlotLandUseLookUP +
         "?" +
-        "sortOrder=test&currentFilter&searchString&pageIndex&pageSize"
+        "sortOrder=test&currentFilter&searchString&pageIndex&pageSize=70"
     );
   }
 
