@@ -220,6 +220,8 @@ export class ServiceComponent implements OnInit {
   eid: any;
   SuperviedUsers: any;
   isSuperviedUsers: boolean;
+  backbuttonviable: boolean;
+
   constructor(
     private modalService: BsModalService,
     private activatedRoute: ActivatedRoute,
@@ -634,6 +636,20 @@ export class ServiceComponent implements OnInit {
       this.getAll(this.AppNo);
       this.tskTyp = params["tskTyp"];
       this.tskID = params["tskID"];
+      let filterpropertyid = this.serviceService.propertytaskslist.filter(
+        (x: any) => x.id.toLocaleLowerCase() === this.tskID
+      );
+      console.log(
+        "🚀 ~ this.activatedRoute.params.subscribe ~ filterpropertyid:",
+        filterpropertyid,
+        this.serviceService.propertytaskslist,
+        this.tskID
+      );
+      if (filterpropertyid.length > 0) {
+        this.backbuttonviable = true;
+      } else {
+        this.backbuttonviable = false;
+      }
       if (this.tskTyp == "c800fb16-f961-e111-95d6-00e04c05559b") {
         this.getTaskRule(params["tskID"]);
       }
@@ -2941,6 +2957,10 @@ export class ServiceComponent implements OnInit {
       .GetApplicationNumberByUserInfo(AppNo)
       .subscribe((licenceService) => {
         this.custmerInformation = licenceService[0];
+        console.log(
+          "🚀 ~ .subscribe ~ custmerInformation:",
+          this.custmerInformation
+        );
       });
     this.getuserName(this.AppNo);
     console.log("appppppp", AppNo);

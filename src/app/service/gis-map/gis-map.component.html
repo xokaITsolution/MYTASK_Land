@@ -170,11 +170,11 @@
         <button type="button" class="btn btn-danger mb-2" *ngIf="!disable" (click)="removeShape()">
           Remove Shape/Point
         </button>
-        <button type="button" class="btn btn-info mb-2" *ngIf="!disable && ondataloaded" (click)="convertToCSVondrwaing(utmCoordinatesforallexcel)">
+        <button type="button" class="btn btn-info mb-2" *ngIf="!disable && ondataloaded && ServiceService.check" (click)="convertToCSVondrwaing(utmCoordinatesforallexcel)">
           Convert to Excel
         </button>
-        <!-- <button type="button" class="btn btn-info mb-2" *ngIf="!disable && ondrawingshape" (click)="convertToCSV(utmCoordinatesforallexcel)">
-          Convert to excel
+        <!-- <button type="button" class="btn btn-info mb-2"  (click)="parsePolygons()">
+          Convert to multipoint
         </button> -->
 
       <button type="button" class="btn btn-info mb-2"   (click)="getCSVTemplate()">Download CSV Template</button>

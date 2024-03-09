@@ -45,6 +45,7 @@ export const environment = {
   groupName: window["groupName"],
   geoser: window["geoser"],
   multipleplotcanbeadd: window["multipleplotcanbeadd"],
+  propertytasks: window["propertytasks"],
   folderpath: window["folderpath"],
   subcity: window["subcity"],
 };

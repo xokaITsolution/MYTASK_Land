@@ -381,6 +381,63 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     return multiPointString;
   }
 
+  convertToMultiPointsmorethanone(
+    pointsArray: Array<Array<Array<string>>>
+  ): string {
+    console.log("🚀 ~ PlotManagmentComponent ~ pointsArray:", pointsArray);
+    let multiPointString = "";
+
+    pointsArray.forEach((polygonPoints) => {
+      const multiPointArray = polygonPoints
+        .map((point) => `${point[1]} ${point[0]}`)
+        .join(", ");
+      multiPointString += `POLYGON((${multiPointArray})), `;
+    });
+    console.log(
+      "🚀 ~ PlotManagmentComponent ~ pointsArray.forEach ~ pointsArray:",
+      pointsArray
+    );
+
+    // Remove the trailing comma and space
+    multiPointString = multiPointString.slice(0, -2);
+    console.log(
+      "🚀 ~ convertToMultiPoints ~ multiPointString:",
+      multiPointString
+    );
+
+    return multiPointString;
+  }
+  convertToMultiPointgeozone(points: Array<Array<Array<string>>>): string {
+    const polygons = points.map((polygonPoints) => {
+      // Check if the input points form a valid polygon
+      // if (
+      //   polygonPoints.length < 3 || // At least three points are required for a polygon
+      //   polygonPoints[0][3] !== polygonPoints[polygonPoints.length - 1][3] || // Check if the first and last points are the same
+      //   polygonPoints[0][2] !== polygonPoints[polygonPoints.length - 1][2]
+      // ) {
+      //   // Indicate an invalid polygon
+      //   return "Invalid polygon: The first and last points must be the same.";
+      // }
+
+      // // Remove the last point if it's identical to the first point
+      // if (
+      //   polygonPoints.length > 1 &&
+      //   polygonPoints[0][0] === polygonPoints[polygonPoints.length - 2][0] &&
+      //   polygonPoints[0][1] === polygonPoints[polygonPoints.length - 2][1]
+      // ) {
+      //   polygonPoints.pop();
+      // }
+
+      const multiPointArray = polygonPoints
+        .map((point) => `${point[1]} ${point[0]} ${point[2]} ${point[3]}`)
+        .join(", ");
+
+      return `POLYGON((${multiPointArray}))`;
+    });
+
+    return polygons.join(", ");
+  }
+
   onConfirm(): void {
     // Handle confirm action
     console.log("Dialog confirmed");
@@ -595,8 +652,10 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   updateplotloc() {
     console.log("coordinatcoordinat", this.serviceService.coordinate);
     if (this.serviceService.coordinate) {
-      let coordinate = this.convertToMultiPoint(this.serviceService.coordinate);
-      let coordinate2 = this.convertToMultiPoints(
+      let coordinate = this.convertToMultiPointgeozone(
+        this.serviceService.coordinate
+      );
+      let coordinate2 = this.convertToMultiPointsmorethanone(
         this.serviceService.coordinate
       );
       this.platformLocation.geo = coordinate2;
@@ -656,12 +715,12 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       // this.platformLocation.geowithzone=coordinate
 
       this.serviceService.getUserRole().subscribe((response: any) => {
-        let coordinates = this.convertToMultiPoints(
+        let coordinates = this.convertToMultiPointsmorethanone(
           this.serviceService.coordinate
         );
         console.log("coordinatecoordinate", coordinates);
         this.platformLocation.geo = coordinates;
-        let coordinate = this.convertToMultiPoint(
+        let coordinate = this.convertToMultiPointgeozone(
           this.serviceService.coordinate
         );
         this.platformLocation.geowithzone = coordinate;
@@ -859,13 +918,14 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
               "🚀 ~ file: plot.component.ts:324 ~ PlotComponent ~ this.serviceService.getcaseWorkerbyApplication ~ response:",
               res
             );
-            let coordinates = this.convertToMultiPoints(cordinatetemp);
+            let coordinates =
+              this.convertToMultiPointsmorethanone(cordinatetemp);
 
             console.log("coordinatecoordinate", coordinates);
             this.platformLocation.geo = coordinates;
             // this.platformLocation.geoForwgs84 =
             //   this.serviceService.coordinateForwgs84;
-            let coordinate = this.convertToMultiPoint(cordinatetemp);
+            let coordinate = this.convertToMultiPointgeozone(cordinatetemp);
             this.platformLocation.geowithzone = coordinate;
             console.log("responseresponseresponse", response);
 

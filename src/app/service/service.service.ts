@@ -211,7 +211,7 @@ export class ServiceService {
   Parent_Customer_ID: any;
   showcustomerr: boolean;
   taskid: string;
-  coordinate: any;
+  coordinate: any[] = [];
   geometry: any[];
   files: TreeNode[] = [];
   disablebutton: boolean = false;
@@ -273,6 +273,7 @@ export class ServiceService {
   public PropertyManagmentUrlapi =
     environment.rootPathApi + "Property_Registration/procProperty_Registration"; // URL to web api
   multipleplotcanbeadd = environment.multipleplotcanbeadd;
+  propertytaskslist = environment.propertytasks;
   Add(data) {
     return this.http.post<any[]>(this.PropertyManagmentUrlapi, data);
   }
