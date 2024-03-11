@@ -1,8 +1,7 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { LoadingBarService } from "./loading-bar/loading-bar.service";
-import { Location } from '@angular/common';
-
+import { Location } from "@angular/common";
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
@@ -31,16 +30,25 @@ export class AppComponent {
       translate.setDefaultLang("en");
     }
   }
+  // @HostListener("window:popstate", ["$event"])
+  // onPopState(event) {
+  //   history.pushState(null, null, window.location.href);
+  // }
+
+  @HostListener('window:popstate', ['$event'])
+  // onPopState(event?) {
+  //   this.location.forward();
+  // }
+  changlang(lang) {
+    console.log("lang", lang);
+    this.translate.use(lang);
+  }
   ngOnInit() {
     this.location.forward();
   }
 
-  @HostListener('window:popstate', ['$event'])
+  @HostListener("window:popstate", ["$event"])
   onPopState(event?) {
     this.location.forward();
-  }
-  changlang(lang) {
-    console.log("lang", lang);
-    this.translate.use(lang);
   }
 }

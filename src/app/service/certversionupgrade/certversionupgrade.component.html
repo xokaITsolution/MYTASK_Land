@@ -102,7 +102,7 @@
                     <th scope="col" translate>Title deed no</th>
                     <th scope="col" translate>Registration Date</th>
                     <th scope="col">
-                        <button type="button" class="btn btn-primary" (click)="addcerltter()" [disabled]="disable_new"
+                        <button type="button" class="btn btn-primary"  *ngIf="multipleplotcanbeadd" (click)="addcerltter()" [disabled]="disable_new"
                             translate>Add New</button>
                     </th>
                 </tr>
@@ -126,8 +126,8 @@
     </div>
     
     
-    
-    <form class="form-row" #cerlettrform="ngForm" *ngIf="cerlettrform">
+    <!-- *ngIf="cerlettrform" -->
+    <form class="form-row" #cerlettrform="ngForm" *ngIf="certltrview && serviceService.isRecordDocumentationManager" > 
         <div class="col-md-6">
             <div class="form-group row col-12">
                 <label class="col-sm-4 col-form-label" translate>Document No</label>

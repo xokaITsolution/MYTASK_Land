@@ -70,7 +70,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   visible;
   visiblee;
   ngOnInit() {
-    this.getCustomerLookUP();
+    //this.getCustomerLookUP();
     this.routerService.params.subscribe((params) => {
       this.urlParams = params;
     });
@@ -428,12 +428,43 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
     }
 
     this.titleDeedRegistration = deed;
+    this.serviceService
+      .getcustomerbycusid(deed.transfer_From_Customer)
+      .subscribe((res: any) => {
+        const customerdata = res.procCustomers;
+        console.log(
+          "🚀 ~ TitleDeedRegistrationComponent ~ .subscribe ~ customerdata:",
+          customerdata
+        );
+        if (
+          parseInt(this.titleDeedRegistration.transfer_Type) == 2014 ||
+          parseInt(this.titleDeedRegistration.transfer_Type) == 2044 ||
+          parseInt(this.titleDeedRegistration.transfer_Type) == 2015
+        ) {
+          this.Isshow = true;
+        } else {
+          this.Isshow = false;
+        }
+
+        this.Transfer_From_CustomerName =
+          customerdata[0].applicant_First_Name_AM;
+      });
     this.Transfer_From_CustomerName = this.CustomerLookUP.filter(
       (x) => x.customer_ID == deed.transfer_From_Customer
     )[0].FullName_AM;
-    this.Transfer_To_CustomerName = this.CustomerLookUP.filter(
-      (x) => x.customer_ID == deed.transfer_To_Customer
-    )[0].FullName_AM;
+    this.serviceService
+      .getcustomerbycusid(deed.transfer_To_Customer)
+      .subscribe((res: any) => {
+        const customerdata = res.procCustomers;
+        console.log(
+          "🚀 ~ TitleDeedRegistrationComponent ~ .subscribe ~ customerdata:",
+          customerdata
+        );
+        this.Transfer_To_CustomerName = customerdata[0].applicant_First_Name_AM;
+      });
+    // this.Transfer_To_CustomerName = this.CustomerLookUP.filter(
+    //   (x) => x.customer_ID ==
+    // )[0].FullName_AM;
   }
 
   openModal(template: TemplateRef<any>) {

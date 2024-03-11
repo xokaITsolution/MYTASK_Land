@@ -173,7 +173,9 @@
                             <option>---select Service Name---</option>
                             <ng-container *ngFor="let Service of Service">
                               <option [value]="Service.service_code">
-                                {{language === 'amharic' ? Service.description_am : Service.description_en}}
+                  {{language === 'amharic' ? Service.Registration_code+Service.description_am :
+                  Service.Registration_code+Service.description_en}}
+                  
                               </option>
                             </ng-container>
                           </select>

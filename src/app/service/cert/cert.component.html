@@ -79,7 +79,7 @@
             </td> -->
             <td class="fit-content-cell">
               <button type="button" class="btn btn-primary" (click)="Selectversion(version)" translate>select</button>
-            </td><td  *ngIf="isnews">
+            </td><td  *ngIf="isnews" >
                 <button *ngIf="isnews && !disable" type="button" [ngClass]="{'blinking': isnew}" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
                 (click)="loading2(version);ismodaEnable=true;isnew=false">Edit</button>
             </td>
@@ -297,15 +297,16 @@
 
 
 <p-dialog [(visible)]="ismodaEnable" 
-  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
+  [responsive]="true" [width]="900" [minY]="170" [maximizable]="true"
  [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                          'max-height': '80vh','min-height':'700px'}">
-  <div class="container">
 
-    <iframe  class="responsive-iframe" [src]="ceertform" ></iframe>
-  </div>
+
+    <iframe  class="ng-template" width="100%" height="800px" [src]="ceertform" ></iframe>
+
   <p-footer>
-    <button type="button" (click)="ismodaEnable=false;" class="btn btn-light" translate>Close</button>
+    <button type="button"  (click)="ismodaEnable=false;" class="btn btn-danger" translate>Close</button>
   
   </p-footer>
 </p-dialog>
+

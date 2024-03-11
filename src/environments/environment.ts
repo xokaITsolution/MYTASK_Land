@@ -14,7 +14,7 @@ export const environment = {
   iconpath: window["iconpath"],
   formPath: window["formPath"],
   city: window["city"],
-  username: "AR_Record_mgr",
+  username: "city_mgr",
   appbase: window["_app_base"],
   location: window["locations"],
   //username: "city_mgr",
@@ -45,6 +45,7 @@ export const environment = {
   groupName: window["groupName"],
   geoser: window["geoser"],
   multipleplotcanbeadd: window["multipleplotcanbeadd"],
+  propertytasks: window["propertytasks"],
   folderpath: window["folderpath"],
   subcity: window["subcity"],
 };

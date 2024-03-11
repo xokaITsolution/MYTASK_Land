@@ -153,23 +153,7 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
       </div>
     </div>
 
-        <div class="form-group row col-md-7" *ngIf="language !== 'amharic'">
-          <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>
-          <div class="col-sm-9">
-            <input type="date" class="form-control" [disabled]="disable" [(ngModel)]="titleDeedRegistration.date"
-              name="RegisterationDate" id="RegisterationDate" [placeholder]="'Registeration date' | translate"
-              #RegisterationDate="ngModel" [ngClass]="{ 'is-invalid': RegisterationDate.invalid }" required>
-          </div>
-        </div>
-        <div class="form-group row col-md-7" *ngIf="language === 'amharic'">
-          <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>
-          <div class="col-sm-9">
-            <input type="text" readonly class="form-control" [disabled]="disable" [(ngModel)]="titleDeedRegistration.date"
-              name="RegisterationDateam" id="RegisterationDateam" [placeholder]="'Registeration date' | translate"
-              #RegisterationDateam="ngModel" [ngClass]="{ 'is-invalid': RegisterationDateam.invalid }" required
-              appDatepickerEthiopian (dateEmitter)="selectedDateTime($event,1)">
-          </div>
-        </div>
+      
           <div class="form-group row col-md-7" *ngIf="Isshow">
             <label for="Transferd_Value" class="col-sm-3 col-form-label" translate>Transferd Value</label>
             <div class="col-sm-9">
@@ -250,6 +234,23 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
         </select>
       </div>
     </div>
+      <div class="form-group row col-md-7" *ngIf="language !== 'amharic'">
+        <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>
+        <div class="col-sm-9">
+          <input type="date" class="form-control" [disabled]="disable" [(ngModel)]="titleDeedRegistration.date"
+            name="RegisterationDate" id="RegisterationDate" [placeholder]="'Registeration date' | translate"
+            #RegisterationDate="ngModel" [ngClass]="{ 'is-invalid': RegisterationDate.invalid }" required>
+        </div>
+      </div>
+      <div class="form-group row col-md-7" *ngIf="language === 'amharic'">
+        <label for="RegisterationDate" class="col-sm-3 col-form-label" translate>Registration Date</label>
+        <div class="col-sm-9">
+          <input type="text" readonly class="form-control" [disabled]="disable" [(ngModel)]="titleDeedRegistration.date"
+            name="RegisterationDateam" id="RegisterationDateam" [placeholder]="'Registeration date' | translate"
+            #RegisterationDateam="ngModel" [ngClass]="{ 'is-invalid': RegisterationDateam.invalid }" required
+            appDatepickerEthiopian (dateEmitter)="selectedDateTime($event,1)">
+        </div>
+      </div>
     <div class="form-group row col-md-7">
       <label for="IsActive" class="col-sm-3 col-form-label" translate>Is Active</label>
       <div class="col-sm-9">

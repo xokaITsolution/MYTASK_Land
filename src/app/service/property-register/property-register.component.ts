@@ -93,11 +93,14 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   changingValue: Subject<any> = new Subject();
 
   tellChild(aa) {
-    this.convertedCoordinates.push(aa);
-    this.geo = this.convertedCoordinates;
-    console.log("value is changingg", this.geo);
-    this.serviceService.check = false;
-    this.changingValue.next(aa);
+    console.log("🚀 ~ PropertyRegisterComponent ~ tellChild ~ aa:", aa);
+    if (aa[0].length > 1) {
+      this.convertedCoordinates.push(aa);
+      this.geo = this.convertedCoordinates;
+      console.log("value is changingg", this.geo);
+      this.serviceService.check = false;
+      this.changingValue.next(aa);
+    }
   }
   combineDeeplyNestedArray(arr: any[]) {
     const mappedArray = arr.map((innerArray) => {
@@ -939,10 +942,16 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       this.plotloc = response.procPlot_Locations;
       console.log("plotlocccc:", this.plotloc);
       if (this.plotloc.length > 0) {
-        this.convertPolygonCoordinates(
-          this.plotloc[0].geowithzone,
-          this.plotloc[0]
+        let allgeowithzone = this.parsePolygons(this.plotloc[0].geowithzone);
+        console.log(
+          "🚀 ~ this.proploc.forEach ~ allgeowithzone:",
+          allgeowithzone
         );
+        allgeowithzone.forEach((each) => {
+          console.log("🚀 ~ this.proploc.forEach ~ each:", each);
+          this.convertPolygonCoordinates(each, this.plotloc[0]);
+        });
+
         if (this.plotloc[0].geoForwgs84 != null) {
           this.convertPolygonCoordinates(
             this.plotloc[0].geoForwgs84,
@@ -982,10 +991,17 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                       this.serviceService.ispropoertylocation = true;
 
                       this.isproplocnew = true;
-                      this.convertPolygonCoordinates(
-                        elementeach.geowithzone,
-                        element
+                      let allgeowithzone = this.parsePolygons(
+                        elementeach.geowithzone
                       );
+                      console.log(
+                        "🚀 ~ this.proploc.forEach ~ allgeowithzone:",
+                        allgeowithzone
+                      );
+                      allgeowithzone.forEach((each) => {
+                        console.log("🚀 ~ this.proploc.forEach ~ each:", each);
+                        this.convertPolygonCoordinates(each, element);
+                      });
                       return;
                     } else {
                       this.propformLocation = new PropformLocation();
@@ -997,10 +1013,22 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                       this.serviceService.ispropoertylocation = true;
 
                       this.isproplocnew = false;
-                      this.convertPolygonCoordinates(
-                        elementeach.geowithzone,
-                        element
+
+                      let allgeowithzone = this.parsePolygons(
+                        elementeach.geowithzone
                       );
+                      console.log(
+                        "🚀 ~ this.proploc.forEach ~ allgeowithzone:",
+                        allgeowithzone
+                      );
+                      allgeowithzone.forEach((each) => {
+                        console.log("🚀 ~ this.proploc.forEach ~ each:", each);
+                        this.convertPolygonCoordinates(each, element);
+                      });
+                      // this.convertPolygonCoordinates(
+                      //   elementeach.geowithzone,
+                      //   element
+                      // );
                     }
                   });
                 } else {
@@ -1018,7 +1046,13 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       }
     });
   }
-
+  parsePolygons(polygonsString: any): any[] {
+    const polygons = polygonsString
+      .split("),")
+      .map((polygon) => `${polygon.trim()})`);
+    console.log("🚀 ~ parsePolygons ~ polygons:", polygons);
+    return polygons;
+  }
   // convertToMultiPoint(
   //   points: {
   //     easting: number;
@@ -1101,8 +1135,50 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       return multiPoint;
     }
   }
-  // convertPolygonCoordinates(polygonString: string, data): any[] {
+
+  convertToMultiPointsmorethanone(
+    pointsArray: Array<Array<Array<string>>>
+  ): string {
+    let multiPointString = "";
+
+    pointsArray.forEach((polygonPoints) => {
+      if (polygonPoints.length > 1) {
+        const multiPointArray = polygonPoints
+          .map((point) => `${point[1]} ${point[0]}`)
+          .join(", ");
+        multiPointString += `POLYGON((${multiPointArray})), `;
+      }
+    });
+
+    // Remove the trailing comma and space
+    multiPointString = multiPointString.slice(0, -2);
+    console.log(
+      "🚀 ~ convertToMultiPoints ~ multiPointString:",
+      multiPointString
+    );
+
+    return multiPointString;
+  }
+  convertToMultiPointgeozone(points) {
+    const polygons = points.map((polygonPoints) => {
+      if (polygonPoints.length > 1) {
+        const multiPointArray = polygonPoints
+          .map((point) => `${point[1]} ${point[0]} ${point[2]} ${point[3]}`)
+          .join(", ");
+
+        return `POLYGON((${multiPointArray}))`;
+      }
+    });
+
+    // Filter out any undefined values and join the strings
+    return polygons.filter((polygon) => polygon).join(", ");
+  }
+  // convertPolygonCoordinatesingle(polygonString: string, data): any[] {
   //   const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
+  //   console.log(
+  //     "🚀 ~ convertPolygonCoordinatesingle ~ coordinates:",
+  //     coordinates
+  //   );
 
   //   const result = [];
 
@@ -1127,12 +1203,17 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   //   return result;
   // }
   convertPolygonCoordinates(polygonString: string, data): any[] {
+    console.log(
+      "🚀 ~ convertPolygonCoordinates ~ polygonString:",
+      polygonString
+    );
+
     const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
     console.log("🚀 ~ convertPolygonCoordinates ~ coordinates:", coordinates);
 
     const result = [];
 
-    if (coordinates) {
+    if (coordinates != null) {
       const uniqueCoordinates = new Set(); // Using a Set to store unique coordinates
       for (const coord of coordinates) {
         const [easting, northing, hemisphere, zone] = coord.split(" ");
@@ -1166,8 +1247,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
 
     console.log("result", result);
     console.log("isValidPolygon", isValidPolygon);
-
-    this.convertCoordinates(result, data);
+    if (result.length > 0) {
+      this.convertCoordinates(result, data);
+    }
 
     return isValidPolygon ? result : [];
   }
@@ -1211,8 +1293,10 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       this.selectedpro.property_ID
     );
     if (this.serviceService.coordinate) {
-      let coordinate = this.convertToMultiPoint(this.serviceService.coordinate);
-      let coordinate2 = this.convertToMultiPoints(
+      let coordinate = this.convertToMultiPointgeozone(
+        this.serviceService.coordinate
+      );
+      let coordinate2 = this.convertToMultiPointsmorethanone(
         this.serviceService.coordinate
       );
       this.propformLocation.geo = coordinate2;
@@ -1276,14 +1360,18 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       // this.propformLocation.geowithzone=coordinate
 
       this.serviceService.getUserRole().subscribe((response: any) => {
-        let coordinates = this.convertToMultiPoints(
+        let coordinates = this.convertToMultiPointsmorethanone(
           this.serviceService.coordinate
         );
 
         console.log("coordinatecoordinate", coordinates);
         this.propformLocation.geo = coordinates;
-        let coordinate = this.convertToMultiPoint(
+        let coordinate = this.convertToMultiPointgeozone(
           this.serviceService.coordinate
+        );
+        console.log(
+          "🚀 ~ this.serviceService.getUserRole ~ coordinate:",
+          coordinate
         );
         this.propformLocation.geowithzone = coordinate;
         this.propformLocation.geoForwgs84 =
@@ -1294,6 +1382,10 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         this.propformLocation.created_By = response[0].RoleId;
         this.propformLocation.created_By = response[0].RoleId;
         this.propformLocation.created_Date = new Date();
+        console.log(
+          "🚀 ~ this.serviceService.getUserRole ~ propformLocation:",
+          this.propformLocation
+        );
 
         this.serviceService.saveProploc(this.propformLocation).subscribe(
           (CustID) => {

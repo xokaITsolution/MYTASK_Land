@@ -59,6 +59,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
   Lease_Type_Lookup: any;
   plotIdselected: any;
   iseditablesize: boolean;
+  multipleplotcanbeadd: boolean = true;
   constructor(
     private ngxSmartModalService: NgxSmartModalService,
     private leaseOwnerShipService: LeaseOwnerShipService,
@@ -456,7 +457,24 @@ export class LeaseOwnerShipComponent implements OnChanges {
         this.serviceService.leaselist = this.tasks;
         if (this.tasks.length > 0) {
           this.serviceService.toMess = false;
-
+          if (this.serviceService.multipleplotcanbeadd) {
+            let filterservice = this.serviceService.multipleplotcanbeadd.filter(
+              (x) => x.id === this.serviceService.Service_ID
+            );
+            if (filterservice.length > 0) {
+              if (this.tasks.length > 0) {
+                this.multipleplotcanbeadd = true;
+              } else {
+                this.multipleplotcanbeadd = false;
+              }
+            } else {
+              if (this.tasks.length > 0) {
+                this.multipleplotcanbeadd = false;
+              } else {
+                this.multipleplotcanbeadd = true;
+              }
+            }
+          }
           if (parseInt(this.tasks[0].Type_ID) === 1) {
             this.islease = true;
             this.iislease = false;

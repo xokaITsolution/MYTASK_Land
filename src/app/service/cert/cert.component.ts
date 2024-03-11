@@ -37,6 +37,8 @@ export class CertComponent implements OnChanges {
   @Input() Isfrompprinttask;
   DeedTable;
   BaseTable;
+  maxheight: string = "500px";
+  maxWidth: string = "1400px";
   // SelectedDeed;
   displayGIS;
   disableTab = false;
@@ -72,6 +74,7 @@ export class CertComponent implements OnChanges {
   isnews: boolean;
   ceertform: any;
   PropertyLists: any;
+  isMaximized: boolean;
 
   constructor(
     private serviceService: ServiceService,
@@ -198,6 +201,16 @@ export class CertComponent implements OnChanges {
     }
 
     //this.getDeed();
+  }
+  openFullModal() {
+    this.isMaximized = true;
+    this.maxWidth = "2000px"; // Set the max width for full modal
+    this.maxheight = "800px";
+  }
+
+  openMiniModal() {
+    this.isMaximized = false;
+    this.maxWidth = "1600px"; // Set the max width for mini modal
   }
   toggleBlink() {
     var button = document.getElementById("myButton");
@@ -521,8 +534,23 @@ export class CertComponent implements OnChanges {
             this.disableTab = false;
             this.displayGIS = false;
             if (certver.is_Active) {
-              this.completed.emit();
-              this.serviceService.disablefins = false;
+              this.serviceService
+                .GetCertficate_ver_Validation(
+                  this.serviceService.LicenceserviceID,
+                  this.serviceService.Service_ID
+                )
+                .subscribe((message: any) => {
+                  if (message == 1) {
+                    this.serviceService.disablefins = false;
+
+                    this.completed.emit();
+                  } else {
+                    const toast = this.notificationsService.error(
+                      "Error",
+                      message
+                    );
+                  }
+                });
             } else {
               this.serviceService.disablefins = true;
             }
@@ -641,8 +669,25 @@ export class CertComponent implements OnChanges {
             console.log("img", img[0].certificate_Image);
             if (img[0].certificate_Image) {
               if (!this.Saved) {
-                this.completed.emit();
-                this.serviceService.disablefins = false;
+                // this.completed.emit();
+                // this.serviceService.disablefins = false;
+                this.serviceService
+                  .GetCertficate_ver_Validation(
+                    this.serviceService.LicenceserviceID,
+                    this.serviceService.Service_ID
+                  )
+                  .subscribe((message: any) => {
+                    if (message == 1) {
+                      this.serviceService.disablefins = false;
+
+                      this.completed.emit();
+                    } else {
+                      const toast = this.notificationsService.error(
+                        "Error",
+                        message
+                      );
+                    }
+                  });
                 this.Saved = true;
               }
               //this.serviceService.disablefins = false;

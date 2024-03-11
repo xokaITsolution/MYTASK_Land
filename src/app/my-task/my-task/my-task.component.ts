@@ -108,6 +108,10 @@ export class MyTaskComponent implements OnInit {
   IsLockedBy_OtherUser(task) {
     this.myTaskService.IsLockedBy_OtherUser(task.id).subscribe(
       (message) => {
+        console.log(
+          "🚀 ~ MyTaskComponent ~ IsLockedBy_OtherUser ~ message:",
+          message
+        );
         // if(task.tasks_id =="d553ccb8-e40d-4bee-9418-5754805609fd"){
         //   const warningMessage = "የሊዝ ወይም የነባር ይዞታ መመዝገቡን አረጋግጥ/Check lease or freehold record is active for this plot";
         //   const toastWarning = this.notificationsService.warn(
@@ -117,7 +121,15 @@ export class MyTaskComponent implements OnInit {
         // this.go(task);
         // }
         // else{
-        this.go(task);
+        if (message == false) {
+          this.go(task);
+        } else {
+          const toastWarning = this.notificationsService.error(
+            "Warning",
+            "this task already pick by other caseworker /ይህ ተግባር አስቀድሞ በሌላ ጉዳይ ሰራተኛ ይመርጣል"
+          );
+          return;
+        }
         //  }
       },
       (error) => {

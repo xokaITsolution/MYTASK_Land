@@ -105,6 +105,7 @@ export class CertversionupgradeComponent implements OnChanges {
   isNewformat: boolean = false;
   certltrview: boolean;
   printenable: boolean;
+  multipleplotcanbeadd: boolean = true;
   constructor(
     public serviceService: ServiceService,
     private ngxSmartModalService: NgxSmartModalService,
@@ -535,15 +536,37 @@ export class CertversionupgradeComponent implements OnChanges {
         this.CertificateVersion = CertificateVersion.procCertificate_Versions;
         var img = this.CertificateVersion.filter((x) => x.is_Active == true);
         if (img.length > 0) {
-          console.log("img", img[0].certificate_Image);
+          //console.log("img", img[0].certificate_Image);
+          this.getDocmentArcive();
           if (img[0].certificate_Image) {
             this.Selectedcert = certver;
             this.certverForm = true;
             this.disableTab = false;
             this.displayGIS = false;
             if (certver.is_Active) {
-              this.completed.emit();
-              this.serviceService.disablefins = false;
+              if (this.serviceService.isRecordDocumentationManager === true) {
+                //   this.completed.emit();
+                // this.serviceService.disablefins = false;
+                this.addcerltter();
+              } else {
+                this.serviceService
+                  .GetCertficate_ver_Validation(
+                    this.serviceService.LicenceserviceID,
+                    this.serviceService.Service_ID
+                  )
+                  .subscribe((message: any) => {
+                    if (message == 1) {
+                      this.serviceService.disablefins = false;
+
+                      this.completed.emit();
+                    } else {
+                      const toast = this.notificationsService.error(
+                        "Error",
+                        message
+                      );
+                    }
+                  });
+              }
             } else {
               this.serviceService.disablefins = true;
             }
@@ -554,17 +577,33 @@ export class CertversionupgradeComponent implements OnChanges {
         }
         if (this.serviceService.ishavetitleDeedRegistrationList) {
           this.isprintedtask = true;
-          this.completed.emit();
+          if (this.serviceService.isRecordDocumentationManager === false) {
+            this.serviceService
+              .GetCertficate_ver_Validation(
+                this.serviceService.LicenceserviceID,
+                this.serviceService.Service_ID
+              )
+              .subscribe((message: any) => {
+                if (message == 1) {
+                  this.completed.emit();
+                } else {
+                  const toast = this.notificationsService.error(
+                    "Error",
+                    message
+                  );
+                }
+              });
+          }
           //his.serviceService.disablefins = false;
         } else {
-          this.serviceService.disablefins = false;
+          //this.serviceService.disablefins = false;
         }
 
         console.log("SelectedcertSelectedcert", this.Selectedcert);
 
         this.Selectedcert = certver;
         this.certltrview = true;
-        this.getDocmentArcive();
+
         if (this.Selectedcert) {
           // this.yourQRCodeDatacert =
           //   environment.certReportPath + "/" + this.Selectedcert.title_Deed_No;
@@ -676,11 +715,25 @@ export class CertversionupgradeComponent implements OnChanges {
 
   EnableFins() {
     this.disableTab = true;
-    if (!this.Saved) {
-      this.completed.emit();
-      this.Saved = true;
-    }
-    this.serviceService.disablefins = false;
+    // if (!this.Saved) {
+    //   this.completed.emit();
+    //   this.Saved = true;
+    // }
+    // this.serviceService.disablefins = false;
+    this.serviceService
+      .GetCertficate_ver_Validation(
+        this.serviceService.LicenceserviceID,
+        this.serviceService.Service_ID
+      )
+      .subscribe((message: any) => {
+        if (message == 1) {
+          this.serviceService.disablefins = false;
+
+          this.completed.emit();
+        } else {
+          const toast = this.notificationsService.error("Error", message);
+        }
+      });
     this.certverForm = true;
     this.getCertificateVersion(this.SelectedBase);
   }
@@ -894,16 +947,49 @@ export class CertversionupgradeComponent implements OnChanges {
               (x) => x.title_Deed_No == this.SelectedBase.Title_Deed_No
             );
 
-            // if (this.cerlettrformList != undefined) {
-            //   if (this.language == "amharic") {
-            //     if ((this.cerlettrformList[0].Regstration_Date! = null)) {
-            //       this.cerlettrformList[0].Regstration_Date =
-            //         await this.getgregorianToEthiopianDate(
-            //           this.cerlettrformList[0].Regstration_Date
-            //         );
-            //     }
-            //   }
-            // }
+            if (this.cerlettrformList != undefined) {
+              // if (this.language == "amharic") {
+              //   if ((this.cerlettrformList[0].Regstration_Date! = null)) {
+              //     this.cerlettrformList[0].Regstration_Date =
+              //       await this.getgregorianToEthiopianDate(
+              //         this.cerlettrformList[0].Regstration_Date
+              //       );
+              //   }
+              //}
+              if (this.cerlettrformList.length > 0) {
+                this.selectcerltter(this.cerlettrformList[0]);
+                this.serviceService
+                  .GetCertficate_ver_Validation(
+                    this.serviceService.LicenceserviceID,
+                    this.serviceService.Service_ID
+                  )
+                  .subscribe((message: any) => {
+                    if (message == 1) {
+                      this.serviceService.disablefins = false;
+
+                      this.completed.emit();
+                    } else {
+                      const toast = this.notificationsService.error(
+                        "Error",
+                        message
+                      );
+                    }
+                  });
+              }
+            }
+            if (this.PlotManagementListfinal.length > 0) {
+              if (this.serviceService.multipleplotcanbeadd) {
+                let filterservice =
+                  this.serviceService.multipleplotcanbeadd.filter(
+                    (x) => x.id === this.serviceService.Service_ID
+                  );
+                if (filterservice.length > 0) {
+                  this.multipleplotcanbeadd = true;
+                } else {
+                  this.multipleplotcanbeadd = false;
+                }
+              }
+            }
 
             if (this.cerlettrformList.length > 0) {
               this.disable_new = true;
@@ -936,9 +1022,21 @@ export class CertversionupgradeComponent implements OnChanges {
     this.serviceService.UpdateDocmentArcive(this.cerltter).subscribe(
       async (message) => {
         console.log("message", message);
-        this.serviceService.disablefins = false;
+        this.serviceService
+          .GetCertficate_ver_Validation(
+            this.serviceService.LicenceserviceID,
+            this.serviceService.Service_ID
+          )
+          .subscribe((message: any) => {
+            if (message == 1) {
+              this.serviceService.disablefins = false;
+
+              this.completed.emit();
+            } else {
+              const toast = this.notificationsService.error("Error", message);
+            }
+          });
         if (!this.Saved) {
-          this.completed.emit();
           this.Saved = true;
         }
         if (this.language == "amharic") {
@@ -988,9 +1086,21 @@ export class CertversionupgradeComponent implements OnChanges {
     this.serviceService.CreateDocmentArcive(this.cerltter).subscribe(
       async (message) => {
         console.log("message", message);
-        this.serviceService.disablefins = false;
+        this.serviceService
+          .GetCertficate_ver_Validation(
+            this.serviceService.LicenceserviceID,
+            this.serviceService.Service_ID
+          )
+          .subscribe((message: any) => {
+            if (message == 1) {
+              this.serviceService.disablefins = false;
+
+              this.completed.emit();
+            } else {
+              const toast = this.notificationsService.error("Error", message);
+            }
+          });
         if (!this.Saved) {
-          this.completed.emit();
           this.Saved = true;
         }
         const toast = this.notificationsService.success("Sucess");
@@ -1040,7 +1150,7 @@ export class CertversionupgradeComponent implements OnChanges {
     this.isnew = false;
     this.cerlettrform = true;
     this.cerltter = cerltter;
-
+    this.highlighted = cerltter;
     if (this.cerltter.regstration_Date) {
       if (this.language == "amharic") {
         this.cerltter.regstration_Date = await this.getgregorianToEthiopianDate(

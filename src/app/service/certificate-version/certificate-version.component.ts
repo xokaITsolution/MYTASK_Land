@@ -120,9 +120,21 @@ export class CertificateVersionComponent implements OnChanges {
         (certificateVersion) => {
           console.log("certificateVersion", certificateVersion);
           const toast = this.notificationsService.success("Sucess edited ");
-          this.serviceService.disablefins = false;
+          this.serviceService
+            .GetCertficate_ver_Validation(
+              this.serviceService.LicenceserviceID,
+              this.serviceService.Service_ID
+            )
+            .subscribe((message: any) => {
+              if (message == 1) {
+                this.serviceService.disablefins = false;
 
-          this.completed.emit();
+                this.completed.emit();
+              } else {
+                const toast = this.notificationsService.error("Error", message);
+              }
+            });
+
           if (!this.Saved) {
             this.Saved = true;
           }
@@ -156,7 +168,20 @@ export class CertificateVersionComponent implements OnChanges {
           this.CertComponent.disableTab = true;
           const toast = this.notificationsService.success("Sucess saved");
           //this.serviceService.disablefins = false;
-          this.completed.emit();
+          this.serviceService
+            .GetCertficate_ver_Validation(
+              this.serviceService.LicenceserviceID,
+              this.serviceService.Service_ID
+            )
+            .subscribe((message: any) => {
+              if (message == 1) {
+                // this.serviceService.disablefins = false;
+
+                this.completed.emit();
+              } else {
+                const toast = this.notificationsService.error("Error", message);
+              }
+            });
 
           if (!this.Saved) {
             this.Saved = true;

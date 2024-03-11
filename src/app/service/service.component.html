@@ -49,8 +49,9 @@
             <tr *ngIf="custmerInformation" >
               <th translate>Applicant_First_Name_AM</th>
               <th translate>Applicant_Middle_Name_AM</th>
+              <th translate>ID</th>
               <th translate>Wereda_ID</th>
-              <th translate>TIN</th>
+              <!-- <th translate>TIN</th> -->
               <th translate>Email</th>
               <th translate>QueueNo</th>
              
@@ -58,8 +59,9 @@
             <tr *ngIf="custmerInformation">
               <td >{{ custmerInformation.applicant_First_Name_AM }}</td>
               <td >{{ custmerInformation.applicant_Middle_Name_AM }}</td>
-              <td >{{ custmerInformation.wereda_ID }}</td>
               <td >{{ custmerInformation.tin }}</td>
+              <td >{{ custmerInformation.wereda_ID }}</td>
+              <!-- <td >{{ custmerInformation.tin }}</td> -->
               <td >{{ custmerInformation.email }}</td>
               <td >{{ custmerInformation.queueNo }}</td>
             </tr>
@@ -284,9 +286,9 @@
     <div class="btn-group">
       <!-- <button class="btn btn-primary mr-2" *ngIf="!hideit"  type="button" (click)="showdialogg()" translate>Not Complete</button> -->
 
- <!-- <button *ngIf="!hideit" type="button" class="btn btn-primary mr-2" (click)="Back()" translate>Back</button> -->
+ <button *ngIf="backbuttonviable" type="button" class="btn btn-primary mr-2" (click)="Back()" translate>Back</button>
    <button type="button" class="btn btn-primary mr-2" (click)="openModal(template)" translate>Review</button>
-   <button type="button" class="btn btn-primary mr-2" *ngIf="isSuperviedUsers" (click)="killtodo()" translate>Kill</button>
+   <!-- <button type="button" class="btn btn-primary mr-2" *ngIf="isSuperviedUsers" (click)="killtodo()" translate>Kill</button> -->
    <button type="button" class="btn btn-primary mr-2" *ngIf="isSuperviedUsers" (click)="Reopentodo()" translate>Reopen</button>
 
     <!-- [disabled]="disablefins" -->

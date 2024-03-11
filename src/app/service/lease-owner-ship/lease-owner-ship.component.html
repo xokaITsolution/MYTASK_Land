@@ -122,7 +122,7 @@
           [(ngModel)]="serviceService.leaseOwnerShip.Current_lease_bid_price" #Current_lease_bid_price="ngModel"
           name="Current_lease_bid_price" id="Current_lease_bid_price"
           [placeholder]="'Current lease bid price' | translate"
-          [ngClass]="{ 'is-invalid': Current_lease_bid_price.invalid }" min="0" [required]="serviceService.serviceisundoumneted">
+          [ngClass]="{ 'is-invalid': Current_lease_bid_price.invalid }" min="0" >
       </div>
     </div>
     <div class="form-group row col-md-6" *ngIf="islease">
@@ -132,7 +132,8 @@
           [(ngModel)]="serviceService.leaseOwnerShip.Remaining_lease_payment" #Remaining_lease_payment="ngModel"
           name="Remaining_lease_payment" id="Remaining_lease_payment"
           [placeholder]="'Current lease bid price' | translate"
-          [ngClass]="{ 'is-invalid': Remaining_lease_payment.invalid }" min="0" [required]="serviceService.serviceisundoumneted">
+          [ngClass]="{ 'is-invalid': Remaining_lease_payment.invalid }" min="0" >
+          <!-- [required]="serviceService.serviceisundoumneted" -->
       </div>
     </div>
     <div class="form-group row col-md-6">
@@ -204,11 +205,11 @@
       <th scope="col" translate>Plot ID</th>
       <th scope="col" translate>Type</th>
       <th scope="col" translate>Lease Contract No</th>
-      <th scope="col" translate>Lease Price</th>
+      <th scope="col" translate>Lease status</th>
       <!--<th scope="col" translate>free hold</th>-->
       <th scope="col" translate>lease hold area</th>
       <th scope="col">
-        <button type="button" class="btn btn-primary" (click)="addLease()" *ngIf="!disable" translate>Add New</button>
+        <button type="button" class="btn btn-primary" (click)="addLease()" *ngIf="!disable && multipleplotcanbeadd" translate>Add New</button>
       </th>
     </tr>
   </ng-template>

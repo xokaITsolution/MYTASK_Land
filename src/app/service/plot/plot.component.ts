@@ -50,7 +50,7 @@ export class PlotComponent implements OnChanges {
   OnParcle = -1;
   plotId = null;
   Saved = false;
-  ischeckPlotaev: boolean = false;
+  ischeckPlotaev: boolean = true;
   language: string;
   plotloc: any;
   public platformLocation: PlatformLocation;
@@ -76,6 +76,7 @@ export class PlotComponent implements OnChanges {
     center: [0, 0], // Initial center coordinates
     zoom: 10, // Initial zoom level
   };
+  checkAPIstatus: boolean;
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -157,6 +158,7 @@ export class PlotComponent implements OnChanges {
   tellChild(aa) {
     this.convertedCoordinates.push(aa);
     this.geo = this.convertedCoordinates;
+
     console.log("value is changingg", this.geo);
     this.serviceService.check = false;
     this.changingValue.next(aa);
@@ -452,7 +454,19 @@ export class PlotComponent implements OnChanges {
     }
 
     const arrayOfArrays = [];
-
+    const coordinatesarea =
+      this.convertCoordinatesformatd(convertedCoordinates);
+    console.log(
+      "🚀 ~ PlotComponent ~ tellChild ~ coordinatesarea:",
+      coordinatesarea
+    );
+    const area = this.calculateUTMPolygonArea(coordinatesarea);
+    this.serviceService.Totalarea = parseInt(area.toFixed(2));
+    console.log(
+      "🚀 ~ processcoordinatesForPlot ~ ServiceService:",
+      this.serviceService.Totalarea
+    );
+    localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
     arrayOfArrays.push(convertedCoordinates);
     console.log("convertedCconvertedCoordinatesoordinates", arrayOfArrays);
     this.tellChild(arrayOfArrays);
@@ -473,8 +487,10 @@ export class PlotComponent implements OnChanges {
   updateplotloc() {
     console.log("coordinatcoordinat", this.serviceService.coordinate);
     if (this.serviceService.coordinate) {
-      let coordinate = this.convertToMultiPoint(this.serviceService.coordinate);
-      let coordinate2 = this.convertToMultiPoints(
+      let coordinate = this.convertToMultiPointgeozone(
+        this.serviceService.coordinate
+      );
+      let coordinate2 = this.convertToMultiPointsmorethanone(
         this.serviceService.coordinate
       );
       this.platformLocation.geo = coordinate2;
@@ -664,12 +680,12 @@ export class PlotComponent implements OnChanges {
               }
             });
           });
-        let coordinates = this.convertToMultiPoints(
+        let coordinates = this.convertToMultiPointsmorethanone(
           this.serviceService.coordinate
         );
         console.log("coordinatecoordinate", coordinates);
         this.platformLocation.geo = coordinates;
-        let coordinate = this.convertToMultiPoint(
+        let coordinate = this.convertToMultiPointgeozone(
           this.serviceService.coordinate
         );
         this.platformLocation.geowithzone = coordinate;
@@ -789,6 +805,57 @@ export class PlotComponent implements OnChanges {
       )}`;
       return multiPoint;
     }
+  }
+  convertToMultiPointsmorethanone(
+    pointsArray: Array<Array<Array<string>>>
+  ): string {
+    let multiPointString = "";
+
+    pointsArray.forEach((polygonPoints) => {
+      const multiPointArray = polygonPoints
+        .map((point) => `${point[1]} ${point[0]}`)
+        .join(", ");
+      multiPointString += `POLYGON((${multiPointArray})), `;
+    });
+
+    // Remove the trailing comma and space
+    multiPointString = multiPointString.slice(0, -2);
+    console.log(
+      "🚀 ~ convertToMultiPoints ~ multiPointString:",
+      multiPointString
+    );
+
+    return multiPointString;
+  }
+  convertToMultiPointgeozone(points: Array<Array<Array<string>>>): string {
+    const polygons = points.map((polygonPoints) => {
+      // Check if the input points form a valid polygon
+      if (
+        polygonPoints.length < 3 || // At least three points are required for a polygon
+        polygonPoints[0][3] !== polygonPoints[polygonPoints.length - 1][3] || // Check if the first and last points are the same
+        polygonPoints[0][2] !== polygonPoints[polygonPoints.length - 1][2]
+      ) {
+        // Indicate an invalid polygon
+        return "Invalid polygon: The first and last points must be the same.";
+      }
+
+      // Remove the last point if it's identical to the first point
+      if (
+        polygonPoints.length > 1 &&
+        polygonPoints[0][0] === polygonPoints[polygonPoints.length - 2][0] &&
+        polygonPoints[0][1] === polygonPoints[polygonPoints.length - 2][1]
+      ) {
+        polygonPoints.pop();
+      }
+
+      const multiPointArray = polygonPoints
+        .map((point) => `${point[1]} ${point[0]} ${point[2]} ${point[3]}`)
+        .join(", ");
+
+      return `POLYGON((${multiPointArray}))`;
+    });
+
+    return polygons.join(", ");
   }
   onConfirm(): void {
     // Handle confirm action
@@ -934,8 +1001,10 @@ export class PlotComponent implements OnChanges {
         if (PlotManagementList.length > 0) {
           this.PlotManagementList = this.removeDuplicates(PlotManagementList);
         }
+        this.checkAPIstatus = true;
         console.log("PlotManagementList", this.PlotManagementList);
         if (this.PlotManagementList.length > 0) {
+          this.ischeckPlotaev = false;
           this.PlotManagementListfinal.push(this.PlotManagementList[0]);
           this.PlotManagementListfinal = this.removeDuplicates(
             this.PlotManagementListfinal
@@ -963,6 +1032,9 @@ export class PlotComponent implements OnChanges {
             );
           }
         }
+        this.PlotManagementListfinal = this.PlotManagementListfinal.filter(
+          (x) => x.plot_Status != 2019
+        );
 
         console.log("PlotManagementList", this.PlotManagementListfinal);
         console.log(
@@ -1469,7 +1541,23 @@ export class PlotComponent implements OnChanges {
 
               if (tasks.length > 0) {
                 if (totalsize === this.serviceService.Totalarea) {
-                  this.completed.emit();
+                  this.serviceService
+                    .GetPlotValidationURL(
+                      this.serviceService.LicenceserviceID,
+                      this.serviceService.Service_ID
+                    )
+                    .subscribe((message: any) => {
+                      if (message == 1) {
+                        this.serviceService.disablefins = false;
+
+                        this.completed.emit();
+                      } else {
+                        const toast = this.notificationsService.error(
+                          "Error",
+                          message
+                        );
+                      }
+                    });
                 } else {
                   const toast = this.notificationsService.warn(
                     `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
@@ -1485,7 +1573,20 @@ export class PlotComponent implements OnChanges {
               }
             });
         } else {
-          this.completed.emit();
+          this.serviceService
+            .GetPlotValidationURL(
+              this.serviceService.LicenceserviceID,
+              this.serviceService.Service_ID
+            )
+            .subscribe((message: any) => {
+              if (message == 1) {
+                this.serviceService.disablefins = false;
+
+                this.completed.emit();
+              } else {
+                const toast = this.notificationsService.error("Error", message);
+              }
+            });
         }
       }
     }

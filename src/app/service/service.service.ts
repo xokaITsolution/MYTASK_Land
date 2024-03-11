@@ -41,6 +41,15 @@ export class ServiceService {
   private GetpreviousApplicationNumberByUserURL =
     environment.rootPathApi +
     "view/View_GetPreviceApplicationForReview/current/";
+  private Certficate_ver_ValidationURL =
+    environment.rootPathApi +
+    "Certficate_ver_Validation/Certficate_ver_Validation/Certficate_ver_Validation/Certficate_ver_Validation/Applicationcode/servicecode/";
+  private PlotValidationURL =
+    environment.rootPathApi +
+    "PlotValidation/PlotValidation/PlotValidation/PlotValidation/PlotValidation/PlotValidation/Applicationcode/servicecode/";
+  private ProportyValidationURL =
+    environment.rootPathApi +
+    "ProportyValidation/Proporty_Validation/Proporty_Validation/Proporty_Validation/Applicationcode/";
 
   private GetApplicationNumberByUserURLsapi =
     environment.rootPathApi +
@@ -79,13 +88,13 @@ export class ServiceService {
     environment.rootPathApi + "view/View_DeedRegstration12/Customer_ID";
   public AppbyUserId =
     environment.rootPathApi +
-    "ApplicationLoadByUserId/procApplicationLoadByUserId/";  
-    public userbyusername=
-    environment.rootPathApi +
-    "view/View_aspuserforapi/UserName?UserName=";
+    "ApplicationLoadByUserId/procApplicationLoadByUserId/";
+  public userbyusername =
+    environment.rootPathApi + "view/View_aspuserforapi/UserName?UserName=";
 
   private getTodandAppNoURL = environment.rootpath2 + "TodandAppNo";
-  private RemoveDocURL = environment.rootPath + "BPEL/Remove_RequrementDocument";
+  private RemoveDocURL =
+    environment.rootPath + "BPEL/Remove_RequrementDocument";
   private License_ServiceURL = environment.rootPath + "License_Service";
   private paymentUrl =
     environment.rootPath +
@@ -202,7 +211,7 @@ export class ServiceService {
   Parent_Customer_ID: any;
   showcustomerr: boolean;
   taskid: string;
-  coordinate: any;
+  coordinate: any[] = [];
   geometry: any[];
   files: TreeNode[] = [];
   disablebutton: boolean = false;
@@ -256,6 +265,7 @@ export class ServiceService {
   isfreeholdselected: boolean;
   serviceisundoumneted: boolean = false;
   currentcertID: any;
+  LicenceserviceID: any;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -263,6 +273,7 @@ export class ServiceService {
   public PropertyManagmentUrlapi =
     environment.rootPathApi + "Property_Registration/procProperty_Registration"; // URL to web api
   multipleplotcanbeadd = environment.multipleplotcanbeadd;
+  propertytaskslist = environment.propertytasks;
   Add(data) {
     return this.http.post<any[]>(this.PropertyManagmentUrlapi, data);
   }
@@ -410,6 +421,17 @@ export class ServiceService {
   GetpreviousApplicationNumberByUsers(username, Parch_ID) {
     return this.http.get(
       this.GetpreviousApplicationNumberByUserURL + username + "/" + Parch_ID
+    );
+  }
+  GetPlotValidationURL(Appno, serviceid) {
+    return this.http.get(this.PlotValidationURL + Appno + "/" + serviceid);
+  }
+  GetProportyValidationURL(Appno) {
+    return this.http.get(this.ProportyValidationURL + Appno);
+  }
+  GetCertficate_ver_Validation(Appno, serviceid) {
+    return this.http.get(
+      this.Certficate_ver_ValidationURL + Appno + "/" + serviceid
     );
   }
   GetApplicationNumberByUserInfo(appno) {
@@ -986,7 +1008,7 @@ export class ServiceService {
     return this.http.get(
       this.PlotLandUseLookUP +
         "?" +
-        "sortOrder=test&currentFilter&searchString&pageIndex&pageSize"
+        "sortOrder=test&currentFilter&searchString&pageIndex&pageSize=70"
     );
   }
 

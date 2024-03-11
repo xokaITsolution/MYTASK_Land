@@ -102,6 +102,11 @@ export class GisMapComponent implements AfterViewInit {
   layer: any;
   fetchedGroups: any[] = [];
   ondrawingshape: boolean = false;
+  ondataloaded: boolean;
+  allmultiplshape: any[] = [];
+  multishapearray: any[] = [];
+  drawControll: any;
+  allcoordenatezone: any[] = [];
 
   constructor(
     public ServiceService: ServiceService,
@@ -173,15 +178,15 @@ export class GisMapComponent implements AfterViewInit {
     const subcityToSDPMapping = {
       arada: "6921d772-3a1c-4641-95a0-0ab320bac3e2",
       bole: "89eb1aec-c875-4a08-aaf6-2c36c0864979",
-      nifasS: "f8ea62db-05bc-4f1a-ab30-4e926d43e3fb",
+      nifass: "f8ea62db-05bc-4f1a-ab30-4e926d43e3fb",
       gullele: "6a8c042f-a3e1-4375-9769-54d94c2312c6",
-      addisK: "7101d44d-97d5-41aa-957d-82f36d928c07",
+      addisk: "7101d44d-97d5-41aa-957d-82f36d928c07",
       lideta: "e4d8219e-51f9-40cb-9d53-883c6ca9aaa3",
-      lemiK: "f02e9467-1b7d-4350-bee7-9844d4f56da0",
+      lemik: "f02e9467-1b7d-4350-bee7-9844d4f56da0",
       yeka: "8222f028-5fe3-4047-9a50-b52bfa64c851",
-      akakyK: "08f9c927-6366-467a-ba99-c837c5add427",
+      akakyk: "08f9c927-6366-467a-ba99-c837c5add427",
       kirkos: "aaa5094c-8899-4708-9f7b-d8ff634a3540",
-      kolfeK: "930d1c20-9e0e-4a50-9eb2-e542fafbad68",
+      kolfek: "930d1c20-9e0e-4a50-9eb2-e542fafbad68",
       central: "275619f2-69c2-4fb7-a053-938f0b62b088",
     };
 
@@ -203,6 +208,7 @@ export class GisMapComponent implements AfterViewInit {
 
     this.getGroupLayers();
     if (this.geo) {
+      this.ondataloaded = true;
       console.log("value is changing", this.geo);
       if (this.ServiceService.check) {
         for (let index = 0; index < this.geo.length; index++) {
@@ -1665,17 +1671,18 @@ export class GisMapComponent implements AfterViewInit {
       const lat = latLng.lat;
       const lng = latLng.lng;
       const UTMvalue = this.conveLatLngToUTM(lat, lng);
-
+      const subtract_northing = 207.34388375;
+      const subtract_easting = 95.4782061405;
       // Update the coordinate information element with the current latitude and longitude
       document.getElementById(
         "coordinateInfo"
       ).innerHTML = `Latitude: ${lat.toFixed(
         6
-      )}&nbsp;&nbsp; Longitude: ${lng.toFixed(
-        6
-      )}<br> Easting: ${UTMvalue.easting.toFixed(
-        6
-      )} &nbsp;&nbsp; Northing: ${UTMvalue.northing.toFixed(6)} `;
+      )}&nbsp;&nbsp; Longitude: ${lng.toFixed(6)}<br> Easting: ${(
+        UTMvalue.easting - subtract_easting
+      ).toFixed(4)} &nbsp;&nbsp; Northing: ${(
+        UTMvalue.northing - subtract_northing
+      ).toFixed(4)} `;
     });
     // this.map.addControl(this.drawControl);
     L.control.scale().addTo(this.map);
@@ -1718,46 +1725,9 @@ export class GisMapComponent implements AfterViewInit {
       // Add other options as needed
     };
 
-    const drawControl = new L.Control.Draw(optionss);
-    this.map.addControl(drawControl);
+    this.drawControll = new L.Control.Draw(optionss);
+    this.map.addControl(this.drawControll);
 
-    // Initialize an array to hold all the vertices of the polygons
-
-    // Add an event listener for the draw:created event
-    // this.map.on("draw:created", (e) => {
-    //   console.log("Shape created:", e, this.ServiceService.check);
-    //   const layer = e.layer;
-    //   let allVertices = [];
-
-    //   // Iterate over each array in alllatlongPlot to extract the vertices of each polygon
-    //   this.alllatlongPlot.forEach((array) => {
-    //     console.log("🚀 ~ this.alllatlongPlot.forEach ~ array:", array);
-    //     let vertices = array.map((coord) => {
-    //       return L.latLng(coord.lat, coord.lng);
-    //     });
-    //     allVertices = allVertices.concat(vertices);
-    //     console.log(
-    //       "🚀 ~ this.alllatlongPlot.forEach ~ allVertices:",
-    //       allVertices
-    //     );
-    //   });
-
-    //   // Create a Leaflet polygon (limitedAreaBounds) using the array of vertices collected from all polygons
-    //   this.limitedAreaBounds = L.polygon(allVertices);
-
-    //   // Check if the drawn polygon is within the bounds of limitedAreaBounds
-    //   if (this.limitedAreaBounds.getBounds().contains(layer.getBounds())) {
-    //     // If the drawn polygon is within the bounds, add it to the map
-    //     this.map.addLayer(layer);
-
-    //     // Rest of your code for handling the drawn polygon...
-    //   } else {
-    //     // If the drawn polygon is outside the bounds, show a warning message
-    //     const toast = this.notificationsService.warn(
-    //       "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡"
-    //     );
-    //   }
-    // });
     this.map.on("draw:created", (e) => {
       console.log("Shape created:", e, this.ServiceService.check);
       const layer = e.layer;
@@ -1771,7 +1741,6 @@ export class GisMapComponent implements AfterViewInit {
           return;
         }
         let allVertices = [];
-
         // Iterate over each array in alllatlongPlot to extract the vertices of each polygon
         this.alllatlongPlot.forEach((array) => {
           console.log("🚀 ~ this.alllatlongPlot.forEach ~ array:", array);
@@ -1860,7 +1829,16 @@ export class GisMapComponent implements AfterViewInit {
 
             // Do something with the coordinates, such as displaying or processing them
             this.editableLayers.addLayer(layer);
-            this.ServiceService.coordinate = this.utmCoordinates;
+            let convertedUtmgeozone = this.convertCoordinateszone(
+              this.utmCoordinates
+            );
+            convertedUtmgeozone.push(convertedUtmgeozone[0]);
+            this.allcoordenatezone.push(convertedUtmgeozone);
+            this.ServiceService.coordinate = this.allcoordenatezone;
+            console.log(
+              "🚀 ~ file: gis-map.component.ts:2104 ~ editedLayers.eachLayer ~ coordinate:",
+              this.ServiceService.coordinate
+            );
             this.utmCoordinatesforallexcel = this.utmCoordinates;
             // this.ServiceService.coordinateForwgs84 =
             //  this.ServiceService.shapes = this.aaa.push(this.drawnShape);
@@ -1946,7 +1924,18 @@ export class GisMapComponent implements AfterViewInit {
               this.ServiceService.iscircleLatLngs
             );
 
-            this.ServiceService.coordinate = this.utmCoordinates;
+            let eachcoored: any = this.convertCoordinatesToUTM(
+              this.coordinates
+            );
+            eachcoored.push(eachcoored[0]);
+            eachcoored = this.convertArray(eachcoored);
+            this.ServiceService.coordinate.push(eachcoored);
+
+            console.log(
+              "this.ServiceService.coordinate",
+              this.ServiceService.coordinate
+            );
+
             // Now you can use circleLatLngs as needed
           } else {
             const toast = this.notificationsService.warn(
@@ -1990,20 +1979,6 @@ export class GisMapComponent implements AfterViewInit {
             this.utmCoordinates
           );
 
-          // const utmTocoor = this.utmCoordinates.map((row) =>
-          //   this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
-          // );
-
-          // const utmCoordinateslast = this.convertCoordinatesToUTM(utmTocoor);
-          // this.utmCoordinates = utmCoordinateslast;
-          console.log(utmCoordinates);
-
-          // const geojson = layer.toGeoJSON();
-
-          // this.drawnShape = L.Proj.geoJson(geojson);
-          // console.log(this.drawnShape);
-
-          // this.drawnShape.addTo(this.map);
           this.utmCoordinates.push(this.utmCoordinates[0]);
 
           this.sample = this.drawnShape;
@@ -2023,37 +1998,21 @@ export class GisMapComponent implements AfterViewInit {
               lng: coord.lng - 0.0008668,
             };
           });
-
           console.log("🚀 ~ this.map.on ~ coordinates:after", this.coordinates);
           this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(
             this.coordinates
           );
-          console.log(
-            "🚀 ~ file: gis-map.component.ts:1630 ~ this.map.on ~ tempcord:",
-            this.ServiceService.coordinateForwgs84
-          );
-          // tempcord.push(tempcord[0]);
+
           // Assuming you already have the 'points' array from the previous code
           const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
           utmCoordinates.push(utmCoordinates[0]);
           this.utmCoordinates = utmCoordinates;
 
-          let isNorthernHemisphere: any = "P";
-
-          const utmToCoor = this.utmCoordinates.map((row) =>
-            this.conveUTMToLatLngWritexlsxexport(
-              row.northing,
-              row.easting,
-              37,
-              isNorthernHemisphere
-            )
-          );
           console.log(
             "🚀 ~ file: gis-map.component.ts:1569 ~ this.map.on ~ utmToCoor:",
             this.ServiceService.allLicenceData.Parcel_ID
           );
-          const finallatlong = utmToCoor;
-          finallatlong.push(finallatlong[0]);
+
           if (
             this.ServiceService.allLicenceData.Parcel_ID == null &&
             this.ServiceService.allLicenceData.Plot_Merge_1 == null &&
@@ -2069,18 +2028,6 @@ export class GisMapComponent implements AfterViewInit {
             this.checktheshapeexistans(this.coordinates);
           }
 
-          const utmCoordinateslast = this.convertCoordinatesToUTM(utmToCoor);
-          //his.utmCoordinates = utmCoordinateslast;
-          console.log(
-            "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
-            this.utmCoordinates
-          );
-          // if (this.drawnShape) {
-          //   this.map.removeLayer(this.drawnShape);
-          //   this.map.removeLayer(layer);
-          //   this.editableLayers.removeLayer(layer);
-          //   this.removeShape();
-          // }
           console.log("utmCoordinatescreate", utmCoordinates);
           const geojson = layer.toGeoJSON();
 
@@ -2090,9 +2037,6 @@ export class GisMapComponent implements AfterViewInit {
 
           // Add the transformed GeoJSON layer to the map
 
-          //this.drawnShape.addTo(this.map);
-          //this.utmCoordinates.push(this.utmCoordinates[0]);
-          //points.push(points[0])
           this.sample = this.drawnShape;
           console.log("utmCoordinates", this.utmCoordinates);
           // Add the coordinates to the array
@@ -2100,8 +2044,27 @@ export class GisMapComponent implements AfterViewInit {
 
           // Do something with the coordinates, such as displaying or processing them
 
-          this.ServiceService.coordinate = this.utmCoordinates;
+          let eachcoored: any = this.convertCoordinatesToUTM(this.coordinates);
+          eachcoored.push(eachcoored[0]);
+          eachcoored = this.convertArray(eachcoored);
+          this.ServiceService.coordinate.push(eachcoored);
+
+          console.log(
+            "this.ServiceService.coordinate",
+            this.ServiceService.coordinate
+          );
+
           this.utmCoordinatesforallexcel = utmCoordinates;
+          const subtract_northing = 207.34388375;
+          const subtract_easting = 95.4782061405;
+
+          this.utmCoordinatesforallexcel = this.utmCoordinatesforallexcel.map(
+            (item) => {
+              item.northing += subtract_northing;
+              item.easting += subtract_easting;
+              return item; // Return the modified item
+            }
+          );
           const area = this.calculateUTMPolygonArea(utmCoordinates);
           this.ServiceService.Totalarea = parseInt(area.toFixed(2));
           // Show the area in a popup
@@ -2165,23 +2128,14 @@ export class GisMapComponent implements AfterViewInit {
             this.drawnShape = L.Proj.geoJson(geojson);
             console.log(this.drawnShape);
 
-            // Add the transformed GeoJSON layer to the map
-
-            //this.drawnShape.addTo(this.map);
-            //this.utmCoordinates.push(this.utmCoordinates[0]);
-            //points.push(points[0])
             this.sample = this.drawnShape;
             console.log("utmCoordinates", this.utmCoordinates);
-            // Add the coordinates to the array
-            //this.drawnShapes.push(this.coordinates);
 
-            // Do something with the coordinates, such as displaying or processing them
             const area = this.calculateUTMPolygonArea(utmCoordinates);
             this.ServiceService.Totalarea = parseInt(area.toFixed(2));
-            this.ServiceService.coordinate = this.utmCoordinates;
-            this.utmCoordinatesforallexcel = utmCoordinateslast;
-            //  this.ServiceService.shapes = this.aaa.push(this.drawnShape);
-            // Transform GeoJSON to EPSG:20137 CRS
+            //this.ServiceService.coordinate = this.utmCoordinates;
+            this.utmCoordinatesforallexcel = this.utmCoordinates;
+
             this.editableLayers.addLayer(this.drawnShape);
           }
         } else if (layer instanceof L.Circle) {
@@ -2291,7 +2245,16 @@ export class GisMapComponent implements AfterViewInit {
 
             // Do something with the coordinates, such as displaying or processing them
             //this.editableLayers.addLayer(layer);
-            this.ServiceService.coordinate = this.utmCoordinates;
+            let convertedUtmgeozone = this.convertCoordinateszone(
+              this.utmCoordinates
+            );
+            convertedUtmgeozone.push(convertedUtmgeozone[0]);
+            this.allcoordenatezone.push(convertedUtmgeozone);
+            this.ServiceService.coordinate = this.allcoordenatezone;
+            console.log(
+              "🚀 ~ file: gis-map.component.ts:2104 ~ editedLayers.eachLayer ~ coordinate:",
+              this.ServiceService.coordinate
+            );
           }
           // Now you can use circleLatLngs as needed
         } else if (layer instanceof L.Polyline) {
@@ -2339,7 +2302,16 @@ export class GisMapComponent implements AfterViewInit {
           this.sample = this.drawnShape;
           // console.log("utmCoordinates", utmCoordinates);
 
-          this.ServiceService.coordinate = this.utmCoordinates;
+          let convertedUtmgeozone = this.convertCoordinateszone(
+            this.utmCoordinates
+          );
+          convertedUtmgeozone.push(convertedUtmgeozone[0]);
+          this.allcoordenatezone.push(convertedUtmgeozone);
+          this.ServiceService.coordinate = this.allcoordenatezone;
+          console.log(
+            "🚀 ~ file: gis-map.component.ts:2104 ~ editedLayers.eachLayer ~ coordinate:",
+            this.ServiceService.coordinate
+          );
           this.utmCoordinatesforallexcel = this.utmCoordinates;
           //polyline.bindPopup("This is a polyline!");
         }
@@ -2428,7 +2400,7 @@ export class GisMapComponent implements AfterViewInit {
               this.ServiceService.areaVerified = false;
             } else {
               this.ServiceService.areaVerified = true;
-              this.utmCoordinates.push(this.utmCoordinates[0]);
+              //this.utmCoordinates.push(this.utmCoordinates[0]);
               // Convert the edited polygon to GeoJSON
               const geojson = layer.toGeoJSON();
 
@@ -2440,12 +2412,18 @@ export class GisMapComponent implements AfterViewInit {
               // this.editableLayers.addLayer(this.drawnShape);
               // Do something with the coordinates, such as displaying or processing them
               // For example, you can set them in a service or perform other actions
-              this.ServiceService.coordinate = this.utmCoordinates;
+              let convertedUtmgeozone = this.convertCoordinateszone(
+                this.utmCoordinates
+              );
+              convertedUtmgeozone.push(convertedUtmgeozone[0]);
+              this.allcoordenatezone.push(convertedUtmgeozone);
+              this.ServiceService.coordinate = this.allcoordenatezone;
               console.log(
                 "🚀 ~ file: gis-map.component.ts:2104 ~ editedLayers.eachLayer ~ coordinate:",
                 this.ServiceService.coordinate
               );
-              console.log("utmCoordinates", utmCoordinates);
+
+              //console.log("utmCoordinates", utmCoordinates);
               // this.ServiceService.shapes.push(drawnShape);
 
               // Transform GeoJSON to EPSG:20137 CRS if needed
@@ -2494,7 +2472,16 @@ export class GisMapComponent implements AfterViewInit {
             // this.editableLayers.addLayer(this.drawnShape);
             // Do something with the coordinates, such as displaying or processing them
             // For example, you can set them in a service or perform other actions
-            this.ServiceService.coordinate = this.utmCoordinates;
+            let convertedUtmgeozone = this.convertCoordinateszone(
+              this.utmCoordinates
+            );
+            convertedUtmgeozone.push(convertedUtmgeozone[0]);
+            this.allcoordenatezone.push(convertedUtmgeozone);
+            this.ServiceService.coordinate = this.allcoordenatezone;
+            console.log(
+              "🚀 ~ file: gis-map.component.ts:2104 ~ editedLayers.eachLayer ~ coordinate:",
+              this.ServiceService.coordinate
+            );
             // this.ServiceService.shapes.push(drawnShape);
 
             // Transform GeoJSON to EPSG:20137 CRS if needed
@@ -2502,15 +2489,21 @@ export class GisMapComponent implements AfterViewInit {
         }
       });
     });
+    this.map.on("draw:deleted", function (e) {
+      console.log("🚀 ~ e:draw:deleted", e);
+    });
   }
+  convertCoordinateszone(data: any[]): any[] {
+    return data.map((item) => {
+      const northing = item.northing;
+      const easting = item.easting;
+      const hemisphere = item.hemisphere;
+      const zone = item.zone || "37"; // default to "37" if zone is not provided
 
+      return [northing, easting, hemisphere, zone];
+    });
+  }
   mapToPolygonFormat(coordinates: { lat: number; lng: number }[]): string {
-    // Ensure there are at least 3 coordinates to form a polygon
-    // if (coordinates.length <= 3) {
-    //   throw new Error("At least 3 coordinates are required to form a polygon.");
-    // }
-
-    // Sort the coordinates in counter-clockwise order
     const sortedCoordinates = this.sortCoordinatesCounterClockwise(coordinates);
 
     // Map the sorted coordinates to the desired format
@@ -2596,112 +2589,6 @@ export class GisMapComponent implements AfterViewInit {
     return utmCoordinates;
   }
 
-  // convertUTMToLatLng(
-  //   northing: number,
-  //   easting: number,
-  //   zone: number,
-  //   hemisphere: string
-  // ): { lat: number; lng: number } {
-  //   // Constants for WGS84 datum
-  //   const WGS84_A = 6378137.0; // WGS 84 semi-major axis
-  //   const WGS84_E = 0.08181919104281579; // WGS 84 first eccentricity
-
-  //   // Constants for UTM
-  //   const UTM_K0 = 0.9996; // UTM scale factor for most zones
-  //   const UTM_FE = 500000.0; // False easting for UTM
-  //   const UTM_FN_N = 0.0; // False northing for northern hemisphere
-  //   const UTM_FN_S = 10000000.0; // False northing for southern hemisphere
-
-  //   // Check if the hemisphere is southern (negative northing) and adjust northing accordingly
-  //   if (hemisphere === "S" || hemisphere === "s") {
-  //     northing -= UTM_FN_S; // Southern hemisphere offset
-  //   } else {
-  //     northing -= UTM_FN_N; // Northern hemisphere offset
-  //   }
-
-  //   const eccPrimeSquared = (WGS84_E * WGS84_E) / (1 - WGS84_E * WGS84_E);
-  //   const M = northing / UTM_K0;
-
-  //   const mu =
-  //     M /
-  //     (WGS84_A *
-  //       (1 -
-  //         WGS84_E / 4 -
-  //         (3 * WGS84_E * WGS84_E) / 64 -
-  //         (5 * WGS84_E * WGS84_E * WGS84_E) / 256));
-  //   const phi1Rad =
-  //     mu +
-  //     ((3 * WGS84_E) / 2 - (27 * WGS84_E * WGS84_E * WGS84_E) / 32) *
-  //       Math.sin(2 * mu) +
-  //     ((21 * WGS84_E * WGS84_E) / 16 -
-  //       (55 * WGS84_E * WGS84_E * WGS84_E * WGS84_E) / 32) *
-  //       Math.sin(4 * mu) +
-  //     ((151 * WGS84_E * WGS84_E * WGS84_E) / 96) * Math.sin(6 * mu) +
-  //     ((1097 * WGS84_E * WGS84_E * WGS84_E * WGS84_E) / 512) * Math.sin(8 * mu);
-  //   const phi1 = (phi1Rad * 180) / Math.PI;
-
-  //   const N1 =
-  //     WGS84_A /
-  //     Math.sqrt(1 - WGS84_E * WGS84_E * Math.sin(phi1Rad) * Math.sin(phi1Rad));
-  //   const T1 = Math.tan(phi1Rad) * Math.tan(phi1Rad);
-  //   const C1 = eccPrimeSquared * Math.cos(phi1Rad) * Math.cos(phi1Rad);
-  //   const R1 =
-  //     (WGS84_A * (1 - WGS84_E * WGS84_E)) /
-  //     Math.pow(
-  //       1 - WGS84_E * WGS84_E * Math.sin(phi1Rad) * Math.sin(phi1Rad),
-  //       1.5
-  //     );
-  //   const D = (easting - UTM_FE) / (N1 * UTM_K0);
-
-  //   const latRad =
-  //     phi1Rad -
-  //     ((N1 * Math.tan(phi1Rad)) / R1) *
-  //       ((D * D) / 2 -
-  //         ((5 + 3 * T1 + 10 * C1 - 4 * C1 * C1 - 9 * eccPrimeSquared) *
-  //           D *
-  //           D *
-  //           D *
-  //           D) /
-  //           24 +
-  //         ((61 +
-  //           90 * T1 +
-  //           298 * C1 +
-  //           45 * T1 * T1 -
-  //           252 * eccPrimeSquared -
-  //           3 * C1 * C1) *
-  //           D *
-  //           D *
-  //           D *
-  //           D *
-  //           D *
-  //           D) /
-  //           720);
-  //   const lat = (latRad * 180) / Math.PI;
-
-  //   let lng =
-  //     (D -
-  //       ((1 + 2 * T1 + C1) * D * D * D) / 6 +
-  //       ((5 -
-  //         2 * C1 +
-  //         28 * T1 -
-  //         3 * C1 * C1 +
-  //         8 * eccPrimeSquared +
-  //         24 * T1 * T1) *
-  //         D *
-  //         D *
-  //         D *
-  //         D *
-  //         D) /
-  //         120) /
-  //     Math.cos(phi1Rad);
-  //   lng = zone * 6 - 183.0 + lng;
-
-  //   return {
-  //     lat,
-  //     lng,
-  //   };
-  // }
-
   toggleLayer(visibility: boolean, layerName: string) {
     console.log("layerName", layerName);
 
@@ -2745,6 +2632,18 @@ export class GisMapComponent implements AfterViewInit {
     return L.latLng(latitude, longitude);
   }
   drawShape(): void {
+    if (this.latitude < 100000 || 1000000 <= this.latitude) {
+      const toast = this.notificationsService.warn(
+        "easting out of range (must be between 100 000 m and 999 999 m)"
+      );
+      return;
+    }
+    if (this.longitude < 0 || this.longitude > 10000000) {
+      const toast = this.notificationsService.warn(
+        "northing out of range (must be between 0 m and 10 000 000 m)"
+      );
+      return;
+    }
     // Get the latitude and longitude values entered by the user
     if (
       this.selectedDatum === "Adindan / UTM zone 36N" ||
@@ -2799,6 +2698,8 @@ export class GisMapComponent implements AfterViewInit {
         this.drawnShape.addTo(this.map);
         this.map.fitBounds(this.drawnShape.getBounds());
       }
+      this.longitude = null;
+      this.latitude = null;
     } else {
       const latLng = this.convertToLatLng(
         this.latitudeDegrees,
@@ -2853,9 +2754,17 @@ export class GisMapComponent implements AfterViewInit {
     );
     this.drawnShape = L.polygon(this.pinpointedPoints).addTo(this.map);
 
-    const utmCoordinates = this.convertCoordinatesToUTM(this.pinpointedPoints);
+    let utmCoordinates = this.convertCoordinatesToUTM(this.pinpointedPoints);
+    const subtract_northing = 207.34388375;
+    const subtract_easting = 95.4782061405;
 
+    utmCoordinates = utmCoordinates.map((item) => {
+      item.northing -= subtract_northing;
+      item.easting -= subtract_easting;
+      return item; // Return the modified item
+    });
     this.utmCoordinatesforallexcel = utmCoordinates;
+
     const area = this.calculateUTMPolygonArea(utmCoordinates);
     this.ServiceService.Totalarea = parseInt(area.toFixed(2));
     // Show the area in a popup
@@ -2923,25 +2832,208 @@ export class GisMapComponent implements AfterViewInit {
     this.removeLayerFromMap();
   }
 
+  // importShapes(event: any): void {
+  //   const file: File = event.target.files[0];
+  //   const fileReader: FileReader = new FileReader();
+  //   fileReader.onload = (e: any) => {
+  //     const arrayBuffer: ArrayBuffer = e.target.result;
+  //     const data: Uint8Array = new Uint8Array(arrayBuffer);
+  //     const workbook: XLSX.WorkBook = XLSX.read(data, { type: "array" });
+  //     const sheetName: string = workbook.SheetNames[0];
+  //     const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
+  //     const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet, {
+  //       header: 1,
+  //     });
+  //     console.log("jsonData", jsonData);
+
+  //     // Process the imported shapes and add them to the map
+  //     this.fromexcel = true;
+  //     this.processImportedShapesXLSX(jsonData);
+  //   };
+  //   fileReader.readAsArrayBuffer(file);
+  // }
+  // importShapes(event: any): void {
+  //   const file: File = event.target.files[0];
+  //   const fileReader: FileReader = new FileReader();
+  //   fileReader.onload = (e: any) => {
+  //     const csvData: string = e.target.result;
+
+  //     // Split CSV data into rows
+  //     const rows: string[] = csvData.split("\n");
+
+  //     // Parse each row into an array of values, removing spaces and new lines
+  //     const jsonData: any[] = rows
+  //       .map((row) => row.replace(/\s+/g, "").split(","))
+  //       .filter(
+  //         (row) => row.length > 0 && row.some((value) => value.trim() !== "")
+  //       ); // Filter out empty or all-empty arrays
+
+  //     console.log("jsonData", jsonData);
+
+  //     // Process the imported shapes and add them to the map
+  //     this.fromexcel = true;
+  //     console.log("🚀 ~ importShapes ~ fromexcel:", jsonData);
+  //     this.processImportedShapesXLSX(jsonData);
+  //   };
+  //   fileReader.readAsText(file);
+  // }
   importShapes(event: any): void {
     const file: File = event.target.files[0];
     const fileReader: FileReader = new FileReader();
     fileReader.onload = (e: any) => {
-      const arrayBuffer: ArrayBuffer = e.target.result;
-      const data: Uint8Array = new Uint8Array(arrayBuffer);
-      const workbook: XLSX.WorkBook = XLSX.read(data, { type: "array" });
-      const sheetName: string = workbook.SheetNames[0];
-      const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
-      const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet, {
-        header: 1,
-      });
-      console.log("jsonData", jsonData);
+      const csvData: string = e.target.result;
 
-      // Process the imported shapes and add them to the map
-      this.fromexcel = true;
-      this.processImportedShapesXLSX(jsonData);
+      // Split CSV data into shapes (separated by blank lines)
+      const shapes: string[] = csvData.split("\n\n");
+      console.log("🚀 ~ importShapes ~ shapes:", shapes);
+
+      // Initialize array to store shapes
+      const allShapes: any[] = [];
+
+      // Process each shape separately
+      let currentShape: any[] = [];
+      shapes.forEach((shapeData: string) => {
+        // Split shape data into rows
+        const rows: string[] = shapeData.split("\n");
+
+        // Process each row into an array of values, removing spaces and new lines
+        const jsonData: any[] = rows
+          .map((row) => row.replace(/\s+/g, "").split(","))
+          .filter(
+            (row) => row.length > 0 && row.some((value) => value.trim() !== "")
+          ); // Filter out empty or all-empty arrays
+
+        // Check if the first row starts with expected header fields
+        if (
+          jsonData.length > 0 &&
+          jsonData[0].join("") === "northingeastinghemispherezone"
+        ) {
+          // Start a new shape
+          if (currentShape.length > 0) {
+            // Push the previous shape to the array
+            allShapes.push(currentShape);
+          }
+          // Initialize a new shape array
+          currentShape = [];
+        }
+
+        // Push current shape data to the array
+        currentShape.push(...jsonData);
+      });
+
+      // Push the last shape to the array
+      if (currentShape.length > 0) {
+        allShapes.push(currentShape);
+      }
+      let sparetedshape = this.filterCoordinates(allShapes);
+      console.log("🚀 ~ importShapes ~ sparetedshape:", sparetedshape);
+      if (!this.ServiceService.check) {
+        if (sparetedshape.length == 1) {
+          sparetedshape.forEach((jsonData) => {
+            this.fromexcel = true;
+            console.log("🚀 ~ importShapes ~ fromexcel:", jsonData);
+            const firstPointUTM = jsonData[1][0]; // Assuming UTM value is at index 0
+            console.log(
+              "🚀 ~ sparetedshape.forEach ~ firstPointUTM:",
+              firstPointUTM
+            );
+            const lastPointUTM = jsonData[jsonData.length - 1][0]; // Assuming UTM value is at index 0
+            console.log(
+              "🚀 ~ sparetedshape.forEach ~ lastPointUTM:",
+              lastPointUTM
+            );
+            if (firstPointUTM !== lastPointUTM) {
+              const toast = this.notificationsService.warn(
+                "The first and last point UTM values are not the same. Import aborted/የመጀመሪያው እና የመጨረሻው የዩቲኤም(የምስራቅ እና የሰሜን) ነጥቦች አንድ አይነት አይደሉም።"
+              );
+              return;
+            } else {
+              this.processImportedShapesXLSX(jsonData);
+            }
+          });
+        } else if (sparetedshape.length > 1) {
+          // Process all shapes and add them to the map
+          sparetedshape.forEach((jsonData) => {
+            this.fromexcel = true;
+            console.log("🚀 ~ importShapes ~ fromexcel:", jsonData);
+            const firstPointUTM = jsonData[1][0]; // Assuming UTM value is at index 0
+            console.log(
+              "🚀 ~ sparetedshape.forEach ~ firstPointUTM:",
+              firstPointUTM
+            );
+            const lastPointUTM = jsonData[jsonData.length - 1][0]; // Assuming UTM value is at index 0
+            console.log(
+              "🚀 ~ sparetedshape.forEach ~ lastPointUTM:",
+              lastPointUTM
+            );
+
+            if (firstPointUTM !== lastPointUTM) {
+              const toast = this.notificationsService.warn(
+                "The first and last point UTM values are not the same. Import aborted/የመጀመሪያው እና የመጨረሻው የዩቲኤም(የምስራቅ እና የሰሜን) ነጥቦች አንድ አይነት አይደሉም።"
+              );
+              return;
+            } else {
+              this.processImportedShapesXLSXmulti(jsonData);
+            }
+          });
+        }
+      } else {
+        if (sparetedshape.length == 1) {
+          sparetedshape.forEach((jsonData) => {
+            this.fromexcel = true;
+            console.log("🚀 ~ importShapes ~ fromexcel:", jsonData);
+            console.log("🚀 ~ importShapes ~ fromexcel:", jsonData);
+            const firstPointUTM = jsonData[1][0]; // Assuming UTM value is at index 0
+            console.log(
+              "🚀 ~ sparetedshape.forEach ~ firstPointUTM:",
+              firstPointUTM
+            );
+            const lastPointUTM = jsonData[jsonData.length - 1][0]; // Assuming UTM value is at index 0
+            console.log(
+              "🚀 ~ sparetedshape.forEach ~ lastPointUTM:",
+              lastPointUTM
+            );
+            if (firstPointUTM !== lastPointUTM) {
+              const toast = this.notificationsService.warn(
+                "The first and last point UTM values are not the same. Import aborted/የመጀመሪያው እና የመጨረሻው የዩቲኤም(የምስራቅ እና የሰሜን) ነጥቦች አንድ አይነት አይደሉም።"
+              );
+              return;
+            } else {
+              this.processImportedShapesXLSX(jsonData);
+            }
+          });
+        } else {
+          const toast = this.notificationsService.warn(
+            "more than one plot location shape  import from csv is not allowed/ከአንድ በላይ የመሬት አቀማመጥ ቅርፅ ከ csv ማስመጣት አይፈቀድም።"
+          );
+          return;
+        }
+      }
     };
-    fileReader.readAsArrayBuffer(file);
+    fileReader.readAsText(file);
+  }
+  filterCoordinates(input: any[][]): any[][][] {
+    const output: any[][][] = [];
+    let currentGroup: any[][] = [];
+
+    for (const row of input[0]) {
+      //console.log("🚀 ~ filterCoordinates ~ input:", input);
+      if (
+        row[0] === "northing" &&
+        row[1] === "easting" &&
+        row[2] === "hemisphere" &&
+        row[3] === "zone"
+      ) {
+        // Start a new group
+        currentGroup = [row];
+        output.push(currentGroup);
+      } else {
+        // Add row to current group
+        currentGroup.push(row);
+      }
+    }
+
+    return output;
   }
   async addShapefileToMap(event: any) {
     console.log(event.target.files[0]);
@@ -3068,13 +3160,18 @@ export class GisMapComponent implements AfterViewInit {
           // Add the converted GeoJSON data to the map
           // L.geoJSON(geoJSONData).addTo(this.map);
         } else {
-          console.error("Invalid GeoJSON data.");
+          const toast = this.notificationsService.warn("Invalid GeoJSON data.");
         }
       } else {
-        console.error("Missing one or more required files in the zip archive.");
+        const toast = this.notificationsService.warn(
+          "Missing one or more required files in the zip archive."
+        );
       }
     } catch (error) {
-      console.error("Error while extracting files from the zip:", error);
+      const toast = this.notificationsService.warn(
+        "Error while extracting files from the zip:",
+        error
+      );
     }
   }
   animateMap(center: [number, number]): void {
@@ -3108,7 +3205,11 @@ export class GisMapComponent implements AfterViewInit {
     // Remove the header row from the data
     const coordinates = data.slice(1);
     console.log("coordinatesforpropert", coordinates);
-    // Map the data to LatLng objects and their associated shape properties
+
+    console.log(
+      "🚀 ~ processcoordinatesForPlot ~ ServiceService:",
+      this.ServiceService.coordinate
+    );
     const combinedData = [];
 
     const latLngs = coordinates.map((row) =>
@@ -3145,6 +3246,21 @@ export class GisMapComponent implements AfterViewInit {
         "🚀 ~ processcoordinates ~ alllatlongPlot:",
         this.alllatlongPlot
       );
+    } else {
+      let eachcoorde = coordinates;
+      const subtract_northing = 207.34388375;
+      const subtract_easting = 95.4782061405;
+      for (let i = 0; i < eachcoorde.length; i++) {
+        coordinates[i][0] -= subtract_northing;
+        coordinates[i][1] -= subtract_easting; // Corrected subtraction
+      }
+      eachcoorde.push(eachcoorde[0]);
+      this.ServiceService.coordinate.push(eachcoorde);
+      console.log(
+        "🚀 ~ processcoordinates ~ allmultiplshape:",
+        this.ServiceService.coordinate
+      );
+      this.map.removeControl(this.drawControll);
     }
   }
 
@@ -3152,7 +3268,22 @@ export class GisMapComponent implements AfterViewInit {
     // Remove the header row from the data
     const coordinates = data.slice(1);
     console.log("coordinates", coordinates);
+
+    let eachcoorde = coordinates;
+    const subtract_northing = 207.34388375;
+    const subtract_easting = 95.4782061405;
+    for (let i = 0; i < eachcoorde.length; i++) {
+      coordinates[i][0] -= subtract_northing;
+      coordinates[i][1] -= subtract_easting; // Corrected subtraction
+    }
+    eachcoorde.push(eachcoorde[0]);
+    this.ServiceService.coordinate.push(eachcoorde);
+    console.log(
+      "🚀 ~ processcoordinatesForPlot ~ ServiceService:",
+      this.ServiceService.coordinate
+    );
     // Map the data to LatLng objects and their associated shape properties
+
     const combinedData = [];
     const latLngs = coordinates.map((row) =>
       this.conveUTMToLatLngWrite(row[0], row[1], row[3], row[2])
@@ -3204,6 +3335,7 @@ export class GisMapComponent implements AfterViewInit {
         dataofproperty.property_ID == this.ServiceService.selectedproperty
           ? polygonOptions
           : polygonOptionss;
+
       this.drawnShape = L.polygon(latslng, slectedpro).addTo(this.map);
       this.drawnShape
         .bindPopup(
@@ -3228,7 +3360,7 @@ export class GisMapComponent implements AfterViewInit {
           "🚀 ~ this.alllatlong.forEach ~ utmCoordinates:",
           utmCoordinates
         );
-        this.ServiceService.coordinate = utmCoordinates;
+        //this.ServiceService.coordinate = utmCoordinates;
         console.log(utmCoordinates);
       }
     });
@@ -3300,35 +3432,45 @@ export class GisMapComponent implements AfterViewInit {
       this.editableLayers.addLayer(this.drawnShape);
       // this.arrayFoPolygonarea.push(this.calculatePolygonArea(L.polygon(shape)));
       // console.log("this.alllatlong", this.arrayFoPolygonarea);
-      if (
-        dataofproperty.ploteId == undefined ||
-        (dataofproperty.ploteId != null &&
-          dataofproperty.ploteId == this.ServiceService.selectedplotid)
-      ) {
-        this.editableLayers.addLayer(this.drawnShape);
-        const utmCoordinates = this.convertCoordinatesToUTM(latslng);
-        utmCoordinates.push(utmCoordinates[0]);
-        this.utmCoordinatesforallexcel = utmCoordinates;
-        this.ServiceService.coordinateForwgs84 =
-          this.mapToPolygonFormat(latslng);
-        this.ServiceService.coordinate = utmCoordinates;
-        console.log(
-          "🚀 ~ this.alllatlong.forEach ~ utmCoordinates:",
-          utmCoordinates
-        );
-      } else {
-        this.editableLayers.addLayer(this.drawnShape);
-        const utmCoordinates = this.convertCoordinatesToUTM(latslng);
-        this.ServiceService.coordinateForwgs84 =
-          this.mapToPolygonFormat(latslng);
-        utmCoordinates.push(utmCoordinates[0]);
-        this.ServiceService.coordinate = utmCoordinates;
-        //this.utmCoordinatesforallexcel = utmCoordinates;
-        console.log(
-          "🚀 ~ this.alllatlong.forEach ~ utmCoordinates:",
-          utmCoordinates
-        );
-      }
+      // if (
+      //   dataofproperty.ploteId == undefined ||
+      //   (dataofproperty.ploteId != null &&
+      //     dataofproperty.ploteId == this.ServiceService.selectedplotid)
+      // ) {
+      //   this.editableLayers.addLayer(this.drawnShape);
+      //   const utmCoordinates = this.convertCoordinatesToUTM(latslng);
+      //   utmCoordinates.push(utmCoordinates[0]);
+      //   this.utmCoordinatesforallexcel = this.convertCoordinatesToUTM(latslng);
+      //   const subtract_northing = 207.34388375;
+      //   const subtract_easting = 95.4782061405;
+
+      //   this.ServiceService.coordinateForwgs84 =
+      //     this.mapToPolygonFormat(latslng);
+      // //  this.ServiceService.coordinate = utmCoordinates;
+      //   // for (let i = 0; i < this.ServiceService.coordinate.length; i++) {
+      //   //   this.ServiceService.coordinate[i].northing -= subtract_northing;
+      //   //   this.ServiceService.coordinate[i].easting -= subtract_easting; // Corrected subtraction
+      //   let eachcoored: any = this.convertCoordinatesToUTM(latslng);
+      //   eachcoored = this.convertArray(eachcoored);
+      //   this.ServiceService.coordinate.push(eachcoored);
+      //   console.log(
+      //     "🚀 ~ this.alllatlong.forEach ~ utmCoordinates:curent",
+      //     this.ServiceService.coordinate
+      //   );
+      //   // }
+      // } else {
+      //   this.editableLayers.addLayer(this.drawnShape);
+      //   const utmCoordinates = this.convertCoordinatesToUTM(latslng);
+      //   this.ServiceService.coordinateForwgs84 =
+      //     this.mapToPolygonFormat(latslng);
+      //   utmCoordinates.push(utmCoordinates[0]);
+      //   this.ServiceService.coordinate = utmCoordinates;
+      //   this.utmCoordinatesforallexcel = utmCoordinates;
+      //   console.log(
+      //     "🚀 ~ this.alllatlong.forEach ~ utmCoordinates:",
+      //     utmCoordinates
+      //   );
+      // }
     });
     if (this.drawnShape instanceof L.Marker) {
       //this.map.setView(this.drawnShape.getLatLng(), this.map.getZoom());
@@ -3632,12 +3774,18 @@ export class GisMapComponent implements AfterViewInit {
     console.log("dataaaa", data);
     // Remove the header row from the data
     const coordinates = data.slice(1);
-    console.log("coordinates", coordinates);
+    let coordinatecuurent = coordinates;
+    this.ServiceService.coordinate.push(coordinatecuurent);
+    console.log("coordinates", this.ServiceService.coordinate);
     this.utmCoordinates = coordinates;
 
-    const latLngs = coordinates.map((row) =>
-      this.conveUTMToLatLngWritexlsx(row[0], row[1], row[3], row[2])
-    );
+    const latLngs = coordinates.map((row) => {
+      console.log(row[0], row[1], row[3], row[2]);
+      if (row[0] !== undefined) {
+        return this.conveUTMToLatLngWritexlsx(row[0], row[1], row[3], row[2]);
+      }
+    });
+
     const latLngss = coordinates.map((row) =>
       this.conveUTMToLatLng(row[0], row[1], row[3], row[2])
     );
@@ -3679,6 +3827,10 @@ export class GisMapComponent implements AfterViewInit {
       this.limitedAreaBounds = L.polygon(allVertices);
 
       if (this.alllatlong) {
+        console.log(
+          "🚀 ~ processImportedShapesXLSX ~ alllatlong:",
+          this.alllatlong
+        );
         this.alllatlong.forEach((shape, index) => {
           let randomColor =
             "#" + Math.floor(Math.random() * 16777215).toString(16);
@@ -3707,14 +3859,6 @@ export class GisMapComponent implements AfterViewInit {
         ) {
           this.map.addLayer(this.drawnShape);
 
-          this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(
-            this.coordinates
-          );
-          console.log(
-            "🚀 ~ file: gis-map.component.ts:1630 ~ this.map.on ~ tempcord:",
-            this.ServiceService.coordinateForwgs84
-          );
-          console.log(this.coordinates);
           // Convert each L.LatLng object to [x, y] point
           //this.convertLatLngToUTM(this.coordinates)
 
@@ -3722,22 +3866,13 @@ export class GisMapComponent implements AfterViewInit {
           const utmCoordinates = this.convertCoordinatesToUTM(this.coordinates);
           utmCoordinates.push(utmCoordinates[0]);
           this.utmCoordinates = utmCoordinates;
-          let isNorthernHemisphere: any = "N";
-          const utmToCoor = this.utmCoordinates.map((row) =>
-            this.conveUTMToLatLngWrite(
-              row.northing,
-              row.easting,
-              37,
-              isNorthernHemisphere
-            )
-          );
-          console.log(
-            "🚀 ~ file: gis-map.component.ts:1569 ~ this.map.on ~ utmToCoor:",
-            utmToCoor
-          );
 
-          const utmCoordinateslast = this.convertCoordinatesToUTM(utmToCoor);
-          //this.utmCoordinates = utmCoordinateslast;
+          //this.ServiceService.coordinate = coordinates;
+          // console.log(
+          //   "🚀 ~ file: gis-map.component.ts:1569 ~ this.map.on ~ utmToCoor:",
+          //   this.ServiceService.coordinate
+          // );
+
           console.log(
             "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
             this.utmCoordinates
@@ -3772,10 +3907,23 @@ export class GisMapComponent implements AfterViewInit {
         }
       }
     }
-    const utmCoordinates = this.convertCoordinatesToUTM(latLngs);
+    let utmCoordinates = this.convertCoordinatesToUTM(latLngs);
+    const subtract_northing = 207.34388375;
+    const subtract_easting = 95.4782061405;
+
+    utmCoordinates = utmCoordinates.map((item) => {
+      item.northing -= subtract_northing;
+      item.easting -= subtract_easting;
+      return item; // Return the modified item
+    });
     this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(latLngs);
     utmCoordinates.push(utmCoordinates[0]);
-    this.ServiceService.coordinate = utmCoordinates;
+    //this.ServiceService.coordinate = utmCoordinates;
+    console.log(
+      "🚀 ~ processImportedShapesXLSX ~ ServiceService:",
+      this.ServiceService.coordinate
+    );
+
     console.log(utmCoordinates);
     const area = this.calculateUTMPolygonArea(utmCoordinates);
     this.ServiceService.Totalarea = parseInt(area.toFixed(2));
@@ -3855,42 +4003,211 @@ export class GisMapComponent implements AfterViewInit {
         duration: flyToDuration,
       });
 
-      // this.map.setView(center, 15);
-      if (this.ServiceService.check != true) {
-        this.map.on(L.Draw.Event.CREATED, (e: any) => {
-          const layer = e.layer;
-          console.log("alllatlong", this.alllatlong[0]);
-
-          // Assuming limited area bounds as a polygon
-          const limitedAreaBounds = L.polygon(this.alllatlong[0][0]).addTo(
-            this.map
-          );
-
-          // Check if the drawn shape intersects with the limited area bounds
-          if (limitedAreaBounds.getBounds().contains(layer.getBounds())) {
-            this.map.addLayer(layer);
-            this.ServiceService.disablebutton = true;
-          } else {
-            const toast = this.messageService.add({
-              severity: "warn",
-              summary: "Warn",
-              detail:
-                "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡",
-            });
-            this.map.removeLayer(layer);
-            this.removeShape();
-            this.ServiceService.disablebutton = false;
-          }
-        });
-      }
-      // Set the map view to the calculated center and zoom level
-      // Fit the bounds with the new maxZoom level
-
       this.aaa.push(this.drawnShape);
       // this.onDatumChange()
       this.ServiceService.shapes = this.aaa;
       this.sample = this.drawnShape;
     }
+  }
+  public processImportedShapesXLSXmulti(data: any[]): void {
+    console.log("dataaaa", data);
+    // Remove the header row from the data
+    const coordinates = data.slice(1);
+    console.log("coordinatesmultiple", coordinates);
+    //this.ServiceService.coordinate.push(coordinates);
+    this.ServiceService.coordinate.push(coordinates);
+
+    console.log(
+      "🚀 ~ processImportedShapesXLSXmulti ~ utmCoordinates:",
+      this.allmultiplshape
+    );
+
+    const latLngs = coordinates.map((row) => {
+      console.log(row[0], row[1], row[3], row[2]);
+      if (row[0] !== undefined) {
+        return this.conveUTMToLatLngWritexlsx(row[0], row[1], row[3], row[2]);
+      }
+    });
+
+    this.allmultiplshape.push(latLngs);
+
+    // if (!this.ServiceService.check) {
+    //   console.log("Shape created:alllatlong", this.alllatlongPlot);
+    //   if (this.alllatlongPlot.length === 0) {
+    //     const toast = this.notificationsService.warn(
+    //       "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡"
+    //     );
+    //     return;
+    //   }
+    //   let allVertices = [];
+
+    //   // Iterate over each array in alllatlongPlot to extract the vertices of each polygon
+    //   this.alllatlongPlot.forEach((array) => {
+    //     console.log("🚀 ~ this.alllatlongPlot.forEach ~ array:", array);
+    //     let vertices = array.map((coord) => {
+    //       return L.latLng(coord.lat, coord.lng);
+    //     });
+    //     allVertices = allVertices.concat(vertices);
+    //     console.log(
+    //       "🚀 ~ this.alllatlongPlot.forEach ~ allVertices:",
+    //       allVertices
+    //     );
+    //   });
+
+    //   // Create a Leaflet polygon (limitedAreaBounds) using the array of vertices collected from all polygons
+    //   this.limitedAreaBounds = L.polygon(allVertices);
+
+    //   if (this.allmultiplshape) {
+    //     console.log(
+    //       "🚀 ~ processImportedShapesXLSX ~ alllatlong:",
+    //       this.allmultiplshape
+    //     );
+    //     this.allmultiplshape.forEach((shape, index) => {
+    //       let randomColor =
+    //         "#" + Math.floor(Math.random() * 16777215).toString(16);
+
+    //       this.drawnShape = L.polygon(shape, { color: randomColor }).addTo(
+    //         this.map
+    //       );
+
+    //       this.editableLayers.addLayer(this.drawnShape);
+    //       if (shape.length < 26) {
+    //         shape.forEach((point, pointIndex) => {
+    //           const markerLatLng = L.latLng(point); // Create a LatLng object for the point
+    //           // Add a marker with a character label to the polygon
+    //           this.addMarkerWithCharacter(
+    //             this.drawnShape,
+    //             markerLatLng,
+    //             String.fromCharCode(65 + pointIndex)
+    //           );
+    //         });
+    //       }
+    //     });
+    //     if (
+    //       this.limitedAreaBounds
+    //         .getBounds()
+    //         .contains(this.drawnShape.getBounds())
+    //     ) {
+    //       this.map.addLayer(this.drawnShape);
+    //     } else {
+    //       const toast = this.notificationsService.warn(
+    //         "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡"
+    //       );
+
+    //       this.map.removeLayer(this.drawnShape);
+    //       this.editableLayers.removeLayer(this.drawnShape);
+    //       this.removeShape();
+    //       this.ServiceService.disablebutton = false;
+    //       return;
+    //     }
+    //   }
+    // }
+
+    console.log(
+      "🚀 ~ processImportedShapesXLSXmulti ~ allmultiplshape:",
+      this.allmultiplshape
+    );
+    this.allmultiplshape.forEach((shape, index) => {
+      let randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+
+      this.drawnShape = L.polygon(shape, { color: randomColor }).addTo(
+        this.map
+      );
+
+      this.editableLayers.addLayer(this.drawnShape);
+      if (shape.length < 26) {
+        shape.forEach((point, pointIndex) => {
+          const markerLatLng = L.latLng(point); // Create a LatLng object for the point
+          // Add a marker with a character label to the polygon
+          this.addMarkerWithCharacter(
+            this.drawnShape,
+            markerLatLng,
+            String.fromCharCode(65 + pointIndex)
+          );
+        });
+      }
+    });
+
+    //this.ServiceService.coordinate.push(latLngs[0])
+    console.log("alllatlong", latLngs);
+
+    if (this.drawnShape instanceof L.Marker) {
+      this.map.setView(this.drawnShape.getLatLng(), this.map.getZoom());
+    } else if (
+      this.drawnShape instanceof L.Circle ||
+      this.drawnShape instanceof L.Polygon
+    ) {
+      // this.map.fitBounds(this.drawnShape.getBounds(),{ maxZoom:15 });
+      const drawnShapeBounds = this.drawnShape.getBounds();
+
+      // Calculate the center of the bounds
+      const center = drawnShapeBounds.getCenter();
+
+      this.map.fitBounds(this.drawnShape.getBounds());
+      this.onDatumChange();
+      // this.setviewFromDatumchange(center);
+      // Specify the zoom level
+      const zoomLevel = 3; // Adjust this to your desired zoom level
+      // Specify the duration of the flyTo animation in seconds
+      const flyToDuration = 5; // 2 seconds
+
+      // Use the flyTo method to animate the map
+      this.map.flyTo(center, zoomLevel, {
+        duration: flyToDuration,
+      });
+    }
+  }
+
+  convertToMultiPoints(pointsArray: Array<Array<Array<string>>>): string {
+    let multiPointString = "";
+
+    pointsArray.forEach((polygonPoints) => {
+      const multiPointArray = polygonPoints
+        .map((point) => `${point[1]} ${point[0]}`)
+        .join(", ");
+      multiPointString += `POLYGON((${multiPointArray})), `;
+    });
+
+    // Remove the trailing comma and space
+    multiPointString = multiPointString.slice(0, -2);
+    console.log(
+      "🚀 ~ convertToMultiPoints ~ multiPointString:",
+      multiPointString
+    );
+    let gezone = this.convertToMultiPointgeozone(pointsArray);
+    console.log("🚀 ~ convertToMultiPoints ~ gezone:", gezone);
+
+    return multiPointString;
+  }
+  convertToMultiPointgeozone(points: Array<Array<Array<string>>>): string {
+    const polygons = points.map((polygonPoints) => {
+      // Check if the input points form a valid polygon
+      if (
+        polygonPoints.length < 3 || // At least three points are required for a polygon
+        polygonPoints[0][3] !== polygonPoints[polygonPoints.length - 1][3] || // Check if the first and last points are the same
+        polygonPoints[0][2] !== polygonPoints[polygonPoints.length - 1][2]
+      ) {
+        // Indicate an invalid polygon
+        return "Invalid polygon: The first and last points must be the same.";
+      }
+
+      // Remove the last point if it's identical to the first point
+      if (
+        polygonPoints.length > 1 &&
+        polygonPoints[0][0] === polygonPoints[polygonPoints.length - 2][0] &&
+        polygonPoints[0][1] === polygonPoints[polygonPoints.length - 2][1]
+      ) {
+        polygonPoints.pop();
+      }
+
+      const multiPointArray = polygonPoints
+        .map((point) => `${point[1]} ${point[0]} ${point[2]} ${point[3]}`)
+        .join(", ");
+
+      return `POLYGON((${multiPointArray}))`;
+    });
+
+    return polygons.join(", ");
   }
 
   updateplote(filtertheshape: any) {
@@ -4064,29 +4381,118 @@ export class GisMapComponent implements AfterViewInit {
     link.click();
     window.URL.revokeObjectURL(url);
   }
-  // convertToCSV(data: any[]): void {
-  //   console.log(
-  //     "🚀 ~ file: gis-map.component.ts:3111 ~ convertToCSV ~ data:",
-  //     data
-  //   );
+  convertToCSV(data: any[]): void {
+    console.log(
+      "🚀 ~ file: gis-map.component.ts:3111 ~ convertToCSV ~ data:",
+      data
+    );
 
-  //   // Convert JSON data to CSV format
-  //   const csv = json2csv.parse(data);
+    let utmCoordinateslast = data;
+    const subtract_northing = 207.34388375;
+    const subtract_easting = 95.4782061405;
 
-  //   // Create a Blob containing the CSV data
-  //   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    utmCoordinateslast = utmCoordinateslast.map((item) => {
+      item.northing += subtract_northing;
+      item.easting += subtract_easting;
+      return item; // Return the modified item
+    });
 
-  //   // Save the file
-  //   const fileName = "shapes.csv";
-  //   const url = window.URL.createObjectURL(blob);
-  //   const link = document.createElement("a");
-  //   link.href = url;
-  //   link.setAttribute("download", fileName);
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-  //   window.URL.revokeObjectURL(url);
-  // }
+    // Add constant values
+    const zone = 37;
+    const hemisphere = "P";
+
+    // Convert data to CSV format
+    let csvContent = "";
+
+    const headers = ["northing", "easting", "hemisphere", "zone"];
+    csvContent += headers.join(",") + "\n";
+
+    // Add constant values to each row
+    // Add constant values to each row
+    utmCoordinateslast.forEach((item, index) => {
+      csvContent +=
+        item.northing + "," + item.easting + "," + hemisphere + "," + zone;
+      if (index !== utmCoordinateslast.length - 1) {
+        // Add new line if it's not the last row
+        csvContent += "\n";
+      }
+    });
+    // Create a blob with CSV content
+    const blob = new Blob([csvContent], { type: "text/csv" });
+
+    // Create a temporary URL for the blob
+    const url = window.URL.createObjectURL(blob);
+
+    // Create a link and trigger the download
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "shapes.csv");
+    document.body.appendChild(link);
+    link.click();
+
+    // Cleanup
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
+  convertToCSVondrwaing(data: any[]): void {
+    const utmCoordinateslast = data;
+    console.log(
+      "🚀 ~ convertToCSVondrwaing ~ utmCoordinateslast:",
+      utmCoordinateslast
+    );
+    const subtract_northing = 207.34388375;
+    const subtract_easting = 95.4782061405;
+
+    for (let i = 0; i < utmCoordinateslast.length; i++) {
+      utmCoordinateslast[i].northing -= subtract_northing;
+      utmCoordinateslast[i].easting -= subtract_easting; // Corrected subtraction
+    }
+
+    console.log(
+      "🚀 ~ utmCoordinateslast=utmCoordinateslast.map ~ utmCoordinateslast:",
+      utmCoordinateslast
+    );
+
+    // Add constant values
+    const zone = 37;
+    let hemisphere = "P";
+
+    // Convert data to CSV format
+    let csvContent = "";
+
+    // Add headers to CSV
+    const headers = ["northing", "easting", "hemisphere", "zone"];
+    csvContent += headers.join(",") + "\n";
+
+    // Add constant values to each row
+    // Add constant values to each row
+    utmCoordinateslast.forEach((item, index) => {
+      csvContent +=
+        item.northing + "," + item.easting + "," + hemisphere + "," + zone;
+      if (index !== utmCoordinateslast.length - 1) {
+        // Add new line if it's not the last row
+        csvContent += "\n";
+      }
+    });
+
+    // Create a blob with CSV content
+    const blob = new Blob([csvContent], { type: "text/csv" });
+
+    // Create a temporary URL for the blob
+    const url = window.URL.createObjectURL(blob);
+
+    // Create a link and trigger the download
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "shapes.csv");
+    document.body.appendChild(link);
+    link.click();
+
+    // Cleanup
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
+
   updateMapProjection(): void {
     // Define the projection transformations for each datum
     const wgs84Projection = "+proj=longlat +datum=WGS84 +no_defs";
@@ -4370,7 +4776,6 @@ export class GisMapComponent implements AfterViewInit {
       zone: utmCoords.zoneNum,
     };
   }
-
   conveUTMToLatLng(
     northing: number,
     easting: number,
@@ -4437,8 +4842,8 @@ export class GisMapComponent implements AfterViewInit {
     //   lng: latLngCoords.longitude,
     // };
     return {
-      lat: latLngCoords.latitude,
-      lng: latLngCoords.longitude,
+      lat: latLngCoords.latitude + 0.001876,
+      lng: latLngCoords.longitude + 0.0008668,
     };
   }
   conveUTMToLatLngWritexlsxexport(
@@ -4490,7 +4895,7 @@ export class GisMapComponent implements AfterViewInit {
       latLngCoords.latitude,
       latLngCoords.longitude,
       37,
-      "N"
+      "P"
     );
     console.log(
       "🚀 ~ file: gis-map.component.ts:3509 ~ checkUTMtolatlong ~ utmCoords:",
@@ -4668,6 +5073,109 @@ export class GisMapComponent implements AfterViewInit {
         console.error("Error taking screenshot:", error);
       });
   }
+  getCSVTemplate(): void {
+    // Define constant values
+    const zone = 37;
+    const hemisphere = "P";
+
+    // Define headers
+    const headers = ["northing", "easting", "hemisphere", "zone"];
+
+    // Sample data
+    const sampleData = [
+      {
+        northing: 998101.614079862,
+        easting: 473258.9323678574,
+        hemisphere: "P",
+        zone: 37,
+      },
+      {
+        northing: 998115.3640795118,
+        easting: 473256.5873595017,
+        hemisphere: "P",
+        zone: 37,
+      },
+      {
+        northing: 998117.7077959186,
+        easting: 473270.6576056435,
+        hemisphere: "P",
+        zone: 37,
+      },
+      {
+        northing: 998103.3327965328,
+        easting: 473273.0026125555,
+        hemisphere: "P",
+        zone: 37,
+      },
+      {
+        northing: 998101.614079862,
+        easting: 473258.9323678574,
+        hemisphere: "P",
+        zone: 37,
+      },
+    ];
+
+    // Construct CSV template
+    let csvContent = headers.join(",") + "\n";
+    sampleData.forEach((item) => {
+      csvContent +=
+        item.northing +
+        "," +
+        item.easting +
+        ',"' +
+        item.hemisphere +
+        '",' +
+        item.zone +
+        "\n";
+    });
+
+    // Create a blob with CSV content
+    const blob = new Blob([csvContent], { type: "text/csv" });
+
+    // Create a temporary URL for the blob
+    const url = window.URL.createObjectURL(blob);
+
+    // Create a link and trigger the download
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "template.csv");
+    document.body.appendChild(link);
+    link.click();
+
+    // Cleanup
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
+
+  parsePolygons(): any[] {
+    let polygonsString = `POLYGON((474581.05 1001760.431 P 37, 474589.45 1001762.731 P 37, 474588.77 1001766.871 P 37, 474586.36 1001766.241 P 37, 474585.49 1001769.241 P 37, 474578.97 1001767.501 P 37, 474581.05 1001760.431 P 37, P 37)), 
+  POLYGON((474583.15 1001748.271 P 37, 474590.28 1001750.901 P 37, 474587.83 1001759.431 P 37, 474586.34 1001759.051 P 37, 474586 1001760.291 P 37, 474583.92 1001759.841 P 37, 474584.33 1001758.581 P 37, 474580.7 1001757.671 P 37, 474583.15 1001748.271 P 37, P 37)), 
+  POLYGON((474578.49 1001739.151 P 37, 474580.73 1001747.931 P 37, 474573.67 1001749.651 P 37, 474571.28 1001740.781 P 37, 474578.49 1001739.151 P 37 P 37))`;
+
+    const polygons = polygonsString
+      .split("),")
+      .map((polygon) => `${polygon.trim()})`);
+    console.log("🚀 ~ parsePolygons ~ polygons:", polygons);
+    return polygons;
+  }
+
+  convertArray(inputArray: any[]): any[][][] {
+    const outputArray = [];
+    inputArray.forEach((item) => {
+      const coordinates = [
+        item.northing.toFixed(2),
+        item.easting.toFixed(2),
+        item.hemisphere,
+        item.zone.toString(),
+      ];
+      outputArray.push([coordinates]);
+    });
+    return outputArray;
+  }
+  updateProperties() {
+    // Update your properties here
+    this.cdr.detectChanges(); // Manually trigger change detection
+  }
 }
 
 // Define the Layer interface
@@ -4678,4 +5186,10 @@ interface Layer {
 }
 interface CustomTreeNode extends TreeNode {
   selected?: boolean;
+}
+export interface Coordinates {
+  northing: number;
+  easting: number;
+  hemisphere: string;
+  zone: number;
 }

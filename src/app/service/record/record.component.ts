@@ -620,12 +620,13 @@ export class RecordComponent implements OnChanges {
             if (rec.procLicense_Services.length > 0) {
               RID = rec.procLicense_Services[0].recordNo;
             }
+            console.log("🚀 ~ RecordComponent ~ .subscribe ~ RID:", RID);
             this.service
               .getDocumentArcbyid(RID)
               .subscribe((DocumentArc: any) => {
                 if (DocumentArc) {
-                  this.DocumentArc = DocumentArc.procDocument_Archives.filter(
-                    (x) => x.document_Number == RID
+                  this.DocumentArc = DocumentArc.procDocument_Archives.find(
+                    (x) => x.document_Number === RID
                   );
                   console.log("this.DocumentArc", DocumentArc);
                   if (this.DocumentArc.length > 0) {
