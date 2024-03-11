@@ -1200,6 +1200,12 @@ export class ServiceService {
   getcustomerbycusid(custID) {
     return this.http.get(this.customerUrl + "/" + custID);
   }
+  disableBrowserBackButton(){
+    window.history.pushState(null, null, window.location.href);
+      window.onpopstate = function () {
+          window.history.go(1);
+      };
+}
 }
 
 export class UserRole {
