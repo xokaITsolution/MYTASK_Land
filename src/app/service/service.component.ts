@@ -2272,6 +2272,29 @@ export class ServiceComponent implements OnInit {
       (DropDownList) => {
         this.DropDownList = DropDownList;
         this.DropDownList = Object.assign([], this.DropDownList);
+        if (
+          this.serviceService.Service_ID ==
+            "7D256139-858B-48E7-A298-CAE5438E526C".toLocaleLowerCase() &&
+          this.licenceData.Parcel_ID == null
+        ) {
+          this.DropDownList = this.DropDownList.filter(
+            (x) =>
+              x.task_rules_code !=
+                "266E16BA-0D84-44D1-9CCE-4ACCA4947E12".toLocaleLowerCase() &&
+              x.task_rules_code !=
+                "7D84E859-23F2-478B-815B-94197F420906".toLocaleLowerCase()
+          );
+        } else if (
+          this.serviceService.Service_ID ==
+            "7D256139-858B-48E7-A298-CAE5438E526C".toLocaleLowerCase() &&
+          this.licenceData.Parcel_ID != null
+        ) {
+          this.DropDownList = this.DropDownList.filter(
+            (x) =>
+              x.task_rules_code !=
+              "624F38E1-676C-4C5B-B232-AE3DAFAFF4BF".toLocaleLowerCase()
+          );
+        }
         console.log("DropDownList", DropDownList);
       },
       (error) => {

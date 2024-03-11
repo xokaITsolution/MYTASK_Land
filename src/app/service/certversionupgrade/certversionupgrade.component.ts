@@ -137,8 +137,17 @@ export class CertversionupgradeComponent implements OnChanges {
             element.RoleId ==
               "C8E6C4E6-564F-40B9-B672-B8B6D2049777".toLocaleLowerCase()
           ) {
-            this.isnotprint = false;
-            break;
+            if (
+              this.serviceService.Service_ID ==
+                "7D256139-858B-48E7-A298-CAE5438E526C".toLocaleLowerCase() &&
+              this.licenceData.Parcel_ID == null
+            ) {
+              this.isnotprint = true;
+              break;
+            } else {
+              this.isnotprint = false;
+              break;
+            }
           } else {
             console.log("responseresponseresponse", element);
             this.isnotprint = true;
