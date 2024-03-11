@@ -2295,7 +2295,7 @@ export class ServiceComponent implements OnInit {
               "624F38E1-676C-4C5B-B232-AE3DAFAFF4BF".toLocaleLowerCase()
           );
         }
-        console.log("DropDownList", DropDownList);
+        console.log("DropDownList", this.DropDownList);
       },
       (error) => {
         console.log("error");
