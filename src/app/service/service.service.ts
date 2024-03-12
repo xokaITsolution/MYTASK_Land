@@ -306,7 +306,7 @@ export class ServiceService {
     return this.http.get(this.DocumentArc);
   }
   getDocumentArcbyid(RID) {
-    const url = `${this.DocumentArc}/?=${RID}`;
+    const url = `${this.DocumentArc}/${RID}`;
     return this.http.get(url);
   }
   getDocIdByAppNo(AppNo) {

@@ -127,10 +127,10 @@ export class FilesComponent implements OnChanges {
   }
 
   ngOnChanges(changes) {
-    this.username=environment.username
-    this.serviceService.getaspnetuser().subscribe(r=>{
-      this.userid=r[0].userid
-    })
+    this.username = environment.username;
+    this.serviceService.getaspnetuser().subscribe((r) => {
+      this.userid = r[0].userid;
+    });
     console.log("appppppppno", this.AppNo);
     console.log("DocdddIDD", this.DocIDlist, this.RequiredDocs, this.hide);
 
@@ -274,9 +274,8 @@ export class FilesComponent implements OnChanges {
   }
   getAllDocumentprebydoc(RequerdDocpre) {
     // this.loadingPreDoc = true;
-        console.log("pdf filessss", RequerdDocpre);
-      
-      }
+    console.log("pdf filessss", RequerdDocpre);
+  }
   getAllDocumentpre(Licence_Service_ID, DocID) {
     this.loadingPreDoc = true;
     let updatedArray: any[] = [];
@@ -295,7 +294,8 @@ export class FilesComponent implements OnChanges {
                 let fileData = JSON.parse(atob(SavedFiles[j].document));
 
                 let { type, data } = fileData;
-                this.RecordComponent.RequerdDocspre[i].hidden = SavedFiles[j].UserId;
+                this.RecordComponent.RequerdDocspre[i].hidden =
+                  SavedFiles[j].UserId;
                 this.RecordComponent.RequerdDocspre[i].mimeType = type;
                 this.RecordComponent.RequerdDocspre[i].File =
                   "data:" + type + ";base64, " + data;
@@ -327,10 +327,9 @@ export class FilesComponent implements OnChanges {
     );
   }
   showdiv(i) {
-      this.selectdiv = i;
-      this.hideDiv=false
-      
-    
+    this.selectdiv = i;
+    this.hideDiv = false;
+
     console.log("this.selectdiv", this.selectdiv);
   }
 
@@ -461,7 +460,7 @@ export class FilesComponent implements OnChanges {
           ) {
             this.RecordComponent.RequerdDocspre[i].File = "";
             this.RecordComponent.RequerdDocspre[i].document_code = "";
-            this.hideDiv=true
+            this.hideDiv = true;
             this.updated.emit({ docs: this.RecordComponent.RequerdDocspre });
           }
         }
@@ -478,9 +477,21 @@ export class FilesComponent implements OnChanges {
   }
   onFileDropped($file) {
     // Handle the dropped files here
-    console.log("Dropped files:", $file);
-    // Perform any necessary operations with the files
+    console.log("Dropped files:", $file.target.files);
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    let totalSize = 0;
+    for (let i = 0; i < $file.target.files.length; i++) {
+      totalSize += $file.files[i].size;
+    }
+    if (totalSize > maxSize) {
+      const toast = this.notificationsService.error(
+        `The total size of selected files exceeds the maximum allowed size.(5MB)`
+      );
+      return false;
+    }
+    // Proceed with uploading the files
 
+    // Perform any necessary operations with the files
     this.uploadedFile($file);
   }
 
@@ -726,7 +737,7 @@ export class FilesComponent implements OnChanges {
             RequiredDoc.fileName = name;
             RequiredDoc.mimeType = type;
             RequiredDoc.document_code = message[2];
-            this.getAllDocumentpre( this.AppNo,this.DocID)
+            this.getAllDocumentpre(this.AppNo, this.DocID);
             fild.clear();
             // this.RecordComponent.RequerdDocspre.forEach((item, index) => {
             //   this.PreviewshowdialogeArray[index] = true; // Initialize all dialog variables to false
@@ -742,7 +753,7 @@ export class FilesComponent implements OnChanges {
               "Success",
               "Uploaded successfully"
             );
-           
+
             this.updated.emit({ docs: this.RecordComponent.RequerdDocspre });
           } else {
             console.log("error");

@@ -296,7 +296,7 @@ export class RecordComponent implements OnChanges {
       this.useNamelist
     );
     if (this.useNamelist) {
-      this.getCustomerLookUP();
+      //this.getCustomerLookUP();
       this.gettask();
       //  this.Tasks('')
       this.getservice();
@@ -625,10 +625,14 @@ export class RecordComponent implements OnChanges {
               .getDocumentArcbyid(RID)
               .subscribe((DocumentArc: any) => {
                 if (DocumentArc) {
-                  this.DocumentArc = DocumentArc.procDocument_Archives.find(
-                    (x) => x.document_Number === RID
+                  this.DocumentArc = DocumentArc.procDocument_Archives.filter(
+                    (x: any) => x.document_Number == RID
                   );
-                  console.log("this.DocumentArc", DocumentArc);
+                  console.log(
+                    "this.DocumentArc",
+                    DocumentArc,
+                    this.DocumentArc
+                  );
                   if (this.DocumentArc.length > 0) {
                     this.recordDocumnet = this.DocumentArc[0];
                     if (this.language == "amharic") {
@@ -1075,6 +1079,16 @@ export class RecordComponent implements OnChanges {
     });
   }
   async add() {
+    if (
+      this.recordDocumnet.document_Number === null ||
+      this.recordDocumnet.document_Number == ""
+    ) {
+      const toast = this.notificationsService.error(
+        "Error",
+        "document number is mandatory/የሰነድ ቁጥር ግዴታ ነው"
+      );
+      return;
+    }
     if (this.language == "amharic") {
       this.recordDocumnet.regstration_Date = await this.getEthiopianToGregorian(
         this.recordDocumnet.regstration_Date
@@ -1331,6 +1345,16 @@ export class RecordComponent implements OnChanges {
     // this.Upload(Attachments.File);
   }
   async update() {
+    if (
+      this.recordDocumnet.document_Number === null ||
+      this.recordDocumnet.document_Number == ""
+    ) {
+      const toast = this.notificationsService.error(
+        "Error",
+        "document number is mandatory/የሰነድ ቁጥር ግዴታ ነው"
+      );
+      return;
+    }
     if (this.language == "amharic") {
       this.recordDocumnet.regstration_Date = await this.getEthiopianToGregorian(
         this.recordDocumnet.regstration_Date
@@ -1612,32 +1636,32 @@ export class RecordComponent implements OnChanges {
       this.shouldGetTasks = false;
     }
   }
-  getCustomerLookUP() {
-    this.service.getcustomerby().subscribe(
-      (CustomerLookUP: any) => {
-        this.CustomerLookUP = CustomerLookUP.procCustomers;
-        for (let i = 0; i < this.CustomerLookUP.length; i++) {
-          this.CustomerLookUP[i].FullName_AM =
-            this.CustomerLookUP[i].applicant_First_Name_AM +
-            " " +
-            this.CustomerLookUP[i].applicant_Middle_Name_AM +
-            " " +
-            this.CustomerLookUP[i].applicant_Last_Name_AM;
-          this.CustomerLookUP[i].FullName_EN =
-            this.CustomerLookUP[i].applicant_First_Name_EN +
-            " " +
-            this.CustomerLookUP[i].applicant_Middle_Name_En +
-            " " +
-            this.CustomerLookUP[i].applicant_Last_Name_EN;
-          const customerID = this.CustomerLookUP[i].customer_ID;
-        }
-        console.log("CustomerLookUP", this.CustomerLookUP[0].customer_ID);
-      },
-      (error) => {
-        console.log("error");
-      }
-    );
-  }
+  // getCustomerLookUP() {
+  //   this.service.getcustomerby().subscribe(
+  //     (CustomerLookUP: any) => {
+  //       this.CustomerLookUP = CustomerLookUP.procCustomers;
+  //       for (let i = 0; i < this.CustomerLookUP.length; i++) {
+  //         this.CustomerLookUP[i].FullName_AM =
+  //           this.CustomerLookUP[i].applicant_First_Name_AM +
+  //           " " +
+  //           this.CustomerLookUP[i].applicant_Middle_Name_AM +
+  //           " " +
+  //           this.CustomerLookUP[i].applicant_Last_Name_AM;
+  //         this.CustomerLookUP[i].FullName_EN =
+  //           this.CustomerLookUP[i].applicant_First_Name_EN +
+  //           " " +
+  //           this.CustomerLookUP[i].applicant_Middle_Name_En +
+  //           " " +
+  //           this.CustomerLookUP[i].applicant_Last_Name_EN;
+  //         const customerID = this.CustomerLookUP[i].customer_ID;
+  //       }
+  //       console.log("CustomerLookUP", this.CustomerLookUP[0].customer_ID);
+  //     },
+  //     (error) => {
+  //       console.log("error");
+  //     }
+  //   );
+  // }
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(
       template,
