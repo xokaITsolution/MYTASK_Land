@@ -630,10 +630,10 @@
                       </div>
                       <div *ngIf="RequerdDocpre.File">
                         <div class="alert alert-info">
-                          <a [href]="RequerdDocpre.File"
+                          <!-- <a [href]="RequerdDocpre.File"
                             [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType].extension">Attached
                             -
-                            Please download!</a>
+                            Please download!</a> -->
                         </div>
     
     
@@ -642,7 +642,6 @@
     
                           <button type="button" class="btn btn-primary" id="Preview{{i}}"
                             (click)="PreviewshowdialogeArray[i] = true">Preview</button>
-    
                           <!-- <p-dialog [(visible)]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
                             [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                               'max-height': '80vh','min-height':'250px'}"> -->
@@ -652,8 +651,14 @@
                                 strokeWidth="4"></p-progressSpinner>
                             </div>
                             <div class="modal-body">
-                              <iframe width="100%" [src]="RequerdDocpre.File" alt="FileUploaded"
-                                class="pdf-iframe"></iframe>
+                              <!-- <iframe width="100%" [src]="RequerdDocpre.File" alt="FileUploaded"
+                                class="pdf-iframe"></iframe> -->
+                                <div class="alert alert-info">
+                                  <a [href]="RequerdDocpre.File"
+                                    [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType].extension">Attached
+                                    -
+                                    Please download!</a>
+                                </div>
                             </div>
                             <div>
                               <button type="button" class="btn btn-primary"

@@ -1,20 +1,28 @@
-import { Component, ViewChild, ElementRef, Output, EventEmitter, Input } from "@angular/core";
+import {
+  Component,
+  ViewChild,
+  ElementRef,
+  Output,
+  EventEmitter,
+  Input,
+} from "@angular/core";
 import { NotificationsService } from "angular2-notifications";
-
+import { ServiceService } from "src/app/service/service.service";
 
 @Component({
-  selector: 'app-fileuploader',
-  templateUrl: './fileuploader.component.html',
-  styleUrls: ['./fileuploader.component.css']
+  selector: "app-fileuploader",
+  templateUrl: "./fileuploader.component.html",
+  styleUrls: ["./fileuploader.component.css"],
 })
-
-
- export class FileuploaderComponent {
+export class FileuploaderComponent {
   @ViewChild("fileDropRef", { static: false }) fileDropEl: ElementRef;
   files: any[] = [];
- @Output() fileDropped: EventEmitter<any> = new EventEmitter<any>();
- @Input() cleanupload
-constructor(  private notificationsService: NotificationsService,){}
+  @Output() fileDropped: EventEmitter<any> = new EventEmitter<any>();
+  @Input() cleanupload;
+  constructor(
+    private notificationsService: NotificationsService,
+    private serviceService: ServiceService
+  ) {}
   /**
    * on file drop handler
    */
@@ -24,17 +32,18 @@ constructor(  private notificationsService: NotificationsService,){}
   //     console.log("uploadfile",$event);
   // }
   ngOnChanges() {
-    console.log('cleanupload', this.cleanupload)
-    this.cleanupload
-    if(this.cleanupload==true){
+    console.log("cleanupload", this.cleanupload);
+    this.cleanupload;
+    if (this.cleanupload == true) {
       this.files = [];
     }
   }
-   onFileDropped(files: FileList) {
-   
-      this.fileDropped.emit(files);
-    this.prepareFilesList(files);
-    console.log('Uploaded files:',files);
+  onFileDropped(files: FileList) {
+    this.fileDropped.emit(files);
+    if (!this.serviceService.fileexxcedlimit) {
+      this.prepareFilesList(files);
+    }
+    console.log("Uploaded files:", files);
   }
 
   /**
@@ -42,18 +51,23 @@ constructor(  private notificationsService: NotificationsService,){}
    */
   fileInputChangeHandler(event) {
     const files = event.target.files;
-    this.fileBrowseHandler(event,files);
-}
-  fileBrowseHandler(files: FileList,fileprop) {
-    console.log('Uploaded files length:', files,fileprop.length,fileprop.type);
+    this.fileBrowseHandler(event, files);
+  }
+  fileBrowseHandler(files: FileList, fileprop) {
+    console.log(
+      "Uploaded files length:",
+      files,
+      fileprop.length,
+      fileprop.type
+    );
 
     let isPdfOrImage = true;
     for (let i = 0; i < fileprop.length; i++) {
-        const fileType = fileprop[i].type;
-        if (!(fileType === 'application/pdf' || fileType.startsWith('image/'))) {
-            isPdfOrImage = false;
-            break;
-        }
+      const fileType = fileprop[i].type;
+      if (!(fileType === "application/pdf" || fileType.startsWith("image/"))) {
+        isPdfOrImage = false;
+        break;
+      }
     }
 
     if (!isPdfOrImage && fileprop.length > 1) {
@@ -62,15 +76,19 @@ constructor(  private notificationsService: NotificationsService,){}
         "You can not select more than one file unless the files are pdf or image/ፋይሉ ፒዲኤፍ ወይም ምስል ካልሆነ በስተቀር ከአንድ በላይ ፋይሎችን መምረጥ አይቻልም"
       );
     } else {
-        // If files are either PDFs or images or there's only one file selected, 
-        // allow selecting multiple files and emit an event with all files.
-        console.log('Multiple files allowed:', files);
-        this.fileDropped.emit(files);
+      // If files are either PDFs or images or there's only one file selected,
+      // allow selecting multiple files and emit an event with all files.
+      console.log("Multiple files allowed:", files);
+      console.log(
+        "🚀 ~ FileuploaderComponent ~ fileBrowseHandler ~ files:",
+        files
+      );
+      this.fileDropped.emit(files);
+      if (!this.serviceService.fileexxcedlimit) {
         this.prepareFilesList(files);
+      }
     }
-}
-
-
+  }
 
   /**
    * Delete file from files list
@@ -110,15 +128,14 @@ constructor(  private notificationsService: NotificationsService,){}
    */
   prepareFilesList(files) {
     console.log(files);
-  
-     let   eachfiles= files.target.files
-    
-    
+
+    let eachfiles = files.target.files;
+
     for (const item of eachfiles) {
       item.progress = 0;
       this.files.push(item);
     }
-   // this.fileDropEl.nativeElement.value = "";
+    // this.fileDropEl.nativeElement.value = "";
     this.uploadFilesSimulator(0);
   }
 

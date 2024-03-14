@@ -99,6 +99,7 @@
     "utm-latlng": "^1.0.7",
     "xlsx": "^0.17.2",
     "xml-js": "^1.6.11",
+    "zlib": "^1.0.5",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {

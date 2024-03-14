@@ -11,7 +11,6 @@
           <th translate>Date</th>
           <th translate>Task Description</th>
           <th translate>Task Status</th>
-          <th translate>Message</th>
           <th translate>Type</th>
           <th></th>
         </tr>
@@ -36,8 +35,8 @@
           <td>{{task.description}}</td>
           <td>{{task.status}}</td>
           <!-- (mouseenter)="task.showButton = true" (mouseleave)="task.showButton = false" -->
-          <td >
-            <span (click)="showMessage(task.todo_comment, task)" translate>
+          <td  >
+            <span *ngIf="task.status !== 'O'" (click)="showMessage(task.todo_comment, task)"  translate>
               <span class="pi pi-comment"></span>
               Show message
             </span>
