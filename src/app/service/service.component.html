@@ -346,7 +346,7 @@
 </div>
 <div *ngIf="okdb" _ngcontent-c5="" class="col-md-12" ><!----><div _ngcontent-c5="" class="ng-star-inserted"><div _ngcontent-c5="" class="p-3 bg-success text-white"><table _ngcontent-c5="" class="table"><thead _ngcontent-c5=""><tr _ngcontent-c5=""><th _ngcontent-c5="" scope="col"><span _ngcontent-c5="" translate="">Status: Database</span></th></tr></thead></table></div></div><!----></div>
 
-<div *ngIf="!okdb"  _ngcontent-c5="" class="col-md-12" ><!----><div _ngcontent-c5="" class="ng-star-inserted"><div _ngcontent-c5="" class="p-3 bg-danger text-white"><table _ngcontent-c5="" class="table"><thead _ngcontent-c5=""><tr _ngcontent-c5=""><th _ngcontent-c5="" scope="col"><span _ngcontent-c5="" translate="">Status: Database</span></th></tr></thead></table></div></div><!----></div>
+<div *ngIf="!okdb"  _ngcontent-c5="" class="col-md-12"  ><!----><div _ngcontent-c5="" class="ng-star-inserted"><div _ngcontent-c5="" class="p-3 bg-danger text-white"><table _ngcontent-c5="" class="table"><thead _ngcontent-c5=""><tr _ngcontent-c5=""><th _ngcontent-c5="" scope="col"><span _ngcontent-c5="" translate="">Status: Database</span></th></tr></thead></table></div></div><!----></div>
 
 
 
@@ -625,9 +625,24 @@
                           <p-progressSpinner [style]="{ width: '50px', height: '50px' }" strokeWidth="4"></p-progressSpinner>
                         </div> -->
     
-                      <div class="alert alert-warning" role="alert" *ngIf="!RequerdDocpre.File && !loadingPreDoc">
+                      <div class="alert alert-warning" role="alert" *ngIf="!RequerdDocpre.document_code">
                         {{language === 'amharic' ? 'ሰነድ አልገባለትም!' : 'Document not uploaded!'}}
                       </div>
+                      <div *ngIf="RequerdDocpre.document_code">
+                      <button type="button" class="btn btn-primary" id="Preview{{i}}"
+                            (click)="PreviewshowdialogeArray[i]=true;getdatadoc(RequerdDocpre.document_code)">Preview</button></div>
+                              
+                            <p-dialog [(visible)]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
+                            [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                              'max-height': '80vh','min-height':'250px'}">
+                          <div *ngIf="documentss">
+                              <iframe width="100%" alt="FileUPloaded" class="pdf-ifram"  [src]="documents">
+
+                              </iframe></div>
+                              <div *ngIf="!documentss">
+                                <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s"></p-progressSpinner></div>
+                             
+                             </p-dialog>
                       <div *ngIf="RequerdDocpre.File">
                         <div class="alert alert-info">
                           <!-- <a [href]="RequerdDocpre.File"
@@ -641,7 +656,7 @@
                           *ngIf="mimeExtension[RequerdDocpre.mimeType].extension == 'pdf'||mimeExtension[RequerdDocpre.mimeType].extension == 'xlsx'">
     
                           <button type="button" class="btn btn-primary" id="Preview{{i}}"
-                            (click)="PreviewshowdialogeArray[i] = true">Preview</button>
+                            (click)="PreviewshowdialogeArray[i] = true;">Preview</button>
                           <!-- <p-dialog [(visible)]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
                             [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                               'max-height': '80vh','min-height':'250px'}"> -->

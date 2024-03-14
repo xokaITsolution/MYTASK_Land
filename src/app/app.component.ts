@@ -35,6 +35,10 @@ export class AppComponent {
   //   history.pushState(null, null, window.location.href);
   // }
 
+  @HostListener('window:popstate', ['$event'])
+  // onPopState(event?) {
+  //   this.location.forward();
+  // }
   changlang(lang) {
     console.log("lang", lang);
     this.translate.use(lang);

@@ -19,7 +19,7 @@ export const environment = {
   location: window["locations"],
   //username: "city_mgr",
   //username: "0910156313",
-
+  rootPathApii:window["rootPathApii"],
   // username: "BL_Cashier",
   phisicalPath: "./assets/i18n/",
   Lang_code: window["lang"],
