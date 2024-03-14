@@ -55,7 +55,7 @@ import { ConfirmationService } from "primeng/api";
 import { PaymentComponent } from "./payment/payment.component";
 import { TabViewModule } from "primeng/tabview";
 import { CertletterComponent } from "./certletter/certletter.component";
-import { PdfViewerModule } from "ng2-pdf-viewer";
+
 //import { BackButtonDisableModule } from 'angular-disable-browser-back-button';
 //material
 import {
@@ -66,7 +66,6 @@ import {
   MatPaginatorModule,
   MatSortModule,
   MatGridListModule,
-
   MatCardModule,
   MatCheckboxModule,
   MatProgressBarModule,
@@ -114,7 +113,7 @@ import { ProgressComponent } from "../shared/fileUploader/progress/progress.comp
     //BackButtonDisableModule.forRoot({
     //  preserveScrollPosition: true
     // }),
-    PdfViewerModule,
+
     ReactiveFormsModule,
     NgbModule,
     FormsModule,
