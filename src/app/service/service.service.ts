@@ -61,7 +61,7 @@ export class ServiceService {
   private All_Service = environment.rootpath2 + "Service";
   private Task_Service = environment.rootpath2 + "getTasks";
   private All_Org = environment.rootpath2 + "AllOrg";
-  public customerUrl = environment.rootPathApi + "Customer/procCustomer";
+  public customerUrl = environment.rootPathApii + "PdfCompressor/PdfCompressor/base64";
   public Username =
     environment.rootPathApi + "view/View_GetcustomerAllWithVitalId/";
   public CustomerId =
@@ -1218,6 +1218,9 @@ export class ServiceService {
   }
   getcustomerby() {
     return this.http.get(this.customerUrl);
+  }
+  getcustcompress(aa) {
+    return this.http.get(this.customerUrl+aa);
   }
   getcustomerbycusid(custID) {
     return this.http.get(this.customerUrl + "/" + custID);
