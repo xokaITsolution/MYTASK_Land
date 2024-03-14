@@ -633,16 +633,30 @@
                             (click)="PreviewshowdialogeArray[i]=true;getdatadoc(RequerdDocpre.document_code)">Preview</button></div>
                               
                             <p-dialog [(visible)]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
-                            [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
-                              'max-height': '80vh','min-height':'250px'}">
+                             [baseZIndex]="10000" [contentStyle]="{ 'overflow-x': 'hidden', 
+                              'max-height': '80vh','min-height':'400px'}" [closable]="false">
                           <div *ngIf="documentss">
-                              <iframe width="100%" alt="FileUPloaded" class="pdf-ifram"  [src]="documents">
+                            <div
+                          *ngIf="mimeExtension[this.mimeTypee].extension == 'pdf'">
+                              <iframe width="100%" height="400px" alt="FileUPloaded" class="pdf-ifram"  [src]="documents">
 
                               </iframe></div>
+                              <div
+                      *ngIf="mimeExtension[this.mimeTypee].extension == 'jpg' || mimeExtension[this.mimeTypee].extension == 'png' || mimeExtension[this.mimeTypee].extension == 'gif'">
+                      <img width="100%" height="400px" [src]="documents" alt="FileUPloaded" />
+                    </div>
+                    <div *ngIf="mimeExtension[this.mimeTypee].extension != 'pdf' && mimeExtension[this.mimeTypee].extension != 'jpg' &&  mimeExtension[this.mimeTypee].extension != 'png' && mimeExtension[this.mimeTypee].extension != 'gif'">
+                      <a [href]="documents"
+                      [download]="RequerdDocpre.description_en + '.' + mimeExtension[this.mimeTypee].extension" style="font-weight: bolder; font-size: larger;font-style: italic;">Attached
+                      -
+                      Please download!</a>
+                    </div>
+                            
+                            </div>
                               <div *ngIf="!documentss">
                                 <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s"></p-progressSpinner></div>
-                             
-                             </p-dialog>
+                               <p-footer> <button style="align-self: right;" type="button" [hidden]="!documentss" class="btn btn-primary" (click)="PreviewshowdialogeArray[i]=false" translate>Done</button>
+                             </p-footer></p-dialog>
                       <div *ngIf="RequerdDocpre.File">
                         <div class="alert alert-info">
                           <!-- <a [href]="RequerdDocpre.File"

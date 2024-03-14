@@ -102,6 +102,7 @@ export class FilesComponent implements OnChanges {
   hid = [];
   mergedPDFBase64: any;
   currentfild: any;
+
   currentreuerdoc: any;
   mergedfile: any;
   downloadmergedfile: boolean;
@@ -109,6 +110,11 @@ export class FilesComponent implements OnChanges {
   remove: boolean;
   username: string;
   userid: any;
+  documentss: boolean=false;
+  mimeTypee: any;
+  documents: any;
+  preview=false
+  useridfromdoc: any;
   constructor(
     public serviceService: ServiceService,
     // public serviceComponent: ServiceComponent,
@@ -287,7 +293,7 @@ export class FilesComponent implements OnChanges {
   getAllDocumentpre(Licence_Service_ID, DocID) {
     this.loadingPreDoc = true;
     let updatedArray: any[] = [];
-    this.serviceService.getAllDocument(Licence_Service_ID, DocID).subscribe(
+    this.serviceService.getAllDocuments(Licence_Service_ID, DocID).subscribe(
       (SavedFiles) => {
         this.loadingPreDoc = false;
         console.log("pdf fillllle", SavedFiles);
@@ -299,18 +305,18 @@ export class FilesComponent implements OnChanges {
               SavedFiles[j].requirement_code
             ) {
               try {
-                let fileData = JSON.parse(atob(SavedFiles[j].document));
+                // let fileData = JSON.parse(atob(SavedFiles[j].document));
 
-                let { type, data } = fileData;
+                // let { type, data } = fileData;
                 this.RecordComponent.RequerdDocspre[i].hidden =
                   SavedFiles[j].UserId;
-                this.RecordComponent.RequerdDocspre[i].mimeType = type;
-                this.RecordComponent.RequerdDocspre[i].File =
-                  "data:" + type + ";base64, " + data;
-                this.RecordComponent.RequerdDocspre[i].File =
-                  this.sanitizer.bypassSecurityTrustResourceUrl(
-                    this.RecordComponent.RequerdDocspre[i].File
-                  );
+                // this.RecordComponent.RequerdDocspre[i].mimeType = type;
+                // this.RecordComponent.RequerdDocspre[i].File =
+                //   "data:" + type + ";base64, " + data;
+                // this.RecordComponent.RequerdDocspre[i].File =
+                //   this.sanitizer.bypassSecurityTrustResourceUrl(
+                //     this.RecordComponent.RequerdDocspre[i].File
+                //   );
 
                 this.RecordComponent.RequerdDocspre[i].document_code =
                   SavedFiles[j].document_code;
@@ -334,11 +340,26 @@ export class FilesComponent implements OnChanges {
       }
     );
   }
-  showdiv(i) {
-    this.selectdiv = i;
-    this.hideDiv = false;
+  showdiv(doc) {
+    this.documentss=false
+    this.serviceService.getAllDocumentt(doc).subscribe(r=>{
+      let fileData = JSON.parse(atob(r[0].document));
 
-    console.log("this.selectdiv", this.selectdiv);
+                   let { type, data } = fileData;
+
+                   this.mimeTypee = type;
+                   console.log( 'mimeTypeemimeTypee', this.mimeTypee)
+                   let file= "data:" + type + ";base64, " + data;
+  
+                   this.documents= this.sanitizer.bypassSecurityTrustResourceUrl(
+                      file
+                    );
+                     
+                    this.documentss=true
+                    this.useridfromdoc=r[0].userId
+    console.log('responceses',r[0].userId,this.userid)
+    })
+    console.log('documentsdoc')
   }
 
   Uploader(File, RequiredDoc, fild) {
@@ -460,7 +481,7 @@ export class FilesComponent implements OnChanges {
     this.serviceService.RemoveDoc(RequiredDoc.document_code).subscribe(
       (message) => {
         const toast = this.notificationsService.success("Sucess", message);
-
+        this.preview=false
         for (let i = 0; i < this.RecordComponent.RequerdDocspre.length; i++) {
           if (
             this.RecordComponent.RequerdDocspre[i].requirement_code ==

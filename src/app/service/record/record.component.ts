@@ -1378,7 +1378,7 @@ export class RecordComponent implements OnChanges {
     this.loadingPreDoc = true;
     console.log("this.RequerdDocspre", this.RequerdDocspre);
     this.service
-      .getDocumentbytaskssURL(Licence_Service_ID, DocID, taskid)
+      .getAllDocuments(Licence_Service_ID, DocID)
       .subscribe(
         (SavedFiles) => {
           SavedFiles = SavedFiles.filter((x) => x.tasks_task_code == taskid);
@@ -1388,7 +1388,7 @@ export class RecordComponent implements OnChanges {
             this.loadingPreDoc = false;
             this.SavedFilespre = SavedFiles;
             for (let j = 0; j < SavedFiles.length; j++) {
-              if (SavedFiles[j].AttachedBY.trim() != environment.username) {
+              if (SavedFiles[j].attachedBY.trim() != environment.username) {
                 this.hid = false;
               } else {
                 this.hid = true;
@@ -1414,27 +1414,27 @@ export class RecordComponent implements OnChanges {
                 ) {
                   console.log("updatedArray", updatedArray[j]);
                   try {
-                    let fileData = JSON.parse(atob(SavedFiles[j].document));
+                    // let fileData = JSON.parse(atob(SavedFiles[j].document));
 
-                    let { type, data } = fileData;
+                    // let { type, data } = fileData;
 
-                    this.RequerdDocspre[i].mimeType = type;
-                    this.RequerdDocspre[i].File =
-                      "data:" + type + ";base64, " + data;
-                    console.log(
-                      "this.RequerdDocspre[i].File",
-                      SavedFiles[j].document
-                    );
+                    // this.RequerdDocspre[i].mimeType = type;
+                    // this.RequerdDocspre[i].File =
+                    //   "data:" + type + ";base64, " + data;
+                    // console.log(
+                    //   "this.RequerdDocspre[i].File",
+                    //   SavedFiles[j].document
+                    // );
                     this.RequerdDocspre[i].hidden = SavedFiles[j].UserId;
                     console.log(
                       "updatedArrayyyyy",
                       this.RequerdDocspre[i].hidden
                     );
 
-                    this.RequerdDocspre[i].File =
-                      this.sanitizer.bypassSecurityTrustResourceUrl(
-                        this.RequerdDocspre[i].File
-                      );
+                    // this.RequerdDocspre[i].File =
+                    //   this.sanitizer.bypassSecurityTrustResourceUrl(
+                    //     this.RequerdDocspre[i].File
+                    //   );
 
                     this.RequerdDocspre[i].document_code =
                       SavedFiles[j].document_code;

@@ -145,52 +145,52 @@ export class ServiceComponent implements OnInit {
   appliedNow = false;
   countDownString = "";
   warnMessage = "";
-  mimeExtension = {
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
-      extension: "xlsx",
-      previewable: false,
+  mimeExtension = { 
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': {
+      extension: 'xlsx',
+      previewable: false
     },
-    "application/vnd.ms-excel": {
-      extension: "xls",
-      previewable: false,
+    'application/vnd.ms-excel': {
+      extension: 'xls',
+      previewable: false
     },
-    "text/csv": {
-      extension: "csv",
-      previewable: false,
+    'text/csv': {
+      extension: 'csv',
+      previewable: false
     },
-    "application/pdf": {
-      extension: "pdf",
-      previewable: true,
+    'application/pdf': {
+      extension: 'pdf',
+      previewable: true
     },
-    "image/jpeg": {
-      extension: "jpg",
-      previewable: true,
+    'image/jpeg': {
+      extension: 'jpg',
+      previewable: true
     },
-    "image/png": {
-      extension: "png",
-      previewable: true,
+    'image/png': {
+      extension: 'png',
+      previewable: true
     },
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
-      extension: "docx",
-      previewable: false,
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
+      extension: 'docx',
+      previewable: false
     },
-    "application/msword": {
-      extension: "doc",
-      previewable: false,
+    'application/msword': {
+      extension: 'doc',
+      previewable: false
     },
-    "image/gif": {
-      extension: "gif",
-      previewable: true,
+    'image/gif': {
+      extension: 'gif',
+      previewable: true
     },
-    "application/geojson": {
-      extension: "geojson",
-      previewable: false,
+    'application/geojson': {
+      extension: 'geojson',
+      previewable: false
     },
-    "application/x-zip-compressed": {
-      extension: "zip",
-      previewable: false,
+    'application/x-zip-compressed': {
+      extension: 'zip',
+      previewable: false
     },
-  };
+  }
   prepareCertificateFields = {
     FIELD_ONE: "Branch name",
   };
@@ -223,6 +223,8 @@ export class ServiceComponent implements OnInit {
   backbuttonviable: boolean;
   documents: any;
   documentss: boolean=false;
+  mimeTypes: any;
+  mimeTypee: any;
 
   constructor(
     private modalService: BsModalService,
@@ -1619,7 +1621,8 @@ export class ServiceComponent implements OnInit {
 
                    let { type, data } = fileData;
 
-                   this.mimeType = type;
+                   this.mimeTypee = type;
+                   console.log( 'mimeTypeemimeTypee', this.mimeTypee)
                    let file= "data:" + type + ";base64, " + data;
   
                    this.documents= this.sanitizer.bypassSecurityTrustResourceUrl(

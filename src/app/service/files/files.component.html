@@ -60,15 +60,18 @@
     <div class="col-md-12">
       <div *ngIf="RecordComponent.RequerdDocspre">
         <form #f="ngForm" novalidate name="proform">
-          <p-table [value]="RecordComponent.RequerdDocspre" [tableStyle]="{ 'min-width': '100rem' }">
+          
+          <p-table class="bookshelf-table" [value]="RecordComponent.RequerdDocspre"  [autoLayout]="true" [resizableColumns]="true" [responsive]="true"  [paginator]="true" [rows]="10">
             <ng-template pTemplate="header">
               <tr>
+                <th translate>No</th>
                 <th translate>Document</th>
                 <th translate>Attachment</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-RequerdDocpre let-rowIndex="rowIndex" *ngFor="let RequerdDocpre of RecordComponent.RequerdDocspre;let ok of hide; let i = index;">
               <tr [pSelectableRow]="RequerdDocpre" [class.selected]="selectedRowIndex === rowIndex">
+                <td>{{rowIndex +1}}</td>
                 <td>
                   <label for="File" class="col-md-4 col-form-label">
                     {{ language === 'amharic' ? RequerdDocpre.description_Local : RequerdDocpre.description_en }}
@@ -79,7 +82,7 @@
                     <div>
        
                     </div>
-                    <div *ngIf="!RequerdDocpre.File"  >
+                    <div *ngIf="!RequerdDocpre.document_code"  >
 <!--               
                   <p-fileUpload #fild [id]="'file'+i" name="demo[]" customUpload="true" (uploadHandler)="upload($event, RequerdDocpre, fild);"
                     [auto]="true" accept=".pdf,.jpg,.jfif,.png,.gif,.doc,.docx,.xls,.xlsx,.csv,.geojson,.zip"
@@ -100,12 +103,45 @@
                         <!-- <span class="text-danger">REQUIRED</span> -->
                       </div>
                     </div>
-                    <div *ngIf="RequerdDocpre.File">
+                    <!-- <div *ngIf="!RequerdDocpre.document_code">
+                      <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="4">
+                      </p-progressSpinner>
+                    </div> -->
+                    <div *ngIf="RequerdDocpre.document_code">
       
-                      <div *ngIf="!RequerdDocpre.File">
-                        <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="4">
-                        </p-progressSpinner>
-                      </div>
+                      <button type="button"  class="btn btn-primary" [id]="'p' + i" (click)="showdiv(RequerdDocpre.document_code);preview=true" [disabled]="disabled" translate="">
+                        preview
+                      </button>
+                      <p-dialog [(visible)]="preview" header="Preview" [responsive]="true" [width]="900" [minY]="70"
+[baseZIndex]="10000" [contentStyle]="{ 'overflow-x': 'hidden', 
+ 'max-height': '80vh','min-height':'400px'}" [closable]="false">
+<div *ngIf="documentss">
+<div
+*ngIf="mimeExtension[this.mimeTypee].extension == 'pdf'">
+ <iframe width="100%" height="400px" alt="FileUPloaded" class="pdf-ifram"  [src]="documents">
+
+ </iframe></div>
+ <div
+*ngIf="mimeExtension[this.mimeTypee].extension == 'jpg' || mimeExtension[this.mimeTypee].extension == 'png' || mimeExtension[this.mimeTypee].extension == 'gif'">
+<img width="100%" height="400px" [src]="documents" alt="FileUPloaded" />
+</div>
+<div *ngIf="mimeExtension[this.mimeTypee].extension != 'pdf' && mimeExtension[this.mimeTypee].extension != 'jpg' &&  mimeExtension[this.mimeTypee].extension != 'png' && mimeExtension[this.mimeTypee].extension != 'gif'">
+<a [href]="documents"
+[download]="RequerdDocpre.description_en + '.' + mimeExtension[this.mimeTypee].extension" style="font-weight: bolder; font-size: larger;font-style: italic;">Attached
+-
+Please download!</a>
+</div>
+
+</div>
+ <div *ngIf="!documentss">
+   <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s"></p-progressSpinner></div>
+   
+  <p-footer>
+    <button type="button"  *ngIf="userid==useridfromdoc && documentss" class="btn btn-danger" [id]="'r'+ i" (click)="removeUpload(RequerdDocpre)"
+                            translate="">Remove</button>
+     <button style="align-self: right;" type="button" [hidden]="!documentss" class="btn btn-primary" (click)="preview=false" translate>Close</button>
+    
+</p-footer></p-dialog>
                       <!-- <div *ngIf="uploadedDocumnet" [hidden]="disDocument" >
                         <div>
                         <iframe width="100%" [src]="documentupload" alt="FileUPloaded"  class="pdf-ifram"></iframe>
@@ -129,9 +165,7 @@
                                                       translate="">Remove</button> -->
                                                      
                             
-                                                      <button type="button"  class="btn btn-primary" [id]="'p' + i" (click)="showdiv(rowIndex)" [disabled]="disabled" translate="">
-                                                        preview
-                                                      </button>
+                                                    
                           
                           <div >
                             <div >
