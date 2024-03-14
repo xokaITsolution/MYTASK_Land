@@ -169,10 +169,14 @@ export class ServiceService {
   private currencies = environment.rootPath + "finance/CCurrencyID";
   private SaveDataObjURL = environment.rootPath + "BPEL/SaveDataObj"; // URL to web api
   private getAllDocumentURL = environment.rootPath + "BPEL/getAllDocument";
+  private getDocumentbytasksURL =
+    environment.rootPathApi + "view/View_Document_By_Task/task_code";
   private MytasksUrl = environment.rootPath + "BPEL/GetlistofTodo"; // URL to web api
   OrganizationparentUrl =
     environment.rootPath2 + "Job/procOrganization/Organization";
   saveCustomerdata = environment.rootPath3 + "Customer/procCustomer/";
+  PdfCompressor =
+    "http://197.156.93.110/xoka.jobapi/api/compress/DeflateCompression/Compresse";
   saveplotlocdata = environment.rootPath3 + "Plot_Location/procPlot_Location/";
   saveproplocdata =
     environment.rootPath3 + "Proporty_Location/procProporty_Location/";
@@ -266,6 +270,7 @@ export class ServiceService {
   serviceisundoumneted: boolean = false;
   currentcertID: any;
   LicenceserviceID: any;
+  fileexxcedlimit: boolean = false;
   constructor(private http: HttpClient) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -751,6 +756,9 @@ export class ServiceService {
   getcustomerAll(col) {
     return this.http.get(this.saveCustomerdata + "Column/" + col);
   }
+  getcustomerPdfCompressor(col) {
+    return this.http.post(this.PdfCompressor, col);
+  }
   getcustomerbyid(col) {
     return this.http.get(this.saveCustomerdata + col);
   }
@@ -843,6 +851,19 @@ export class ServiceService {
         "ApplicationCode=" +
         ApplicationCode +
         "&DocID=" +
+        DocID
+    );
+  }
+  getDocumentbytaskssURL(ApplicationCode, DocID, taskid) {
+    console.log("ApplicationCode, DocID", ApplicationCode, DocID, taskid);
+
+    return this.http.get<any[]>(
+      this.getDocumentbytasksURL +
+        "?task_code=" +
+        taskid +
+        "&applications_application_code=" +
+        ApplicationCode +
+        "&application_detail_id=" +
         DocID
     );
   }

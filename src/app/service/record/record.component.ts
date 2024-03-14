@@ -295,7 +295,7 @@ export class RecordComponent implements OnChanges {
       "this.serviceService.currentApplicationUsers",
       this.useNamelist
     );
-    if (this.useNamelist) {
+    if (this.useNamelist.length > 0 && this.useNamelist != undefined) {
       //this.getCustomerLookUP();
       this.gettask();
       //  this.Tasks('')
@@ -943,79 +943,6 @@ export class RecordComponent implements OnChanges {
             tskID
           );
         });
-
-      // console.log("checklength", this.PreAppData.Table.length);
-      // this.PreAppDataa = this.PreAppData.Table;
-      // this.PreAppDataaa = this.PreAppData.Table;
-      // console.log("this.PreAppDataaaatttt", this.PreAppDataaa);
-      // this.selectedTask = this.PreAppDataa.filter(
-      //   (value) => value.tasks_task_code == tskID
-      // );
-      // console.log("this.selectedTaskhh", this.selectedTask);
-      // if (this.PreAppDataa.length > 1) {
-      //   console.log("this.selectedAppno1", this.licenceData.Service_ID);
-      //   console.log("this.PreAppDataaaa1", this.PreAppDataaa[0]);
-
-      //   this.AppNo = this.selectedAppno.application_number;
-
-      //   if (this.selectedTask.length == 0) {
-      //     this.DocID =
-      //       this.procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id;
-      //   } else {
-      //     this.DocID = this.selectedTask[0].docId;
-      //     this.getAll(
-      //       this.selectedAppno.application_code,
-      //       this.selectedTask[0].docId
-      //     );
-      //   }
-      //   console.log(
-      //     "gfghuiuyhgfdghjhg",
-      //     this.selectedAppno,
-      //     this.AppNo,
-      //     this.DocID
-      //   );
-
-      //   // this.getAllDocument(
-      //   //   this.licenceData.Service_ID,
-      //   //   this.selectedTask[0].docId
-      //   // );
-      // } else if (this.PreAppDataaa.length == 1) {
-      //   console.log("this.selectedAppno12", this.licenceData.Service_ID);
-      //   console.log("this.PreAppDataaaa12", this.PreAppDataaa[0]);
-      //   this.AppNo = this.selectedAppno.application_code;
-      //   this.DocID = this.PreAppDataaa[0].docId;
-      //   // this.getAllDocument(
-      //   //   this.licenceData.Service_ID,
-      //   //   this.PreAppDataaa[0].docId
-      //   // );
-      //   this.getAll(
-      //     this.selectedAppno.application_code,
-      //     this.PreAppDataaa[0].docId
-      //   );
-      // } else if (this.PreAppDataaa.length == 0) {
-      //   this.AppNo =
-      //     this.procView_RecordAppNoAndDocIdByAppNo[0].application_code;
-      //   this.DocID =
-      //     this.procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id;
-
-      //   // this.getAllDocument(
-      //   //   this.licenceData.Service_ID,
-      //   //   this.PreAppDataaa[0].docId
-      //   // );
-      //   if (this.procView_RecordAppNoAndDocIdByAppNo.length > 0) {
-
-      //   }
-      // }
-      // else
-      // if(this.procView_RecordAppNoAndDocIdByAppNo.length>0){
-      //   this.AppNo=this.procView_RecordAppNoAndDocIdByAppNo[0].application_code;
-      //   this.DocID=this.procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id;
-      //       this.getAllDocument(this.licenceData.Service_ID, this.procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id)
-      //       this.getAll(this.procView_RecordAppNoAndDocIdByAppNo[0].application_code, this.procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id);
-
-      // }else{
-
-      // }
     });
   }
 
@@ -1070,13 +997,14 @@ export class RecordComponent implements OnChanges {
     }
   }
 
-  getAllDocument(appNo, docid) {
+  getAllDocument(appNo, docid, currentTaskelected) {
     console.log("dataaaaaaa");
-
-    this.service.getAllDocument(appNo, docid).subscribe((res: any) => {
-      this.SavedFiles = res;
-      console.log("responsssss", res);
-    });
+    this.service
+      .getDocumentbytaskssURL(appNo, docid, currentTaskelected)
+      .subscribe((res) => {
+        this.SavedFiles = res;
+        console.log("responsssss", res);
+      });
   }
   async add() {
     if (
@@ -1449,86 +1377,87 @@ export class RecordComponent implements OnChanges {
     let updatedArray: any[] = [];
     this.loadingPreDoc = true;
     console.log("this.RequerdDocspre", this.RequerdDocspre);
-    this.service.getAllDocument(Licence_Service_ID, DocID).subscribe(
-      (SavedFiles) => {
-        SavedFiles = SavedFiles.filter((x) => x.tasks_task_code == taskid);
-        if (SavedFiles.length > 0) {
-          console.log("SavedFiiiilessssffff", SavedFiles, SavedFiles.length);
+    this.service
+      .getDocumentbytaskssURL(Licence_Service_ID, DocID, taskid)
+      .subscribe(
+        (SavedFiles) => {
+          SavedFiles = SavedFiles.filter((x) => x.tasks_task_code == taskid);
+          if (SavedFiles.length > 0) {
+            console.log("SavedFiiiilessssffff", SavedFiles, SavedFiles.length);
 
-          this.loadingPreDoc = false;
-          this.SavedFilespre = SavedFiles;
-          for (let j = 0; j < SavedFiles.length; j++) {
-            if (SavedFiles[j].AttachedBY.trim() != environment.username) {
-              this.hid = false;
-            } else {
-              this.hid = true;
-            }
-            let updatedObject = {
-              // Copy the existing properties from the original object
-              is_hidde: this.hid,
-            };
-
-            updatedArray.push(updatedObject);
-          }
-
-          this.hide = updatedArray;
-          if (this.RequerdDocspre != null || this.RequerdDocspre != undefined)
-            this.showProgressBar = false;
-          for (let i = 0; i < this.RequerdDocspre.length; i++) {
-            console.log("pdf fileeee", this.RequerdDocspre[i]);
-
+            this.loadingPreDoc = false;
+            this.SavedFilespre = SavedFiles;
             for (let j = 0; j < SavedFiles.length; j++) {
-              if (
-                this.RequerdDocspre[i].requirement_code ==
-                SavedFiles[j].requirement_code
-              ) {
-                console.log("updatedArray", updatedArray[j]);
-                try {
-                  let fileData = JSON.parse(atob(SavedFiles[j].document));
+              if (SavedFiles[j].AttachedBY.trim() != environment.username) {
+                this.hid = false;
+              } else {
+                this.hid = true;
+              }
+              let updatedObject = {
+                // Copy the existing properties from the original object
+                is_hidde: this.hid,
+              };
 
-                  let { type, data } = fileData;
+              updatedArray.push(updatedObject);
+            }
 
-                  this.RequerdDocspre[i].mimeType = type;
-                  this.RequerdDocspre[i].File =
-                    "data:" + type + ";base64, " + data;
-                  console.log(
-                    "this.RequerdDocspre[i].File",
-                    SavedFiles[j].document
-                  );
-                  this.RequerdDocspre[i].hidden = SavedFiles[j].UserId;
-                  console.log(
-                    "updatedArrayyyyy",
-                    this.RequerdDocspre[i].hidden
-                  );
+            this.hide = updatedArray;
+            if (this.RequerdDocspre != null || this.RequerdDocspre != undefined)
+              this.showProgressBar = false;
+            for (let i = 0; i < this.RequerdDocspre.length; i++) {
+              console.log("pdf fileeee", this.RequerdDocspre[i]);
 
-                  this.RequerdDocspre[i].File =
-                    this.sanitizer.bypassSecurityTrustResourceUrl(
-                      this.RequerdDocspre[i].File
+              for (let j = 0; j < SavedFiles.length; j++) {
+                if (
+                  this.RequerdDocspre[i].requirement_code ==
+                  SavedFiles[j].requirement_code
+                ) {
+                  console.log("updatedArray", updatedArray[j]);
+                  try {
+                    let fileData = JSON.parse(atob(SavedFiles[j].document));
+
+                    let { type, data } = fileData;
+
+                    this.RequerdDocspre[i].mimeType = type;
+                    this.RequerdDocspre[i].File =
+                      "data:" + type + ";base64, " + data;
+                    console.log(
+                      "this.RequerdDocspre[i].File",
+                      SavedFiles[j].document
+                    );
+                    this.RequerdDocspre[i].hidden = SavedFiles[j].UserId;
+                    console.log(
+                      "updatedArrayyyyy",
+                      this.RequerdDocspre[i].hidden
                     );
 
-                  this.RequerdDocspre[i].document_code =
-                    SavedFiles[j].document_code;
-                  this.RequiredDocs = this.RequerdDocspre;
-                } catch (e) {
-                  console.error(e);
+                    this.RequerdDocspre[i].File =
+                      this.sanitizer.bypassSecurityTrustResourceUrl(
+                        this.RequerdDocspre[i].File
+                      );
+
+                    this.RequerdDocspre[i].document_code =
+                      SavedFiles[j].document_code;
+                    this.RequiredDocs = this.RequerdDocspre;
+                  } catch (e) {
+                    console.error(e);
+                  }
                 }
               }
             }
+            this.hide = updatedArray;
+            console.log("SavedFileeeees", updatedArray);
+            console.log("RequerdDocspre", this.RequerdDocspre);
+            this.RequerdDocspre.forEach((item, index) => {
+              this.PreviewshowdialogeArray[index] = false; // Initialize all dialog variables to false
+            });
           }
-          this.hide = updatedArray;
-          console.log("SavedFileeeees", updatedArray);
-          console.log("RequerdDocspre", this.RequerdDocspre);
-          this.RequerdDocspre.forEach((item, index) => {
-            this.PreviewshowdialogeArray[index] = false; // Initialize all dialog variables to false
-          });
-        } else {
+        },
+        (error) => {
+          this.loadingPreDoc = false;
+          console.log("error");
         }
-      },
-      (error) => {
-        this.loadingPreDoc = false;
-        console.log("error");
-      }
-    );
+      );
   }
   onFileDropped($file) {
     // Handle the dropped files here

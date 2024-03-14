@@ -1,4 +1,4 @@
-<div class="container" appDnd (fileDropped)="onFileDropped($event)">
+<!-- <div class="container" appDnd (fileDropped)="onFileDropped($event)">
     <input   type="file"    #fileDropRef id="fileDropRef" multiple (change)="fileInputChangeHandler($event)" />
     <img src="http://job.xokait.com.et/datepicker/uploader/ic-upload-file.svg" alt="">
     <h3>Drag and drop file here</h3>
@@ -20,4 +20,30 @@
         <img src="http://job.xokait.com.et/datepicker/uploader/ic-delete-file.svg" class="delete" width="20px" alt="file" (click)="deleteFile(i)">
     </div>
 </div>
+ -->
+<div class="container" appDnd (fileDropped)="onFileDropped($event)">
+    <input type="file" #fileDropRef id="fileDropRef" multiple (change)="fileInputChangeHandler($event)" />
+    <img src="http://job.xokait.com.et/datepicker/uploader/ic-upload-file.svg" alt="">
+    <h3>Drag and drop file here</h3>
+    <h3>or</h3>
+    <label for="fileDropRef">Browse for file</label>
+</div>
 
+<div class="files-list">
+    <div class="single-file" *ngFor="let file of files; let i = index">
+        <img src="http://job.xokait.com.et/datepicker/uploader/ic-file.svg" width="45px" alt="file">
+        <div class="info">
+            <h4 class="name">
+                {{ file?.name }}
+            </h4>
+            <p class="size">
+                {{ formatBytes(file?.size) }}
+            </p>
+            <app-progress [progress]="file?.progress"></app-progress>
+            <img src="http://job.xokait.com.et/datepicker/uploader/ic-delete-file.svg" class="delete" width="20px"
+                alt="file" *ngIf="file?.progress !== 100" (click)="deleteFile(i)">
+            <img src="https://www.addisland.gov.et/datepicker/uploader/free-check-mark-icon-3280-thumb.png" class="success-check" width="20px" alt="success"
+                *ngIf="file?.progress === 100"> <!-- Only show success checkmark if progress is 100% -->
+        </div>
+    </div>
+</div>

@@ -14,6 +14,8 @@ import { DomSanitizer } from "@angular/platform-browser";
 // import { TranslateModule } from "@ngx-translate/core";
 import { RecordComponent } from "../record/record.component";
 import { jsPDF } from "jspdf";
+import * as pako from "pako";
+
 @Component({
   selector: "app-files",
   templateUrl: "./files.component.html",
@@ -132,24 +134,30 @@ export class FilesComponent implements OnChanges {
       this.userid = r[0].userid;
     });
     console.log("appppppppno", this.AppNo);
-    console.log("DocdddIDD", this.DocIDlist, this.RequiredDocs, this.hide);
+    console.log(
+      "DocdddIDD",
+      this.DocIDlist,
+      this.RequiredDocs,
+      this.hide,
+      this.DocID
+    );
 
-    if (this.DocIDlist != null || this.DocIDlist != undefined) {
-      this.serviceService
-        .getLicenceService(this.AppNo)
-        .subscribe((licenceService) => {
-          this.licenceService = licenceService;
-          console.log("Licence Service", this.licenceService);
-          this.licenceData = this.licenceService.list[0];
+    // if (this.DocIDlist != null || this.DocIDlist != undefined) {
+    //   this.serviceService
+    //     .getLicenceService(this.AppNo)
+    //     .subscribe((licenceService) => {
+    //       this.licenceService = licenceService;
+    //       console.log("Licence Service", this.licenceService);
+    //       this.licenceData = this.licenceService.list[0];
 
-          console.log("DocIDD", this.DocIDlist, this.licenceData);
-          this.getRequiredDocs(
-            this.DocIDlist.task_code,
-            this.DocIDlist.application_detail_id
-          );
-        });
-    }
-    if (this.RequiredDocs) {
+    //       console.log("DocIDD", this.DocIDlist, this.licenceData);
+    //       this.getRequiredDocs(
+    //         this.DocIDlist.task_code,
+    //         this.DocIDlist.application_detail_id
+    //       );
+    //     });
+    // }
+    if (this.RequiredDocs != undefined) {
       this.RecordComponent.RequerdDocspre = this.RequiredDocs;
       console.log("DocIDD", this.RecordComponent.RequerdDocspre, this.DocID);
       this.serviceService
@@ -185,7 +193,7 @@ export class FilesComponent implements OnChanges {
           this.RecordComponent.RequerdDocspre[i].required = true;
         }
       }
-      this.updated.emit({ docs: this.RecordComponent.RequerdDocspre });
+      // this.updated.emit({ docs: this.RecordComponent.RequerdDocspre });
       // }
     }
   }
@@ -478,21 +486,24 @@ export class FilesComponent implements OnChanges {
   onFileDropped($file) {
     // Handle the dropped files here
     console.log("Dropped files:", $file.target.files);
-    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    const maxSize = 2 * 1024 * 1024; // 5MB in bytes
     let totalSize = 0;
     for (let i = 0; i < $file.target.files.length; i++) {
-      totalSize += $file.files[i].size;
+      totalSize += $file.target.files[i].size;
     }
     if (totalSize > maxSize) {
       const toast = this.notificationsService.error(
-        `The total size of selected files exceeds the maximum allowed size.(5MB)`
+        `The total size of selected files exceeds the maximum allowed size.(2MB)`
       );
+      this.serviceService.fileexxcedlimit = true;
       return false;
+    } else {
+      this.serviceService.fileexxcedlimit = false;
+      this.uploadedFile($file);
     }
     // Proceed with uploading the files
 
     // Perform any necessary operations with the files
-    this.uploadedFile($file);
   }
 
   sorereuired(RequerdDocpre, fild) {
@@ -503,16 +514,16 @@ export class FilesComponent implements OnChanges {
   async uploadedFile(event: any) {
     const files: FileList = event.target.files;
     if (files.length > 1) {
-      this.downloadmergedfile = true;
       this.mergedfile = await this.mergeFiles(files);
     } else if (files.length === 1) {
       this.mergedfile = await files[0];
       this.downloadmergedfile = false;
     }
+
     // Convert the merged PDF to base64 string
     const base64String = await this.convertToBase64(this.mergedfile);
 
-    console.log("Merged PDF Base64:", base64String);
+    //console.log("Merged PDF Base64:", base64String);
     this.mergedPDFBase64 = base64String;
     if (this.mergedPDFBase64) {
       this.Uploadermlti(
@@ -521,6 +532,7 @@ export class FilesComponent implements OnChanges {
         this.currentfild
       );
     }
+
     // Enable the download button
     this.enableDownloadButton();
   }
@@ -539,6 +551,7 @@ export class FilesComponent implements OnChanges {
       });
     }
   }
+
   async mergeFiles(files: FileList): Promise<PDFDocument> {
     const mergedPdf = await PDFDocument.create();
 
@@ -670,7 +683,7 @@ export class FilesComponent implements OnChanges {
   //     });
   // }
 
-  Uploadermlti(File, RequiredDoc, fild) {
+  async Uploadermlti(File, RequiredDoc, fild) {
     console.log("RequiredDoc", RequiredDoc);
     // Step 1: Remove the 'base64,' prefix
     let base64file;
@@ -678,10 +691,11 @@ export class FilesComponent implements OnChanges {
 
     // Extract the base64 data from this.mergedPDFBase64
     base64file = File.split(",")[1];
-
     // Remove any potential headers from the base64 data
     const re = /base64,/gi;
     base64file = base64file.replace(re, "");
+    console.log("🚀 ~ Uploadermlti ~ base64file:", base64file);
+
     const typeRegex = /data:([^;]+)/;
     const nameRegex = /filename=([^;]+)/;
     const typeMatch = this.mergedPDFBase64.match(typeRegex);
@@ -696,7 +710,8 @@ export class FilesComponent implements OnChanges {
       })
     );
     fullbase64 = base64FileData;
-    console.log("🚀 ~ Uploadermlti ~ base64FileData:", base64FileData);
+
+    console.log("🚀 ~ Uploadermlti ~ base64FileData:", fullbase64);
 
     for (let i = 0; i < this.RecordComponent.RequerdDocspre.length; i++) {
       try {
@@ -747,6 +762,7 @@ export class FilesComponent implements OnChanges {
               Licence_ID: message[0],
               DocID: this.DocID,
             });
+            this.downloadmergedfile = true;
             this.RecordComponent.AppCodeFromFile = this.AppNo;
             this.RecordComponent.DocIdFromFile = this.DocID;
             const toast = this.notificationsService.success(
@@ -773,6 +789,22 @@ export class FilesComponent implements OnChanges {
       );
     console.log("this.RequiredDocs", this.RecordComponent.RequerdDocspre);
   }
+  async compressBase64File(base64Data: string): Promise<Uint8Array> {
+    // Decode base64 data to bytes
+    const bytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+
+    // Load PDF document
+    const pdfDoc = await PDFDocument.load(bytes).catch((error) => {
+      console.error("Error loading PDF document:", error);
+      throw error; // Re-throw the error to handle it outside
+    });
+
+    // Save compressed PDF
+    const compressedPdfBytes = await pdfDoc.save();
+
+    return compressedPdfBytes;
+  }
+
   downloadPDF() {
     const link = document.createElement("a");
     link.href = this.mergedPDFBase64;

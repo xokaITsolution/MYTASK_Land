@@ -1613,7 +1613,7 @@ export class ServiceComponent implements OnInit {
     this.serviceService.getAllDocument(Licence_Service_ID, DocID).subscribe(
       (SavedFiles) => {
         if (SavedFiles.length > 0) {
-          console.log("SavedFiiiilessssffff", SavedFiles, SavedFiles.length);
+          console.log("SavedFiiiilessssffff", SavedFiles.length);
 
           this.loadingPreDoc = false;
           this.SavedFilespre = SavedFiles;
