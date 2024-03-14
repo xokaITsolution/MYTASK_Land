@@ -3251,8 +3251,8 @@ export class GisMapComponent implements AfterViewInit {
       const subtract_northing = 207.34388375;
       const subtract_easting = 95.4782061405;
       for (let i = 0; i < eachcoorde.length; i++) {
-        coordinates[i][0] -= subtract_northing;
-        coordinates[i][1] -= subtract_easting; // Corrected subtraction
+        eachcoorde[i][0] -= subtract_northing;
+        eachcoorde[i][1] -= subtract_easting; // Corrected subtraction
       }
       eachcoorde.push(eachcoorde[0]);
       this.ServiceService.coordinate.push(eachcoorde);
@@ -3267,21 +3267,8 @@ export class GisMapComponent implements AfterViewInit {
   public processcoordinatesForPlot(data: any[]): void {
     // Remove the header row from the data
     const coordinates = data.slice(1);
-    console.log("coordinates", coordinates);
+    console.log("coordinates after", coordinates);
 
-    let eachcoorde = coordinates;
-    const subtract_northing = 207.34388375;
-    const subtract_easting = 95.4782061405;
-    for (let i = 0; i < eachcoorde.length; i++) {
-      coordinates[i][0] -= subtract_northing;
-      coordinates[i][1] -= subtract_easting; // Corrected subtraction
-    }
-    eachcoorde.push(eachcoorde[0]);
-    this.ServiceService.coordinate.push(eachcoorde);
-    console.log(
-      "🚀 ~ processcoordinatesForPlot ~ ServiceService:",
-      this.ServiceService.coordinate
-    );
     // Map the data to LatLng objects and their associated shape properties
 
     const combinedData = [];
@@ -3306,6 +3293,19 @@ export class GisMapComponent implements AfterViewInit {
     console.log("shapeProperties", combinedData);
 
     this.alllatlong.push(combinedData);
+    let eachcoorde = coordinates;
+    const subtract_northing = 207.34388375;
+    const subtract_easting = 95.4782061405;
+    for (let i = 0; i < eachcoorde.length; i++) {
+      eachcoorde[i][0] -= subtract_northing;
+      eachcoorde[i][1] -= subtract_easting; // Corrected subtraction
+    }
+    eachcoorde.push(eachcoorde[0]);
+    this.ServiceService.coordinate.push(eachcoorde);
+    console.log(
+      "🚀 ~ processcoordinatesForPlot ~ ServiceService:",
+      this.ServiceService.coordinate
+    );
   }
 
   public drawnshapeAfterProcess() {
