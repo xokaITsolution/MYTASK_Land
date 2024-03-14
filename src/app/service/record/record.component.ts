@@ -999,12 +999,10 @@ export class RecordComponent implements OnChanges {
 
   getAllDocument(appNo, docid, currentTaskelected) {
     console.log("dataaaaaaa");
-    this.service
-      .getDocumentbytaskssURL(appNo, docid, currentTaskelected)
-      .subscribe((res) => {
-        this.SavedFiles = res;
-        console.log("responsssss", res);
-      });
+    this.service.getAllDocument(appNo, docid).subscribe((res) => {
+      this.SavedFiles = res;
+      console.log("responsssss", res);
+    });
   }
   async add() {
     if (
@@ -1377,87 +1375,85 @@ export class RecordComponent implements OnChanges {
     let updatedArray: any[] = [];
     this.loadingPreDoc = true;
     console.log("this.RequerdDocspre", this.RequerdDocspre);
-    this.service
-      .getDocumentbytaskssURL(Licence_Service_ID, DocID, taskid)
-      .subscribe(
-        (SavedFiles) => {
-          SavedFiles = SavedFiles.filter((x) => x.tasks_task_code == taskid);
-          if (SavedFiles.length > 0) {
-            console.log("SavedFiiiilessssffff", SavedFiles, SavedFiles.length);
+    this.service.getAllDocument(Licence_Service_ID, DocID).subscribe(
+      (SavedFiles) => {
+        SavedFiles = SavedFiles.filter((x) => x.tasks_task_code == taskid);
+        if (SavedFiles.length > 0) {
+          console.log("SavedFiiiilessssffff", SavedFiles, SavedFiles.length);
 
-            this.loadingPreDoc = false;
-            this.SavedFilespre = SavedFiles;
-            for (let j = 0; j < SavedFiles.length; j++) {
-              if (SavedFiles[j].AttachedBY.trim() != environment.username) {
-                this.hid = false;
-              } else {
-                this.hid = true;
-              }
-              let updatedObject = {
-                // Copy the existing properties from the original object
-                is_hidde: this.hid,
-              };
-
-              updatedArray.push(updatedObject);
+          this.loadingPreDoc = false;
+          this.SavedFilespre = SavedFiles;
+          for (let j = 0; j < SavedFiles.length; j++) {
+            if (SavedFiles[j].AttachedBY.trim() != environment.username) {
+              this.hid = false;
+            } else {
+              this.hid = true;
             }
+            let updatedObject = {
+              // Copy the existing properties from the original object
+              is_hidde: this.hid,
+            };
 
-            this.hide = updatedArray;
-            if (this.RequerdDocspre != null || this.RequerdDocspre != undefined)
-              this.showProgressBar = false;
-            for (let i = 0; i < this.RequerdDocspre.length; i++) {
-              console.log("pdf fileeee", this.RequerdDocspre[i]);
+            updatedArray.push(updatedObject);
+          }
 
-              for (let j = 0; j < SavedFiles.length; j++) {
-                if (
-                  this.RequerdDocspre[i].requirement_code ==
-                  SavedFiles[j].requirement_code
-                ) {
-                  console.log("updatedArray", updatedArray[j]);
-                  try {
-                    let fileData = JSON.parse(atob(SavedFiles[j].document));
+          this.hide = updatedArray;
+          if (this.RequerdDocspre != null || this.RequerdDocspre != undefined)
+            this.showProgressBar = false;
+          for (let i = 0; i < this.RequerdDocspre.length; i++) {
+            console.log("pdf fileeee", this.RequerdDocspre[i]);
 
-                    let { type, data } = fileData;
+            for (let j = 0; j < SavedFiles.length; j++) {
+              if (
+                this.RequerdDocspre[i].requirement_code ==
+                SavedFiles[j].requirement_code
+              ) {
+                console.log("updatedArray", updatedArray[j]);
+                try {
+                  let fileData = JSON.parse(atob(SavedFiles[j].document));
 
-                    this.RequerdDocspre[i].mimeType = type;
-                    this.RequerdDocspre[i].File =
-                      "data:" + type + ";base64, " + data;
-                    console.log(
-                      "this.RequerdDocspre[i].File",
-                      SavedFiles[j].document
+                  let { type, data } = fileData;
+
+                  this.RequerdDocspre[i].mimeType = type;
+                  this.RequerdDocspre[i].File =
+                    "data:" + type + ";base64, " + data;
+                  console.log(
+                    "this.RequerdDocspre[i].File",
+                    SavedFiles[j].document
+                  );
+                  this.RequerdDocspre[i].hidden = SavedFiles[j].UserId;
+                  console.log(
+                    "updatedArrayyyyy",
+                    this.RequerdDocspre[i].hidden
+                  );
+
+                  this.RequerdDocspre[i].File =
+                    this.sanitizer.bypassSecurityTrustResourceUrl(
+                      this.RequerdDocspre[i].File
                     );
-                    this.RequerdDocspre[i].hidden = SavedFiles[j].UserId;
-                    console.log(
-                      "updatedArrayyyyy",
-                      this.RequerdDocspre[i].hidden
-                    );
 
-                    this.RequerdDocspre[i].File =
-                      this.sanitizer.bypassSecurityTrustResourceUrl(
-                        this.RequerdDocspre[i].File
-                      );
-
-                    this.RequerdDocspre[i].document_code =
-                      SavedFiles[j].document_code;
-                    this.RequiredDocs = this.RequerdDocspre;
-                  } catch (e) {
-                    console.error(e);
-                  }
+                  this.RequerdDocspre[i].document_code =
+                    SavedFiles[j].document_code;
+                  this.RequiredDocs = this.RequerdDocspre;
+                } catch (e) {
+                  console.error(e);
                 }
               }
             }
-            this.hide = updatedArray;
-            console.log("SavedFileeeees", updatedArray);
-            console.log("RequerdDocspre", this.RequerdDocspre);
-            this.RequerdDocspre.forEach((item, index) => {
-              this.PreviewshowdialogeArray[index] = false; // Initialize all dialog variables to false
-            });
           }
-        },
-        (error) => {
-          this.loadingPreDoc = false;
-          console.log("error");
+          this.hide = updatedArray;
+          console.log("SavedFileeeees", updatedArray);
+          console.log("RequerdDocspre", this.RequerdDocspre);
+          this.RequerdDocspre.forEach((item, index) => {
+            this.PreviewshowdialogeArray[index] = false; // Initialize all dialog variables to false
+          });
         }
-      );
+      },
+      (error) => {
+        this.loadingPreDoc = false;
+        console.log("error");
+      }
+    );
   }
   onFileDropped($file) {
     // Handle the dropped files here
