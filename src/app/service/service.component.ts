@@ -221,6 +221,8 @@ export class ServiceComponent implements OnInit {
   SuperviedUsers: any;
   isSuperviedUsers: boolean;
   backbuttonviable: boolean;
+  documents: any;
+  documentss: boolean=false;
 
   constructor(
     private modalService: BsModalService,
@@ -1599,13 +1601,121 @@ export class ServiceComponent implements OnInit {
             "DocIdByAppNo90",
             this.procView_RecordAppNoAndDocIdByAppNo
           );
-          this.getAllDocumentpreforeach(
+          // this.getAllDocumentpreforeach(
+          //   this.procView_RecordAppNoAndDocIdByAppNo[0].application_code,
+          //   this.procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id
+          // );
+           this.getAllDocumentpreforeachh(
             this.procView_RecordAppNoAndDocIdByAppNo[0].application_code,
             this.procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id
           );
         });
     });
   }
+  getdatadoc(doc){
+    this.documentss=false
+    this.serviceService.getAllDocumentt(doc).subscribe(r=>{
+      let fileData = JSON.parse(atob(r[0].document));
+
+                   let { type, data } = fileData;
+
+                   this.mimeType = type;
+                   let file= "data:" + type + ";base64, " + data;
+  
+                   this.documents= this.sanitizer.bypassSecurityTrustResourceUrl(
+                      file
+                    );
+                    this.documentss=true
+    console.log('responceses',r[0].document)
+    })
+    console.log('documentsdoc')
+  }
+  getAllDocumentpreforeachh(Licence_Service_ID, DocID) {
+    let updatedArray: any[] = [];
+    this.loadingPreDoc = true;
+    console.log("this.RequerdDocspre", this.RequerdDocspreeach);
+    this.serviceService.getAllDocuments(Licence_Service_ID, DocID).subscribe(
+      (SavedFiles) => {
+        console.log("SavedFiiiilessssffff", SavedFiles);
+        if (SavedFiles.length > 0) {
+
+          this.loadingPreDoc = false;
+          this.SavedFilespre = SavedFiles;
+          for (let j = 0; j < SavedFiles.length; j++) {
+            if (SavedFiles[j].attachedBY.trim() != environment.username) {
+              this.hid = false;
+            } else {
+              this.hid = true;
+            }
+            let updatedObject = {
+              // Copy the existing properties from the original object
+              is_hidde: this.hid,
+            };
+
+            updatedArray.push(updatedObject);
+          }
+
+          this;
+          if (
+            this.RequerdDocspreeach != null ||
+            this.RequerdDocspreeach != undefined
+          )
+            this.showProgressBar = false;
+          console.log("pdf fileeee", this.RequerdDocspreeach);
+          for (let i = 0; i < this.RequerdDocspreeach.length; i++) {
+            for (let j = 0; j < SavedFiles.length; j++) {
+              if (
+                this.RequerdDocspreeach[i].requirement_code ==
+                SavedFiles[j].requirement_code
+              ) {
+                console.log("updatedArray", updatedArray[j]);
+                try {
+                  //  let fileData = JSON.parse(atob(SavedFiles[j].document));
+
+                  // let { type, data } = fileData;
+
+                  // this.RequerdDocspreeach[i].mimeType = type;
+                  // this.RequerdDocspreeach[i].File =
+                  //   "data:" + type + ";base64, " + data;
+                  console.log(
+                    "this.RequerdDocspre[i].File",
+                    // SavedFiles[j].document
+                  );
+                  this.RequerdDocspreeach[i].hidden = updatedArray[j].is_hidde;
+                  console.log(
+                    "updatedArrayyyyy",
+                    this.RequerdDocspreeach[i].hidden
+                  );
+
+                  // this.RequerdDocspreeach[i].File =
+                  //   this.sanitizer.bypassSecurityTrustResourceUrl(
+                  //     this.RequerdDocspreeach[i].File
+                  //   );
+
+                  this.RequerdDocspreeach[i].document_code =
+                    SavedFiles[j].document_code;
+                  this.RequerdDocspreeach = this.RequerdDocspreeach;
+                } catch (e) {
+                  console.error(e);
+                }
+              }
+            }
+          }
+
+          console.log("RequerdDocspre", this.RequerdDocspreeach);
+          this.RequerdDocspreeach.forEach((item, index) => {
+            this.PreviewshowdialogeArray[index] = false; // Initialize all dialog variables to false
+          });
+        } else {
+        }
+      },
+      (error) => {
+        this.loadingPreDoc = false;
+        console.log("error");
+      }
+    );
+  }
+
   getAllDocumentpreforeach(Licence_Service_ID, DocID) {
     let updatedArray: any[] = [];
     this.loadingPreDoc = true;

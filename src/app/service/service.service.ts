@@ -169,6 +169,7 @@ export class ServiceService {
   private currencies = environment.rootPath + "finance/CCurrencyID";
   private SaveDataObjURL = environment.rootPath + "BPEL/SaveDataObj"; // URL to web api
   private getAllDocumentURL = environment.rootPath + "BPEL/getAllDocument";
+  private getAllDocumentURLs = environment.rootPathApi + "view/Vw_AllDocuments/application_number/application_code?";
   private getDocumentbytasksURL =
     environment.rootPathApi + "view/View_Document_By_Task/task_code";
   private MytasksUrl = environment.rootPath + "BPEL/GetlistofTodo"; // URL to web api
@@ -851,6 +852,25 @@ export class ServiceService {
         "ApplicationCode=" +
         ApplicationCode +
         "&DocID=" +
+        DocID
+    );
+  }
+   getAllDocuments(ApplicationCode, DocID) {
+    console.log("ApplicationCode, DocID", ApplicationCode, DocID);
+
+    return this.http.get<any[]>(
+      this.getAllDocumentURLs +
+        "application_code=" +
+        ApplicationCode +
+        "&application_detail_id=" +
+        DocID
+    );
+  }getAllDocumentt(DocID) {
+    console.log("ApplicationCode, DocID", DocID);
+
+    return this.http.get<any[]>(
+      environment.rootPathApi +
+        "view/Vw_AllDocuments/application_number/doc/doc/document_code/document_code?document_code=" +
         DocID
     );
   }
