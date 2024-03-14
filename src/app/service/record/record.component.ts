@@ -999,12 +999,10 @@ export class RecordComponent implements OnChanges {
 
   getAllDocument(appNo, docid, currentTaskelected) {
     console.log("dataaaaaaa");
-    this.service
-      .getDocumentbytaskssURL(appNo, docid, currentTaskelected)
-      .subscribe((res) => {
-        this.SavedFiles = res;
-        console.log("responsssss", res);
-      });
+    this.service.getAllDocument(appNo, docid).subscribe((res) => {
+      this.SavedFiles = res;
+      console.log("responsssss", res);
+    });
   }
   async add() {
     if (
@@ -1400,12 +1398,13 @@ export class RecordComponent implements OnChanges {
 
               updatedArray.push(updatedObject);
             }
+            let updatedObject = {
+              // Copy the existing properties from the original object
+              is_hidde: this.hid,
+            };
 
-            this.hide = updatedArray;
-            if (this.RequerdDocspre != null || this.RequerdDocspre != undefined)
-              this.showProgressBar = false;
-            for (let i = 0; i < this.RequerdDocspre.length; i++) {
-              console.log("pdf fileeee", this.RequerdDocspre[i]);
+            updatedArray.push(updatedObject);
+          }
 
               for (let j = 0; j < SavedFiles.length; j++) {
                 if (
@@ -1445,19 +1444,20 @@ export class RecordComponent implements OnChanges {
                 }
               }
             }
-            this.hide = updatedArray;
-            console.log("SavedFileeeees", updatedArray);
-            console.log("RequerdDocspre", this.RequerdDocspre);
-            this.RequerdDocspre.forEach((item, index) => {
-              this.PreviewshowdialogeArray[index] = false; // Initialize all dialog variables to false
-            });
           }
-        },
-        (error) => {
-          this.loadingPreDoc = false;
-          console.log("error");
+          this.hide = updatedArray;
+          console.log("SavedFileeeees", updatedArray);
+          console.log("RequerdDocspre", this.RequerdDocspre);
+          this.RequerdDocspre.forEach((item, index) => {
+            this.PreviewshowdialogeArray[index] = false; // Initialize all dialog variables to false
+          });
         }
-      );
+      },
+      (error) => {
+        this.loadingPreDoc = false;
+        console.log("error");
+      }
+    );
   }
   onFileDropped($file) {
     // Handle the dropped files here
