@@ -61,7 +61,8 @@ export class ServiceService {
   private All_Service = environment.rootpath2 + "Service";
   private Task_Service = environment.rootpath2 + "getTasks";
   private All_Org = environment.rootpath2 + "AllOrg";
-  public customerUrl = environment.rootPathApii + "PdfCompressor/PdfCompressor/base64";
+  public customerUrl =
+    environment.rootPathApi + "PdfCompressor/PdfCompressor/base64";
   public Username =
     environment.rootPathApi + "view/View_GetcustomerAllWithVitalId/";
   public CustomerId =
@@ -169,7 +170,9 @@ export class ServiceService {
   private currencies = environment.rootPath + "finance/CCurrencyID";
   private SaveDataObjURL = environment.rootPath + "BPEL/SaveDataObj"; // URL to web api
   private getAllDocumentURL = environment.rootPath + "BPEL/getAllDocument";
-  private getAllDocumentURLs = environment.rootPathApi + "view/Vw_AllDocuments/application_number/application_code?";
+  private getAllDocumentURLs =
+    environment.rootPathApi +
+    "view/Vw_AllDocuments/application_number/application_code?";
   private getDocumentbytasksURL =
     environment.rootPathApi + "view/View_Document_By_Task/task_code";
   private MytasksUrl = environment.rootPath + "BPEL/GetlistofTodo"; // URL to web api
@@ -855,7 +858,7 @@ export class ServiceService {
         DocID
     );
   }
-   getAllDocuments(ApplicationCode, DocID) {
+  getAllDocuments(ApplicationCode, DocID) {
     console.log("ApplicationCode, DocID", ApplicationCode, DocID);
 
     return this.http.get<any[]>(
@@ -865,7 +868,8 @@ export class ServiceService {
         "&application_detail_id=" +
         DocID
     );
-  }getAllDocumentt(DocID) {
+  }
+  getAllDocumentt(DocID) {
     console.log("ApplicationCode, DocID", DocID);
 
     return this.http.get<any[]>(
@@ -1261,17 +1265,17 @@ export class ServiceService {
     return this.http.get(this.customerUrl);
   }
   getcustcompress(aa) {
-    return this.http.get(this.customerUrl+aa);
+    return this.http.get(this.customerUrl + aa);
   }
   getcustomerbycusid(custID) {
     return this.http.get(this.customerUrl + "/" + custID);
   }
-  disableBrowserBackButton(){
+  disableBrowserBackButton() {
     window.history.pushState(null, null, window.location.href);
-      window.onpopstate = function () {
-          window.history.go(1);
-      };
-}
+    window.onpopstate = function () {
+      window.history.go(1);
+    };
+  }
 }
 
 export class UserRole {

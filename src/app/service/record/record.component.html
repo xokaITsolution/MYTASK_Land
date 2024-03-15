@@ -157,7 +157,7 @@
 					>
 					<!-- (change)="passdataa($event.target.value)" -->
                     <option>---select Service Name---</option>
-                    <ng-container *ngFor="let Service of Services">
+                    <ng-container *ngFor="let Service of Service">
                       <option [value]="Service.service_code">
                         {{language === 'amharic' ? Service.Registration_code+Service.description_am : Service.Registration_code+Service.description_en}}
                       </option>
@@ -171,7 +171,7 @@
                   >
                   <!-- (change)="passdataa($event.target.value)" -->
                             <option>---select Service Name---</option>
-                            <ng-container *ngFor="let Service of Services">
+                            <ng-container *ngFor="let Service of Service">
                               <option [value]="Service.service_code">
                   {{language === 'amharic' ? Service.Registration_code+Service.description_am :
                   Service.Registration_code+Service.description_en}}
