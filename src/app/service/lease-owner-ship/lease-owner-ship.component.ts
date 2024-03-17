@@ -86,13 +86,14 @@ export class LeaseOwnerShipComponent implements OnChanges {
     console.log("haha lease", this.SelectedPlot);
     if (this.SelectedPlot) {
       this.getleaseOwnerShip(this.SelectedPlot.plot_ID);
+      this.serviceService.getCookies();
       if (this.addnew) {
         this.serviceService.leaseOwnerShip.Plot_ID = this.SelectedPlot.plot_ID;
         console.log("lease select", this.SelectedPlot);
         console.log(
           "lease plot id",
           this.serviceService.leaseOwnerShip.Plot_ID,
-          localStorage.getItem("PolygonAreaname")
+          this.serviceService.polygonAreaname
         );
 
         this.serviceService.leaseOwnerShip.SDP_ID = this.SelectedPlot.sdP_ID;
@@ -170,7 +171,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
       this.islease = true;
       this.isfreehole = true;
       // Check if the value retrieved from localStorage is not null for Free_Hold_M2
-      const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
+      //const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
+      const freeHoldM2Value = this.serviceService.polygonAreanameFrehold;
       this.serviceService.leaseOwnerShip.Free_Hold_M2 = 0;
       // freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
 
@@ -179,7 +181,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
         this.serviceService.leaseOwnerShip.Lease_Hold_M2 == null ||
         this.serviceService.leaseOwnerShip.Lease_Hold_M2 == 0
       ) {
-        const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+        //const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+        const leaseHoldM2Value = this.serviceService.polygonAreaname;
         this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
           leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
       }
@@ -193,12 +196,14 @@ export class LeaseOwnerShipComponent implements OnChanges {
         this.serviceService.leaseOwnerShip.Free_Hold_M2 == null ||
         this.serviceService.leaseOwnerShip.Free_Hold_M2 == 0
       ) {
-        const freeHoldM2Value = localStorage.getItem("PolygonAreaname");
+        //onst freeHoldM2Value = localStorage.getItem("PolygonAreaname");
+        const freeHoldM2Value = this.serviceService.polygonAreanameFrehold;
         this.serviceService.leaseOwnerShip.Free_Hold_M2 =
           freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
       }
       // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
-      const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+      //const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+      const leaseHoldM2Value = this.serviceService.polygonAreaname;
       this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
         this.serviceService.leaseOwnerShip.Lease_Hold_M2;
       // leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;

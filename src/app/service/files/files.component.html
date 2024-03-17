@@ -120,7 +120,12 @@
 *ngIf="mimeExtension[this.mimeTypee].extension == 'pdf'">
  <iframe width="100%" height="400px" alt="FileUPloaded" class="pdf-ifram"  [src]="documents">
 
- </iframe></div>
+ </iframe>
+<a [href]="documents" [download]="RequerdDocpre.description_en + '.' + mimeExtension[this.mimeTypee].extension"
+  style="font-weight: bolder; font-size: larger;font-style: italic;">Attached
+  -
+  Please download!</a>
+</div>
  <div
 *ngIf="mimeExtension[this.mimeTypee].extension == 'jpg' || mimeExtension[this.mimeTypee].extension == 'png' || mimeExtension[this.mimeTypee].extension == 'gif'">
 <img width="100%" height="400px" [src]="documents" alt="FileUPloaded" />

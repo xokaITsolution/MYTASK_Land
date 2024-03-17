@@ -25,6 +25,7 @@ import { BehaviorSubject, Subject } from "rxjs";
 import * as proj4 from "proj4";
 import { ActivatedRoute } from "@angular/router";
 import { LeaseOwnerShipService } from "../lease-owner-ship/lease-owner-ship.service";
+import { CookieService } from "ngx-cookie-service/cookie-service/cookie.service";
 
 @Component({
   selector: "app-plot-managment",
@@ -78,7 +79,8 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     private modalService: BsModalService,
     public plotcomponent: PlotComponent,
     public gisMapService: GisMapService,
-    private leaseOwnerShipService: LeaseOwnerShipService
+    private leaseOwnerShipService: LeaseOwnerShipService,
+    private cookieService: CookieService
   ) {
     this.plotManagment = new PlotManagment();
     this.platformLocation = new PlatformLocation();
@@ -905,9 +907,17 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
 
     console.log("saving....");
   }
+  getCookies() {
+    this.serviceService.coordinatetemp = this.cookieService.get("coordinate");
+    // Use the retrieved values as needed
+    console.log("coordinate:", this.serviceService.coordinatetemp);
+
+    return JSON.parse(this.serviceService.coordinatetemp);
+  }
   saveplotlocnew() {
-    console.log("coordinatcoordinat", localStorage.getItem("coordinate"));
-    const cordinatetemp = JSON.parse(localStorage.getItem("coordinate"));
+    //const cordinatetemp = JSON.parse(localStorage.getItem("coordinate"));
+    const cordinatetemp = this.getCookies();
+    // console.log("coordinatcoordinat", localStorage.getItem("coordinate"));
     console.log("coordinatcoordinat", cordinatetemp);
     if (cordinatetemp) {
       this.serviceService.getUserRole().subscribe((response: any) => {

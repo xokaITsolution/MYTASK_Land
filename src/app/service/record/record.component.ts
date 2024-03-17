@@ -31,6 +31,7 @@ import { HttpEvent, HttpEventType, HttpParams } from "@angular/common/http";
 import { DomSanitizer } from "@angular/platform-browser";
 import { BehaviorSubject, empty } from "rxjs";
 import { jsPDF } from "jspdf";
+import { ActivatedRoute, Params } from "@angular/router";
 
 @Component({
   selector: "app-record",
@@ -182,6 +183,9 @@ export class RecordComponent implements OnChanges {
   currentTaskelected: any;
   upploadd: any;
   mergedPDFBase64: any;
+  Services: any;
+  aplicno: any;
+  disabledtask: boolean = true;
   switchTab(tab: string) {
     this.activeTab = tab;
   }
@@ -190,7 +194,8 @@ export class RecordComponent implements OnChanges {
     private service: ServiceService,
     private sanitizer: DomSanitizer,
     private modalService: BsModalService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private activatedRoute: ActivatedRoute
   ) {
     this.recordDocumnet = new RecordDocumnet();
     this.addRecord = new AddRecord();
@@ -214,7 +219,10 @@ export class RecordComponent implements OnChanges {
   });
   ngOnChanges() {
     console.log("this.AppCodeFromFile1", this.AppCodeFromFile);
-
+    this.activatedRoute.params.subscribe((params: Params) => {
+      this.aplicno = params["AppNo"];
+      console.log("this.AppCodeFromFile1", this.AppCodeFromFile);
+    });
     if (
       this.AppCodeFromFile != null ||
       (this.AppCodeFromFile != undefined && this.DocIdFromFile != null) ||
@@ -325,6 +333,19 @@ export class RecordComponent implements OnChanges {
     //  })
   }
   async addNew() {
+    if (this.ApplicationNumberlist.length > 0) {
+      this.service.getservice().subscribe((service: any) => {
+        const serviceCodes = new Set(
+          this.ApplicationNumberlist.map(
+            (application) => application.services_service_code
+          )
+        );
+        this.Services = service.filter(
+          (service) => !serviceCodes.has(service.service_code)
+        );
+        console.log("serviceserviceservice", service);
+      });
+    }
     this.getData = true;
     this.displayTab = true;
     this.disableDoc = false;
@@ -531,7 +552,19 @@ export class RecordComponent implements OnChanges {
                 (x) =>
                   x.application_number == this.useNamelist[0].application_number
               )[0];
-
+            if (this.ApplicationNumberlist.length > 0) {
+              this.service.getservice().subscribe((service: any) => {
+                const serviceCodes = new Set(
+                  this.ApplicationNumberlist.map(
+                    (application) => application.services_service_code
+                  )
+                );
+                this.Services = service.filter(
+                  (service) => !serviceCodes.has(service.service_code)
+                );
+                console.log("serviceserviceservice", service);
+              });
+            }
             console.log(
               "🚀 ~ RecordComponent ~ .subscribe ~ selectedAppno:",
               this.selectedAppno
@@ -560,12 +593,25 @@ export class RecordComponent implements OnChanges {
   }
   getservice() {
     this.service.getservice().subscribe((service) => {
-      this.Service = service;
-      this.Service = this.Service.filter(
-        (x) => x.is_published == true && x.is_active == true
-      );
+      this.Services = service;
+      // this.Service = this.Service.filter(
+      //   (x) => x.is_published == true && x.is_active == true
+      // );
       console.log("service", this.Service);
     });
+  }
+  passapp(e) {
+    this.getservice();
+    this.activatedRoute.params.subscribe((params: Params) => {
+      this.aplicno = params["AppNo"];
+      console.log("this.AppCodeFromFile1", this.AppCodeFromFile);
+    });
+    console.log("selectedappp", e.application_number, this.aplicno);
+    if (this.aplicno == e.application_number) {
+      this.disabledtask = true;
+    } else {
+      this.disabledtask = false;
+    }
   }
   handleSelectionChange(): void {
     this.openArchive = true;
@@ -1178,7 +1224,7 @@ export class RecordComponent implements OnChanges {
             this.taskList = ress;
             console.log("taskresponsess", this.taskList);
           });
-
+        this.disabledtask = false;
         this.recordDocumnet.application_No = this.response = res.split("/");
         console.log("this.response", this.response[0]);
 
@@ -1377,87 +1423,85 @@ export class RecordComponent implements OnChanges {
     let updatedArray: any[] = [];
     this.loadingPreDoc = true;
     console.log("this.RequerdDocspre", this.RequerdDocspre);
-    this.service
-      .getAllDocuments(Licence_Service_ID, DocID)
-      .subscribe(
-        (SavedFiles) => {
-          SavedFiles = SavedFiles.filter((x) => x.tasks_task_code == taskid);
-          if (SavedFiles.length > 0) {
-            console.log("SavedFiiiilessssffff", SavedFiles, SavedFiles.length);
+    this.service.getAllDocuments(Licence_Service_ID, DocID).subscribe(
+      (SavedFiles) => {
+        SavedFiles = SavedFiles.filter((x) => x.tasks_task_code == taskid);
+        if (SavedFiles.length > 0) {
+          console.log("SavedFiiiilessssffff", SavedFiles, SavedFiles.length);
 
-            this.loadingPreDoc = false;
-            this.SavedFilespre = SavedFiles;
-            for (let j = 0; j < SavedFiles.length; j++) {
-              if (SavedFiles[j].attachedBY.trim() != environment.username) {
-                this.hid = false;
-              } else {
-                this.hid = true;
-              }
-              let updatedObject = {
-                // Copy the existing properties from the original object
-                is_hidde: this.hid,
-              };
-
-              updatedArray.push(updatedObject);
+          this.loadingPreDoc = false;
+          this.SavedFilespre = SavedFiles;
+          for (let j = 0; j < SavedFiles.length; j++) {
+            if (SavedFiles[j].attachedBY.trim() != environment.username) {
+              this.hid = false;
+            } else {
+              this.hid = true;
             }
+            let updatedObject = {
+              // Copy the existing properties from the original object
+              is_hidde: this.hid,
+            };
 
-            this.hide = updatedArray;
-            if (this.RequerdDocspre != null || this.RequerdDocspre != undefined)
-              this.showProgressBar = false;
-            for (let i = 0; i < this.RequerdDocspre.length; i++) {
-              console.log("pdf fileeee", this.RequerdDocspre[i]);
+            updatedArray.push(updatedObject);
+          }
 
-              for (let j = 0; j < SavedFiles.length; j++) {
-                if (
-                  this.RequerdDocspre[i].requirement_code ==
-                  SavedFiles[j].requirement_code
-                ) {
-                  console.log("updatedArray", updatedArray[j]);
-                  try {
-                    // let fileData = JSON.parse(atob(SavedFiles[j].document));
+          this.hide = updatedArray;
+          if (this.RequerdDocspre != null || this.RequerdDocspre != undefined)
+            this.showProgressBar = false;
+          for (let i = 0; i < this.RequerdDocspre.length; i++) {
+            console.log("pdf fileeee", this.RequerdDocspre[i]);
 
-                    // let { type, data } = fileData;
+            for (let j = 0; j < SavedFiles.length; j++) {
+              if (
+                this.RequerdDocspre[i].requirement_code ==
+                SavedFiles[j].requirement_code
+              ) {
+                console.log("updatedArray", updatedArray[j]);
+                try {
+                  // let fileData = JSON.parse(atob(SavedFiles[j].document));
 
-                    // this.RequerdDocspre[i].mimeType = type;
-                    // this.RequerdDocspre[i].File =
-                    //   "data:" + type + ";base64, " + data;
-                    // console.log(
-                    //   "this.RequerdDocspre[i].File",
-                    //   SavedFiles[j].document
-                    // );
-                    this.RequerdDocspre[i].hidden = SavedFiles[j].UserId;
-                    console.log(
-                      "updatedArrayyyyy",
-                      this.RequerdDocspre[i].hidden
-                    );
+                  // let { type, data } = fileData;
 
-                    // this.RequerdDocspre[i].File =
-                    //   this.sanitizer.bypassSecurityTrustResourceUrl(
-                    //     this.RequerdDocspre[i].File
-                    //   );
+                  // this.RequerdDocspre[i].mimeType = type;
+                  // this.RequerdDocspre[i].File =
+                  //   "data:" + type + ";base64, " + data;
+                  // console.log(
+                  //   "this.RequerdDocspre[i].File",
+                  //   SavedFiles[j].document
+                  // );
+                  this.RequerdDocspre[i].hidden = SavedFiles[j].UserId;
+                  console.log(
+                    "updatedArrayyyyy",
+                    this.RequerdDocspre[i].hidden
+                  );
 
-                    this.RequerdDocspre[i].document_code =
-                      SavedFiles[j].document_code;
-                    this.RequiredDocs = this.RequerdDocspre;
-                  } catch (e) {
-                    console.error(e);
-                  }
+                  // this.RequerdDocspre[i].File =
+                  //   this.sanitizer.bypassSecurityTrustResourceUrl(
+                  //     this.RequerdDocspre[i].File
+                  //   );
+
+                  this.RequerdDocspre[i].document_code =
+                    SavedFiles[j].document_code;
+                  this.RequiredDocs = this.RequerdDocspre;
+                } catch (e) {
+                  console.error(e);
                 }
               }
             }
-            this.hide = updatedArray;
-            console.log("SavedFileeeees", updatedArray);
-            console.log("RequerdDocspre", this.RequerdDocspre);
-            this.RequerdDocspre.forEach((item, index) => {
-              this.PreviewshowdialogeArray[index] = false; // Initialize all dialog variables to false
-            });
           }
-        },
-        (error) => {
-          this.loadingPreDoc = false;
-          console.log("error");
+          this.hide = updatedArray;
+          console.log("SavedFileeeees", updatedArray);
+          console.log("RequerdDocspre", this.RequerdDocspre);
+          this.RequerdDocspre.forEach((item, index) => {
+            this.PreviewshowdialogeArray[index] = false; // Initialize all dialog variables to false
+          });
         }
-      );
+      },
+      (error) => {
+        this.loadingPreDoc = false;
+        console.log("error");
+      }
+    );
   }
   onFileDropped($file) {
     // Handle the dropped files here

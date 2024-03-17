@@ -145,52 +145,52 @@ export class ServiceComponent implements OnInit {
   appliedNow = false;
   countDownString = "";
   warnMessage = "";
-  mimeExtension = { 
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': {
-      extension: 'xlsx',
-      previewable: false
+  mimeExtension = {
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+      extension: "xlsx",
+      previewable: false,
     },
-    'application/vnd.ms-excel': {
-      extension: 'xls',
-      previewable: false
+    "application/vnd.ms-excel": {
+      extension: "xls",
+      previewable: false,
     },
-    'text/csv': {
-      extension: 'csv',
-      previewable: false
+    "text/csv": {
+      extension: "csv",
+      previewable: false,
     },
-    'application/pdf': {
-      extension: 'pdf',
-      previewable: true
+    "application/pdf": {
+      extension: "pdf",
+      previewable: true,
     },
-    'image/jpeg': {
-      extension: 'jpg',
-      previewable: true
+    "image/jpeg": {
+      extension: "jpg",
+      previewable: true,
     },
-    'image/png': {
-      extension: 'png',
-      previewable: true
+    "image/png": {
+      extension: "png",
+      previewable: true,
     },
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
-      extension: 'docx',
-      previewable: false
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+      extension: "docx",
+      previewable: false,
     },
-    'application/msword': {
-      extension: 'doc',
-      previewable: false
+    "application/msword": {
+      extension: "doc",
+      previewable: false,
     },
-    'image/gif': {
-      extension: 'gif',
-      previewable: true
+    "image/gif": {
+      extension: "gif",
+      previewable: true,
     },
-    'application/geojson': {
-      extension: 'geojson',
-      previewable: false
+    "application/geojson": {
+      extension: "geojson",
+      previewable: false,
     },
-    'application/x-zip-compressed': {
-      extension: 'zip',
-      previewable: false
+    "application/x-zip-compressed": {
+      extension: "zip",
+      previewable: false,
     },
-  }
+  };
   prepareCertificateFields = {
     FIELD_ONE: "Branch name",
   };
@@ -222,7 +222,7 @@ export class ServiceComponent implements OnInit {
   isSuperviedUsers: boolean;
   backbuttonviable: boolean;
   documents: any;
-  documentss: boolean=false;
+  documentss: boolean = false;
   mimeTypes: any;
   mimeTypee: any;
 
@@ -240,6 +240,120 @@ export class ServiceComponent implements OnInit {
   ) {}
 
   hide = true;
+  saveFormmjson(formData) {
+    if ("de4937d8-bdcd-46d6-8749-dc31c9f3adcf" == this.SDP_ID) {
+      if (environment.subcity == "arada") {
+        this.AppNo = "6921d772-3a1c-4641-95a0-0ab320bac3e2";
+      } else if (environment.subcity == "bole") {
+        this.AppNo = "89eb1aec-c875-4a08-aaf6-2c36c0864979";
+      } else if (environment.subcity == "nifasS") {
+        this.AppNo = "f8ea62db-05bc-4f1a-ab30-4e926d43e3fb";
+      } else if (environment.subcity == "gullele") {
+        this.AppNo = "6a8c042f-a3e1-4375-9769-54d94c2312c6";
+      } else if (environment.subcity == "addisK") {
+        this.AppNo = "7101d44d-97d5-41aa-957d-82f36d928c07";
+      } else if (environment.subcity == "lideta") {
+        this.AppNo = "e4d8219e-51f9-40cb-9d53-883c6ca9aaa3";
+      } else if (environment.subcity == "lemiK") {
+        this.AppNo = "f02e9467-1b7d-4350-bee7-9844d4f56da0";
+      } else if (environment.subcity == "yeka") {
+        this.AppNo = "8222f028-5fe3-4047-9a50-b52bfa64c851";
+      } else if (environment.subcity == "akakyK") {
+        this.AppNo = "08f9c927-6366-467a-ba99-c837c5add427";
+      } else if (environment.subcity == "kirkos") {
+        this.AppNo = "aaa5094c-8899-4708-9f7b-d8ff634a3540";
+      } else if (environment.subcity == "kolfeK") {
+        this.AppNo = "930d1c20-9e0e-4a50-9eb2-e542fafbad68";
+      } else if (environment.subcity == "central") {
+        this.AppNo = "275619f2-69c2-4fb7-a053-938f0b62b088";
+      }
+      if (this.Licence_Service_ID == undefined) {
+        this.Licence_Service_ID = "00000000-0000-0000-0000-000000000000";
+        this.DocID = "00000000-0000-0000-0000-000000000000";
+        this.todoID = "00000000-0000-0000-0000-000000000000";
+        this.Service_ID = this.SDP_ID;
+      }
+      //let doc_id = this.serviceService.docId ? this.serviceService.docId : '00000000-0000-0000-0000-000000000000';
+      // this.serviceService.saveForm(this.Licence_Service_ID, this.Service_ID, this.tskID, this.SDP_ID, JSON.stringify(formData), this.DocID, this.todoID).subscribe(message => {
+      this.serviceService
+        .saveFormObj(
+          this.Licence_Service_ID,
+          this.Service_ID,
+          this.tskID,
+          this.AppNo,
+          JSON.stringify(formData),
+          this.DocID,
+          this.todoID
+        )
+        .subscribe(
+          (message) => {
+            this.serviceService.disablefins = false;
+            this.AppCode = message[0];
+            this.DocID = message[1];
+            this.todoID = message[2];
+            this.getAll(message[0]);
+
+            if (formData == "{}") {
+              const toast = this.notificationsService;
+            } else {
+              const toast = this.notificationsService.success(
+                "Success",
+                "Successfully Saved"
+              );
+            }
+            this.validated = true;
+          },
+
+          (error) => {
+            if (formData == "{}") {
+              const toast = this.notificationsService;
+            } else {
+              const toast = this.notificationsService.error(
+                "Error",
+                "SomeThing Went Wrong"
+              );
+            }
+          }
+        );
+    } else {
+      console.log("save-form", JSON.stringify(formData));
+      this.serviceService
+        .saveFormObj(
+          this.licenceData
+            ? this.licenceData.Licence_Service_ID
+            : this.Service_ID,
+          this.licenceData
+            ? this.licenceData.Service_ID
+            : "00000000-0000-0000-0000-000000000000",
+          this.tskID,
+          this.SDP_ID,
+          JSON.stringify(formData),
+          this.DocID || "00000000-0000-0000-0000-000000000000",
+          this.todoID || "00000000-0000-0000-0000-000000000000"
+        )
+        .subscribe(
+          (response) => {
+            console.log("save-from-response", response);
+
+            this.serviceService.disablefins = false;
+            this.AppNo = response[0];
+            this.DocID = response[1];
+            //this.todoID = response[2];
+            this.getAll(this.AppNo);
+            const toast = this.notificationsService.success("Success", "Saved");
+            this.validated = true;
+          },
+          (error) => {
+            console.log("save-form-error", error);
+            const toast = this.notificationsService.error(
+              "Error",
+              "SomeThing Went Wrong"
+            );
+          }
+        );
+    }
+  }
+
   saveFormm(formData) {
     if ("de4937d8-bdcd-46d6-8749-dc31c9f3adcf" == this.SDP_ID) {
       if (environment.subcity == "arada") {
@@ -1607,31 +1721,29 @@ export class ServiceComponent implements OnInit {
           //   this.procView_RecordAppNoAndDocIdByAppNo[0].application_code,
           //   this.procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id
           // );
-           this.getAllDocumentpreforeachh(
+          this.getAllDocumentpreforeachh(
             this.procView_RecordAppNoAndDocIdByAppNo[0].application_code,
             this.procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id
           );
         });
     });
   }
-  getdatadoc(doc){
-    this.documentss=false
-    this.serviceService.getAllDocumentt(doc).subscribe(r=>{
+  getdatadoc(doc) {
+    this.documentss = false;
+    this.serviceService.getAllDocumentt(doc).subscribe((r) => {
       let fileData = JSON.parse(atob(r[0].document));
 
-                   let { type, data } = fileData;
+      let { type, data } = fileData;
 
-                   this.mimeTypee = type;
-                   console.log( 'mimeTypeemimeTypee', this.mimeTypee)
-                   let file= "data:" + type + ";base64, " + data;
-  
-                   this.documents= this.sanitizer.bypassSecurityTrustResourceUrl(
-                      file
-                    );
-                    this.documentss=true
-    console.log('responceses',r[0].document)
-    })
-    console.log('documentsdoc')
+      this.mimeTypee = type;
+      console.log("mimeTypeemimeTypee", this.mimeTypee);
+      let file = "data:" + type + ";base64, " + data;
+
+      this.documents = this.sanitizer.bypassSecurityTrustResourceUrl(file);
+      this.documentss = true;
+      console.log("responceses", r[0].document);
+    });
+    console.log("documentsdoc");
   }
   getAllDocumentpreforeachh(Licence_Service_ID, DocID) {
     let updatedArray: any[] = [];
@@ -1641,7 +1753,6 @@ export class ServiceComponent implements OnInit {
       (SavedFiles) => {
         console.log("SavedFiiiilessssffff", SavedFiles);
         if (SavedFiles.length > 0) {
-
           this.loadingPreDoc = false;
           this.SavedFilespre = SavedFiles;
           for (let j = 0; j < SavedFiles.length; j++) {
@@ -1681,7 +1792,7 @@ export class ServiceComponent implements OnInit {
                   // this.RequerdDocspreeach[i].File =
                   //   "data:" + type + ";base64, " + data;
                   console.log(
-                    "this.RequerdDocspre[i].File",
+                    "this.RequerdDocspre[i].File"
                     // SavedFiles[j].document
                   );
                   this.RequerdDocspreeach[i].hidden = updatedArray[j].is_hidde;

@@ -75,7 +75,8 @@ export class CertComponent implements OnChanges {
   ceertform: any;
   PropertyLists: any;
   isMaximized: boolean;
-
+  certReportPath: any;
+  isCertifcatePrintforConfirmation: boolean;
   constructor(
     private serviceService: ServiceService,
     private ngxSmartModalService: NgxSmartModalService,
@@ -530,6 +531,9 @@ export class CertComponent implements OnChanges {
           console.log("img", img[0].certificate_Image);
           if (img[0].certificate_Image) {
             this.Selectedcert = certver;
+            this.certReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
+              environment.certReportPath + "/" + this.Selectedcert.title_Deed_No
+            );
             this.certverForm = true;
             this.disableTab = false;
             this.displayGIS = false;

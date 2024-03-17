@@ -15,7 +15,7 @@
         <h5 class="card-title" translate>APPLICATION NUMBER</h5>
         <h6 class="card-subtitle mb-2 text-muted">{{ Application_Number }}</h6>
         <div class="card flex justify-content-center">
-          <p-listbox [options]="ApplicationNumberlist" [listStyle]="{ 'max-height': '250px' }" [(ngModel)]="selectedAppno" (onChange)="handleSelectionChange()" optionLabel="application_number" [filter]="true" [style]="{ width: '15rem' }"></p-listbox>
+          <p-listbox [options]="ApplicationNumberlist" [listStyle]="{ 'max-height': '250px' }" [(ngModel)]="selectedAppno" (onChange)="handleSelectionChange();passapp(selectedAppno)" optionLabel="application_number" [filter]="true" [style]="{ width: '15rem' }"></p-listbox>
       </div>
       </div>
     </div>
@@ -157,7 +157,7 @@
 					>
 					<!-- (change)="passdataa($event.target.value)" -->
                     <option>---select Service Name---</option>
-                    <ng-container *ngFor="let Service of Service">
+                    <ng-container *ngFor="let Service of Services">
                       <option [value]="Service.service_code">
                         {{language === 'amharic' ? Service.Registration_code+Service.description_am : Service.Registration_code+Service.description_en}}
                       </option>
@@ -171,7 +171,7 @@
                   >
                   <!-- (change)="passdataa($event.target.value)" -->
                             <option>---select Service Name---</option>
-                            <ng-container *ngFor="let Service of Service">
+                            <ng-container *ngFor="let Service of Services">
                               <option [value]="Service.service_code">
                   {{language === 'amharic' ? Service.Registration_code+Service.description_am :
                   Service.Registration_code+Service.description_en}}
@@ -386,7 +386,7 @@
               </div>
             </div>
             <div class="col-md-12" >
-              <label
+              <label [hidden]="disabledtask"
                 for="license_No"
                 class="font-weight-bold font-weight-bold col-sm-3 col-form-label"
                 translate
@@ -402,6 +402,7 @@
                   class="form-control"
                   name="task"
                   id="task"
+                  [hidden]="disabledtask"
                   formControlName="task"
 				   (change)="passdata($event.target.value)"
                 >

@@ -19,6 +19,7 @@ import { Subject } from "rxjs";
 
 import { LeaseOwnerShipService } from "../lease-owner-ship/lease-owner-ship.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { CookieService } from "ngx-cookie-service/cookie-service/cookie.service";
 
 @Component({
   selector: "app-plot",
@@ -83,6 +84,7 @@ export class PlotComponent implements OnChanges {
     private notificationsService: NotificationsService,
     private modalService: BsModalService,
     private modalsService: NgbModal,
+    private cookieService: CookieService,
 
     private leaseOwnerShipService: LeaseOwnerShipService
   ) {}
@@ -265,7 +267,7 @@ export class PlotComponent implements OnChanges {
     this.serviceService.check = true;
     this.isfreehoadinsert = true;
     //localStorage.setItem("PolygonAreaname", "" + 0);
-    localStorage.setItem("PolygonAreanameFrehold", "" + 0);
+    //localStorage.setItem("PolygonAreanameFrehold", "" + 0);
   }
   calculateUTMPolygonArea(
     utmPoints: { northing: number; easting: number }[]
@@ -466,7 +468,8 @@ export class PlotComponent implements OnChanges {
       "🚀 ~ processcoordinatesForPlot ~ ServiceService:",
       this.serviceService.Totalarea
     );
-    localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
+    this.serviceService.setCookies(area);
+    // localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
     arrayOfArrays.push(convertedCoordinates);
     console.log("convertedCconvertedCoordinatesoordinates", arrayOfArrays);
     this.tellChild(arrayOfArrays);
@@ -475,12 +478,14 @@ export class PlotComponent implements OnChanges {
     // console.log('closeing.....');
     //this.modalRef.hide();
     // Check if the value retrieved from localStorage is not null for Free_Hold_M2
-    const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
+    //const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
+    const freeHoldM2Value = this.serviceService.polygonAreanameFrehold;
     this.serviceService.leaseOwnerShip.Free_Hold_M2 =
       freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
 
     // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
-    const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+    // const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+    const leaseHoldM2Value = this.serviceService.polygonAreaname;
     this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
       leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
   }
@@ -527,14 +532,17 @@ export class PlotComponent implements OnChanges {
               "Sucess",
               "Succesfully Upadted"
             );
-            const freeHoldM2Value = localStorage.getItem(
-              "PolygonAreanameFrehold"
-            );
+
+            //  const freeHoldM2Value = localStorage.getItem(
+            //    "PolygonAreanameFrehold"
+            //  );
+            const freeHoldM2Value = this.serviceService.polygonAreanameFrehold;
             let freeHoldM2Valuesize =
               freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
 
             // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
-            const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+            //const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+            const leaseHoldM2Value = this.serviceService.polygonAreaname;
             let leaseHoldM2Valuesize =
               leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
             const maxAreaDifferences =
@@ -580,6 +588,9 @@ export class PlotComponent implements OnChanges {
   updateplotlocfreeHold() {
     this.serviceService.leaseOwnerShip.Free_Hold_M2 = parseFloat(
       localStorage.getItem("PolygonAreanameFrehold")
+    );
+    this.serviceService.leaseOwnerShip.Free_Hold_M2 = parseFloat(
+      this.serviceService.polygonAreanameFrehold
     );
     console.log(
       "coordinatcoordinat",
@@ -894,6 +905,7 @@ export class PlotComponent implements OnChanges {
             }
           );
         } else {
+          this.serviceService.getCookies();
           this.Savetempora();
         }
       });
@@ -941,9 +953,15 @@ export class PlotComponent implements OnChanges {
     }
   }
   Savetempora() {
-    console.log("ischeckPlotaev", this.serviceService.coordinate);
+    console.log(
+      "ischeckPlotaev",
+      this.serviceService.coordinate,
+      this.serviceService.polygonAreaname,
+      this.serviceService.polygonAreanameFrehold
+    );
     if (this.serviceService.coordinate) {
       this.storeData();
+      this.setCookies(this.serviceService.coordinate);
       this.AddPLot();
       this.ischeckPlotaev = false;
       this.ismodaEnable = false;
@@ -976,6 +994,17 @@ export class PlotComponent implements OnChanges {
   clearData() {
     localStorage.removeItem("coordinate");
   }
+  setCookies(coordinate: any) {
+    // Setting cookies using cookieService
+    this.cookieService.set("coordinate", JSON.stringify(coordinate));
+  }
+  getCookies() {
+    this.serviceService.coordinatetemp = this.cookieService.get("coordinate");
+    // Use the retrieved values as needed
+    console.log("coordinate:", this.serviceService.coordinatetemp);
+
+    return this.serviceService.coordinatetemp;
+  }
   calculettotal() {
     if (this.PlotManagementListfinal.length > 0) {
       this.serviceService.totalsizeformerage =
@@ -989,8 +1018,8 @@ export class PlotComponent implements OnChanges {
         this.serviceService.totalsizeformerage
       );
     }
-    localStorage.setItem("PolygonAreaname", "" + 0);
-    localStorage.setItem("PolygonAreanameFrehold", "" + 0);
+    // localStorage.setItem("PolygonAreaname", "" + 0);
+    // localStorage.setItem("PolygonAreanameFrehold", "" + 0);
   }
   getPlotManagement(Licence_Service_ID) {
     let a;

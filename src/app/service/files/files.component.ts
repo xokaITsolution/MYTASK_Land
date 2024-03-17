@@ -110,10 +110,10 @@ export class FilesComponent implements OnChanges {
   remove: boolean;
   username: string;
   userid: any;
-  documentss: boolean=false;
+  documentss: boolean = false;
   mimeTypee: any;
   documents: any;
-  preview=false
+  preview = false;
   useridfromdoc: any;
   constructor(
     public serviceService: ServiceService,
@@ -341,25 +341,23 @@ export class FilesComponent implements OnChanges {
     );
   }
   showdiv(doc) {
-    this.documentss=false
-    this.serviceService.getAllDocumentt(doc).subscribe(r=>{
+    this.documentss = false;
+    this.serviceService.getAllDocumentt(doc).subscribe((r) => {
       let fileData = JSON.parse(atob(r[0].document));
 
-                   let { type, data } = fileData;
+      let { type, data } = fileData;
 
-                   this.mimeTypee = type;
-                   console.log( 'mimeTypeemimeTypee', this.mimeTypee)
-                   let file= "data:" + type + ";base64, " + data;
-  
-                   this.documents= this.sanitizer.bypassSecurityTrustResourceUrl(
-                      file
-                    );
-                     
-                    this.documentss=true
-                    this.useridfromdoc=r[0].userId
-    console.log('responceses',r[0].userId,this.userid)
-    })
-    console.log('documentsdoc')
+      this.mimeTypee = type;
+      console.log("mimeTypeemimeTypee", this.mimeTypee);
+      let file = "data:" + type + ";base64, " + data;
+
+      this.documents = this.sanitizer.bypassSecurityTrustResourceUrl(file);
+
+      this.documentss = true;
+      this.useridfromdoc = r[0].userId;
+      console.log("responceses", r[0].userId, this.userid);
+    });
+    console.log("documentsdoc");
   }
 
   Uploader(File, RequiredDoc, fild) {
@@ -481,7 +479,7 @@ export class FilesComponent implements OnChanges {
     this.serviceService.RemoveDoc(RequiredDoc.document_code).subscribe(
       (message) => {
         const toast = this.notificationsService.success("Sucess", message);
-        this.preview=false
+        this.preview = false;
         for (let i = 0; i < this.RecordComponent.RequerdDocspre.length; i++) {
           if (
             this.RecordComponent.RequerdDocspre[i].requirement_code ==
@@ -507,14 +505,14 @@ export class FilesComponent implements OnChanges {
   onFileDropped($file) {
     // Handle the dropped files here
     console.log("Dropped files:", $file.target.files);
-    const maxSize = 2 * 1024 * 1024; // 5MB in bytes
+    const maxSize = 3 * 1024 * 1024; // 5MB in bytes
     let totalSize = 0;
     for (let i = 0; i < $file.target.files.length; i++) {
       totalSize += $file.target.files[i].size;
     }
     if (totalSize > maxSize) {
       const toast = this.notificationsService.error(
-        `The total size of selected files exceeds the maximum allowed size.(2MB)`
+        `The total size of selected files exceeds the maximum allowed size.(3MB)`
       );
       this.serviceService.fileexxcedlimit = true;
       return false;

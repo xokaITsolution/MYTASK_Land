@@ -5,6 +5,7 @@ import { TreeNode } from "primeng/api";
 import { Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { LeaseOwnerShip } from "./lease-owner-ship/lease-owner-ship.component";
+import { CookieService } from "ngx-cookie-service/cookie-service/cookie.service";
 
 @Injectable({
   providedIn: "root",
@@ -275,7 +276,10 @@ export class ServiceService {
   currentcertID: any;
   LicenceserviceID: any;
   fileexxcedlimit: boolean = false;
-  constructor(private http: HttpClient) {}
+  polygonAreaname: any;
+  polygonAreanameFrehold: any;
+  coordinatetemp: any;
+  constructor(private http: HttpClient, private cookieService: CookieService) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
   }
@@ -286,6 +290,30 @@ export class ServiceService {
   Add(data) {
     return this.http.post<any[]>(this.PropertyManagmentUrlapi, data);
   }
+  setCookies(area: number) {
+    // Setting cookies using cookieService
+    if (this.isfreeholdselected) {
+      //localStorage.setItem("PolygonAreanameFrehold", "" + area.toFixed(2));
+      this.cookieService.set("PolygonAreanameFrehold", "" + area.toFixed(2));
+      this.getCookies();
+    } else {
+      //ocalStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
+      this.cookieService.set("PolygonAreaname", "" + area.toFixed(2));
+      this.getCookies();
+    }
+  }
+  getCookies() {
+    // Getting cookie values using cookieService
+    this.polygonAreaname =
+      parseFloat(this.cookieService.get("PolygonAreaname")) || 0;
+    this.polygonAreanameFrehold =
+      parseFloat(this.cookieService.get("PolygonAreanameFrehold")) || 0;
+
+    // Use the retrieved values as needed
+    console.log("PolygonAreaname:", this.polygonAreaname);
+    console.log("PolygonAreanameFrehold:", this.polygonAreanameFrehold);
+  }
+
   getCustomerLookUP() {
     return this.http.get(
       this.CustomerLookUP +
@@ -1232,6 +1260,7 @@ export class ServiceService {
       null
     );
   }
+
   //getPaymentByAppNo(appNo){
   //  return this.http.get<any>(this.paymentByappNoUrl+appNo+"&searchString&pageIndex&pageSize");
   //   }

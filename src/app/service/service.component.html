@@ -196,7 +196,7 @@
 
               <div *ngIf="ID==1;">
                 <div class="m-3">
-                  <app-servy (completed)="saveFormm($event)" [formcode]="formcode" [formData]="FormData"></app-servy>
+                  <app-servy (completed)="saveFormmjson($event)" [formcode]="formcode" [formData]="FormData"></app-servy>
                 </div>
               </div>
 
@@ -522,16 +522,18 @@
                   <div *ngIf="mimeExtension[RequerdDocpre.mimeType].extension == 'pdf'">
                   
                   <button type="button" class="btn btn-primary" id="Preview{{i}}" (click)="PreviewshowdialogeArray[i] = true">Preview</button>
-                  
-                  <p-dialog [(visible)]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
-                    [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
-                      'max-height': '80vh','min-height':'250px'}">
+                 
+                  <p-dialog [(visible)]="PreviewshowdialogeArray[i]"  header="Preview" [responsive]="true" [width]="900" [minY]="70"
+                    [baseZIndex]="10000" [contentStyle]="{ 'overflow-x': 'hidden', 
+                                                'max-height': '80vh','min-height':'400px'}" [closable]="false">
                   
                       <div class="modal-body">
                             <div *ngIf="!RequerdDocpre.File">
                               <p-progressSpinner [style]="{ width: '50px', height: '50px' }" strokeWidth="4"></p-progressSpinner>
                             </div>
-                      <iframe width="100%" [src]="RequerdDocpre.File" alt="FileUploaded" class="pdf-iframe"></iframe>
+                      <iframe width="100%" height="400px" [src]="RequerdDocpre.File" alt="FileUploaded" class="pdf-iframe">
+
+                      </iframe>
                     </div>
                     <div>
                     <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = false">close</button>
@@ -640,7 +642,12 @@
                           *ngIf="mimeExtension[this.mimeTypee].extension == 'pdf'">
                               <iframe width="100%" height="400px" alt="FileUPloaded" class="pdf-ifram"  [src]="documents">
 
-                              </iframe></div>
+                              </iframe>
+                                    <a [href]="documents" [download]="RequerdDocpre.description_en + '.' + mimeExtension[this.mimeTypee].extension"
+                                      style="font-weight: bolder; font-size: larger;font-style: italic;">Attached
+                                      -
+                                      Please download!</a>
+                            </div>
                               <div
                       *ngIf="mimeExtension[this.mimeTypee].extension == 'jpg' || mimeExtension[this.mimeTypee].extension == 'png' || mimeExtension[this.mimeTypee].extension == 'gif'">
                       <img width="100%" height="400px" [src]="documents" alt="FileUPloaded" />

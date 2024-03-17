@@ -2044,13 +2044,19 @@ export class GisMapComponent implements AfterViewInit {
 
           // Do something with the coordinates, such as displaying or processing them
 
-          let eachcoored: any = this.convertCoordinatesToUTM(this.coordinates);
-          eachcoored.push(eachcoored[0]);
-          eachcoored = this.convertArray(eachcoored);
-          this.ServiceService.coordinate.push(eachcoored);
-
+          // let eachcoored: any = this.convertCoordinatesToUTM(this.coordinates);
+          // eachcoored.push(eachcoored[0]);
+          // eachcoored = this.convertArray(eachcoored);
+          // this.allcoordenatezone.push(eachcoored);
+          // this.ServiceService.coordinate = this.allcoordenatezone;
+          let convertedUtmgeozone = this.convertCoordinateszone(
+            this.utmCoordinates
+          );
+          convertedUtmgeozone.push(convertedUtmgeozone[0]);
+          this.allcoordenatezone.push(convertedUtmgeozone);
+          this.ServiceService.coordinate = this.allcoordenatezone;
           console.log(
-            "this.ServiceService.coordinate",
+            "this.ServiceService.coordinateeeeeeee",
             this.ServiceService.coordinate
           );
 
@@ -2067,15 +2073,17 @@ export class GisMapComponent implements AfterViewInit {
           );
           const area = this.calculateUTMPolygonArea(utmCoordinates);
           this.ServiceService.Totalarea = parseInt(area.toFixed(2));
+
+          this.ServiceService.setCookies(area);
           // Show the area in a popup
-          if (this.ServiceService.isfreeholdselected) {
-            localStorage.setItem(
-              "PolygonAreanameFrehold",
-              "" + area.toFixed(2)
-            );
-          } else {
-            localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
-          }
+          // if (this.ServiceService.isfreeholdselected) {
+          //   localStorage.setItem(
+          //     "PolygonAreanameFrehold",
+          //     "" + area.toFixed(2)
+          //   );
+          // } else {
+          //   localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
+          // }
           console.log(
             "Totalarea",
             area,
@@ -2181,14 +2189,15 @@ export class GisMapComponent implements AfterViewInit {
           );
           const area = this.calculateUTMPolygonArea(utmCoordinates);
           this.ServiceService.Totalarea = parseInt(area.toFixed(2));
-          if (this.ServiceService.isfreeholdselected) {
-            localStorage.setItem(
-              "PolygonAreanameFrehold",
-              "" + area.toFixed(2)
-            );
-          } else {
-            localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
-          }
+          this.ServiceService.setCookies(area);
+          // if (this.ServiceService.isfreeholdselected) {
+          //   localStorage.setItem(
+          //     "PolygonAreanameFrehold",
+          //     "" + area.toFixed(2)
+          //   );
+          // } else {
+          //   localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
+          // }
           console.log("Totalarea", area, utmCoordinates);
           const maxAreaDifference =
             environment.Totalareatolerance * this.ServiceService.Totalarea;
@@ -2364,14 +2373,15 @@ export class GisMapComponent implements AfterViewInit {
             this.utmCoordinates
           );
           const area = this.calculateUTMPolygonArea(this.utmCoordinates);
-          if (this.ServiceService.isfreeholdselected) {
-            localStorage.setItem(
-              "PolygonAreanameFrehold",
-              "" + area.toFixed(2)
-            );
-          } else {
-            localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
-          }
+          this.ServiceService.setCookies(area);
+          // if (this.ServiceService.isfreeholdselected) {
+          //   localStorage.setItem(
+          //     "PolygonAreanameFrehold",
+          //     "" + area.toFixed(2)
+          //   );
+          // } else {
+          //   localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
+          // }
           // Show the area in a popup
           console.log("Totalarea", area, utmCoordinates);
           this.ServiceService.Totalarea = parseInt(area.toFixed(2));
@@ -2588,6 +2598,24 @@ export class GisMapComponent implements AfterViewInit {
     });
     return utmCoordinates;
   }
+  convertCoordinatesToUTMforAddpoint(
+    coordinates: { lat: number; lng: number }[]
+  ): { northing: number; easting: number; zone: number; hemisphere: string }[] {
+    const utmCoordinates: {
+      northing: number;
+      easting: number;
+      zone: number;
+      hemisphere: string;
+    }[] = [];
+    console.log(coordinates);
+
+    coordinates.forEach((coord) => {
+      const { lat, lng } = coord;
+      const utmPoint = this.conveLatLngToUTM(lat, lng);
+      utmCoordinates.push(utmPoint);
+    });
+    return utmCoordinates;
+  }
 
   toggleLayer(visibility: boolean, layerName: string) {
     console.log("layerName", layerName);
@@ -2745,9 +2773,19 @@ export class GisMapComponent implements AfterViewInit {
   }
 
   drawPolygon() {
-    console.log(this.pinpointedPoints);
+    console.log("pinpointedpoints", this.pinpointedPoints);
+    const firstPointUTM = this.pinpointedPoints[0].lat; // Assuming UTM value is at index 0
+    console.log("🚀 ~ sparetedshape.forEach ~ firstPointUTM:", firstPointUTM);
+    const lastPointUTM =
+      this.pinpointedPoints[this.pinpointedPoints.length - 1].lat; // Assuming UTM value is at index 0
+    if (firstPointUTM !== lastPointUTM) {
+      const toast = this.notificationsService.warn(
+        "The first and last point UTM values are not the same. Import aborted/የመጀመሪያው እና የመጨረሻው የዩቲኤም(የምስራቅ እና የሰሜን) ነጥቦች አንድ አይነት አይደሉም።"
+      );
+      return;
+    }
     this.coordinates = this.pinpointedPoints;
-    this.coordinates.push(this.coordinates[0]);
+    //this.coordinates.push(this.coordinates[0]);
     console.log(
       "🚀 ~ file: gis-map.component.ts:2417 ~ drawPolygon ~ coordinates:",
       this.coordinates
@@ -2768,15 +2806,25 @@ export class GisMapComponent implements AfterViewInit {
     const area = this.calculateUTMPolygonArea(utmCoordinates);
     this.ServiceService.Totalarea = parseInt(area.toFixed(2));
     // Show the area in a popup
-    if (this.ServiceService.isfreeholdselected) {
-      localStorage.setItem("PolygonAreanameFrehold", "" + area.toFixed(2));
-    } else {
-      localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
-    }
+    this.ServiceService.setCookies(area);
+    // if (this.ServiceService.isfreeholdselected) {
+    //   localStorage.setItem("PolygonAreanameFrehold", "" + area.toFixed(2));
+    // } else {
+    //   localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
+    // }
+
     this.utmCoordinates = utmCoordinates;
     //utmCoordinates.push(utmCoordinates[0]);
-    this.ServiceService.coordinate = utmCoordinates;
-    console.log(utmCoordinates);
+    let convertedUtmgeozone = this.convertCoordinateszone(this.utmCoordinates);
+    //convertedUtmgeozone.push(convertedUtmgeozone[0]);
+    this.allcoordenatezone.push(convertedUtmgeozone);
+    this.ServiceService.coordinate = this.allcoordenatezone;
+    console.log(
+      "🚀 ~ drawPolygon ~ coordinate:",
+      this.ServiceService.coordinate
+    );
+
+    //console.log(utmCoordinates);
 
     if (
       this.ServiceService.allLicenceData.Parcel_ID == null &&
@@ -3502,9 +3550,7 @@ export class GisMapComponent implements AfterViewInit {
     }
   }
 
-  calculateUTMPolygonArea(
-    utmPoints: { northing: number; easting: number }[]
-  ): number {
+  calculateUTMPolygonArea(utmPoints) {
     const numPoints = utmPoints.length;
     let area = 0;
 
@@ -3519,7 +3565,7 @@ export class GisMapComponent implements AfterViewInit {
       area += ((p2.easting - p1.easting) * (p2.northing + p1.northing)) / 2;
     }
 
-    return Math.abs(area); // Take the absolute value to ensure a positive area
+    return parseFloat(Math.abs(area).toFixed(2)); // Round to 2 decimal places and convert back to number
   }
 
   calculatePolygonArea(vertices) {
@@ -3928,11 +3974,12 @@ export class GisMapComponent implements AfterViewInit {
     const area = this.calculateUTMPolygonArea(utmCoordinates);
     this.ServiceService.Totalarea = parseInt(area.toFixed(2));
     // Show the area in a popup
-    if (this.ServiceService.isfreeholdselected) {
-      localStorage.setItem("PolygonAreanameFrehold", "" + area.toFixed(2));
-    } else {
-      localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
-    }
+    this.ServiceService.setCookies(area);
+    // if (this.ServiceService.isfreeholdselected) {
+    //   localStorage.setItem("PolygonAreanameFrehold", "" + area.toFixed(2));
+    // } else {
+    //   localStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
+    // }
     // Remove the previously drawn shape, if any
     if (this.drawnShape) {
       this.map.removeLayer(this.drawnShape);
@@ -5176,6 +5223,28 @@ export class GisMapComponent implements AfterViewInit {
     // Update your properties here
     this.cdr.detectChanges(); // Manually trigger change detection
   }
+  // setCookies(area: number) {
+  //   // Setting cookies using cookieService
+  //    if (this.ServiceService.isfreeholdselected) {
+  //      //localStorage.setItem("PolygonAreanameFrehold", "" + area.toFixed(2));
+  //      this.cookieService.set("PolygonAreanameFrehold", "" + area.toFixed(2));
+  //    } else {
+  //      //ocalStorage.setItem("PolygonAreaname", "" + area.toFixed(2));
+  //      this.cookieService.set("PolygonAreaname", "" + area.toFixed(2));
+  //    }
+  // }
+  // getCookies() {
+  //   // Getting cookie values using cookieService
+  //   this.ServiceService.polygonAreaname = this.cookieService.get("PolygonAreaname");
+  //   this.ServiceService.polygonAreanameFrehold = this.cookieService.get("PolygonAreanameFrehold");
+
+  //   // Use the retrieved values as needed
+  //   console.log("PolygonAreaname:", this.ServiceService.polygonAreaname);
+  //   console.log(
+  //     "PolygonAreanameFrehold:",
+  //     this.ServiceService.polygonAreanameFrehold
+  //   );
+  // }
 }
 
 // Define the Layer interface
