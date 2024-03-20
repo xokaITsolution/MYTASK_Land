@@ -1,58 +1,3 @@
-<!-- <div>
-
-  <div class="form-row mt-5">
-    <div class="col-md-12">
-      <div *ngIf="RequiredDocs">
-        <form #f="ngForm" novalidate name="proform">
-          <div class="form-group row col-md-12" *ngFor="let RequiredDoc of RequiredDocs; let i = index;">
-            <label for="File" class="col-md-4 col-form-label">
-              {{ language === 'amharic' ? RequiredDoc.description_Local : RequiredDoc.description_en }}
-            </label>
-            <div class="col-md-8">
-              <div>
-
-              </div>
-              <div *ngIf="!RequiredDoc.File">
-                <p-fileUpload #fild id="File" name="demo[]" customUpload="true"
-                  (uploadHandler)="upload($event,RequiredDoc,fild)" [auto]="true" [disabled] ="disabled"
-                  accept=".pdf,.jpg,.jfif,.png,.gif,.doc,.docx,.xls,.xlsx,.csv,.geojson,.zip" [chooseLabel]="'UPLOAD' | translate"
-                 maxFileSize="2900000">
-                </p-fileUpload>
-
-              </div>
-              <div *ngIf="RequiredDoc.File">
-                <button type="button" class="btn btn-primary" (click)="removeUpload(RequiredDoc)" [disabled] ="disabled" translate="">Remove</button>
-              </div>
-              <div *ngIf="RequiredDoc.required">
-                <input type="hidden" class="form-control" #file="ngModel" [(ngModel)]="RequiredDoc.File"
-                  [name]="RequiredDoc.description_en" id="NumberOfLift" placeholder="Number of Lift" required>
-                <div *ngIf="file.invalid">
-                   <span class="text-danger">REQUIRED</span>
-                </div>
-              </div>
-              <div *ngIf="RequiredDoc.File">
-                <div
-                  *ngIf="RequiredDoc.fileType !== 'image/jpeg' && RequiredDoc.fileType !== 'image/png' && RequiredDoc.fileType !== 'image/gif' && RequiredDoc.fileType !== 'application/pdf'">
-                  <div class="alert alert-info" translate>
-                    Document uploaded
-                  </div>
-                </div>
-                <div
-                  *ngIf="RequiredDoc.fileType === 'image/jpeg' || RequiredDoc.fileType === 'image/png' || RequiredDoc.fileType === 'image/gif'">
-                  <img height="30%" width="30%" [src]="RequiredDoc.File" alt="FileUPloaded" />
-                </div>
-                <div *ngIf="RequiredDoc.fileType === 'application/pdf'">
-                  <iframe width="100%" [src]="RequiredDoc.File" alt="FileUPloaded" class="pdf-ifram"></iframe>
-                </div>
-                <span>File name: {{ RequiredDoc.fileName }}</span>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div> -->
 
 <div>
 
@@ -88,7 +33,7 @@
                     [auto]="true" accept=".pdf,.jpg,.jfif,.png,.gif,.doc,.docx,.xls,.xlsx,.csv,.geojson,.zip"
                     [chooseLabel]="'UPLOAD'" maxFileSize="2900000" [ngStyle]="RequerdDocpre.required ? {'border': '2px solid red'} : {}">
                   </p-fileUpload> -->
-               <button type="button" class="btn btn-info mr-2" (click)="displayu = true;sorereuired(RequerdDocpre, fild)" translate><i class='fa fa-file-excel-o'></i>
+               <button type="button" class="btn btn-info mr-2" (click)="displayu = true;sorereuired(RequerdDocpre, fild)"  [disabled]="disable" translate><i class='fa fa-file-excel-o'></i>
               upload </button>
                       <span *ngIf="RequerdDocpre.required" style="color:red ; size: 50px;">ሰነድ ማያያዝ ያስፈልጋል</span>
                     </div>
@@ -261,10 +206,8 @@ Please download!</a>
 
     <app-fileuploader (fileDropped)="onFileDropped($event)" [cleanupload]="displayu" ></app-fileuploader>
     <!-- <input type="file" id="photo" (change)="upload($event)" name="photo" > -->
-
   </div>
   <div class="float-right">
-
     <button type="button" class="btn btn-info m-2" *ngIf="downloadmergedfile" (click)="downloadMergedPdf()"   translate>Download Merged PDF</button>
     <button type="button" class="btn btn-primary m-2" (click)="displayu=false;" translate>close</button>
 

@@ -178,6 +178,10 @@ export class ServiceComponent implements OnInit {
       extension: "doc",
       previewable: false,
     },
+    "image/tiff": {
+      extension: "tiff",
+      previewable: true,
+    },
     "image/gif": {
       extension: "gif",
       previewable: true,
@@ -726,7 +730,7 @@ export class ServiceComponent implements OnInit {
       this.SuperviedUsers = Object.assign([], this.SuperviedUsers);
       this.SuperviedUsers = SuperviedUsers;
 
-      if (this.SuperviedUsers) {
+      if (this.SuperviedUsers.length > 0) {
         this.isSuperviedUsers = true;
       } else {
         this.isSuperviedUsers = false;
@@ -996,72 +1000,72 @@ export class ServiceComponent implements OnInit {
         this.loadingPreDoc = false;
         console.log("pdf file", SavedFiles, this.RequerdDocspre);
         this.SavedFilespre = SavedFiles;
-        if (this.RequerdDocspre != null || this.RequerdDocspre != undefined)
+        if (this.RequerdDocspre != null || this.RequerdDocspre != undefined) {
           this.showProgressBar = false;
-        for (let i = 0; i < this.RequerdDocspre.length; i++) {
-          console.log("pdf file", this.RequerdDocspre[i]);
-          for (let j = 0; j < SavedFiles.length; j++) {
-            if (
-              this.RequerdDocspre[i].requirement_code ==
-              SavedFiles[j].requirement_code
-            ) {
-              try {
-                if (
-                  this.RequerdDocspre[i].description_en.indexOf("DAR") !== -1
-                ) {
-                  const binaryData = atob(SavedFiles[j].document);
-                  const arrayBuffer = new ArrayBuffer(binaryData.length);
-                  const uint8Array = new Uint8Array(arrayBuffer);
+          for (let i = 0; i < this.RequerdDocspre.length; i++) {
+            console.log("pdf file", this.RequerdDocspre[i]);
+            for (let j = 0; j < SavedFiles.length; j++) {
+              if (
+                this.RequerdDocspre[i].requirement_code ==
+                SavedFiles[j].requirement_code
+              ) {
+                try {
+                  if (
+                    this.RequerdDocspre[i].description_en.indexOf("DAR") !== -1
+                  ) {
+                    const binaryData = atob(SavedFiles[j].document);
+                    const arrayBuffer = new ArrayBuffer(binaryData.length);
+                    const uint8Array = new Uint8Array(arrayBuffer);
 
-                  for (let i = 0; i < binaryData.length; i++) {
-                    uint8Array[i] = binaryData.charCodeAt(i);
+                    for (let i = 0; i < binaryData.length; i++) {
+                      uint8Array[i] = binaryData.charCodeAt(i);
+                    }
+
+                    // Create Blob
+                    const blob = new Blob([uint8Array], {
+                      type: "application/pdf",
+                    });
+                    // Set Blob URL as iframe source
+                    // this.documentupload =  this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
+                    this.RequerdDocspre[i].mimeType = "application/pdf";
+                    this.RequerdDocspre[i].File =
+                      this.sanitizer.bypassSecurityTrustResourceUrl(
+                        URL.createObjectURL(blob)
+                      );
+
+                    this.RequerdDocspre[i].document_code =
+                      SavedFiles[j].document_code;
+                  } else {
+                    let fileData = JSON.parse(atob(SavedFiles[j].document));
+
+                    let { type, data } = fileData;
+
+                    this.RequerdDocspre[i].mimeType = type;
+                    this.RequerdDocspre[i].File =
+                      "data:" + type + ";base64, " + data;
+                    console.log("this.RequerdDocspre[i].File", SavedFiles[j]);
+
+                    this.RequerdDocspre[i].File =
+                      this.sanitizer.bypassSecurityTrustResourceUrl(
+                        this.RequerdDocspre[i].File
+                      );
+
+                    this.RequerdDocspre[i].document_code =
+                      SavedFiles[j].document_code;
                   }
-
-                  // Create Blob
-                  const blob = new Blob([uint8Array], {
-                    type: "application/pdf",
-                  });
-
-                  // Set Blob URL as iframe source
-                  // this.documentupload =  this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
-                  this.RequerdDocspre[i].mimeType = "application/pdf";
-                  this.RequerdDocspre[i].File =
-                    this.sanitizer.bypassSecurityTrustResourceUrl(
-                      URL.createObjectURL(blob)
-                    );
-
-                  this.RequerdDocspre[i].document_code =
-                    SavedFiles[j].document_code;
-                } else {
-                  let fileData = JSON.parse(atob(SavedFiles[j].document));
-
-                  let { type, data } = fileData;
-
-                  this.RequerdDocspre[i].mimeType = type;
-                  this.RequerdDocspre[i].File =
-                    "data:" + type + ";base64, " + data;
-                  console.log("this.RequerdDocspre[i].File", SavedFiles[j]);
-
-                  this.RequerdDocspre[i].File =
-                    this.sanitizer.bypassSecurityTrustResourceUrl(
-                      this.RequerdDocspre[i].File
-                    );
-
-                  this.RequerdDocspre[i].document_code =
-                    SavedFiles[j].document_code;
+                } catch (e) {
+                  console.error(e);
                 }
-              } catch (e) {
-                console.error(e);
               }
             }
           }
-        }
-        console.log("SavedFiles", this.SavedFiles);
-        console.log("RequerdDocspre", this.RequerdDocspre);
+          console.log("SavedFiles", this.SavedFiles);
+          console.log("RequerdDocspre", this.RequerdDocspre);
 
-        this.RequerdDocspre.forEach((item, index) => {
-          this.PreviewshowdialogeArray[index] = false; // Initialize all dialog variables to false
-        });
+          this.RequerdDocspre.forEach((item, index) => {
+            this.PreviewshowdialogeArray[index] = false; // Initialize all dialog variables to false
+          });
+        }
       },
       (error) => {
         this.loadingPreDoc = false;
@@ -1069,6 +1073,7 @@ export class ServiceComponent implements OnInit {
       }
     );
   }
+
   // getUserRoles(): void {
   //   const params = new HttpParams().set("UserName", environment.username);
 

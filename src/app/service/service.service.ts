@@ -60,6 +60,7 @@ export class ServiceService {
   private getRequerdURL =
     environment.rootpath2 + "getRequrementDocumentOfTasks";
   private All_Service = environment.rootpath2 + "Service";
+  private All_Serviceapi = environment.rootPathApi + "view/View_servicesforapi";
   private Task_Service = environment.rootpath2 + "getTasks";
   private All_Org = environment.rootpath2 + "AllOrg";
   public customerUrl =
@@ -279,6 +280,7 @@ export class ServiceService {
   polygonAreaname: any;
   polygonAreanameFrehold: any;
   coordinatetemp: any;
+  RequerdDocspre: any;
   constructor(private http: HttpClient, private cookieService: CookieService) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -415,6 +417,9 @@ export class ServiceService {
   }
   getservice() {
     return this.http.get(this.All_Service);
+  }
+  getserviceapi() {
+    return this.http.get(this.All_Serviceapi);
   }
   getUsernme(data) {
     return this.http.get(this.Username + "UserName?UserName=" + data);
@@ -1196,9 +1201,7 @@ export class ServiceService {
 
   getFormData(formcode) {
     if (!environment.production) {
-      return this.http.get<any>(
-        "http://land.xokait.com.et/DB/" + formcode + ".json"
-      );
+      return this.http.get<any>(environment.formPath + formcode + ".json");
     } else {
       return this.http.get<any>(environment.formPath + formcode + ".json");
     }

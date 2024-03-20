@@ -83,6 +83,7 @@ export class RecordComponent implements OnChanges {
   userName: any;
   taskList: any;
   requiredDoc: any;
+
   public mimeExtension = {
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
       extension: "xlsx",
@@ -144,7 +145,6 @@ export class RecordComponent implements OnChanges {
   selectedTask: any;
   SavedFiles: any;
   recordDocumnet: RecordDocumnet;
-  ሽ;
   documentAddress: boolean;
   documentArc: any;
   RequiredDocs: any;
@@ -186,9 +186,11 @@ export class RecordComponent implements OnChanges {
   Services: any;
   aplicno: any;
   disabledtask: boolean = true;
+  invalidUnicode: any;
   switchTab(tab: string) {
     this.activeTab = tab;
   }
+
   constructor(
     private notificationsService: NotificationsService,
     private service: ServiceService,
@@ -332,18 +334,31 @@ export class RecordComponent implements OnChanges {
     //   // appno:"BL-"+formattedDate+"-"+randomNumber(1,99999999999999999)
     //  })
   }
+
   async addNew() {
     if (this.ApplicationNumberlist.length > 0) {
-      this.service.getservice().subscribe((service: any) => {
-        const serviceCodes = new Set(
-          this.ApplicationNumberlist.map(
-            (application) => application.services_service_code
-          )
-        );
-        this.Services = service.filter(
-          (service) => !serviceCodes.has(service.service_code)
-        );
-        console.log("serviceserviceservice", service);
+      this.service.getserviceapi().subscribe((service: any) => {
+        // const serviceCodes = new Set(
+        //   this.ApplicationNumberlist.map(
+        //     (application) => application.services_service_code
+        //   )
+        // );
+
+        // this.Services = service.filter(
+        //   (service) => !serviceCodes.has(service.service_code)
+        // );
+        const serviceCounts = {};
+        this.ApplicationNumberlist.forEach((application) => {
+          const code = application.services_service_code;
+          serviceCounts[code] = (serviceCounts[code] || 0) + 1;
+        });
+
+        this.Services = service.filter((service) => {
+          const code = service.service_code;
+          return !serviceCounts.hasOwnProperty(code) || serviceCounts[code] < 2;
+        });
+
+        console.log("serviceserviceservicess", service);
       });
     }
     this.getData = true;
@@ -535,7 +550,18 @@ export class RecordComponent implements OnChanges {
     this.addnew = false;
     this.service;
     // this.isEnvironmentalConsideration=false
-
+    if (
+      this.service.Service_ID ===
+        "449A14BD-E0C0-4EDA-92F5-68B3FCF83433".toLocaleLowerCase() ||
+      this.service.Service_ID ===
+        "5FE58D7F-6E9F-452E-B85B-8CD501F020BE".toLocaleLowerCase() ||
+      this.service.Service_ID ===
+        "05BF5DE7-7170-43CE-8320-C747748D40E5".toLocaleLowerCase() ||
+      this.service.Service_ID ===
+        "DE330170-550B-4BF2-9908-DC557F92A7CC".toLocaleLowerCase()
+    ) {
+      this.disabledtask = false;
+    }
     this.service
       .getByCustomerId(event.customer_ID)
       .subscribe((customer: any) => {
@@ -547,21 +573,33 @@ export class RecordComponent implements OnChanges {
             console.log("AppbyUserId", AppbyUserId);
             this.ApplicationNumberlist =
               AppbyUserId.procApplicationLoadByUserIds;
+            console.log(
+              "🚀 ~ RecordComponent ~ .subscribe ~ ApplicationNumberlist:",
+              this.ApplicationNumberlist
+            );
+
             this.selectedAppno =
               AppbyUserId.procApplicationLoadByUserIds.filter(
                 (x) =>
                   x.application_number == this.useNamelist[0].application_number
               )[0];
+
             if (this.ApplicationNumberlist.length > 0) {
-              this.service.getservice().subscribe((service: any) => {
-                const serviceCodes = new Set(
-                  this.ApplicationNumberlist.map(
-                    (application) => application.services_service_code
-                  )
-                );
-                this.Services = service.filter(
-                  (service) => !serviceCodes.has(service.service_code)
-                );
+              this.service.getserviceapi().subscribe((service: any) => {
+                const serviceCounts = {};
+                this.ApplicationNumberlist.forEach((application) => {
+                  const code = application.services_service_code;
+                  serviceCounts[code] = (serviceCounts[code] || 0) + 1;
+                });
+
+                this.Services = service.filter((service) => {
+                  const code = service.service_code;
+                  return (
+                    !serviceCounts.hasOwnProperty(code) ||
+                    serviceCounts[code] < 2
+                  );
+                });
+
                 console.log("serviceserviceservice", service);
               });
             }
@@ -592,7 +630,7 @@ export class RecordComponent implements OnChanges {
       });
   }
   getservice() {
-    this.service.getservice().subscribe((service) => {
+    this.service.getserviceapi().subscribe((service) => {
       this.Services = service;
       // this.Service = this.Service.filter(
       //   (x) => x.is_published == true && x.is_active == true
@@ -606,14 +644,28 @@ export class RecordComponent implements OnChanges {
       this.aplicno = params["AppNo"];
       console.log("this.AppCodeFromFile1", this.AppCodeFromFile);
     });
-    console.log("selectedappp", e.application_number, this.aplicno);
-    if (this.aplicno == e.application_number) {
-      this.disabledtask = true;
-    } else {
+    console.log("selectedappp", e, this.aplicno);
+    if (
+      e.services_service_code ===
+        "449A14BD-E0C0-4EDA-92F5-68B3FCF83433".toLocaleLowerCase() ||
+      e.services_service_code ===
+        "5FE58D7F-6E9F-452E-B85B-8CD501F020BE".toLocaleLowerCase() ||
+      e.services_service_code ===
+        "05BF5DE7-7170-43CE-8320-C747748D40E5".toLocaleLowerCase() ||
+      e.services_service_code ===
+        "DE330170-550B-4BF2-9908-DC557F92A7CC".toLocaleLowerCase()
+    ) {
       this.disabledtask = false;
+    } else {
+      if (this.aplicno == e.application_number) {
+        this.disabledtask = true;
+      } else {
+        this.disabledtask = false;
+      }
     }
   }
   handleSelectionChange(): void {
+    this.displayTab = true;
     this.openArchive = true;
     this.addnew = false;
     this.procView_RecordAppNoAndDocIdByAppNo = [""];
@@ -625,22 +677,7 @@ export class RecordComponent implements OnChanges {
     this.RequerdDocspre = [""];
     console.log("this.selectedAppno111111", this.selectedAppno);
     //this.completed.emit();
-    // this.service
-    //   .getTodandAppNo(this.selectedAppno.application_number)
-    //   .subscribe((PreAppData) => {
-    //     if (PreAppData) {
-    //       this.hideNew = true;
-    //     } else {
-    //       this.hideNew = false;
-    //     }
-    //     this.PreAppData = PreAppData;
-    //     if (this.PreAppData.Table.length === 0) {
-    //       this.taskEnable = true;
-    //     } else {
-    //       this.taskEnable = false;
-    //     }
-    //     console.log("this.PreAppDataaa", this.PreAppData.Table.length);
-    //   });
+
     this.service
       .getDocIdByAppNo(this.selectedAppno.application_number)
       .subscribe((DocIdByAppNo: any) => {
@@ -800,6 +837,7 @@ export class RecordComponent implements OnChanges {
       // this.ifAppNo = true;
     });
   }
+
   GetApplicationNumberByUser(username) {
     this.service
       .GetApplicationNumberByUser(username)
@@ -810,7 +848,6 @@ export class RecordComponent implements OnChanges {
           this.ApplicationNumberlist = this.ApplicationNumberlist.filter(
             (value) => value.organization_code == this.record.get("SDP").value
           );
-
           // this.AppNoList;
         } else {
           this.RequerdDocspre = [""];
@@ -840,6 +877,7 @@ export class RecordComponent implements OnChanges {
     }
     return "";
   }
+
   Uploader(File, RequiredDoc, fild) {
     let taskType =
       this.tskTyp === "c800fb16-f961-e111-95d6-00e04c05559b"
@@ -956,10 +994,9 @@ export class RecordComponent implements OnChanges {
     //console.log("this.PreAppData", this.PreAppData.Table);
   }
   getRequiredDocspre(tskID) {
-    this.RequerdDocspre = null;
     this.service.getRequerdDocs(tskID).subscribe((res) => {
       this.RequerdDocspre = res;
-      this.displayTab = false;
+
       console.log("taskresponsessssdd", res, tskID, this.RequerdDocspre.length);
       for (let i = 0; i < this.RequerdDocspre.length; i++) {
         if (this.RequerdDocspre[i].description_en == "Dummy") {
@@ -967,6 +1004,10 @@ export class RecordComponent implements OnChanges {
           break;
         }
       }
+      console.log(
+        "🚀 ~ RecordComponent ~ this.service.getRequerdDocs ~ selectedAppno:",
+        this.selectedAppno.application_number
+      );
 
       this.service
         .getDocIdByAppNo(this.selectedAppno.application_number)
@@ -1068,6 +1109,7 @@ export class RecordComponent implements OnChanges {
         this.recordDocumnet.regstration_Date
       );
     }
+    this.recordDocumnet.application_No = this.AppNo;
     this.service.CreateDocmentArcive(this.recordDocumnet).subscribe(
       async (message) => {
         console.log("message", message);
@@ -1303,7 +1345,7 @@ export class RecordComponent implements OnChanges {
     console.log("Attachments", Attachments.docs);
     this.Attachments = Attachments.docs;
     let a = true;
-    this.completed.emit();
+    //this.completed.emit();
     for (let i = 0; i < this.Attachments.length; i++) {
       console.log(
         "this.Attachments[i].required && !this.Attachments[i].File",
@@ -1419,81 +1461,91 @@ export class RecordComponent implements OnChanges {
         dates[0]._day + "/" + dates[0]._month + "/" + dates[0]._year;
     }
   }
+  // getAllDocumentpre(Licence_Service_ID, DocID, taskid) {
+  //   let updatedArray: any[] = [];
+  //   this.loadingPreDoc = true;
+  //   console.log("this.RequerdDocspre", this.RequerdDocspre);
+  //   this.service.getAllDocuments(Licence_Service_ID, DocID).subscribe(
+  //     (SavedFiles) => {
+  //       SavedFiles = SavedFiles.filter((x) => x.tasks_task_code == taskid);
+  //       console.log("SavedFiiiilessssffff", SavedFiles);
+  //         if (SavedFiles.length > 0) {
+  //       this.loadingPreDoc = false;
+  //       this.SavedFilespre = SavedFiles;
+  //       for (let j = 0; j < SavedFiles.length; j++) {
+  //         if (SavedFiles[j].attachedBY.trim() != environment.username) {
+  //           this.hid = false;
+  //         } else {
+  //           this.hid = true;
+  //         }
+  //         let updatedObject = {
+  //           // Copy the existing properties from the original object
+  //           is_hidde: this.hid,
+  //         };
+
+  //         updatedArray.push(updatedObject);
+  //       }
+
+  //       this.hide = updatedArray;
+  //       if (this.RequerdDocspre != null || this.RequerdDocspre != undefined)
+  //         this.showProgressBar = false;
+  //       for (let i = 0; i < this.RequerdDocspre.length; i++) {
+  //         console.log("pdf fileeee", this.RequerdDocspre[i]);
+
+  //         for (let j = 0; j < SavedFiles.length; j++) {
+  //           if (
+  //             this.RequerdDocspre[i].requirement_code ==
+  //             SavedFiles[j].requirement_code
+  //           ) {
+  //             console.log("updatedArray", updatedArray[j]);
+  //             try {
+
+  //               this.RequerdDocspre[i].hidden = SavedFiles[j].UserId;
+  //               console.log("updatedArrayyyyy", this.RequerdDocspre[i].hidden);
+  //               this.RequerdDocspre[i].document_code =
+  //                 SavedFiles[j].document_code;
+  //               this.RequiredDocs = this.RequerdDocspre;
+  //             } catch (e) {
+  //               console.error(e);
+  //             }
+  //           }
+  //         }
+  //       }
+  //       this.hide = updatedArray;
+  //       console.log("SavedFileeeees", updatedArray);
+  //       console.log("RequerdDocspre", this.RequerdDocspre);
+  //       this.RequerdDocspre.forEach((item, index) => {
+  //         this.PreviewshowdialogeArray[index] = false; // Initialize all dialog variables to false
+  //       });
+  //        }
+  //     },
+  //     (error) => {
+  //       this.loadingPreDoc = false;
+  //       console.log("error");
+  //     }
+  //   );
+  // }
+
   getAllDocumentpre(Licence_Service_ID, DocID, taskid) {
-    let updatedArray: any[] = [];
     this.loadingPreDoc = true;
+    this.displayTab = false;
     console.log("this.RequerdDocspre", this.RequerdDocspre);
     this.service.getAllDocuments(Licence_Service_ID, DocID).subscribe(
       (SavedFiles) => {
-        SavedFiles = SavedFiles.filter((x) => x.tasks_task_code == taskid);
-        if (SavedFiles.length > 0) {
-          console.log("SavedFiiiilessssffff", SavedFiles, SavedFiles.length);
-
-          this.loadingPreDoc = false;
-          this.SavedFilespre = SavedFiles;
-          for (let j = 0; j < SavedFiles.length; j++) {
-            if (SavedFiles[j].attachedBY.trim() != environment.username) {
-              this.hid = false;
-            } else {
-              this.hid = true;
-            }
-            let updatedObject = {
-              // Copy the existing properties from the original object
-              is_hidde: this.hid,
-            };
-
-            updatedArray.push(updatedObject);
-          }
-
-          this.hide = updatedArray;
-          if (this.RequerdDocspre != null || this.RequerdDocspre != undefined)
-            this.showProgressBar = false;
-          for (let i = 0; i < this.RequerdDocspre.length; i++) {
-            console.log("pdf fileeee", this.RequerdDocspre[i]);
-
-            for (let j = 0; j < SavedFiles.length; j++) {
-              if (
-                this.RequerdDocspre[i].requirement_code ==
-                SavedFiles[j].requirement_code
-              ) {
-                console.log("updatedArray", updatedArray[j]);
-                try {
-                  // let fileData = JSON.parse(atob(SavedFiles[j].document));
-
-                  // let { type, data } = fileData;
-
-                  // this.RequerdDocspre[i].mimeType = type;
-                  // this.RequerdDocspre[i].File =
-                  //   "data:" + type + ";base64, " + data;
-                  // console.log(
-                  //   "this.RequerdDocspre[i].File",
-                  //   SavedFiles[j].document
-                  // );
-                  this.RequerdDocspre[i].hidden = SavedFiles[j].UserId;
-                  console.log(
-                    "updatedArrayyyyy",
-                    this.RequerdDocspre[i].hidden
-                  );
-
-                  // this.RequerdDocspre[i].File =
-                  //   this.sanitizer.bypassSecurityTrustResourceUrl(
-                  //     this.RequerdDocspre[i].File
-                  //   );
-
-                  this.RequerdDocspre[i].document_code =
-                    SavedFiles[j].document_code;
-                  this.RequiredDocs = this.RequerdDocspre;
-                } catch (e) {
-                  console.error(e);
-                }
+        let SavedFile = SavedFiles.filter((x) => x.tasks_task_code === taskid);
+        console.log("SavedFiiiilessssffff", SavedFile);
+        if (SavedFile.length > 0) {
+          this.processSavedFiles(SavedFile);
+        } else {
+          this.RequerdDocspre = [""];
+          this.service.getRequerdDocs(taskid).subscribe((res) => {
+            this.RequerdDocspre = res;
+            for (let i = 0; i < this.RequerdDocspre.length; i++) {
+              if (this.RequerdDocspre[i].description_en == "Dummy") {
+                this.RequerdDocspre.splice(i, 1);
+                break;
               }
             }
-          }
-          this.hide = updatedArray;
-          console.log("SavedFileeeees", updatedArray);
-          console.log("RequerdDocspre", this.RequerdDocspre);
-          this.RequerdDocspre.forEach((item, index) => {
-            this.PreviewshowdialogeArray[index] = false; // Initialize all dialog variables to false
           });
         }
       },
@@ -1503,6 +1555,53 @@ export class RecordComponent implements OnChanges {
       }
     );
   }
+
+  processSavedFiles(SavedFiles) {
+    let updatedArray: any[] = [];
+    this.loadingPreDoc = false;
+    this.SavedFilespre = SavedFiles;
+    for (let j = 0; j < SavedFiles.length; j++) {
+      if (SavedFiles[j].attachedBY.trim() != environment.username) {
+        this.hid = false;
+      } else {
+        this.hid = true;
+      }
+      let updatedObject = {
+        // Copy the existing properties from the original object
+        is_hidde: this.hid,
+      };
+      updatedArray.push(updatedObject);
+    }
+    this.hide = updatedArray;
+    if (this.RequerdDocspre != null || this.RequerdDocspre != undefined)
+      this.showProgressBar = false;
+    for (let i = 0; i < this.RequerdDocspre.length; i++) {
+      // console.log("pdf fileeee", this.RequerdDocspre[i]);
+      for (let j = 0; j < SavedFiles.length; j++) {
+        if (
+          this.RequerdDocspre[i].requirement_code ==
+          SavedFiles[j].requirement_code
+        ) {
+          console.log("updatedArray", updatedArray[j]);
+          try {
+            this.RequerdDocspre[i].hidden = SavedFiles[j].UserId;
+            console.log("updatedArrayyyyy", this.RequerdDocspre[i].hidden);
+            this.RequerdDocspre[i].document_code = SavedFiles[j].document_code;
+            this.RequiredDocs = this.RequerdDocspre;
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      }
+    }
+    this.hide = updatedArray;
+    console.log("SavedFileeeees", updatedArray);
+    console.log("RequerdDocspre", this.RequerdDocspre);
+    this.RequerdDocspre.forEach((item, index) => {
+      this.PreviewshowdialogeArray[index] = false; // Initialize all dialog variables to false
+    });
+  }
+
   onFileDropped($file) {
     // Handle the dropped files here
     console.log("Dropped files:", $file);
@@ -1648,6 +1747,46 @@ export class RecordComponent implements OnChanges {
     console.log("closeing.....");
     this.record = customer.FullName_AM;
     this.modalRef.hide();
+  }
+  unicodeValidator(event: any) {
+    console.log("🚀 ~ RecordComponent ~ unicodeValidator ~ event:", event.data);
+    const unicodePattern = /^[^\u002F\u005C]+$/; // Regex to allow only Unicode characters
+    if (!unicodePattern.test(event.data)) {
+      this.invalidUnicode = true;
+    } else {
+      this.invalidUnicode = false;
+    }
+  }
+  onKeyPress(event: KeyboardEvent) {
+    const unicodePattern = /^[^\u002F\u005C]+$/; // Regex to allow only Unicode characters
+    const inputChar = event.key;
+    if (inputChar === "/" || inputChar === "\\") {
+      this.invalidUnicode = true;
+      event.preventDefault();
+    } else {
+      if (!unicodePattern.test(inputChar)) {
+        this.invalidUnicode = true;
+      } else {
+        this.invalidUnicode = false;
+      }
+    }
+  }
+  onPaste(event: ClipboardEvent) {
+    const clipboardData = event.clipboardData;
+    const pastedText = clipboardData.getData("text");
+    const unicodePattern = /^[^\u002F\u005C]+$/; // Regex to allow only Unicode characters
+
+    if (pastedText.includes("/") || pastedText.includes("\\")) {
+      this.invalidUnicode = true;
+      event.preventDefault();
+    } else {
+      if (!unicodePattern.test(pastedText)) {
+        this.invalidUnicode = true;
+        event.preventDefault();
+      } else {
+        this.invalidUnicode = false;
+      }
+    }
   }
 }
 function generateGuid(): string {

@@ -117,7 +117,7 @@ export class PersonComponent implements OnChanges {
     });
   }
   getcostumerbyid(globvar) {
-    this.serviceService.getcustomerbyid(globvar).subscribe((resp: any) => {
+    this.serviceService.getcustomerAll(globvar).subscribe((resp: any) => {
       this.customerdata = resp.procCustomers;
     });
   }

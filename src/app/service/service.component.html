@@ -288,7 +288,7 @@
 
  <button *ngIf="backbuttonviable" type="button" class="btn btn-primary mr-2" (click)="Back()" translate>Back</button>
    <button type="button" class="btn btn-primary mr-2" (click)="openModal(template)" translate>Review</button>
-   <!-- <button type="button" class="btn btn-primary mr-2" *ngIf="isSuperviedUsers" (click)="killtodo()" translate>Kill</button> -->
+   <button type="button" class="btn btn-primary mr-2" *ngIf="isSuperviedUsers" (click)="killtodo()" translate>Kill</button>
    <button type="button" class="btn btn-primary mr-2" *ngIf="isSuperviedUsers" (click)="Reopentodo()" translate>Reopen</button>
 
     <!-- [disabled]="disablefins" -->
@@ -471,7 +471,7 @@
           <app-property   [LicenceData]="licenceData"
                   [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="true" [AppNo]="AppNo"
                   [Service_ID]="licenceData.Service_ID" [todoid]="todoID" [tskID]="tskID" [DocID]="DocID" [disable]="true" >
-          
+
            </app-property>  
               
               </div>
@@ -618,14 +618,12 @@
                   </ng-container>
                 </select>
                 <div *ngIf="RequerdDocspreeach">
-                  <div class="form-group row col-sm-12 m-0" *ngFor="let RequerdDocpre of RequerdDocspreeach; let i = index">
+                  <!-- <div class="form-group row col-sm-12 m-0" *ngFor="let RequerdDocpre of RequerdDocspreeach; let i = index">
                     <label class="col-sm-12 col-form-label m-0">
                       {{ language === 'amharic' ? RequerdDocpre.description_Local : RequerdDocpre.description_en }}
                     </label>
                     <div class="col-sm-12 m-0 text-center">
-                      <!-- <div *ngIf="loadingPreDoc">
-                          <p-progressSpinner [style]="{ width: '50px', height: '50px' }" strokeWidth="4"></p-progressSpinner>
-                        </div> -->
+                     
     
                       <div class="alert alert-warning" role="alert" *ngIf="!RequerdDocpre.document_code">
                         {{language === 'amharic' ? 'ሰነድ አልገባለትም!' : 'Document not uploaded!'}}
@@ -666,10 +664,7 @@
                              </p-footer></p-dialog>
                       <div *ngIf="RequerdDocpre.File">
                         <div class="alert alert-info">
-                          <!-- <a [href]="RequerdDocpre.File"
-                            [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType].extension">Attached
-                            -
-                            Please download!</a> -->
+                         
                         </div>
     
     
@@ -678,17 +673,14 @@
     
                           <button type="button" class="btn btn-primary" id="Preview{{i}}"
                             (click)="PreviewshowdialogeArray[i] = true;">Preview</button>
-                          <!-- <p-dialog [(visible)]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
-                            [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
-                              'max-height': '80vh','min-height':'250px'}"> -->
+                         
                           <div *ngIf="PreviewshowdialogeArray[i]">
                             <div *ngIf="!RequerdDocpre.File">
                               <p-progressSpinner [style]="{ width: '50px', height: '50px' }"
                                 strokeWidth="4"></p-progressSpinner>
                             </div>
                             <div class="modal-body">
-                              <!-- <iframe width="100%" [src]="RequerdDocpre.File" alt="FileUploaded"
-                                class="pdf-iframe"></iframe> -->
+                            
                                 <div class="alert alert-info">
                                   <a [href]="RequerdDocpre.File"
                                     [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType].extension">Attached
@@ -701,15 +693,13 @@
                                 (click)="PreviewshowdialogeArray[i] = false">Close</button>
                             </div>
                           </div>
-                          <!-- </p-dialog> -->
+                     
                         </div>
                         <div *ngIf="['jpg', 'png', 'gif'].includes(mimeExtension[RequerdDocpre.mimeType].extension)">
     
                           <button type="button" class="btn btn-primary" id="Preview{{i}}"
                             (click)="PreviewshowdialogeArray[i] = true">Preview</button>
-                          <!-- <p-dialog [(visible)]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
-                              [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
-                                'max-height': '80vh','min-height':'250px'}"> -->
+                       
                           <div *ngIf="PreviewshowdialogeArray[i]">
                             <div *ngIf="!RequerdDocpre.File">
                               <p-progressSpinner [style]="{ width: '50px', height: '50px' }"
@@ -724,13 +714,100 @@
                             </div>
                           </div>
     
-                          <!-- </p-dialog> -->
-    
+                       
     
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> -->
+                  <p-table [value]="RequerdDocspreeach" [autoLayout]="true" [paginator]="true" [rows]="10">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th>No</th>
+                        <th>Document</th>
+                        <th>Attachment</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-RequerdDocpre let-i="rowIndex">
+                      <tr>
+                        <td>{{ i + 1 }}</td>
+                        <td>
+                          <label>
+                            {{ language === 'amharic' ? RequerdDocpre.description_Local : RequerdDocpre.description_en }}
+                          </label>
+                        </td>
+                        <td>
+                          <div *ngIf="!RequerdDocpre.document_code" class="alert alert-warning" role="alert">
+                            {{ language === 'amharic' ? 'ሰነድ አልገባለትም!' : 'Document not uploaded!' }}
+                          </div>
+                          <div *ngIf="RequerdDocpre.document_code">
+                            <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = true;getdatadoc(RequerdDocpre.document_code)">Preview</button>
+                            <p-dialog [visible]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900"
+                              [minY]="70" [baseZIndex]="10000"
+                              [contentStyle]="{ 'overflow-x': 'hidden', 'max-height': '80vh','min-height':'400px'}" [closable]="false">
+                              <ng-container *ngIf="documentss">
+                                <ng-container *ngIf="mimeExtension[mimeTypee]?.extension === 'pdf'">
+                                  <iframe width="100%" height="400px" alt="FileUploaded" class="pdf-ifram" [src]="documents"></iframe>
+                                  <a [href]="documents"
+                                    [download]="RequerdDocpre.description_en + '.' + mimeExtension[mimeTypee]?.extension"
+                                    style="font-weight: bolder; font-size: larger;font-style: italic;">Attached - Please download!</a>
+                                </ng-container>
+                                <ng-container *ngIf="['jpg', 'png', 'gif'].includes(mimeExtension[mimeTypee]?.extension)">
+                                  <img width="100%" height="400px" [src]="documents" alt="FileUploaded" />
+                                </ng-container>
+                                <div *ngIf="['pdf', 'jpg', 'png', 'gif'].indexOf(mimeExtension[mimeTypee]?.extension) === -1">
+                                  <a [href]="documents"
+                                    [download]="RequerdDocpre.description_en + '.' + mimeExtension[mimeTypee]?.extension"
+                                    style="font-weight: bolder; font-size: larger;font-style: italic;">Attached - Please download!</a>
+                                </div>
+                              </ng-container>
+                              <div *ngIf="!documentss">
+                                <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
+                                  animationDuration=".5s"></p-progressSpinner>
+                              </div>
+                              <p-footer>
+                                <button type="button" style="align-self: right;" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = false;"
+                                  *ngIf="documentss" translate>Done</button>
+                              </p-footer>
+                            </p-dialog>
+                          </div>
+                          <div *ngIf="RequerdDocpre.File">
+                            <div *ngIf="['pdf', 'xlsx'].includes(mimeExtension[RequerdDocpre.mimeType]?.extension)">
+                              <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = true;">Preview</button>
+                              <p-dialog *ngIf="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
+                                [baseZIndex]="10000" [closable]="false">
+                                <ng-container *ngIf="documentss">
+                                  <div class="modal-body">
+                                    <div class="alert alert-info">
+                                      <a [href]="RequerdDocpre.File"
+                                        [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType]?.extension">Attached
+                                        - Please download!</a>
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = false;">Close</button>
+                                  </div>
+                                </ng-container>
+                              </p-dialog>
+                            </div>
+                            <div *ngIf="['jpg', 'png', 'gif'].includes(mimeExtension[RequerdDocpre.mimeType]?.extension)">
+                              <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = true;">Preview</button>
+                              <p-dialog *ngIf="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
+                                [baseZIndex]="10000" [closable]="false">
+                                <div class="modal-body">
+                                  <img width="50%" [src]="RequerdDocpre.File" alt="FileUploaded" />
+                                </div>
+                                <div>
+                                  <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = false;">Close</button>
+                                </div>
+                              </p-dialog>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+
                 </div>
     
               </div>

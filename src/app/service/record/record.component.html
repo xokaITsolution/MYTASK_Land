@@ -1,6 +1,5 @@
-
 <div class="row">
-  <div class="col-sm-3">
+  <div class="col-3">
     <div
       class="card"
       style="
@@ -15,895 +14,409 @@
         <h5 class="card-title" translate>APPLICATION NUMBER</h5>
         <h6 class="card-subtitle mb-2 text-muted">{{ Application_Number }}</h6>
         <div class="card flex justify-content-center">
-          <p-listbox [options]="ApplicationNumberlist" [listStyle]="{ 'max-height': '250px' }" [(ngModel)]="selectedAppno" (onChange)="handleSelectionChange();passapp(selectedAppno)" optionLabel="application_number" [filter]="true" [style]="{ width: '15rem' }"></p-listbox>
-      </div>
+          <p-listbox
+            [options]="ApplicationNumberlist"
+            [listStyle]="{ 'max-height': '250px' }"
+            [(ngModel)]="selectedAppno"
+            (onChange)="handleSelectionChange(); passapp(selectedAppno)"
+            optionLabel="application_number"
+            [filter]="true"
+            [style]="{ width: '15rem' }"
+          ></p-listbox>
+        </div>
       </div>
     </div>
   </div>
-  <div class="col-sm-8">
-    <form  [formGroup]="record">
-      <div class="form-row">
-        <div class="row">
-          <div class="col-sm-8">
-            <div style="width: 50rem; margin-top: 30px; margin-left: 190px">
-             
-              <p-dialog  [header]="'Customer' | translate" [(visible)]="isEnvironmentalConsideration" 
-              [responsive]="true" [width]="900" [minY]="50"
-                [maximizable]="true" [positionTop]="250" 
-                [contentStyle]="{'overflow-y': 'auto', 
-                               'overflow-x': 'hidden', 
-                               'max-height': '80vh',
-                               'min-height':'250px'}" [baseZIndex]="12000">
-              <div class="mt-3">
-                <p-table
-                  #sit
-                  [value]="Customer"
-                  (onRowSelect)="onRowSelect($event.data)"
-                  selectionMode="single"
-                  dataKey="customer_ID"
-                  [paginator]="true"
-                  [rows]="3"
-                >
-                  <ng-template pTemplate="header">
-                    <tr>
-                      <th scope="col" translate>User Name</th>
-                      <th scope="col" translate>Full Name</th>
-                      <th scope="col" translate>Mother Name</th>
-                      <th scope="col" translate>mobile Number</th>
-                      <!-- <th scope="col" translate>Email</th> -->
-        
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-users>
-                    <tr [pSelectableRow]="users">
-                      <td>{{ users.userName }}   </td>
-                      <td>
-                        {{language === 'amharic' ? 
-                        users.applicant_First_Name_AM + ' '+ 
-                        users.applicant_Middle_Name_AM + ' '+ 
-                        users.applicant_Last_Name_AM : 
-                        users.applicant_First_Name_EN + ' '+
-                        users.applicant_Middle_Name_En + ' '+
-                        users.applicant_Last_Name_EN}}
-                      </td>
-                      <td>
-                        {{language === 'amharic' ? users.applicant_Mother_Name_AM : users.applicant_Mother_Name_EN}}
-                      </td>
-                      <td>{{ users.mobile_No }}</td>
-                      <!-- <td>{{ users.email }}</td> -->
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="emptymessage" let-users>
-                    <tr>
-                      <td style="color: red;">No records found</td>
-                    </tr>
-                  </ng-template>
-                </p-table>
-                
-              </div>
-              <!-- <ng-template pTemplate="footer">
-                <button class="close-button" pButton icon="pi pi-times" (click)="isEnvironmentalConsideration=false"></button>
-                
-              </ng-template> -->
-              <div>
-                <button type="button" class="btn btn-primary" (click)="isEnvironmentalConsideration=false" translate>Close</button>
-              </div>
-            </p-dialog>
-              <!-- <div class="form-group row">
-                <div class="col-sm-8">
-                  <div class="input-group" >
-                    <input
-                      type="text"
-                      class="form-control"
-                      placeholder="(Tenure Certificate Number/የካርታ ቁጥር ያስገቡ)"
-                    hidden/>
-                    <div class="input-group-append">
-                      <button
-                        type="button"
-                        class="btn btn-primary ml-4"
-                     hidden >
-                        SEARCH
-                      </button>
-                      <h3>Manage Records</h3>
-                    </div>
-                  </div>
-                </div>
-              </div> -->
-            </div>
-          </div>
-          
-          <div class="form-group row col-md-6">
-            <label
-              for="ParkingSize"
-              class="col-sm-3 col-form-label"
-              translate
-            ></label>
-            <div class="col-sm-9"></div>
-          </div>
-          <div class="form-row">
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label
-                  for="license_No"
-                  class="font-weight-bold font-weight-bold col-sm-3 col-form-label"
-                  translate
-                  >Application Number</label
-                >
-                <div class="col-sm-8">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder=""
-                    formControlName="appno"
-                    readonly
-                  />
-                </div>
-              </div>
-              <div class="form-group row">
-                <label
-                  for="Amount"
-                  class="font-weight-bold font-weight-bold col-sm-3 col-form-label"
-                  translate
-                  >Service Name</label
-                >
-                <div class="col-sm-8">
-                  <select
-				  class="form-control"
-                  name="service"
-                  id="service"
-                  [hidden]="getData"
-                    [attr.disabled]="disableForm"
-                    formControlName="selectedService"
-					>
-					<!-- (change)="passdataa($event.target.value)" -->
-                    <option>---select Service Name---</option>
-                    <ng-container *ngFor="let Service of Services">
-                      <option [value]="Service.service_code">
-                        {{language === 'amharic' ? Service.Registration_code+Service.description_am : Service.Registration_code+Service.description_en}}
-                      </option>
-                    </ng-container>
-                  </select>
-                  <select [hidden]="!getData"
-                  class="form-control"
-                          name="service"
-                          id="service"
-                            formControlName="selectedService"
-                  >
-                  <!-- (change)="passdataa($event.target.value)" -->
-                            <option>---select Service Name---</option>
-                            <ng-container *ngFor="let Service of Services">
-                              <option [value]="Service.service_code">
-                  {{language === 'amharic' ? Service.Registration_code+Service.description_am :
-                  Service.Registration_code+Service.description_en}}
-                  
-                              </option>
-                            </ng-container>
-                          </select>
-                </div>
-              </div>
-              <div class="form-group row" [hidden]="addnew">
-                <label
-                  for="Amount"
-                  class="font-weight-bold font-weight-bold col-sm-3 col-form-label"
-                  translate
-                  >Application Date</label
-                >
-                <div class="col-sm-8" *ngIf="language !== 'amharic'">
-                  <input
-                  [hidden]="!getData"
-                  
-                    type="date"
-                    class="form-control"
-                    id="year"
-                    formControlName="date"
-                    required
-                    [disabled]="disable"
-                  />
-                  <input
-                  [hidden]="getData"
-                  type="date"
-                  class="form-control"
-                    id="year"
-                    formControlName="date"
-                    required
-                    [disabled]="disable"
-                  />
-                </div>
-                
-                <div class="col-sm-8" *ngIf="language === 'amharic'">
-                  <input 
-                  [hidden]="!getData"
-                  [attr.disabled]="disableDate"
-                    type="text"
-                    class="form-control"
-                  
-                    id="year"
-                    formControlName="date"
-                    required
-                    appDatepickerEthiopian
-	  (dateEmitter)="selectedDateTime1($event,1)"
-                  />
-                  <input
-                  [hidden]="getData"
-                  readonly
-                  [attr.disabled]="disableForm"
-                  class="form-control"
-                   
-                    id="year"
-                    formControlName="date"
-                    required
-                  />
-                </div>
-              </div>
-              <div class="form-group row" [hidden]="addnew">
-                <label
-                  for="Amount"
-                  class="font-weight-bold font-weight-bold col-sm-3 col-form-label"
-                  translate
-                  >Sub City</label
-                >
-                <div class="col-sm-8">
-                  <select class="form-control" formControlName="SDP"
-                  [hidden]="!getData" disabled>
-                    <option>---select Organization---</option>
-                    <ng-container *ngFor="let Org of Org">
-                      <option [value]="Org.organization_code">
-                        {{language === 'amharic' ? Org.name_am : Org.name_en}}
-                      </option>
-                    </ng-container>
-                  </select>
-                  <select class="form-control" formControlName="SDP"
-                  [hidden]="getData"
-                  [attr.disabled]="disableForm">
-                    <option>---select Organization---</option>
-                    <ng-container *ngFor="let Org of Org">
-                      <option [value]="Org.organization_code">
-                        {{language === 'amharic' ? Org.name_am : Org.name_en}}
-                      </option>
-                    </ng-container>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <!-- <div class="form-group row">
-                <label
-                  for="Amount"
-                  class="font-weight-bold font-weight-bold col-sm-3 col-form-label"
-                  translate
-                  >Title Deed No</label
-                >
-                <div class="col-sm-8">
-                  <input
-                  [hidden]="!getData"
-                    type="text"
-                    class="form-control"
-                    placeholder=""
-                    formControlName="Deed"
-                  />
-                  <input
-                  [hidden]="getData"
-				 
-          
-                    type="text"
-                    class="form-control"
-                    placeholder=""
-                    formControlName="Deed"
-                  />
-                </div>
-              </div> -->
-              <div class="form-group row" [hidden]="addnew">
-                <label
-                  for="Amount"
-                  class="font-weight-bold font-weight-bold col-sm-3 col-form-label"
-                  translate
-                  >Woreda</label
-                >
-                <div class="col-sm-8">
-                  <input
-                  [hidden]="!getData"
-				  
-                    type="number"
-                    class="form-control"
-                    placeholder=""
-                    formControlName="Woreda"
-                    
-                  />
-                  <input
-                  [hidden]="getData"
-				  readonly
-          [attr.disabled]="disableForm"
-                    type="number"
-                    class="form-control"
-                    placeholder=""
-                    formControlName="Woreda"
-                    [disabled]="disable"
-                  />
-                  <span style="color: red;" *ngIf="!record.get('Woreda').value">
-                    woreda is mandatory
-                  </span>
-                </div>
-              </div>
-              <div class="form-group row" [hidden]="addnew">
-                <label
-                  for="Amount"
-                  class="font-weight-bold font-weight-bold col-sm-3 col-form-label"
-                  translate
-                  >Customer</label
-                >
-                <div class="col-sm-8">
-                  <input
-                  [hidden]="!getData"
-				  readonly
-                    type="text"
-                    class="form-control"
-                    formControlName="FullName_AM"
-                    name="TransferredFromid"
-                    id="customer"
-                    [placeholder]="'select customer'"
-                  />
-                  <input
-                  [hidden]="getData"
-				  readonly
-          [attr.disabled]="disableForm"
-                    type="text"
-                    class="form-control"
-                    name="TransferredFromid"
-                    formControlName="FullName_AM"
-                    id="customer"
-                    [placeholder]="'select customer'"
-                  />
-                </div>
-              </div>
-              <div class="form-group row">
-                <div class="col-sm-8">
-                    <button [hidden]="hideNeww"
-                      type="button"
-                      class="btn btn-primary ml-2"
-                      (click)="addNew()"
-                      [disabled]="disable"
-                    translate>ADD NEW</button>
-                    <button [hidden]="!hideNeww"
-                      type="button"
-                      class="btn btn-primary ml-2"
-                      (click)="clear();hideNew=false"
-                      [disabled]="btnDisable"
-                    translate>CLEAR DATA</button>
-                  <button
-                    type="button"
-                    class="btn btn-primary ml-2"
-                    (click)="save()"
-                    [hidden]="openArchive"
-                    [disabled]="!record.get('Woreda').value"
-                  translate>SAVE</button>
-                  <button
-                  type="button"
-                  class="btn btn-primary ml-2"
-                  (click)="documentAddress=true;Archive()"
-                  [hidden]="!openArchive"
-                translate>{{archive}}</button>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-12" >
-              <label [hidden]="disabledtask"
-                for="license_No"
-                class="font-weight-bold font-weight-bold col-sm-3 col-form-label"
-                translate
-                >Task Name</label
-              >
-              <div hidden style="color: red;">
-                {{language === 'amharic' ? 
-                'በዚህ ማመልከቻ ቁጥር ምንም አይነት ስራ አልተሰራም' : 
-                'there is no any task done by selected Application'}}
-                </div>
-              <div class="col-sm-9">
-                <select
-                  class="form-control"
-                  name="task"
-                  id="task"
-                  [hidden]="disabledtask"
-                  formControlName="task"
-				   (change)="passdata($event.target.value)"
-                >
-                  <option>---select task----</option>
-
-                  <ng-container *ngFor="let task of taskList">
-                    <option [value]="task.task_code">
-                      {{language === 'amharic' ? task.description_local : task.description_en}}
-                    </option>
-                  </ng-container>
-                </select>
-              </div>
-            </div>
-          </div>
+  <div class="col-8" style="  margin-top: 30px;
+        margin-left: 50px;">
+   <form [formGroup]="record">
+  <div class="form-row">
+    <div class="col-md-6">
+      <div class="form-group row">
+        <label for="license_No" class="font-weight-bold col-sm-4 col-form-label" translate>Application Number</label>
+        <div class="col-sm-8">
+          <input type="text" class="form-control" placeholder="" formControlName="appno" readonly />
         </div>
       </div>
-    </form>
-  </div>
-  <div
-    class="row"
-    style="margin-top: 30px; margin-left: 50px"
-    [hidden]="displayTab"
-  >
-    <tabset style="margin-right: 30px">
-      <tab [heading]="'New' | translate">
-        <div class="mt-3">
-          <app-files 
-          [RequiredDocs]="RequiredDocs" [hide]="hide" [AppNo]="AppNo" (updated)="UpdateAttachments($event)"
-                [DocID]="DocID" [DocIDlist]="" (getalldoc)="getAllDocumentpre(AppNo,DocID,currentTaskelected)"></app-files>
-          <!-- <p-table [value]="RequerdDocspre" [tableStyle]="{ 'min-width': '100rem' }">
-            <ng-template pTemplate="header">
-              <tr>
-                <th>Document</th>
-                <th>Attachment</th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-product>
-              <tr>
-                <td>{{ product.description_en }}</td>
-                <td class="col-sm-2" > -->
-                  <!-- <p-fileUpload
-                    #fileUpload
-                    id="File"
-                    name="demo[]"
-                    customUpload="true"
-                    [auto]="true"
-                    chooseLabel="Upload"
-                    (uploadHandler)="upload7($event)"
-                    accept="application/pdf,image/*"
-                    maxFileSize="200000"
-                    translate
-                  >
-                  </p-fileUpload> -->
-				  <!-- <p-fileUpload  #fild id="File" name="demo[]" customUpload="true"
-                            (uploadHandler)="upload($event,product,fild)" [auto]="true"
-                            accept="application/pdf,image/*" chooseLabel="Upload"
-							maxFileSize="2000000">
-						</p-fileUpload> -->
-                  <!-- <button type="button" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate (click)="getplotlocbyid()" *ngIf="!isnew && !disable">Spatial</button> -->
-                <!-- </td>
-              </tr>
-            </ng-template>
-          </p-table>--->
+      <div class="form-group row">
+        <label for="Amount" class="font-weight-bold col-sm-4 col-form-label" translate>Service Name</label>
+        <div class="col-sm-8">
+          <select class="form-control" name="service" id="service" [hidden]="getData" [attr.disabled]="disableForm"
+            formControlName="selectedService">
+            <option>---select Service Names---</option>
+            <ng-container *ngFor="let Service of Services">
+              <option [value]="Service.service_code">
+                {{
+                language === "amharic" ? Service.registration_code + Service.description_am : Service.registration_code + Service.description_en
+                }}
+              </option>
+            </ng-container>
+          </select>
+          <select [hidden]="!getData" class="form-control" name="service" id="service" formControlName="selectedService">
+            <option>---select Service Name---</option>
+            <ng-container *ngFor="let Service of Services">
+              <option [value]="Service.service_code">
+                {{
+                language === "amharic" ? Service.registration_code + Service.description_am : Service.registration_code + Service.description_en
+                }}
+              </option>
+            </ng-container>
+          </select>
         </div>
-      </tab> 
-      <tab [heading]="'Uploded' | translate">
-        <div class="mt-3">
-          <div >
-            <div >
-                  
-          <div *ngIf="RequerdDocspre">
-            <div class="form-group row col-sm-12 m-0" *ngFor="let RequerdDocpre of RequerdDocspre; let i = index">
-              <label class="col-sm-12 col-form-label m-0">
-                {{ language === 'amharic' ? RequerdDocpre.description_Local : RequerdDocpre.description_en }}
-              </label>
-              <div class="col-sm-12 m-0 text-center">
-                <!-- <div *ngIf="loadingPreDoc">
-                  <p-progressSpinner [style]="{ width: '50px', height: '50px' }" strokeWidth="4"></p-progressSpinner>
-                </div> -->
-          
-                <div class="alert alert-warning" role="alert" *ngIf="!RequerdDocpre.File && !loadingPreDoc">
-                  {{language === 'amharic' ? 'ሰነድ አልገባለትም!' : 'Document not uploaded!'}}
-                </div>
-                <div *ngIf="RequerdDocpre.File">
-                  <div class="alert alert-info">
-                    <a [href]="RequerdDocpre.File"
-                      [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType].extension">Attached -
-                      Please download!</a>
-                  </div>
-                  
-                   
-                  <div *ngIf="mimeExtension[RequerdDocpre.mimeType].extension == 'pdf'||mimeExtension[RequerdDocpre.mimeType].extension == 'xlsx'">
-                  
-                  <button type="button" class="btn btn-primary" id="Preview{{i}}" (click)="PreviewshowdialogeArray[i] = true">Preview</button>
-                  
-                  <!-- <p-dialog [(visible)]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
-                    [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
-                      'max-height': '80vh','min-height':'250px'}"> -->
-                      <div *ngIf="PreviewshowdialogeArray[i]">
-                        <div *ngIf="!RequerdDocpre.File">
-                          <p-progressSpinner [style]="{ width: '50px', height: '50px' }" strokeWidth="4"></p-progressSpinner>
-                        </div>
-                        <div class="modal-body">
-                          <iframe width="100%" [src]="RequerdDocpre.File" alt="FileUploaded" class="pdf-iframe"></iframe>
-                        </div>
-                        <div>
-                        <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = false">Close</button>
-                        </div>
-                      </div>
-                  <!-- </p-dialog> -->
-                  </div>
-                  <div *ngIf="['jpg', 'png', 'gif'].includes(mimeExtension[RequerdDocpre.mimeType].extension)">
-               
-                    <button  type="button" class="btn btn-primary"  id="Preview{{i}}" (click)="PreviewshowdialogeArray[i] = true">Preview</button>
-                    <!-- <p-dialog [(visible)]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
-                      [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
-                        'max-height': '80vh','min-height':'250px'}"> -->
-                        <div *ngIf="PreviewshowdialogeArray[i]">
-                          <div *ngIf="!RequerdDocpre.File">
-                            <p-progressSpinner [style]="{ width: '50px', height: '50px' }" strokeWidth="4"></p-progressSpinner>
-                          </div>
-                          <div class="modal-body">
-                            <img width="50%" [src]="RequerdDocpre.File" alt="FileUploaded" />
-                        </div>
-                       <div>
-                      <button type="button" class="btn btn-primary"  id="Preview{{i}}" (click)="PreviewshowdialogeArray[i] = false">Close</button>
-                       </div>
-                        </div>
-                  
-                <!-- </p-dialog> -->
-                   
+      </div>
+      <div class="form-group row" [hidden]="addnew">
+        <label for="Amount" class="font-weight-bold col-sm-4 col-form-label" translate>Application Date</label>
+        <div class="col-sm-8">
+          <input [hidden]="!getData" type="date" class="form-control" id="year" formControlName="date" required
+            [disabled]="disable" />
+          <input [hidden]="getData" type="date" class="form-control" id="year" formControlName="date" required
+            [disabled]="disable" />
+        </div>
+      </div>
+      <div class="form-group row" [hidden]="addnew">
+        <label for="Amount" class="font-weight-bold col-sm-4 col-form-label" translate>Sub City</label>
+        <div class="col-sm-8">
+          <select class="form-control" formControlName="SDP" [hidden]="!getData" disabled>
+            <option>---select Organization---</option>
+            <ng-container *ngFor="let Org of Org">
+              <option [value]="Org.organization_code">
+                {{ language === "amharic" ? Org.name_am : Org.name_en }}
+              </option>
+            </ng-container>
+          </select>
+          <select class="form-control" formControlName="SDP" [hidden]="getData" [attr.disabled]="disableForm">
+            <option>---select Organization---</option>
+            <ng-container *ngFor="let Org of Org">
+              <option [value]="Org.organization_code">
+                {{ language === "amharic" ? Org.name_am : Org.name_en }}
+              </option>
+            </ng-container>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group row" [hidden]="addnew">
+        <label for="Amount" class="font-weight-bold col-sm-4 col-form-label" translate>Woreda</label>
+        <div class="col-sm-8">
+          <input [hidden]="!getData" type="number" class="form-control" placeholder="" formControlName="Woreda" />
+          <input [hidden]="getData" readonly [attr.disabled]="disableForm" type="number" class="form-control"
+            placeholder="" formControlName="Woreda" [disabled]="disable" />
+          <span style="color: red" *ngIf="!record.get('Woreda').value">woreda is mandatory</span>
+        </div>
+      </div>
+      <div class="form-group row" [hidden]="addnew">
+        <label for="Amount" class="font-weight-bold col-sm-4 col-form-label" translate>Customer</label>
+        <div class="col-sm-8">
+          <input [hidden]="!getData" readonly type="text" class="form-control" formControlName="FullName_AM"
+            name="TransferredFromid" id="customer" [placeholder]="'select customer'" />
+          <input [hidden]="getData" readonly [attr.disabled]="disableForm" type="text" class="form-control"
+            name="TransferredFromid" formControlName="FullName_AM" id="customer" [placeholder]="'select customer'" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="col-md-12">
+      <div class="col-sm-8 offset-sm-4">
+        <!-- Add New button -->
+        <button [hidden]="hideNeww" type="button" class="btn btn-primary ml-2" (click)="addNew()" [disabled]="disable"
+          translate>
+          ADD NEW
+        </button>
+        <!-- Clear Data button -->
+        <button [hidden]="!hideNeww" type="button" class="btn btn-primary ml-2" (click)="clear(); hideNew = false"
+          [disabled]="btnDisable" translate>
+          CLEAR DATA
+        </button>
+        <!-- Save button -->
+        <button type="button" class="btn btn-primary ml-2" (click)="save()" [hidden]="openArchive"
+          [disabled]="!record.get('Woreda').value" translate>
+          SAVE
+        </button>
+        <!-- Archive button -->
+        <button type="button" class="btn btn-primary ml-2" (click)="documentAddress = true; Archive()"
+          [hidden]="!openArchive" translate>
+          {{ archive }}
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="col-md-12">
+      <label [hidden]="disabledtask" for="license_No" class="font-weight-bold col-sm-3 col-form-label" translate>Task
+        Name</label>
+      <div hidden style="color: red">
+        {{
+        language === "amharic" ? "በዚህ ማመልከቻ ቁጥር ምንም አይነት ስራ አልተሰራም" : "there is no any task done by selected Application"
+        }}
+      </div>
+      <div class="col-sm-9">
+        <select class="form-control" name="task" id="task" [hidden]="disabledtask" formControlName="task"
+          (change)="passdata($event.target.value)">
+          <option>---select task----</option>
+          <ng-container *ngFor="let task of taskList">
+            <option [value]="task.task_code">
+              {{ language === "amharic" ? task.description_local : task.description_en }}
+            </option>
+          </ng-container>
+        </select>
+      </div>
+    </div>
+  </div>
+</form>
 
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-              
-            </div>
-            </div> 
-        </div>
-      </tab>
-    </tabset>
   </div>
-  <p-dialog
+</div>
+
+<div
+  class="row"
+  style="margin-top: 30px; margin-left: 50px"
+  *ngIf="!displayTab"
+>
+  <tabset style="margin-right: 30px">
+    <tab [heading]="'New' | translate">
+      <div class="mt-3">
+        <app-files
+          [RequiredDocs]="RequiredDocs"
+          [hide]="hide"
+          [AppNo]="AppNo"
+          (updated)="UpdateAttachments($event)"
+          [DocID]="DocID"
+          [DocIDlist]=""
+          (getalldoc)="getAllDocumentpre(AppNo, DocID, currentTaskelected)"
+          [disable]="disable"
+        ></app-files>
+      </div>
+    </tab>
+  </tabset>
+</div>
+
+<p-dialog
   [header]="'Document Location' | translate"
   [(visible)]="documentAddress"
-  
   [responsive]="true"
   [width]="1000"
   [minWidth]="1000"
   [minY]="50"
   [maximizable]="true"
-    >
-    
+>
   <form class="form-row" #f="ngForm">
-	<div class="col-md-6">
-	  <div class="form-group row col-12">
-	  <label  class="col-sm-4 col-form-label" translate>Record No</label>
-	  <div class="col-sm-8">
-	  <input class="form-control" [disabled]="disable"  name="DocumentNo" id="DocumentNo" [(ngModel)]="recordDocumnet.document_Number" [placeholder]="'Document No'"
-     #DocumentNo="ngModel"
-           [ngClass]="{ 'is-invalid': DocumentNo.invalid }" required>
-	</div>
-</div>
-<div class="form-group row col-12">
-  <label class="col-sm-4 col-form-label" translate>Title Deed No</label>
-  <div class="col-sm-8">
-    <input type="text"  class="form-control" [disabled]="disable" name="title_Deed_No" id="title_Deed_No "
-      [(ngModel)]="recordDocumnet.title_Deed_No " [placeholder]="'Title Deed No' | translate">
-  </div>
-  </div>
-	<div class="form-group row col-12" *ngIf="Isshow">
-	  <label  class="col-sm-4 col-form-label" translate>Shelf Column</label>
-	  <div class="col-sm-8">
-	  <input class="form-control"  [disabled]="disable"   name="ShelfColumn" id="ShelfColumn" [(ngModel)]="recordDocumnet.shelf_Column" [placeholder]="'Shelf Column' | translate">
-	</div>
-</div>
-	  <div class="form-group row col-12" *ngIf="Isshow">
-	  <label  class="col-sm-4 col-form-label" translate>Shelf No</label>      <div class="col-sm-8">
-	  <input class="form-control" [disabled]="disable"   name="ShelfNo" id="ShelfNo" [(ngModel)]="recordDocumnet.shelf_NO" [placeholder]="'Shelf No' | translate">
-	</div></div>
-	  <div class="form-group row col-12" *ngIf="Isshow">
-	  <label  class="col-sm-4 col-form-label" translate>File Room No</label>      <div class="col-sm-8">
-	  <input class="form-control"   [disabled]="disable"  name="FileRoomNo" id="FileRoomNo" [(ngModel)]="recordDocumnet.room" [placeholder]="'File Room No' | translate">
-	</div></div>
-	  <div class="form-group row col-12" *ngIf="Isshow">
-	  <label  class="col-sm-4 col-form-label" translate>Shelf Row</label>      <div class="col-sm-8">
-	  <input class="form-control" [disabled]="disable"   name="ShelfRow" id="ShelfRow" [(ngModel)]="recordDocumnet.shelf_Raw" [placeholder]="'Shelf Row' | translate">
-	</div></div>  </div> <div class="col-md-6">
-	  <div class="form-group row col-12" *ngIf="Isshow">
-	  <label  class="col-sm-4 col-form-label" translate>Block/Floor</label>      <div class="col-sm-8">
-	  <input class="form-control"  [disabled]="disable"  name="Block/Floor" id="Block/Floor" [(ngModel)]="recordDocumnet.block_Floor" [placeholder]="'Block/Floor' | translate">
-	</div></div>
-	  <div class="form-group row col-12" *ngIf="Isshow">
-	  <label  class="col-sm-4 col-form-label" translate>Site</label>      <div class="col-sm-8">
-	  <input class="form-control" [disabled]="disable"   name="site" id="site" [(ngModel)]="recordDocumnet.site" [placeholder]="'site' | translate">
-	</div></div>
-	<!--  <div class="form-group row col-12">
-	  <label  class="col-sm-4 col-form-label" translate>Date Created</label>
-	  <input type="date" class="form-control"  name="Block/Floor" id="Date_Created" [(ngModel)]="recordDocumnet.created_Date" [placeholder]="Date Created">
-	</div>-->
-	<div class="form-group row col-12"   *ngIf="language !== 'amharic'" >
-   
-	  <label  class="col-sm-4 col-form-label" translate>Regstration Date</label>      <div class="col-sm-8">
-	  <input type="date" class="form-control"  [disabled]="disable"  name="regstration_Date" id="regstration_Date" [(ngModel)]="recordDocumnet.regstration_Date"
-     [placeholder]="'Regstration Date' | translate"
-       #regstration_Date="ngModel"
-           [ngClass]="{ 'is-invalid': regstration_Date.invalid }" required>
-	</div>  </div>
-	<div  class="form-group row col-12" *ngIf="language === 'amharic'" >
-     
-	   <label  class="col-sm-4 col-form-label" translate>Regstration Date</label>      <div class="col-sm-8">
-	  <input type="text" class="form-control" readonly
-     [disabled]="disable"  
-     name="Regstration_Date" id="Regstration_Date"
-      [(ngModel)]="recordDocumnet.regstration_Date" 
-      [placeholder]="'Regstration Date'" appDatepickerEthiopian
-	  (dateEmitter)="selectedDateTime($event,1)"
-      #Regstration_Date="ngModel"
-           [ngClass]="{ 'is-invalid': Regstration_Date.invalid }" required>
-	</div></div>
-
-  <div class="form-group row col-12">
-	  <label  class="col-sm-4 col-form-label" translate>is all hardcopy uploaded</label>      <div class="col-sm-8">
-
-  <p-checkbox [(ngModel)]="recordDocumnet.is_all_hardcopy_uploaded" name="is_all_hardcopy_uploaded" id="is_all_hardcopy_uploaded"
-    binary="true"></p-checkbox>
-  </div></div>
-	<div class=" col-sm-7 pull-right">
-	  <button [disabled]="disable"  [hidden]="disableBtn"  type="button" class="btn btn-primary" (click)="update()"translate>Update</button>
-	</div>
-	<div class=" col-sm-7 pull-right"> 
-	  <button [disabled]="disable"  [hidden]="!disableBtn"  type="button" class="btn btn-primary" (click)="add()" [disabled]="!f.valid" translate>Save</button>
-	</div></div>
-  </form>
-
-  <button   style="align-items: right" type="button" class="btn btn-primary" (click)="documentAddress=false" translate>Close</button>
-
-  <simple-notifications></simple-notifications>
-</p-dialog>
-  <!-- <p-dialog
-    header="Customer"
-    [(visible)]="isEnvironmentalConsideration"
-    
-    [responsive]="true"
-    [width]="1000"
-    [minWidth]="1000"
-    [minY]="70"
-    [maximizable]="true"
-    [baseZIndex]="10000"
-  >
-      <div class="form-group row">
-        <label
-          for="Amount"
-          class="font-weight-bold font-weight-bold col-sm-3 col-form-label"
-          translate
-          >User Name</label
-        >
-        <div class="col-sm-4">
+    <div class="col-md-6">
+      <div class="form-group row col-12">
+        <label class="col-sm-4 col-form-label" translate>Record No</label>
+        <div class="col-sm-8">
+          <input
+            class="form-control"
+            [disabled]="disable"
+            name="DocumentNo"
+            id="DocumentNo"
+            [(ngModel)]="recordDocumnet.document_Number"
+            [placeholder]="'Document No'"
+            #DocumentNo="ngModel"
+            (keypress)="onKeyPress($event)"
+            (paste)="onPaste($event)"
+            [ngClass]="{ 'is-invalid': DocumentNo.invalid }"
+            required
+            autocomplete="off"
+          />
+          <div *ngIf="DocumentNo.invalid" class="invalid-feedback">
+            This field is required.
+          </div>
+          <div *ngIf="invalidUnicode" class="invalid-feedback">
+            Special characters '/' and '\' are not allowed. '/' እና '\' አይፈቀዱም።
+          </div>
+        </div>
+      </div>
+      <div class="form-group row col-12">
+        <label class="col-sm-4 col-form-label" translate>Title Deed No</label>
+        <div class="col-sm-8">
           <input
             type="text"
             class="form-control"
-            #myInputValue
-            id="year"
-            placeholder="insert User Name"
+            [disabled]="disable"
+            name="title_Deed_No"
+            id="title_Deed_No "
+            [(ngModel)]="recordDocumnet.title_Deed_No"
+            [placeholder]="'Title Deed No' | translate"
+          />
+        </div>
+      </div>
+      <div class="form-group row col-12" *ngIf="Isshow">
+        <label class="col-sm-4 col-form-label" translate>Shelf Column</label>
+        <div class="col-sm-8">
+          <input
+            class="form-control"
+            [disabled]="disable"
+            name="ShelfColumn"
+            id="ShelfColumn"
+            [(ngModel)]="recordDocumnet.shelf_Column"
+            [placeholder]="'Shelf Column' | translate"
+          />
+        </div>
+      </div>
+      <div class="form-group row col-12" *ngIf="Isshow">
+        <label class="col-sm-4 col-form-label" translate>Shelf No</label>
+        <div class="col-sm-8">
+          <input
+            class="form-control"
+            [disabled]="disable"
+            name="ShelfNo"
+            id="ShelfNo"
+            [(ngModel)]="recordDocumnet.shelf_NO"
+            [placeholder]="'Shelf No' | translate"
+          />
+        </div>
+      </div>
+      <div class="form-group row col-12" *ngIf="Isshow">
+        <label class="col-sm-4 col-form-label" translate>File Room No</label>
+        <div class="col-sm-8">
+          <input
+            class="form-control"
+            [disabled]="disable"
+            name="FileRoomNo"
+            id="FileRoomNo"
+            [(ngModel)]="recordDocumnet.room"
+            [placeholder]="'File Room No' | translate"
+          />
+        </div>
+      </div>
+      <div class="form-group row col-12" *ngIf="Isshow">
+        <label class="col-sm-4 col-form-label" translate>Shelf Row</label>
+        <div class="col-sm-8">
+          <input
+            class="form-control"
+            [disabled]="disable"
+            name="ShelfRow"
+            id="ShelfRow"
+            [(ngModel)]="recordDocumnet.shelf_Raw"
+            [placeholder]="'Shelf Row' | translate"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group row col-12" *ngIf="Isshow">
+        <label class="col-sm-4 col-form-label" translate>Block/Floor</label>
+        <div class="col-sm-8">
+          <input
+            class="form-control"
+            [disabled]="disable"
+            name="Block/Floor"
+            id="Block/Floor"
+            [(ngModel)]="recordDocumnet.block_Floor"
+            [placeholder]="'Block/Floor' | translate"
+          />
+        </div>
+      </div>
+      <div class="form-group row col-12" *ngIf="Isshow">
+        <label class="col-sm-4 col-form-label" translate>Site</label>
+        <div class="col-sm-8">
+          <input
+            class="form-control"
+            [disabled]="disable"
+            name="site"
+            id="site"
+            [(ngModel)]="recordDocumnet.site"
+            [placeholder]="'site' | translate"
+          />
+        </div>
+      </div>
+      <!--  <div class="form-group row col-12">
+  <label  class="col-sm-4 col-form-label" translate>Date Created</label>
+  <input type="date" class="form-control"  name="Block/Floor" id="Date_Created" [(ngModel)]="recordDocumnet.created_Date" [placeholder]="Date Created">
+</div>-->
+      <div class="form-group row col-12" *ngIf="language !== 'amharic'">
+        <label class="col-sm-4 col-form-label" translate
+          >Regstration Date</label
+        >
+        <div class="col-sm-8">
+          <input
+            type="date"
+            class="form-control"
+            [disabled]="disable"
+            name="regstration_Date"
+            id="regstration_Date"
+            [(ngModel)]="recordDocumnet.regstration_Date"
+            [placeholder]="'Regstration Date' | translate"
+            #regstration_Date="ngModel"
+            [ngClass]="{ 'is-invalid': regstration_Date.invalid }"
             required
           />
         </div>
-        &nbsp; &nbsp;
-        <button type="button" class="btn btn-primary" (click)="SEARCH(myInputValue.value)">
-          <span class="pi pi-search"></span>
-        </button>
       </div>
-      <div class="mt-3">
-        <p-table
-          #sit
-          [value]="userName"
-          (onRowSelect)="onRowSelect($event)"
-          selectionMode="single"
-          dataKey="customer_ID"
-          [paginator]="true"
-          [rows]="3"
+      <div class="form-group row col-12" *ngIf="language === 'amharic'">
+        <label class="col-sm-4 col-form-label" translate
+          >Regstration Date</label
         >
-          <ng-template pTemplate="header">
-            <tr>
-              <th scope="col" translate>Customer First Name</th>
-              <th scope="col" translate>Father Name</th>
-              <th scope="col" translate>Email</th>
-
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-users>
-            <tr [pSelectableRow]="users">
-              <td>{{ users.applicant_First_Name_EN }}</td>
-              <td>{{ users.applicant_Middle_Name_En }}</td>
-              <td>{{ users.email }}</td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </div>
-    <button
-      type="button"
-      class="btn btn-primary"
-      (click)="isEnvironmentalConsideration = false"
-      translate
-    >
-      Close
-    </button>
-  </p-dialog> -->
-  <!-- <ng-template #template>
-  <div class="modal-header">
-    <h4 class="modal-title pull-left">Customer</h4>
-    <button
-      type="button"
-      class="close pull-right"
-      aria-label="Close"
-      (click)="modalRef.hide()"
-    >
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <p-table
-      *ngIf="CustomerLookUP && CustomerLookUP.length > 0"
-      #dt
-      [value]="CustomerLookUP"
-      [paginator]="true"
-      [rows]="5"
-      [globalFilterFields]="[
-        'tin',
-        'FullName_AM',
-        'FullName_EN',
-        'applicant_Mother_Name_AM',
-        'applicant_Mother_Name_EN',
-        'mobile_No'
-      ]"
-    >
-      <ng-template pTemplate="caption">
-        <div style="text-align: right">
-          <i class="fa fa-search" style="margin: 4px 4px 0 0"></i>
+        <div class="col-sm-8">
           <input
             type="text"
-            pInputText
-            size="50"
-            placeholder="Global Filter"
-            (input)="dt.filterGlobal($event.target.value, 'contains')"
-            style="width: auto"
+            class="form-control"
+            readonly
+            [disabled]="disable"
+            name="Regstration_Date"
+            id="Regstration_Date"
+            [(ngModel)]="recordDocumnet.regstration_Date"
+            [placeholder]="'Regstration Date'"
+            appDatepickerEthiopian
+            (dateEmitter)="selectedDateTime($event, 1)"
+            #Regstration_Date="ngModel"
+            [ngClass]="{ 'is-invalid': Regstration_Date.invalid }"
+            required
           />
         </div>
-      </ng-template>
-      <ng-template pTemplate="header">
-        <tr>
-          <th>TIN</th>
-          <th>Full Name AM</th>
-          <th>Full Name EN</th>
-          <th>Mother Name AM</th>
-          <th>Mother Name EN</th>
-          <th>mobile Number</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-Customer>
-        <tr (click)="closeModal(Customer)">
-          <td>{{ Customer.tin }}</td>
-          <td>{{ Customer.FullName_AM }}</td>
-          <td>{{ Customer.FullName_EN }}</td>
-          <td>{{ Customer.applicant_Mother_Name_AM }}</td>
-          <td>{{ Customer.applicant_Mother_Name_EN }}</td>
-          <td>{{ Customer.mobile_No }}</td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </div>
-</ng-template> -->
-  <!-- <div class="row" *ngIf="search">
-  <div class="col-md-10">
-    <div style="width: 50rem; margin-top: 30px; margin-left: 50px">
-      <ul class="nav nav-tabs">
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            [ngClass]="{ active: activeTab === 'tab1' }"
-            (click)="switchTab('tab1')"
-            >NEW</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            [ngClass]="{ active: activeTab === 'tab2' }"
-            (click)="switchTab('tab2')"
-            >UPLOADED</a
-          >
-        </li>
-      </ul>
-    </div>
-    <div class="col-md-9">
-      <div class="tab-content">
-        <div *ngIf="activeTab === 'tab1'" class="tab-pane fade show active">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Document</th>
-                <th>Attachment</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div *ngIf="activeTab === 'tab2'" class="tab-pane fade show active">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Document</th>
-                <th>Attachment</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
+      </div>
+
+      <div class="form-group row col-12">
+        <label class="col-sm-4 col-form-label" translate
+          >is all hardcopy uploaded</label
+        >
+        <div class="col-sm-8">
+          <p-checkbox
+            [(ngModel)]="recordDocumnet.is_all_hardcopy_uploaded"
+            name="is_all_hardcopy_uploaded"
+            id="is_all_hardcopy_uploaded"
+            binary="true"
+          ></p-checkbox>
         </div>
       </div>
+      <div class="col-sm-7 pull-right">
+        <button
+          [hidden]="disableBtn"
+          type="button"
+          class="btn btn-primary"
+          [disabled]="!f.valid && disable"
+          (click)="update()"
+          translate
+        >
+          Update
+        </button>
+      </div>
+      <div class="col-sm-7 pull-right">
+        <button
+          [hidden]="!disableBtn"
+          type="button"
+          class="btn btn-primary"
+          (click)="add()"
+          [disabled]="!f.valid && disable"
+          translate
+        >
+          Save
+        </button>
+      </div>
     </div>
-  </div>
-</div> -->
-  <!-- <form>
-	<div class="form-row">
-	  <div class="col-md-4 mb-3">
-		<label for="validationDefault01">First name</label>
-		<input type="text" class="form-control" id="validationDefault01" placeholder="First name" value="Mark" required>
-	  </div>
-	  <div class="col-md-4 mb-3">
-		<label for="validationDefault02">Last name</label>
-		<input type="text" class="form-control" id="validationDefault02" placeholder="Last name" value="Otto" required>
-	  </div>
-	  <div class="col-md-4 mb-3">
-		<label for="validationDefaultUsername">Username</label>
-		<div class="input-group">
-		  <div class="input-group-prepend">
-			<span class="input-group-text" id="inputGroupPrepend2">@</span>
-		  </div>
-		  <input type="text" class="form-control" id="validationDefaultUsername" placeholder="Username" aria-describedby="inputGroupPrepend2" required>
-		</div>
-	  </div>
-	</div>
-	<div class="form-row">
-	  <div class="col-md-6 mb-3">
-		<label for="validationDefault03">City</label>
-		<input type="text" class="form-control" id="validationDefault03" placeholder="City" required>
-	  </div>
-	  <div class="col-md-3 mb-3">
-		<label for="validationDefault04">State</label>
-		<input type="text" class="form-control" id="validationDefault04" placeholder="State" required>
-	  </div>
-	  <div class="col-md-3 mb-3">
-		<label for="validationDefault05">Zip</label>
-		<input type="text" class="form-control" id="validationDefault05" placeholder="Zip" required>
-	  </div>
-	</div>
-	<div class="form-group">
-	  <div class="form-check">
-		<input class="form-check-input" type="checkbox" value="" id="invalidCheck2" required>
-		<label class="form-check-label" for="invalidCheck2">
-		  Agree to terms and conditions
-		</label>
-	  </div>
-	</div>
-	<button class="btn btn-primary" type="submit">Submit form</button>
-  </form> -->
-</div>
+  </form>
 
+  <button
+    style="align-items: right"
+    type="button"
+    class="btn btn-primary"
+    (click)="documentAddress = false"
+    translate
+  >
+    Close
+  </button>
 
-  <!-- <button type="button" class="btn btn-info mr-2" (click)="displayu = true" translate><i class='fa fa-file-excel-o'></i>
-    upload </button> -->
-
-
-<p-dialog [(visible)]="displayu" header="Import multi file" [responsive]="true" [width]="900" [minY]="70"
-  [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
-                         'max-height': '80vh','min-height':'250px'}">
-  <div class="modal-body" >
-
-  <app-fileuploader (fileDropped)="onFileDropped($event)"></app-fileuploader>
-  <!-- <input type="file" id="photo" (change)="upload($event)" name="photo" > -->
- 
-</div>
-  <div class="float-right">
-
-    <button type="button" class="btn btn-info m-2" (click)="downloadPDF()" translate>Download Merged PDF</button>
-    <button type="button" class="btn btn-primary m-2" (click)="displayu=false;" translate>close</button>
-  
-  </div>
+  <simple-notifications></simple-notifications>
 </p-dialog>
-
-
-
