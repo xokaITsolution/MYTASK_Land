@@ -107,6 +107,9 @@ import { GisMapBackupComponent } from "./gis-map-backup/gis-map-backup.component
 import { DndDirective } from "../shared/fileUploader/dnd.directive";
 import { FileuploaderComponent } from "../shared/fileUploader/fileuploader/fileuploader.component";
 import { ProgressComponent } from "../shared/fileUploader/progress/progress.component";
+import { NetworkDatabaseMonitoringToolComponent } from "./network-database-monitoring-tool/network-database-monitoring-tool.component";
+import { NetworkMonitoringService } from "./network-database-monitoring-tool/network-monitoring.service";
+import { DatabaseMonitoringService } from "./network-database-monitoring-tool/database-monitoring.service";
 @NgModule({
   imports: [
     QRCodeModule,
@@ -221,6 +224,7 @@ import { ProgressComponent } from "../shared/fileUploader/progress/progress.comp
     NumberOnlyDirectiveDirective,
     CertificateVersionUpgradeComponent,
     GisMapBackupComponent,
+    NetworkDatabaseMonitoringToolComponent,
   ],
   entryComponents: [
     GisMapComponent,
@@ -229,6 +233,8 @@ import { ProgressComponent } from "../shared/fileUploader/progress/progress.comp
   ],
   providers: [
     ConfirmationService,
+    DatabaseMonitoringService,
+    NetworkMonitoringService,
     ServiceService,
     GisMapService,
     MessageService,

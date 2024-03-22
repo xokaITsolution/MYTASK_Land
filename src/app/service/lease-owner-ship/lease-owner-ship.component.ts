@@ -152,7 +152,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
         this.serviceService.leaseOwnerShip.Free_Hold_M2 == null ||
         this.serviceService.leaseOwnerShip.Free_Hold_M2 == 0
       ) {
-        const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
+        const freeHoldM2Value = this.serviceService.polygonAreanameFrehold;
         this.serviceService.leaseOwnerShip.Free_Hold_M2 =
           freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
       }
@@ -161,7 +161,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
         this.serviceService.leaseOwnerShip.Lease_Hold_M2 == null ||
         this.serviceService.leaseOwnerShip.Lease_Hold_M2 == 0
       ) {
-        const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
+        const leaseHoldM2Value = this.serviceService.polygonAreaname;
         this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
           leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
       }
@@ -197,7 +197,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
         this.serviceService.leaseOwnerShip.Free_Hold_M2 == 0
       ) {
         //onst freeHoldM2Value = localStorage.getItem("PolygonAreaname");
-        const freeHoldM2Value = this.serviceService.polygonAreanameFrehold;
+        const freeHoldM2Value = this.serviceService.polygonAreaname;
         this.serviceService.leaseOwnerShip.Free_Hold_M2 =
           freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
       }

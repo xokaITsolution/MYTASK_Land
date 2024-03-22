@@ -1,0 +1,35 @@
+<div>
+    <!-- <h2>Network and Database Monitoring</h2> -->
+
+    <div class="status">
+        <h3>Connectivity Status: <span
+                [ngClass]="{'green': connectivityStatus === 'Connected', 'red': connectivityStatus === 'Disconnected', 'yellow': connectivityStatus === 'Error'}">{{
+                connectivityStatus }}</span></h3>
+    </div>
+
+    <div class="status">
+        <h3>Database Status: <span
+                [ngClass]="{'green': databaseStatus === 'Online', 'red': databaseStatus === 'Offline', 'yellow': databaseStatus === 'Error'}">{{
+                databaseStatus }}</span></h3>
+    </div>
+
+    <div class="status">
+        <h3>Database Portal Status: <span
+                [ngClass]="{'green': databaseportalStatus === 'Online', 'red': databaseportalStatus === 'Offline', 'yellow': databaseportalStatus === 'Error'}">{{
+                databaseportalStatus }}</span></h3>
+    </div>
+
+    <div class="status">
+        <h3>Ping Result: <span
+                [ngClass]="{'green': pingResult.includes('Ping successful'), 'red': pingResult === 'Ping failed', 'yellow': pingResult === 'Pinging...'}">{{
+                pingResult }}</span></h3>
+    </div>
+
+    <div class="status">
+        <h3>Network Reliability: <span
+                [ngClass]="{'green': networkReliability === 'Reliable', 'red': networkReliability === 'Unreliable', 'yellow': networkReliability === 'Assessment failed'}">{{
+                networkReliability }}</span></h3>
+    </div>
+
+    <!-- <canvas id="myChart" width="400" height="200"></canvas> -->
+</div>

@@ -11,6 +11,8 @@ import { ArchiveComponent } from "./archive/archive.component";
 import { TestgismapComponent } from "../service/testgismap/testgismap.component";
 import { GisMapComponent } from "../service/gis-map/gis-map.component";
 
+import { NetworkDatabaseMonitoringToolComponent } from "../service/network-database-monitoring-tool/network-database-monitoring-tool.component";
+
 const routes: Routes = [
   {
     path: "task",
@@ -50,6 +52,11 @@ const routes: Routes = [
       {
         path: "Archive",
         component: ArchiveComponent,
+        pathMatch: "prefix",
+      },
+      {
+        path: "NetworkMonitoring",
+        component: NetworkDatabaseMonitoringToolComponent,
         pathMatch: "prefix",
       },
       {

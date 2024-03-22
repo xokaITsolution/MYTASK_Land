@@ -194,6 +194,7 @@ export class PlotComponent implements OnChanges {
   }
   getAllplotLocation() {
     //this.processedPlotIDs = new Set();
+    this.serviceService.check = true;
     this.isfreehoadinsert = false;
     this.PlotManagementListfinal.forEach((element) => {
       console.log(

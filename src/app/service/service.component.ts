@@ -25,6 +25,7 @@ import { BehaviorSubject } from "rxjs/internal/BehaviorSubject";
 
 import { DialogService, DynamicDialogConfig } from "primeng/api";
 import { FilePreviewDialogComponent } from "./file-preview-dialog/file-preview-dialog.component";
+import { NetworkMonitoringService } from "./network-database-monitoring-tool/network-monitoring.service";
 
 export * from "./qrcode.directive";
 type AOA = any[][];
@@ -37,6 +38,7 @@ type AOA = any[][];
 export class ServiceComponent implements OnInit {
   maxChars;
   aaa;
+  isAccountVisible: boolean = false;
   jsonempty = {};
   ApplicationNumberlist;
   useNamelist;
@@ -240,7 +242,8 @@ export class ServiceComponent implements OnInit {
     public ngxModal: NgxSmartModalService,
     private renderer: Renderer2,
     private el: ElementRef,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private networkService: NetworkMonitoringService
   ) {}
 
   hide = true;
@@ -3307,5 +3310,9 @@ export class ServiceComponent implements OnInit {
 
     /* save to file */
     XLSX.writeFile(wb, this.fileName);
+  }
+  triggerHeaderInitialization() {
+    this.isAccountVisible = true;
+    this.networkService.notifyHeaderChange();
   }
 }

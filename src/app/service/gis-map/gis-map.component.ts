@@ -3816,6 +3816,7 @@ export class GisMapComponent implements AfterViewInit {
   }
   public processImportedShapesXLSX(data: any[]): void {
     // Event handler for when a shape is drawn
+    this.ServiceService.coordinate = [];
     this.alllatlong = [];
     console.log("dataaaa", data);
     // Remove the header row from the data
@@ -3847,7 +3848,11 @@ export class GisMapComponent implements AfterViewInit {
     }
 
     if (!this.ServiceService.check) {
-      console.log("Shape created:alllatlong", this.alllatlongPlot);
+      console.log(
+        "Shape created:alllatlong",
+        this.alllatlongPlot,
+        this.ServiceService.check
+      );
       if (this.alllatlongPlot.length === 0) {
         const toast = this.notificationsService.warn(
           "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡"

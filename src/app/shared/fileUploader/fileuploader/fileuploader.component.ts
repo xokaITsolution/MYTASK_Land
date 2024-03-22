@@ -8,6 +8,7 @@ import {
 } from "@angular/core";
 import { NotificationsService } from "angular2-notifications";
 import { ServiceService } from "src/app/service/service.service";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-fileuploader",
@@ -19,6 +20,10 @@ export class FileuploaderComponent {
   files: any[] = [];
   @Output() fileDropped: EventEmitter<any> = new EventEmitter<any>();
   @Input() cleanupload;
+  imgfile = environment.imagepathfile;
+  imgdeletefile = environment.imagepathdeletefile;
+  imgcheckmark = environment.imagepathcheckmark;
+  imguloadfile = environment.imagepathuploadfile;
   constructor(
     private notificationsService: NotificationsService,
     private serviceService: ServiceService

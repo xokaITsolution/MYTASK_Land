@@ -1,0 +1,15 @@
+.status {
+    margin-bottom: 20px;
+}
+
+.green {
+    color: rgb(32, 248, 32);
+}
+
+.red {
+    color: red;
+}
+
+.yellow {
+    color: yellow;
+}

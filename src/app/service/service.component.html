@@ -2,6 +2,7 @@
 <header>
 
 </header>
+
 <div class="m-3" *ngIf="!loading">
 
   <div class="p-3 bg-success text-white">
@@ -36,6 +37,7 @@
             <button type="button" (click)="moreDetailToggle()" class="btn btn-primary" translate>
               {{ moreDetail.toggle === true ? "Less" : "More"}}
             </button>
+          
           </th>
          
         </tr>
@@ -186,8 +188,11 @@
           <header class="demo-header">
             <button (click)="_toggleOpened()" type="button" class="demo-header__toggle" translate>Toggle
               sidebar</button>
-            <span translate>Upload File</span>
+            <span translate>Upload File</span> 
+            
+            
           </header>
+          <button style="float: right;" type="button" class="btn btn-primary" (click)="triggerHeaderInitialization()" translate>check network</button>
 
           <section class="demo-contents">
 
@@ -1053,3 +1058,12 @@
   </div>
 
   </p-dialog> -->
+
+  <p-dialog header="network database monitoring tool" [(visible)]="isAccountVisible"  [responsive]="true" [width]="500" [minY]="70"
+                                [baseZIndex]="10000" [closable]="false">
+
+    <app-network-database-monitoring-tool ></app-network-database-monitoring-tool>
+
+    <button type="button" style="float: right;" class="btn btn-primary" (click)="isAccountVisible=false" translate>Done</button>
+    
+    </p-dialog>
