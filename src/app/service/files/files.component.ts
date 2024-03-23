@@ -120,6 +120,7 @@ export class FilesComponent implements OnChanges {
   documents: any;
   preview = false;
   useridfromdoc: any;
+  clickedButtonIndex: number | null = null;
   constructor(
     public serviceService: ServiceService,
     // public serviceComponent: ServiceComponent,

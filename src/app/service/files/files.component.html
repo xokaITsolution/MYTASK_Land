@@ -54,9 +54,13 @@
                     </div> -->
                     <div *ngIf="RequerdDocpre.document_code">
       
-                      <button type="button"  class="btn btn-primary" [id]="'p' + i" (click)="showdiv(RequerdDocpre.document_code);preview=true" [disabled]="disabled" translate="">
+                      <!-- <button type="button"  class="btn btn-primary" [id]="'p' + i" (click)="showdiv(RequerdDocpre.document_code);preview=true" [disabled]="disabled" translate="">
                         preview
-                      </button>
+                      </button> -->
+    <button type="button" [id]="'p' + i" (click)="showdiv(RequerdDocpre.document_code);preview=true;RequerdDocspre[i].previewed=true" [disabled]="disabled"
+      [ngClass]="{'btn btn-primary': !RequerdDocpre.previewed, 'btn btn-success': RequerdDocpre.previewed}"  translate="">
+      preview
+    </button>
                       <p-dialog [(visible)]="preview" header="Preview" [responsive]="true" [width]="900" [minY]="70"
 [baseZIndex]="10000" [contentStyle]="{ 'overflow-x': 'hidden', 
  'max-height': '80vh','min-height':'400px'}" [closable]="false">

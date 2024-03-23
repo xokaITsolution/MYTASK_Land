@@ -1003,6 +1003,9 @@ export class RecordComponent implements OnChanges {
           this.RequerdDocspre.splice(i, 1);
           break;
         }
+        this.RequerdDocspre.forEach((item) => {
+          item.previewed = false; // Add a new property to track preview status, initialized to false
+        });
       }
       console.log(
         "🚀 ~ RecordComponent ~ this.service.getRequerdDocs ~ selectedAppno:",
