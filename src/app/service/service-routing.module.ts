@@ -6,7 +6,7 @@ import { CertletterComponent } from "./certletter/certletter.component";
 
 const routes: Routes = [
   {
-    path: "service/:id",
+    path: "service/:formcode",
     component: ServiceComponent,
     pathMatch: "prefix",
   },

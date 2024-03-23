@@ -14,7 +14,7 @@
     <div class="form-group row col-md-7">
       <label for="fullname" class="col-sm-3 col-form-label" translate>Customer Full Name</label>
       <div class="col-sm-9">
-        <input type="text" [disabled]="disable" class="form-control" [(ngModel)]="themCertificateVersion.them_Customer_ID" name="fullname"
+        <input type="text" [disabled]="disable" [readOnly]="disabledinput" class="form-control" [(ngModel)]="themCertificateVersion.them_Customer_ID" name="fullname"
           id="fullname" placeholder="full name" >
         <!-- <select  disabled class="form-control"
                 [(ngModel)]="themCertificateVersion.Them_Customer_ID" name="ThemCustomerID" id="ThemCustomerID">
@@ -27,9 +27,9 @@
         </select> -->
       </div>
 
-      <!-- <div class="col-sm-2">
+      <div class="col-sm-2">
         <button type="button" *ngIf="!disable" class="btn btn-secondary" (click)="Customerthem=true" translate="">Select Customer</button>
-      </div> -->
+      </div>
     </div>
 
     <div class="form-group row col-md-7">
@@ -86,7 +86,7 @@
   </ng-template>
   <ng-template pTemplate="body" let-them>
     <tr [class.active]="them == themCertificateVersion">
-      <td>{{them.Customer_NAME}}</td>
+      <td>{{them.them_Customer_ID}}</td>
       <td>{{them.date}}</td>
       <td>
         <p-checkbox [disabled]="true" [(ngModel)]="them.is_Ative" name="IsActive1" id="IsActive1"
@@ -183,7 +183,8 @@
         <tr (click)='highlighted = rowData;closeModal(Customer)' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
        
           <td>{{Customer.tin}}</td>
-          <td>{{ language === 'amharic' ? Customer.applicant_First_Name_AM  + '  '+ Customer.applicant_Middle_Name_AM  + ' '+ Customer.applicant_Last_Name_AM : Customer.applicant_First_Name_EN  + '  '+ Customer.applicant_Middle_Name_En  + ' '+ Customer.applicant_Last_Name_EN}}</td>
+          <td>
+            {{ language === 'amharic' ? Customer.applicant_First_Name_AM  + '  '+ Customer.applicant_Middle_Name_AM  + ' '+ Customer.applicant_Last_Name_AM : Customer.applicant_First_Name_EN  + '  '+ Customer.applicant_Middle_Name_En  + ' '+ Customer.applicant_Last_Name_EN}}</td>
       
           <td>{{ language === 'amharic' ? Customer.applicant_Mother_Name_AM:Customer.applicant_Mother_Name_EN }}</td>
           <td>{{Customer.mobile_No}}</td>

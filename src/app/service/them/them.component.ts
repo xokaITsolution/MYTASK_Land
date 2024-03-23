@@ -33,6 +33,7 @@ export class ThemComponent implements OnChanges {
   language: string;
   Customerthem: boolean;
   Customer_NAME: string;
+  disabledinput: boolean=true;
   constructor(
     private ngxSmartModalService: NgxSmartModalService,
     private themService: ThemService,
@@ -56,7 +57,7 @@ export class ThemComponent implements OnChanges {
   }
   getcustomer(globvar) {
     console.log(globvar);
-    this.serviceService.getcustomerlease(globvar).subscribe((resp: any) => {
+    this.serviceService.getcustomerAll(globvar).subscribe((resp: any) => {
       this.customerdata = resp.procCustomers;
     });
   }
@@ -283,7 +284,17 @@ export class ThemComponent implements OnChanges {
 
   closeModal(customer) {
     console.log("closeing.....", customer);
-    this.themCertificateVersion.them_Customer_ID = customer.customer_ID;
+    this.themCertificateVersion.customer_ID = customer.customer_ID;
+    if( customer.customer_ID=='00000000-0000-0000-0000-000000000000'){
+      
+      this.themCertificateVersion.them_Customer_ID=null
+      this.disabledinput=false
+    }
+    else{
+  
+      this.disabledinput=true
+    
+    
     console.log("closeing.....", customer.customer_ID);
     if (this.language == "amharic") {
       this.Customer_NAME =
@@ -292,6 +303,7 @@ export class ThemComponent implements OnChanges {
         customer.applicant_Middle_Name_AM +
         " " +
         customer.applicant_Last_Name_AM;
+        this.themCertificateVersion.them_Customer_ID=this.Customer_NAME
       console.log("closeing.....");
       //
     } else {
@@ -301,7 +313,9 @@ export class ThemComponent implements OnChanges {
         customer.applicant_Middle_Name_En +
         " " +
         customer.applicant_Last_Name_EN;
+         this.themCertificateVersion.them_Customer_ID=this.Customer_NAME
     }
+  }
     //this.ngxSmartModalService.getModal(modal).close();
   }
 }
@@ -316,4 +330,5 @@ class ThemCertificateVersion {
   public licence_Service_ID;
   public application_No;
   public to_Do_ID;
+  public customer_ID:any;
 }
