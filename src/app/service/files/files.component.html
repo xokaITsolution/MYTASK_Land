@@ -57,9 +57,11 @@
                       <!-- <button type="button"  class="btn btn-primary" [id]="'p' + i" (click)="showdiv(RequerdDocpre.document_code);preview=true" [disabled]="disabled" translate="">
                         preview
                       </button> -->
-    <button type="button" [id]="'p' + i" (click)="showdiv(RequerdDocpre.document_code);preview=true;RequerdDocspre[i].previewed=true" [disabled]="disabled"
+    <button type="button" [id]="'p' + i" (click)="showdiv(RequerdDocpre.document_code);preview=true;RequerdDocpre.previewed=true" [disabled]="disabled"
       [ngClass]="{'btn btn-primary': !RequerdDocpre.previewed, 'btn btn-success': RequerdDocpre.previewed}"  translate="">
-      preview
+     
+    {{ RequerdDocpre.previewed ? 'previewed' : 'preview' }}
+  
     </button>
                       <p-dialog [(visible)]="preview" header="Preview" [responsive]="true" [width]="900" [minY]="70"
 [baseZIndex]="10000" [contentStyle]="{ 'overflow-x': 'hidden', 

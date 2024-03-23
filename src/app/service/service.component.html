@@ -746,7 +746,14 @@
                             {{ language === 'amharic' ? 'ሰነድ አልገባለትም!' : 'Document not uploaded!' }}
                           </div>
                           <div *ngIf="RequerdDocpre.document_code">
-                            <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = true;getdatadoc(RequerdDocpre.document_code)">Preview</button>
+                            <!-- <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = true;getdatadoc(RequerdDocpre.document_code)">Preview</button> -->
+                              <button type="button" 
+                                (click)="PreviewshowdialogeArray[i] = true;getdatadoc(RequerdDocpre.document_code);RequerdDocpre.previewed=true" 
+                                [ngClass]="{'btn btn-primary': !RequerdDocpre.previewed, 'btn btn-success': RequerdDocpre.previewed}" translate="">
+                              
+                                {{ RequerdDocpre.previewed == true ? 'previewed' : 'preview' }}
+                              
+                              </button>
                             <p-dialog [visible]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900"
                               [minY]="70" [baseZIndex]="10000"
                               [contentStyle]="{ 'overflow-x': 'hidden', 'max-height': '80vh','min-height':'400px'}" [closable]="false">
@@ -778,7 +785,8 @@
                           </div>
                           <div *ngIf="RequerdDocpre.File">
                             <div *ngIf="['pdf', 'xlsx'].includes(mimeExtension[RequerdDocpre.mimeType]?.extension)">
-                              <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = true;">Preview</button>
+                              <button type="button"  (click)="PreviewshowdialogeArray[i] = true;RequerdDocpre.previewed=true"
+                              [ngClass]="{'btn btn-primary': !RequerdDocpre.previewed, 'btn btn-success': RequerdDocpre.previewed}">Preview</button>
                               <p-dialog *ngIf="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
                                 [baseZIndex]="10000" [closable]="false">
                                 <ng-container *ngIf="documentss">
@@ -796,7 +804,8 @@
                               </p-dialog>
                             </div>
                             <div *ngIf="['jpg', 'png', 'gif'].includes(mimeExtension[RequerdDocpre.mimeType]?.extension)">
-                              <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = true;">Preview</button>
+                              <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = true;RequerdDocpre.previewed=true"
+                              [ngClass]="{'btn btn-primary': !RequerdDocpre.previewed, 'btn btn-success': RequerdDocpre.previewed}">Preview</button>
                               <p-dialog *ngIf="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
                                 [baseZIndex]="10000" [closable]="false">
                                 <div class="modal-body">

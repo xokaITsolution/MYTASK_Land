@@ -1715,6 +1715,9 @@ export class ServiceComponent implements OnInit {
           this.RequerdDocspreeach.splice(i, 1);
           break;
         }
+        this.RequerdDocspreeach.forEach((item) => {
+          item.previewed = false; // Add a new property to track preview status, initialized to false
+        });
       }
       this.serviceService
         .getDocIdByAppNo(this.selectedeachapp)
