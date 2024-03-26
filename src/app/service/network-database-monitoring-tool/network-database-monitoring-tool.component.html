@@ -30,6 +30,21 @@
                 [ngClass]="{'green': networkReliability === 'Reliable', 'red': networkReliability === 'Unreliable', 'yellow': networkReliability === 'Assessment failed'}">{{
                 networkReliability }}</span></h3>
     </div>
+ 
+    <!-- New section for download speed -->
+    <div class="status">
+        <h3>Download Speed: <span [ngClass]="{'green': downloadSpeed > 0, 'red': downloadSpeed === 0}">{{ downloadSpeed
+                | number: '1.2-2' }} Mbps</span></h3>
+    </div>
 
-    <!-- <canvas id="myChart" width="400" height="200"></canvas> -->
+    <!-- New section for upload speed -->
+    <div class="status">
+        <h3>Upload Speed: <span [ngClass]="{'green': uploadSpeed > 0, 'red': uploadSpeed === 0}">{{ uploadSpeed |
+                number: '1.2-2' }} Mbps</span></h3>
+    </div>
+    <!-- <div class="status">
+        <h3>LDAP Status: <span
+                [ngClass]="{'green': ldapStatus === 'Online', 'red': ldapStatus === 'Offline', 'yellow': ldapStatus === 'Error'}">{{
+                ldapStatus }}</span></h3>
+    </div> -->
 </div>

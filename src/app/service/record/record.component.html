@@ -99,9 +99,9 @@
       <div class="form-group row" [hidden]="addnew">
         <label for="Amount" class="font-weight-bold col-sm-4 col-form-label" translate>Woreda</label>
         <div class="col-sm-8">
-          <input [hidden]="!getData" type="number" class="form-control" placeholder="" formControlName="Woreda" />
-          <input [hidden]="getData" readonly [attr.disabled]="disableForm" type="number" class="form-control"
-            placeholder="" formControlName="Woreda" [disabled]="disable" />
+          <input  type="number" class="form-control" placeholder="" formControlName="Woreda" />
+          <!-- <input [hidden]="getData" readonly [attr.disabled]="disableForm" type="number" class="form-control" -->
+            <!-- placeholder="" formControlName="Woreda" [disabled]="disable" /> -->
           <span style="color: red" *ngIf="!record.get('Woreda').value">woreda is mandatory</span>
         </div>
       </div>

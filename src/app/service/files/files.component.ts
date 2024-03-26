@@ -512,23 +512,23 @@ export class FilesComponent implements OnChanges {
     );
   }
   onFileDropped($file) {
-    // Handle the dropped files here
-    console.log("Dropped files:", $file.target.files);
-    const maxSize = 3 * 1024 * 1024; // 5MB in bytes
-    let totalSize = 0;
-    for (let i = 0; i < $file.target.files.length; i++) {
-      totalSize += $file.target.files[i].size;
-    }
-    if (totalSize > maxSize) {
-      const toast = this.notificationsService.error(
-        `The total size of selected files exceeds the maximum allowed size.(3MB)`
-      );
-      this.serviceService.fileexxcedlimit = true;
-      return false;
-    } else {
-      this.serviceService.fileexxcedlimit = false;
-      this.uploadedFile($file);
-    }
+    // // Handle the dropped files here
+    // console.log("Dropped files:", $file.target.files);
+    // const maxSize = 3 * 1024 * 1024; // 5MB in bytes
+    // let totalSize = 0;
+    // for (let i = 0; i < $file.target.files.length; i++) {
+    //   totalSize += $file.target.files[i].size;
+    // }
+    // if (totalSize > maxSize) {
+    //   const toast = this.notificationsService.error(
+    //     `The total size of selected files exceeds the maximum allowed size.(3MB)`
+    //   );
+    //   this.serviceService.fileexxcedlimit = true;
+    //   return false;
+    // } else {
+    //   this.serviceService.fileexxcedlimit = false;
+    // }
+    this.uploadedFile($file);
     // Proceed with uploading the files
 
     // Perform any necessary operations with the files
@@ -541,29 +541,104 @@ export class FilesComponent implements OnChanges {
   }
   async uploadedFile(event: any) {
     const files: FileList = event.target.files;
-    if (files.length > 1) {
-      this.mergedfile = await this.mergeFiles(files);
-    } else if (files.length === 1) {
-      this.mergedfile = await files[0];
-      this.downloadmergedfile = false;
-    }
 
-    // Convert the merged PDF to base64 string
-    const base64String = await this.convertToBase64(this.mergedfile);
+    // Function to chunk files into 3MB groups
+    const chunkFiles = (files: FileList) => {
+      const chunkSize = 3 * 1024 * 1024; // 3MB in bytes
+      const chunks: File[][] = [];
+      let currentChunk: File[] = [];
+      let currentSize = 0;
 
-    //console.log("Merged PDF Base64:", base64String);
-    this.mergedPDFBase64 = base64String;
-    if (this.mergedPDFBase64) {
-      this.Uploadermlti(
-        this.mergedPDFBase64,
-        this.currentreuerdoc,
-        this.currentfild
-      );
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (currentSize + file.size <= chunkSize) {
+          currentChunk.push(file);
+          currentSize += file.size;
+        } else {
+          chunks.push(currentChunk);
+          currentChunk = [file];
+          currentSize = file.size;
+        }
+      }
+      if (currentChunk.length > 0) {
+        chunks.push(currentChunk);
+      }
+      return chunks;
+    };
+
+    // Chunk the files
+    const chunks = chunkFiles(files);
+    console.log("🚀 ~ FilesComponent ~ uploadedFile ~ chunks:", chunks);
+    let RequerdDocspre = this.RecordComponent.RequerdDocspre.filter(
+      (x) => x.document_code == undefined
+    );
+    console.log(
+      "🚀 ~ FilesComponent ~ uploadedFile ~ RequerdDocspre:",
+      RequerdDocspre
+    );
+    // Iterate through each chunk and upload
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      console.log("🚀 ~ FilesComponent ~ uploadedFile ~ chunk:", chunk);
+      let currentRequerdDocpre = this.RecordComponent.RequerdDocspre[i];
+
+      // If the chunk length is 0, continue to the next iteration
+      if (chunk.length === 0) {
+        continue;
+      }
+
+      // Process the chunk until the chunk is empty or the RequerdDocpre is met
+
+      let mergedFile: File | undefined | PDFDocument;
+      if (chunk.length > 1) {
+        mergedFile = await this.mergeFiles(chunk);
+      } else if (chunk.length === 1) {
+        mergedFile = chunk[0];
+      }
+
+      if (mergedFile) {
+        const base64String = await this.convertToBase64(mergedFile);
+        console.log("🚀 ~ FilesComponent ~ uploadedFile ~ base64String:", i);
+        if (base64String) {
+          this.Uploadermlti(
+            base64String,
+            currentRequerdDocpre,
+            this.currentfild
+          );
+        }
+      }
     }
 
     // Enable the download button
     this.enableDownloadButton();
   }
+
+  // async uploadedFile(event: any) {
+  //   const files: FileList = event.target.files;
+  //   if (files.length > 1) {
+  //     this.mergedfile = await this.mergeFiles(files);
+  //   } else if (files.length === 1) {
+  //     this.mergedfile = await files[0];
+  //     this.downloadmergedfile = false;
+  //   }
+
+  //   // Convert the merged PDF to base64 string
+  //   const base64String = await this.convertToBase64(this.mergedfile);
+
+  //   //console.log("Merged PDF Base64:", base64String);
+  //   this.mergedPDFBase64 = base64String;
+  //   if (this.mergedPDFBase64) {
+  //     this.Uploadermlti(
+  //       this.mergedPDFBase64,
+  //       this.currentreuerdoc,
+  //       this.currentfild
+  //     );
+  //   }
+
+  //   // Enable the download button
+  //   this.enableDownloadButton();
+  // }
+
   async convertToBase64(content: File | PDFDocument): Promise<string> {
     if (content instanceof PDFDocument) {
       return content.saveAsBase64({ dataUri: true });
@@ -579,8 +654,7 @@ export class FilesComponent implements OnChanges {
       });
     }
   }
-
-  async mergeFiles(files: FileList): Promise<PDFDocument> {
+  async mergeFiles(files: File[]): Promise<PDFDocument> {
     const mergedPdf = await PDFDocument.create();
 
     // Iterate through each file
@@ -611,10 +685,44 @@ export class FilesComponent implements OnChanges {
         pages.forEach((page) => mergedPdf.addPage(page));
       }
     }
-    console.log("mergedPdfmergedPdfmergedPdfmergedPdf", mergedPdf);
 
     return mergedPdf;
   }
+  // async mergeFiles(files: FileList): Promise<PDFDocument> {
+  //   const mergedPdf = await PDFDocument.create();
+
+  //   // Iterate through each file
+  //   for (let i = 0; i < files.length; i++) {
+  //     const fileReader = new FileReader();
+
+  //     // Read the file as ArrayBuffer
+  //     const fileData = await new Promise<ArrayBuffer>((resolve, reject) => {
+  //       fileReader.onload = (e: any) => resolve(e.target.result);
+  //       fileReader.onerror = (e) => reject(e);
+  //       fileReader.readAsArrayBuffer(files[i]);
+  //     });
+
+  //     // Check if the file is PDF or image
+  //     const fileType = files[i].type;
+  //     if (fileType === "application/pdf") {
+  //       // If the file is PDF, load and merge it
+  //       const pdf = await PDFDocument.load(fileData);
+  //       const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+  //       pages.forEach((page) => mergedPdf.addPage(page));
+  //     } else if (fileType.startsWith("image/")) {
+  //       // If the file is an image, convert it to PDF and then merge it
+  //       const imagePdf = await this.imageToPdf(fileData);
+  //       const pages = await mergedPdf.copyPages(
+  //         imagePdf,
+  //         imagePdf.getPageIndices()
+  //       );
+  //       pages.forEach((page) => mergedPdf.addPage(page));
+  //     }
+  //   }
+  //   console.log("mergedPdfmergedPdfmergedPdfmergedPdf", mergedPdf);
+
+  //   return mergedPdf;
+  // }
 
   async imageToPdf(imageData: ArrayBuffer): Promise<PDFDocument> {
     const imagePdf = await PDFDocument.create();
@@ -726,8 +834,8 @@ export class FilesComponent implements OnChanges {
 
     const typeRegex = /data:([^;]+)/;
     const nameRegex = /filename=([^;]+)/;
-    const typeMatch = this.mergedPDFBase64.match(typeRegex);
-    const nameMatch = this.mergedPDFBase64.match(nameRegex);
+    const typeMatch = File.match(typeRegex);
+    const nameMatch = File.match(nameRegex);
     const type = typeMatch ? typeMatch[1] : "application/pdf";
     const name = nameMatch ? nameMatch[1] : "mergedfile";
 
@@ -739,13 +847,13 @@ export class FilesComponent implements OnChanges {
     );
     fullbase64 = base64FileData;
 
-    console.log("🚀 ~ Uploadermlti ~ base64FileData:", fullbase64);
+    //console.log("🚀 ~ Uploadermlti ~ base64FileData:", fullbase64);
 
     for (let i = 0; i < this.RecordComponent.RequerdDocspre.length; i++) {
       try {
         this.disDocument = false;
         let fileData = JSON.parse(window.atob(base64FileData));
-        console.log("🚀 ~ Uploadermlti ~ fileData:", fileData);
+        //console.log("🚀 ~ Uploadermlti ~ fileData:", fileData);
         let { type, data } = fileData;
         this.mimeType = type;
         this.fileupload = "data:" + type + ";base64, " + fullbase64;

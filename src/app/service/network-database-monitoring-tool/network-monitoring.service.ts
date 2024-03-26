@@ -19,7 +19,7 @@ export class NetworkMonitoringService {
   private networkChangeSource = new Subject<void>();
 
   headerChange$ = this.networkChangeSource.asObservable();
-  check = "http://10.32.141.15/Xoka_land_API/api/Country/procCountry";
+  check = environment.rootPathApi + `Country/procCountry`;
   checkConnectivity(): Observable<boolean> {
     // Check connectivity by making a simple HTTP GET request to a known endpoint
     let url = this.checkConnectivityURL + this.check;
@@ -72,6 +72,11 @@ export class NetworkMonitoringService {
     return this.pingServer(url).pipe(
       map((pingTime) => pingTime <= pingThreshold),
       catchError((error) => throwError("Network reliability assessment failed"))
+    );
+  }
+  testLDAPConnection(urlldap: any): Observable<string> {
+    return this.http.get<string>(
+      environment.rootPathApi + `Network/Network/checkLDAP?Urlldap=` + urlldap
     );
   }
 }

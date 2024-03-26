@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { NetworkMonitoringService } from "./network-monitoring.service";
 import { DatabaseMonitoringService } from "./database-monitoring.service";
 import { Subject, Subscription } from "rxjs";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-network-database-monitoring-tool",
@@ -15,6 +16,9 @@ export class NetworkDatabaseMonitoringToolComponent implements OnInit {
   networkReliability: string = "Assessing...";
   databaseStatus: string = "Checking...";
   databaseportalStatus: string = "Checking...";
+  downloadSpeed: any;
+  uploadSpeed: any;
+  ldapStatus: string = "Checking...";
   constructor(
     private networkService: NetworkMonitoringService,
     private databasedervice: DatabaseMonitoringService
@@ -37,6 +41,8 @@ export class NetworkDatabaseMonitoringToolComponent implements OnInit {
     this.assessNetworkReliability();
     this.checkDatabaseportalStatus();
     //this.createPieChart();
+    this.testNetworkSpeed();
+    this.checkLDAPStatus();
   }
   checkConnectivity() {
     this.networkService.checkConnectivity().subscribe(
@@ -102,6 +108,45 @@ export class NetworkDatabaseMonitoringToolComponent implements OnInit {
       }
     );
   }
+  checkLDAPStatus() {
+    const subcityToSDPMapping = {
+      arada: "arada.addisland.gov.et",
+      bole: "bole-ad.bole.addisland.gov.et",
+      nifass: "nifassilk.addisland.gov.et",
+      gullele: "gulele-ad.gulele.addisland.gov.et",
+      addisk: "addisketema-ad.addisketema.addisland.gov.et",
+      lideta: "ideta.addisland.gov.et",
+      lemik: "lemikura.addisland.gov.et",
+      yeka: "yeka.addisland.gov.et",
+      akakyk: "kaliti-ad.kaliti.addisland.gov.et",
+      kirkos: "kirkos.addisland.gov.et",
+      kolfek: "KOLE-AD.kolfe.addisland.gov.et",
+      central: "AD.addisland.gov.et",
+    };
+
+    let subcityname = environment.subcity;
+    let ldapUrl = subcityToSDPMapping[subcityname.toLowerCase()]; // Get LDAP URL based on subcity
+
+    if (!ldapUrl) {
+      console.error("No LDAP URL found for the provided subcity:", subcityname);
+      return; // Exit the function if LDAP URL is not found
+    }
+
+    this.networkService.testLDAPConnection(ldapUrl).subscribe(
+      (response: any) => {
+        if (response === true) {
+          this.ldapStatus = "Online";
+        } else {
+          this.ldapStatus = "Offline";
+        }
+      },
+      (error) => {
+        console.error("Error checking LDAP status:", error);
+        this.ldapStatus = "Error";
+      }
+    );
+  }
+
   checkDatabaseportalStatus() {
     const databaseportalUrl = "XOKASWCMS_Land"; // Replace with your database URL
 
@@ -114,6 +159,74 @@ export class NetworkDatabaseMonitoringToolComponent implements OnInit {
         this.databaseStatus = "Error";
       }
     );
+  }
+
+  async testUploadSpeed(): Promise<number> {
+    const startTime = new Date().getTime();
+    const payloadSizes = [1024, 10240, 102400]; // Varying payload sizes in bytes
+    const uploadUrl = environment.rootPathApi + `Network/Network/upload`;
+
+    let totalSizeUploaded = 0;
+    let totalDuration = 0;
+
+    for (const size of payloadSizes) {
+      const testData = new Uint8Array(size).fill(0); // Create test data of specified size
+
+      const formData = new FormData();
+      formData.append("file", new Blob([testData]));
+
+      const uploadStartTime = new Date().getTime();
+      await fetch(uploadUrl, {
+        method: "POST",
+        body: formData,
+      });
+      const uploadEndTime = new Date().getTime();
+      const durationInSeconds = (uploadEndTime - uploadStartTime) / 1000;
+      totalSizeUploaded += size;
+      totalDuration += durationInSeconds;
+    }
+
+    // Calculate the average upload speed
+    const averageSpeedMbps =
+      (totalSizeUploaded * 8) / (totalDuration * 1000000); // convert bytes to bits and seconds to megabits
+    return parseFloat(averageSpeedMbps.toFixed(2));
+  }
+
+  async testDownloadSpeed(): Promise<number> {
+    const startTime = new Date().getTime();
+    const downloadUrl = environment.rootPathApi + `Network/Network/download`;
+    const payloadSizes = [1024, 10240, 102400]; // Varying payload sizes in bytes
+
+    let totalSizeDownloaded = 0;
+    let totalDuration = 0;
+
+    for (const size of payloadSizes) {
+      const downloadStartTime = new Date().getTime();
+      const response = await fetch(downloadUrl, {
+        method: "GET",
+        headers: {
+          Range: `bytes=0-${size - 1}`, // Request only a portion of the file
+        },
+      });
+      await response.blob();
+      const downloadEndTime = new Date().getTime();
+      const durationInSeconds = (downloadEndTime - downloadStartTime) / 1000;
+      totalSizeDownloaded += size;
+      totalDuration += durationInSeconds;
+    }
+
+    // Calculate the average download speed
+    const averageSpeedMbps =
+      (totalSizeDownloaded * 8) / (totalDuration * 1000000); // convert bytes to bits and seconds to megabits
+    return parseFloat(averageSpeedMbps.toFixed(2));
+  }
+
+  // Usage example:
+  async testNetworkSpeed() {
+    this.downloadSpeed = await this.testDownloadSpeed();
+    this.uploadSpeed = await this.testUploadSpeed();
+    console.log("Download Speed:", this.downloadSpeed, "Mbps");
+    console.log("Upload Speed:", this.uploadSpeed, "Mbps");
   }
 
   // createPieChart() {
