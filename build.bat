@@ -7,3 +7,4 @@ set timestamp=%timestamp: =_%
 
 REM Run ng build with dynamic output path
 ng build --prod --output-path="dist\%timestamp%"
+

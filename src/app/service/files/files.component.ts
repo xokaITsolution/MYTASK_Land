@@ -514,11 +514,11 @@ export class FilesComponent implements OnChanges {
   onFileDropped($file) {
     // // Handle the dropped files here
     // console.log("Dropped files:", $file.target.files);
-    // const maxSize = 3 * 1024 * 1024; // 5MB in bytes
-    // let totalSize = 0;
-    // for (let i = 0; i < $file.target.files.length; i++) {
-    //   totalSize += $file.target.files[i].size;
-    // }
+    const maxSize = 3 * 1024 * 1024; // 5MB in bytes
+    let totalSize = 0;
+    for (let i = 0; i < $file.target.files.length; i++) {
+      totalSize += $file.target.files[i].size;
+    }
     // if (totalSize > maxSize) {
     //   const toast = this.notificationsService.error(
     //     `The total size of selected files exceeds the maximum allowed size.(3MB)`
@@ -528,7 +528,11 @@ export class FilesComponent implements OnChanges {
     // } else {
     //   this.serviceService.fileexxcedlimit = false;
     // }
-    this.uploadedFile($file);
+    if (totalSize < maxSize) {
+      this.uploadedFileless3mb($file);
+    } else {
+      this.uploadedFile($file);
+    }
     // Proceed with uploading the files
 
     // Perform any necessary operations with the files
@@ -551,6 +555,7 @@ export class FilesComponent implements OnChanges {
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
+
         if (currentSize + file.size <= chunkSize) {
           currentChunk.push(file);
           currentSize += file.size;
@@ -613,31 +618,31 @@ export class FilesComponent implements OnChanges {
     this.enableDownloadButton();
   }
 
-  // async uploadedFile(event: any) {
-  //   const files: FileList = event.target.files;
-  //   if (files.length > 1) {
-  //     this.mergedfile = await this.mergeFiles(files);
-  //   } else if (files.length === 1) {
-  //     this.mergedfile = await files[0];
-  //     this.downloadmergedfile = false;
-  //   }
+  async uploadedFileless3mb(event: any) {
+    const files = event.target.files;
+    if (files.length > 1) {
+      this.mergedfile = await this.mergeFiles(files);
+    } else if (files.length === 1) {
+      this.mergedfile = await files[0];
+      this.downloadmergedfile = false;
+    }
 
-  //   // Convert the merged PDF to base64 string
-  //   const base64String = await this.convertToBase64(this.mergedfile);
+    // Convert the merged PDF to base64 string
+    const base64String = await this.convertToBase64(this.mergedfile);
 
-  //   //console.log("Merged PDF Base64:", base64String);
-  //   this.mergedPDFBase64 = base64String;
-  //   if (this.mergedPDFBase64) {
-  //     this.Uploadermlti(
-  //       this.mergedPDFBase64,
-  //       this.currentreuerdoc,
-  //       this.currentfild
-  //     );
-  //   }
+    //console.log("Merged PDF Base64:", base64String);
+    this.mergedPDFBase64 = base64String;
+    if (this.mergedPDFBase64) {
+      this.Uploadermlti(
+        this.mergedPDFBase64,
+        this.currentreuerdoc,
+        this.currentfild
+      );
+    }
 
-  //   // Enable the download button
-  //   this.enableDownloadButton();
-  // }
+    // Enable the download button
+    this.enableDownloadButton();
+  }
 
   async convertToBase64(content: File | PDFDocument): Promise<string> {
     if (content instanceof PDFDocument) {

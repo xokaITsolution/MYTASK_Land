@@ -31,6 +31,8 @@ export class MyTaskComponent implements OnInit {
   user_name: any;
   lanid: string;
   AppNumber: any;
+  caseUser: any;
+  orgID: any;
 
   constructor(
     private myTaskService: MyTaskService,
@@ -105,6 +107,7 @@ export class MyTaskComponent implements OnInit {
       }
     }
   }
+
   IsLockedBy_OtherUser(task) {
     this.myTaskService.IsLockedBy_OtherUser(task.id).subscribe(
       (message) => {
@@ -218,6 +221,12 @@ export class MyTaskComponent implements OnInit {
   async getMyTask() {
     //var userInfo = await this.seice.getViewAspNetUsersWorkInfoDetail(environment.username).toPromise();
     //var orgid= userInfo[0].organization_code;
+    // this.seice
+    //   .getUserInfoByUserName(environment.username)
+    //   .subscribe((uname) => {
+    //     this.caseUser = uname[0];
+    //     this.orgID = this.caseUser.organization_code;
+
     var orgid = "00000000-0000-0000-0000-000000000000";
     //var orgid = "24d45c72-8088-4591-810a-bc674f9f0a57";
 
@@ -257,6 +266,7 @@ export class MyTaskComponent implements OnInit {
         console.log("error");
       }
     );
+    // });
   }
 
   go(task) {
@@ -306,6 +316,7 @@ export class MyTaskComponent implements OnInit {
         "/" +
         task.to_screen
     );
+    //this.showMessage(task.todo_comment, task);
     // }
     // a7a1e05e-32c2-4f44-ad58-306572c64593 for plot
     // da8c5bd4-ea3d-4f02-b1b2-38cf26d6d1ff for property

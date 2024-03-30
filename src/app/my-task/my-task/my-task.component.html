@@ -11,22 +11,31 @@
           <th translate>Date</th>
           <th translate>Task Description</th>
           <th translate>Task Status</th>
-          <th translate>message</th>
-          <th translate>Type</th>
+          <!-- <th translate>message</th> -->
+          <th translate>task Type</th>
+          <th translate>Estimated_minute</th>
           <th></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-task>
 
 
-        <tr [class.green]="
+        <!-- <tr 
+        [class.blue]="task.userId !== '00000000-0000-0000-0000-000000000000'"
+         [class.green]="
             task.status == 'O' ||
             task.status == 'A  ' ||
             task.status == 'R  ' ||
             task.status == 'AS'
           " [class.yelow]="
             task.status == 'S' || task.status == 'P' || task.status == 'B'
-          " [class.red]="task.Minutes_late > 0">
+          " [class.red]="task.Minutes_late > 0" > -->
+    <tr [ngClass]="{
+        'blue': (task.status !== 'S' && task.userId !== '00000000-0000-0000-0000-000000000000'),
+        'green': (task.status == 'O' || task.status == 'A  ' || task.status == 'R  ' || task.status == 'AS') && task.userId === '00000000-0000-0000-0000-000000000000',
+        'yelow': (task.status == 'S' || task.status == 'P' || task.status == 'B' ),
+        'red': task.Minutes_late > 0 && task.userId === '00000000-0000-0000-0000-000000000000'
+    }">
           <td>{{ task.number }}</td>
           <td *ngIf="task.status == 'O' || task.status == 'A  ' || task.status == 'R  '">**********</td>
           <td *ngIf="task.status !== 'O' && task.status !== 'A  ' && task.status !== 'R  '">
@@ -35,14 +44,16 @@
           <td>{{task.start_date | date :"M/d/yy" }}</td>
           <td>{{task.description}}</td>
           <td>{{task.status}}</td>
+        
           <!-- (mouseenter)="task.showButton = true" (mouseleave)="task.showButton = false" -->
-          <td  >
+          <!-- <td  >
             <span *ngIf="task.status !== 'O'" (click)="showMessage(task.todo_comment, task)"  translate>
               <span class="pi pi-comment"></span>
               Show message
             </span>
-          </td>
+          </td> -->
           <td>{{task.TaskType}}</td>
+            <td>{{task.Estimated_minute_To_Finsh_This_Tasks}}</td>
           <td>
             <button  class="btn btn-primary" type="button" (click)="IsLockedBy_OtherUser(task)" translate>Pick</button>
           </td>

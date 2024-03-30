@@ -58,7 +58,7 @@ export class MyTaskService {
       this.SupervisertasksUrl +
         "?username=" +
         environment.username +
-        "&orgid=60b3b81b-b839-4dc6-a46b-026d470f2dae&lanid=2C2EBBEA-3361-E111-95D5-00E04C05559B"
+        "&orgid=00000000-0000-0000-0000-000000000000&lanid=2C2EBBEA-3361-E111-95D5-00E04C05559B"
     );
   }
 
@@ -89,8 +89,7 @@ export class MyTaskService {
       this.MytasksUrlsuper +
         "?username=" +
         environment.username +
-        "&orgid=00000000-0000-0000-0000-000000000000&lanid=2C2EBBEA-3361-E111-95D5-00E04C05559B&userroll" +
-        "=00000000-0000-0000-0000-000000000000"
+        "&orgid=00000000-0000-0000-0000-000000000000&lanid=2C2EBBEA-3361-E111-95D5-00E04C05559B"
     );
   }
   IsLockedBy_OtherUser(todoid) {

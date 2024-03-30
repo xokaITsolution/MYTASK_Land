@@ -434,6 +434,7 @@ export class PropertyComponent implements OnChanges {
   }
 
   async getPropertyList() {
+    this.serviceService.backbuttonviable = true;
     this.serviceService
       .getPropertyLists(this.SelectedProperty.plot_ID)
       .subscribe(
@@ -457,6 +458,7 @@ export class PropertyComponent implements OnChanges {
             //     property_ID: Property.property_ID,
             //   };
             // }
+            this.serviceService.backbuttonviable = true;
           }
         },
         (error) => {

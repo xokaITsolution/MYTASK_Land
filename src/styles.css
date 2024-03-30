@@ -18,6 +18,11 @@ tr.green {
   color: rgb(0, 0, 0) !important;
   
 }
+tr.blue {
+  background-color: #1100ff !important;
+  color: rgb(255, 255, 255) !important;
+  
+}
 
 .nsm-content {
   margin-top: 200px !important

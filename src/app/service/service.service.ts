@@ -152,7 +152,8 @@ export class ServiceService {
     environment.rootPath + "view/ViewAspNetUsersWorkInfoDetail";
   private BaseUrl = environment.rootPath + "BPEL/GetCertficateBase";
   private SaveBaseUrl = environment.rootPath + "Certificate_Base";
-
+  private ViewAspNetUsersWorkInfoDetaill =
+    environment.rootPathApi + "view/View_postit_note_user";
   private SaveNoteURL = environment.rootPath + "BPEL/Edit_postit_notes"; // URL to web api
   private AddNoteURL = environment.rootPath + "BPEL/Set_postit_notes"; // URL to web api
   private SendNoteURL = environment.rootPath + "BPEL/sendNot"; // URL to web api
@@ -207,6 +208,9 @@ export class ServiceService {
     "view/View_APIForMoreOptionGetCustmerInformation/application_number?application_number=";
   private View_ForApicheckcertificateVersionController =
     environment.rootPathApi + "view/View_ForApicheckcertificateVersion";
+  private ViewUserInfo =
+    environment.rootPathApi +
+    "view/View_caseworkeruserorganizationcodeapi/UserName?UserName";
   // environment.rootPath + "BPEL/GetApplicationNumberByUser"; // URL to web api
   httpOptions = {
     headers: new HttpHeaders({ "Content-Type": "application/json" }),
@@ -281,6 +285,8 @@ export class ServiceService {
   polygonAreanameFrehold: any;
   coordinatetemp: any;
   RequerdDocspre: any;
+  backbuttonviable: boolean;
+  appnoForRecord: any;
   constructor(private http: HttpClient, private cookieService: CookieService) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -291,6 +297,14 @@ export class ServiceService {
   propertytaskslist = environment.propertytasks;
   Add(data) {
     return this.http.post<any[]>(this.PropertyManagmentUrlapi, data);
+  }
+  getViewAspNetUsersWorkInfoDetaill(data) {
+    // User_ID = this.removeSlash(User_ID);
+    return this.http.get<any>(
+      this.ViewAspNetUsersWorkInfoDetaill +
+        "/application_number?application_number=" +
+        data
+    );
   }
   setCookies(area: number) {
     // Setting cookies using cookieService
@@ -303,6 +317,9 @@ export class ServiceService {
       this.cookieService.set("PolygonAreaname", "" + area.toFixed(2));
       this.getCookies();
     }
+  }
+  getUserInfoByUserName(userName) {
+    return this.http.get<any>(this.ViewUserInfo + "=" + userName);
   }
   getCookies() {
     // Getting cookie values using cookieService

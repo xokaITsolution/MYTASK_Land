@@ -220,19 +220,6 @@ export class RecordComponent implements OnChanges {
     selectedService: new FormControl(),
   });
   ngOnChanges() {
-    console.log("this.AppCodeFromFile1", this.AppCodeFromFile);
-    this.activatedRoute.params.subscribe((params: Params) => {
-      this.aplicno = params["AppNo"];
-      console.log("this.AppCodeFromFile1", this.AppCodeFromFile);
-    });
-    if (
-      this.AppCodeFromFile != null ||
-      (this.AppCodeFromFile != undefined && this.DocIdFromFile != null) ||
-      this.DocIdFromFile != undefined
-    ) {
-      // this.getAllDocumentpre(this.AppCodeFromFile,this.DocIdFromFile)
-      console.log("this.AppCodeFromFile", this.AppCodeFromFile);
-    }
     console.log("language", environment.Lang_code);
     if (
       environment.Lang_code === "am-et" ||
@@ -291,15 +278,6 @@ export class RecordComponent implements OnChanges {
         SDP: "275619f2-69c2-4fb7-a053-938f0b62b088",
       });
     }
-    //  else  if(environment.subcity=='Arada'){
-    //   this.record.patchValue({
-    //     SDP:'6921d772-3a1c-4641-95a0-0ab320bac3e2'
-    //   })
-    //  }else {
-    //   this.record.patchValue({
-    //     SDP:'6921d772-3a1c-4641-95a0-0ab320bac3e2'
-    //   })
-    //  }
 
     console.log(
       "this.serviceService.currentApplicationUsers",
@@ -329,10 +307,6 @@ export class RecordComponent implements OnChanges {
     const formattedDate = `${day}${month}${year}`;
 
     console.log("formattedDate", formattedDate); // Output: 2023-10-02
-    //  this.record.patchValue({
-    //   // SDP: generateGuid(),
-    //   // appno:"BL-"+formattedDate+"-"+randomNumber(1,99999999999999999)
-    //  })
   }
 
   async addNew() {
@@ -630,19 +604,18 @@ export class RecordComponent implements OnChanges {
       });
   }
   getservice() {
-    this.service.getserviceapi().subscribe((service) => {
-      this.Services = service;
+    this.service.getserviceapi().subscribe((res) => {
+      this.Services = res;
       // this.Service = this.Service.filter(
       //   (x) => x.is_published == true && x.is_active == true
       // );
-      console.log("service", this.Service);
+      console.log("service", res);
     });
   }
   passapp(e) {
     this.getservice();
     this.activatedRoute.params.subscribe((params: Params) => {
       this.aplicno = params["AppNo"];
-      console.log("this.AppCodeFromFile1", this.AppCodeFromFile);
     });
     console.log("selectedappp", e, this.aplicno);
     if (
@@ -698,7 +671,10 @@ export class RecordComponent implements OnChanges {
         this.service
           .getLicencebyid(this.service.licenceData.Licence_Service_ID)
           .subscribe((rec: any) => {
-            console.log("🚀 ~ RecordComponent ~ ).subscribe ~ rec:", rec);
+            console.log(
+              "🚀 ~ RecordComponent ~ ).subscribe ~ rec:",
+              this.service.licenceData
+            );
             let RID;
             if (rec.procLicense_Services.length > 0) {
               RID = rec.procLicense_Services[0].recordNo;
@@ -708,16 +684,12 @@ export class RecordComponent implements OnChanges {
               .getDocumentArcbyid(RID)
               .subscribe((DocumentArc: any) => {
                 if (DocumentArc) {
-                  this.DocumentArc = DocumentArc.procDocument_Archives.filter(
+                  let Document = DocumentArc.procDocument_Archives.filter(
                     (x: any) => x.document_Number == RID
                   );
-                  console.log(
-                    "this.DocumentArc",
-                    DocumentArc,
-                    this.DocumentArc
-                  );
-                  if (this.DocumentArc.length > 0) {
-                    this.recordDocumnet = this.DocumentArc[0];
+                  console.log("this.DocumentArc", Document);
+                  if (Document.length > 0) {
+                    this.recordDocumnet = Document[0];
                     if (this.language == "amharic") {
                       this.recordDocumnet.regstration_Date =
                         this.getgregorianToEthiopianDate(
@@ -736,9 +708,6 @@ export class RecordComponent implements OnChanges {
                     }
                     this.disableBtn = false;
                     this.disableForm = true;
-                  }
-                  if (this.DocumentArc.length < 0) {
-                    this.getData = false;
                     this.record.patchValue({
                       appno: this.licenceData.Application_No,
                       selectedService: this.licenceData.Service_ID,
@@ -750,48 +719,66 @@ export class RecordComponent implements OnChanges {
                       SDP: this.licenceData.SDP_ID,
                       Woreda: this.userName[0].wereda_ID,
                       // Woreda:this.licenceData.Wereda_ID,
-                      Deed: this.DocumentArc[0].title_Deed_No,
+                      Deed: Document[0].title_Deed_No,
                     });
-                    this.getDocmentArcive(this.DocumentArc[0].title_Deed_No);
-                  } else {
-                    this.service
-                      .getDeedByApp(this.selectedAppno.application_number)
-                      .subscribe((DeedByApp: any) => {
-                        console.log("DeedByApp", DeedByApp.length);
-                        if (DeedByApp.length > 0) {
-                          this.getData = false;
-                          this.record.patchValue({
-                            appno: this.licenceData.Application_No,
-                            selectedService: this.licenceData.Service_ID,
-                            date: formatDate(
-                              this.licenceData.Created_Date,
-                              "yyyy-MM-dd",
-                              "en"
-                            ),
-                            SDP: this.licenceData.SDP_ID,
-                            Woreda: this.userName[0].wereda_ID,
-                            // Woreda:this.licenceData.Wereda_ID,
-                            Deed: DeedByApp[0].title_Deed_No,
-                          });
-                          this.getDocmentArcive(DeedByApp[0].title_Deed_No);
-                        } else {
-                          this.getData = false;
-                          this.record.patchValue({
-                            appno: this.licenceData.Application_No,
-                            selectedService: this.licenceData.Service_ID,
-                            date: formatDate(
-                              this.licenceData.Created_Date,
-                              "yyyy-MM-dd",
-                              "en"
-                            ),
-                            SDP: this.licenceData.SDP_ID,
-                            Woreda: this.userName[0].wereda_ID,
-                            // Woreda:this.licenceData.Wereda_ID,
-                            Deed: "",
-                          });
-                        }
-                      });
                   }
+
+                  // if (Document.length < 0) {
+                  //   this.getData = false;
+                  //   this.record.patchValue({
+                  //     appno: this.licenceData.Application_No,
+                  //     selectedService: this.licenceData.Service_ID,
+                  //     date: formatDate(
+                  //       this.licenceData.Created_Date,
+                  //       "yyyy-MM-dd",
+                  //       "en"
+                  //     ),
+                  //     SDP: this.licenceData.SDP_ID,
+                  //     Woreda: this.userName[0].wereda_ID,
+                  //     // Woreda:this.licenceData.Wereda_ID,
+                  //     Deed: DocumentArc[0].title_Deed_No,
+                  //   });
+
+                  // }
+                  //  else {
+                  //   this.service
+                  //     .getDeedByApp(this.selectedAppno.application_number)
+                  //     .subscribe((DeedByApp: any) => {
+                  //       console.log("DeedByApp", DeedByApp.length);
+                  //       if (DeedByApp.length > 0) {
+                  //         this.getData = false;
+                  //         this.record.patchValue({
+                  //           appno: this.licenceData.Application_No,
+                  //           selectedService: this.licenceData.Service_ID,
+                  //           date: formatDate(
+                  //             this.licenceData.Created_Date,
+                  //             "yyyy-MM-dd",
+                  //             "en"
+                  //           ),
+                  //           SDP: this.licenceData.SDP_ID,
+                  //           Woreda: this.userName[0].wereda_ID,
+                  //           // Woreda:this.licenceData.Wereda_ID,
+                  //           Deed: DeedByApp[0].title_Deed_No,
+                  //         });
+                  //       //  this.getDocmentArcive(DeedByApp[0].title_Deed_No);
+                  //       } else {
+                  //         this.getData = false;
+                  //         this.record.patchValue({
+                  //           appno: this.licenceData.Application_No,
+                  //           selectedService: this.licenceData.Service_ID,
+                  //           date: formatDate(
+                  //             this.licenceData.Created_Date,
+                  //             "yyyy-MM-dd",
+                  //             "en"
+                  //           ),
+                  //           SDP: this.licenceData.SDP_ID,
+                  //           Woreda: this.userName[0].wereda_ID,
+                  //           // Woreda:this.licenceData.Wereda_ID,
+                  //           Deed: "",
+                  //         });
+                  //       }
+                  //     });
+                  // }
 
                   this.service
                     .getTasks(this.licenceData.Service_ID)
@@ -818,23 +805,6 @@ export class RecordComponent implements OnChanges {
       console.log("this.PriveLicence", this.PriveLicence);
 
       this.PriveLicence = Object.assign([], this.PriveLicence.list);
-
-      // this.AppNoList = [];
-      // for (let i = 0; i < this.PriveLicence.length; i++) {
-      //   this.AppNoList[i] = {};
-      //   this.AppNoList[i].Application_No =
-      //     this.PriveLicence[i].Application_No;
-      // }
-      // if (this.AppNoList.length > 0) {
-      //   this.pendclose(this.AppNoList[0]["Application_No"]);
-      // } else {
-      //   this.se.emit(this.eventTypes.JSONFOUND);
-      // }
-
-      // this.PriveAppNoList = Object.assign([], this.AppNo);
-      // // console.log('this.AppNoList', this.AppNoList);
-      // // console.log('PriveLicence', PriveLicence);
-      // this.ifAppNo = true;
     });
   }
 
@@ -865,10 +835,6 @@ export class RecordComponent implements OnChanges {
       console.log("this.Org", org);
     });
   }
-  // add(){
-  //   console.log('recprds',this.record.get('task').value);
-
-  // }
 
   extractExtensionFromFileName(fileName) {
     if (fileName) {
@@ -1112,7 +1078,9 @@ export class RecordComponent implements OnChanges {
         this.recordDocumnet.regstration_Date
       );
     }
-    this.recordDocumnet.application_No = this.AppNo;
+
+    this.recordDocumnet.application_No = this.service.appnoForRecord;
+
     this.service.CreateDocmentArcive(this.recordDocumnet).subscribe(
       async (message) => {
         console.log("message", message);
@@ -1125,7 +1093,7 @@ export class RecordComponent implements OnChanges {
         // this.documentAddress=false
         console.log(this.service.licenceData);
 
-        this.service.licenceData.RecordNo = message[0].document_Number;
+        this.service.licenceData.RecordNo = this.recordDocumnet.document_Number;
         this.service.UpdateLicence(this.service.licenceData).subscribe(
           (Licence) => {},
           (error) => {
@@ -1236,7 +1204,7 @@ export class RecordComponent implements OnChanges {
     );
   }
   Archive() {
-    this.recordDocumnet.title_Deed_No = this.record.get("Deed").value;
+    //this.recordDocumnet.title_Deed_No = this.record.get("Deed").value;
   }
   async save() {
     if (this.language == "amharic") {
@@ -1252,7 +1220,7 @@ export class RecordComponent implements OnChanges {
     this.taskdisable = true;
     this.documentAddress = true;
 
-    this.recordDocumnet.title_Deed_No = this.record.get("Deed").value;
+    // this.recordDocumnet.title_Deed_No = this.record.get("Deed").value;
 
     //this.getDocmentArcive(this.record.get("Deed").value);
     this.GetApplicationNumberByUser(this.record.get("FullName_AM").value);
@@ -1270,7 +1238,7 @@ export class RecordComponent implements OnChanges {
             console.log("taskresponsess", this.taskList);
           });
         this.disabledtask = false;
-        this.recordDocumnet.application_No = this.response = res.split("/");
+        this.recordDocumnet.application_No = this.service.appnoForRecord;
         console.log("this.response", this.response[0]);
 
         this.AppNo = this.response[0];
@@ -1280,6 +1248,7 @@ export class RecordComponent implements OnChanges {
           .getLicencebyid(this.service.licenceData.Licence_Service_ID)
           .subscribe((rec: any) => {
             console.log("🚀 ~ RecordComponent ~ ).subscribe ~ rec:", rec);
+
             let RID;
             if (rec.procLicense_Services.length > 0) {
               RID = rec.procLicense_Services[0].recordNo;
@@ -1350,10 +1319,10 @@ export class RecordComponent implements OnChanges {
     let a = true;
     //this.completed.emit();
     for (let i = 0; i < this.Attachments.length; i++) {
-      console.log(
-        "this.Attachments[i].required && !this.Attachments[i].File",
-        this.Attachments[i].required && !this.Attachments[i].File
-      );
+      // console.log(
+      //   "this.Attachments[i].required && !this.Attachments[i].File",
+      //   this.Attachments[i].required && !this.Attachments[i].File
+      // );
       if (this.Attachments[i].required && !this.Attachments[i].File) {
         a = false;
         break;
@@ -1379,24 +1348,15 @@ export class RecordComponent implements OnChanges {
         this.recordDocumnet.regstration_Date
       );
     }
+    this.recordDocumnet.application_No = this.service.appnoForRecord;
     this.documentAddress = false;
     this.service.UpdateDocmentArcive(this.recordDocumnet).subscribe(
       async (message) => {
-        // console.log("message", message);
-        // this.serviceService.disablefins = false;
-        // if (!this.Saved) {
         this.completed.emit();
-        //   this.Saved = true;
-        // }
-        // if (this.language == "amharic") {
-        //   this.recordDocumnet.Regstration_Date =
-        //     await this.getgregorianToEthiopianDate(
-        //       this.recordDocumnet.Regstration_Date
-        //     );
-        // }
+
         console.log(this.service.licenceData);
 
-        this.service.licenceData.RecordNo = message[0].document_Number;
+        this.service.licenceData.RecordNo = this.recordDocumnet.document_Number;
         this.service.UpdateLicence(this.service.licenceData).subscribe(
           (Licence) => {},
           (error) => {
@@ -1412,23 +1372,11 @@ export class RecordComponent implements OnChanges {
             "Error",
             error.error.InnerException.Errors[0].message
           );
-          // if (this.language == "amharic") {
-          //   this.recordDocumnet.Regstration_Date =
-          //     await this.getgregorianToEthiopianDate(
-          //       this.recordDocumnet.Regstration_Date
-          //     );
-          // }
         } else {
           const toast = this.notificationsService.error(
             "Error",
             "SomeThing Went Wrong"
           );
-          // if (this.language == "amharic") {
-          //   this.recordDocumnet.Regstration_Date =
-          //     await this.getgregorianToEthiopianDate(
-          //       this.recordDocumnet.Regstration_Date
-          //     );
-          // }
         }
       }
     );
@@ -1688,7 +1636,7 @@ export class RecordComponent implements OnChanges {
           });
           this.Application_Number = this.licenceData.Application_No;
           this.selectedAppno.application_number = this.Application_Number;
-          this.recordDocumnet.application_No = this.licenceData.Application_No;
+          this.recordDocumnet.application_No = this.service.appnoForRecord;
           //
           console.log("licenceData", this.licenceData.Licence_Service_ID);
           //this.getAllDocumentpre(this.licenceData.Licence_Service_ID, DocID);
@@ -1792,16 +1740,7 @@ export class RecordComponent implements OnChanges {
     }
   }
 }
-function generateGuid(): string {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-    const r = (Math.random() * 16) | 0,
-      v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
-function randomNumber(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min) + min);
-}
+
 export class RecordDocumnet {
   public Certificate_Base;
   public document_Number;

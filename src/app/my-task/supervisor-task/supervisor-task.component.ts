@@ -100,8 +100,7 @@ export class SupervisorTaskComponent implements OnInit {
           this.taskListtamp = tasks;
           this.taskList = Object.assign([], this.taskListtamp.Table1);
           console.log("tasks", tasks);
-
-          console.log("this.taskList", this.taskList);
+          console.log("this.taskListttt", this.taskList);
           this.taskList.sort((a, b) => {
             if (a.start_date && b.start_date) {
               const dateA = new Date(a.start_date);

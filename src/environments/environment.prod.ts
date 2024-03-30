@@ -40,4 +40,5 @@ export const environment = {
   Totalareatolerance: window["Totalareatolerance"],
   subcity: window["subcity"],
   rootpath2: window["rootpath2"],
+  propertyvalidetion: window["propertyvalidetion"],
 };

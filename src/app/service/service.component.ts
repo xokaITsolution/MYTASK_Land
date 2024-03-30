@@ -231,7 +231,22 @@ export class ServiceComponent implements OnInit {
   documentss: boolean = false;
   mimeTypes: any;
   mimeTypee: any;
-
+  messageAppNo;
+  messageCache = [];
+  messageObj = {
+    userName: null,
+    currentMessage: null,
+    currentMessageIndex: 0,
+    messages: null,
+  };
+  direction = {
+    NEXT: "d00",
+    PREV: "d01",
+  };
+  loadingMessage = false;
+  user_name: string;
+  isAccountVisiblemessage: boolean;
+  AppNumber: any;
   constructor(
     private modalService: BsModalService,
     private activatedRoute: ActivatedRoute,
@@ -710,10 +725,29 @@ export class ServiceComponent implements OnInit {
           const element = response[index];
 
           if (
+            element.RoleId ===
+            "B59EA343-65EF-4C41-95A8-02D9AD81BFCD".toLocaleLowerCase()
+          ) {
+            this.serviceService.backbuttonviable = true;
+            break;
+          } else {
+            this.serviceService.backbuttonviable = false;
+          }
+        }
+      }
+    });
+    this.serviceService.getUserRole().subscribe((response: any) => {
+      if (response) {
+        for (let index = 0; index < response.length; index++) {
+          const element = response[index];
+
+          if (
             element.RoleId ==
               "8C133397-587E-456F-AB31-9CF5358BE8D2".toLocaleLowerCase() ||
             element.RoleId ==
-              "270F762A-5393-4971-83BA-C7FF7D560BDA".toLocaleLowerCase()
+              "270F762A-5393-4971-83BA-C7FF7D560BDA".toLocaleLowerCase() ||
+            element.RoleId ==
+              "B59EA343-65EF-4C41-95A8-02D9AD81BFCD".toLocaleLowerCase()
           ) {
             this.eid = element.UserId;
             this.serviceService.isRecordDocumentationManager = true;
@@ -732,11 +766,12 @@ export class ServiceComponent implements OnInit {
       this.SuperviedUsers = SuperviedUsers;
       this.SuperviedUsers = Object.assign([], this.SuperviedUsers);
       this.SuperviedUsers = SuperviedUsers;
-
-      if (this.SuperviedUsers.length > 0) {
-        this.isSuperviedUsers = true;
-      } else {
-        this.isSuperviedUsers = false;
+      if (this.SuperviedUsers != undefined || this.SuperviedUsers != null) {
+        if (this.SuperviedUsers.length > 0) {
+          this.isSuperviedUsers = true;
+        } else {
+          this.isSuperviedUsers = false;
+        }
       }
     });
 
@@ -761,20 +796,23 @@ export class ServiceComponent implements OnInit {
       this.getAll(this.AppNo);
       this.tskTyp = params["tskTyp"];
       this.tskID = params["tskID"];
-      let filterpropertyid = this.serviceService.propertytaskslist.filter(
-        (x: any) => x.id.toLocaleLowerCase() === this.tskID
-      );
-      console.log(
-        "🚀 ~ this.activatedRoute.params.subscribe ~ filterpropertyid:",
-        filterpropertyid,
-        this.serviceService.propertytaskslist,
-        this.tskID
-      );
-      if (filterpropertyid.length > 0) {
-        this.backbuttonviable = true;
-      } else {
-        this.backbuttonviable = false;
-      }
+      // if (this.serviceService.propertytaskslist != undefined) {
+      //   let filterpropertyid = this.serviceService.propertytaskslist.filter(
+      //     (x: any) => x.id.toLocaleLowerCase() === this.tskID
+      //   );
+      //   console.log(
+      //     "🚀 ~ this.activatedRoute.params.subscribe ~ filterpropertyid:",
+      //     filterpropertyid,
+      //     this.serviceService.propertytaskslist,
+      //     this.tskID
+      //   );
+      //   if (filterpropertyid.length > 0) {
+      //     this.serviceService.backbuttonviable = true;
+      //   } else {
+      //     this.serviceService.backbuttonviable = false;
+      //   }
+      // }
+
       if (this.tskTyp == "c800fb16-f961-e111-95d6-00e04c05559b") {
         this.getTaskRule(params["tskID"]);
       }
@@ -3238,6 +3276,7 @@ export class ServiceComponent implements OnInit {
           this.Licence_Service_ID = this.licenceData.Licence_Service_ID;
           this.AppCode = this.licenceData.Licence_Service_ID; //
           this.AppNo = this.licenceData.Application_No; //
+          this.serviceService.appnoForRecord = this.licenceData.Application_No;
           this.serviceService.LicenceserviceID = this.Licence_Service_ID;
           console.log("licenceData", this.licenceData);
 
@@ -3317,5 +3356,132 @@ export class ServiceComponent implements OnInit {
   triggerHeaderInitialization() {
     this.isAccountVisible = true;
     this.networkService.notifyHeaderChange();
+  }
+
+  showMessage(appNo) {
+    this.messageAppNo = appNo;
+    let messageInCache = false;
+    // this.loadingMessage = true;
+    this.isAccountVisiblemessage = true;
+    this.messageObj.currentMessage = null;
+    this.messageObj.currentMessageIndex = 0;
+    this.messageObj.messages = null;
+
+    this.messageCache.some((message) => {
+      if (message["appNo"] == appNo) {
+        messageInCache = true;
+        this.messageObj.messages = message["messages"];
+        if (this.messageObj.messages) {
+          this.messageObj.currentMessage =
+            this.messageObj.messages[0]["remarks"];
+        }
+        this.loadingMessage = false;
+        return true;
+      }
+      return false;
+    });
+
+    if (!messageInCache) {
+      this.user = [];
+      this.user_name = null;
+      this.serviceService.GetNote(appNo).subscribe(
+        (result) => {
+          console.log("messagesss", result);
+
+          this.messageObj.messages = result;
+
+          if (this.messageObj.messages) {
+            console.log(
+              "this.messageObj.messages",
+              this.messageObj.messages[0].remarks
+            );
+
+            this.messageCache.push({
+              appNo: this.messageAppNo,
+              messages: result,
+            });
+            this.AppNumber = appNo;
+            this.serviceService
+              .getViewAspNetUsersWorkInfoDetaill(appNo)
+              .subscribe((res) => {
+                console.log("this.messageObj.userName+i", res);
+
+                this.user = res;
+                this.user_name = "Massage From: " + this.user[0].userName;
+                this.messageObj.userName = this.user[0].userName;
+                console.log("userrrr", this.messageObj.userName);
+                this.messageObj.currentMessage =
+                  this.messageObj.messages[0]["remarks"];
+              });
+          }
+          this.loadingMessage = false;
+        },
+        (error) => {
+          this.loadingMessage = false;
+          console.error("message error :: ", error);
+        }
+      );
+    }
+  }
+  canGo(where) {
+    if (this.messageObj.messages) {
+      if (where == this.direction.NEXT) {
+        return (
+          this.messageObj.currentMessageIndex <
+          this.messageObj.messages.length - 1
+        );
+      } else if (where == this.direction.PREV) {
+        return this.messageObj.currentMessageIndex > 0;
+      }
+      return false;
+    } else {
+      return false;
+    }
+  }
+
+  navigateMessage(direction) {
+    if (
+      this.messageObj.messages ? this.messageObj.messages.length > 0 : false
+    ) {
+      if (
+        direction == this.direction.NEXT &&
+        this.messageObj.currentMessageIndex < this.messageObj.messages.length
+      ) {
+        this.messageObj.currentMessageIndex += 1;
+        this.messageObj.currentMessage =
+          this.messageObj.messages[this.messageObj.currentMessageIndex][
+            "remarks"
+          ];
+        console.log(
+          "this.messageObj.currentMessageIndex",
+          this.messageObj.currentMessageIndex
+        );
+
+        this.user_name =
+          "Massage From: " +
+          this.user[this.messageObj.currentMessageIndex].userName;
+        this.messageObj.userName =
+          this.user[this.messageObj.currentMessageIndex].userName;
+      } else if (
+        direction == this.direction.PREV &&
+        this.messageObj.currentMessageIndex > 0
+      ) {
+        this.messageObj.currentMessageIndex -= 1;
+        this.messageObj.currentMessage =
+          this.messageObj.messages[this.messageObj.currentMessageIndex][
+            "remarks"
+          ];
+
+        this.user_name =
+          "Massage From: " +
+          this.user[this.messageObj.currentMessageIndex].userName;
+        this.messageObj.userName =
+          this.user[this.messageObj.currentMessageIndex].userName;
+      }
+    }
+  }
+  closeModalme(id) {
+    // this.modal.getModal(id).close();
+    this.isAccountVisiblemessage = false;
   }
 }

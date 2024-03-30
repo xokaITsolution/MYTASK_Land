@@ -1758,7 +1758,108 @@ export class GisMapComponent implements AfterViewInit {
         this.limitedAreaBounds = L.polygon(allVertices);
 
         if (layer instanceof L.Polygon) {
-          if (this.limitedAreaBounds.getBounds().contains(layer.getBounds())) {
+          // this.limitedAreaBounds.getBounds().contains(layer.getBounds()) back
+          if (environment.propertyvalidetion) {
+            if (
+              this.limitedAreaBounds.getBounds().contains(layer.getBounds())
+            ) {
+              this.map.addLayer(layer);
+
+              this.coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the polygon
+              this.coordinates = this.coordinates.map((coord) => {
+                return {
+                  lat: coord.lat - 0.001876,
+                  lng: coord.lng - 0.0008668,
+                };
+              });
+              this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(
+                this.coordinates
+              );
+              console.log(
+                "🚀 ~ file: gis-map.component.ts:1630 ~ this.map.on ~ tempcord:",
+                this.ServiceService.coordinateForwgs84
+              );
+              console.log(this.coordinates);
+              // Convert each L.LatLng object to [x, y] point
+              //this.convertLatLngToUTM(this.coordinates)
+
+              // Assuming you already have the 'points' array from the previous code
+              const utmCoordinates = this.convertCoordinatesToUTM(
+                this.coordinates
+              );
+              utmCoordinates.push(utmCoordinates[0]);
+              this.utmCoordinates = utmCoordinates;
+              let isNorthernHemisphere: any = "N";
+              const utmToCoor = this.utmCoordinates.map((row) =>
+                this.conveUTMToLatLngWrite(
+                  row.northing,
+                  row.easting,
+                  37,
+                  isNorthernHemisphere
+                )
+              );
+              console.log(
+                "🚀 ~ file: gis-map.component.ts:1569 ~ this.map.on ~ utmToCoor:",
+                utmToCoor
+              );
+
+              const utmCoordinateslast =
+                this.convertCoordinatesToUTM(utmToCoor);
+              //this.utmCoordinates = utmCoordinateslast;
+              console.log(
+                "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
+                this.utmCoordinates
+              );
+
+              console.log(utmCoordinates);
+              // Convert each L.LatLng object to [x, y] point
+              // Assuming this.coordinates is an array of L.LatLng objects
+              // Convert each L.LatLng object to [x, y] point
+
+              const geojson = layer.toGeoJSON();
+
+              // Create a layer with the transformed GeoJSON
+              this.drawnShape = L.Proj.geoJson(geojson);
+              console.log(this.drawnShape);
+
+              // Add the transformed GeoJSON layer to the map
+
+              this.drawnShape.addTo(this.map);
+              //this.utmCoordinates.push(this.utmCoordinates[0]);
+              //points.push(points[0])
+              this.sample = this.drawnShape;
+              console.log("utmCoordinates", utmCoordinates);
+              // Add the coordinates to the array
+              //this.drawnShapes.push(this.coordinates);
+
+              // Do something with the coordinates, such as displaying or processing them
+              this.editableLayers.addLayer(layer);
+              let convertedUtmgeozone = this.convertCoordinateszone(
+                this.utmCoordinates
+              );
+              convertedUtmgeozone.push(convertedUtmgeozone[0]);
+              this.allcoordenatezone.push(convertedUtmgeozone);
+              this.ServiceService.coordinate = this.allcoordenatezone;
+              console.log(
+                "🚀 ~ file: gis-map.component.ts:2104 ~ editedLayers.eachLayer ~ coordinate:",
+                this.ServiceService.coordinate
+              );
+              this.utmCoordinatesforallexcel = this.utmCoordinates;
+              // this.ServiceService.coordinateForwgs84 =
+              //  this.ServiceService.shapes = this.aaa.push(this.drawnShape);
+              // Transform GeoJSON to EPSG:20137 CRS
+            } else {
+              const toast = this.notificationsService.warn(
+                "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡"
+              );
+
+              this.map.removeLayer(layer);
+              this.editableLayers.removeLayer(layer);
+              this.removeShape();
+              this.ServiceService.disablebutton = false;
+              return;
+            }
+          } else {
             this.map.addLayer(layer);
 
             this.coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the polygon
@@ -1843,16 +1944,6 @@ export class GisMapComponent implements AfterViewInit {
             // this.ServiceService.coordinateForwgs84 =
             //  this.ServiceService.shapes = this.aaa.push(this.drawnShape);
             // Transform GeoJSON to EPSG:20137 CRS
-          } else {
-            const toast = this.notificationsService.warn(
-              "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡"
-            );
-
-            this.map.removeLayer(layer);
-            this.editableLayers.removeLayer(layer);
-            this.removeShape();
-            this.ServiceService.disablebutton = false;
-            return;
           }
         } else if (layer instanceof L.Circle) {
           // Get the center LatLng of the circle
@@ -1873,8 +1964,83 @@ export class GisMapComponent implements AfterViewInit {
           this.ServiceService.iscircleLatLngs = radiusMeters;
 
           const limitedAreaBoundss = L.latLngBounds(this.alllatlong[0][0]);
+          if (environment.propertyvalidetion) {
+            if (limitedAreaBoundss.contains(centerLatLng)) {
+              console.log("Circle LatLngs:", circleLatLngs);
+              const utmCoordinates =
+                this.convertCoordinatesToUTM(circleLatLngs);
+              this.utmCoordinates = utmCoordinates;
 
-          if (limitedAreaBoundss.contains(centerLatLng)) {
+              let isNorthernHemisphere: any = "N";
+              const utmToCoor = this.utmCoordinates.map((row) =>
+                this.conveUTMToLatLngWrite(
+                  row.northing,
+                  row.easting,
+                  37,
+                  isNorthernHemisphere
+                )
+              );
+              console.log(
+                "🚀 ~ file: gis-map.component.ts:1569 ~ this.map.on ~ utmToCoor:",
+                utmToCoor
+              );
+
+              const utmCoordinateslast =
+                this.convertCoordinatesToUTM(utmToCoor);
+              this.utmCoordinates = utmCoordinateslast;
+              console.log(
+                "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
+                this.utmCoordinates
+              );
+              console.log(utmCoordinates);
+              // Convert each L.LatLng object to [x, y] point
+              // Assuming this.coordinates is an array of L.LatLng objects
+              // Convert each L.LatLng object to [x, y] point
+
+              this.drawnShape = L.polygon(circleLatLngs, {
+                color: "blue",
+              });
+
+              console.log(this.drawnShape);
+
+              // Add the transformed GeoJSON layer to the map
+
+              this.drawnShape.addTo(this.map);
+              this.utmCoordinates.push(this.utmCoordinates[0]);
+              //points.push(points[0])
+              this.sample = this.drawnShape;
+              this.ServiceService.centerLatLng =
+                this.convertCoordinatesToUTM(coordinatesArray);
+              console.log(
+                "centerLatLng",
+                this.ServiceService.centerLatLng,
+                this.ServiceService.iscircleLatLngs
+              );
+
+              let eachcoored: any = this.convertCoordinatesToUTM(
+                this.coordinates
+              );
+              eachcoored.push(eachcoored[0]);
+              eachcoored = this.convertArray(eachcoored);
+              this.ServiceService.coordinate.push(eachcoored);
+
+              console.log(
+                "this.ServiceService.coordinate",
+                this.ServiceService.coordinate
+              );
+
+              // Now you can use circleLatLngs as needed
+            } else {
+              const toast = this.notificationsService.warn(
+                "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡"
+              );
+
+              this.map.removeLayer(layer);
+              //this.editableLayers.removeLayer(layer);
+              this.removeShape();
+              this.ServiceService.disablebutton = false;
+            }
+          } else {
             console.log("Circle LatLngs:", circleLatLngs);
             const utmCoordinates = this.convertCoordinatesToUTM(circleLatLngs);
             this.utmCoordinates = utmCoordinates;
@@ -1935,17 +2101,6 @@ export class GisMapComponent implements AfterViewInit {
               "this.ServiceService.coordinate",
               this.ServiceService.coordinate
             );
-
-            // Now you can use circleLatLngs as needed
-          } else {
-            const toast = this.notificationsService.warn(
-              "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡"
-            );
-
-            this.map.removeLayer(layer);
-            //this.editableLayers.removeLayer(layer);
-            this.removeShape();
-            this.ServiceService.disablebutton = false;
           }
         } else {
           this.coordinates = layer.getLatLngs(); // Get the coordinates of the polygon
@@ -3903,11 +4058,46 @@ export class GisMapComponent implements AfterViewInit {
             });
           }
         });
-        if (
-          this.limitedAreaBounds
-            .getBounds()
-            .contains(this.drawnShape.getBounds())
-        ) {
+        if (environment.propertyvalidetion) {
+          if (
+            this.limitedAreaBounds
+              .getBounds()
+              .contains(this.drawnShape.getBounds())
+          ) {
+            this.map.addLayer(this.drawnShape);
+
+            // Convert each L.LatLng object to [x, y] point
+            //this.convertLatLngToUTM(this.coordinates)
+
+            // Assuming you already have the 'points' array from the previous code
+            const utmCoordinates = this.convertCoordinatesToUTM(
+              this.coordinates
+            );
+            utmCoordinates.push(utmCoordinates[0]);
+            this.utmCoordinates = utmCoordinates;
+
+            //this.ServiceService.coordinate = coordinates;
+            // console.log(
+            //   "🚀 ~ file: gis-map.component.ts:1569 ~ this.map.on ~ utmToCoor:",
+            //   this.ServiceService.coordinate
+            // );
+
+            console.log(
+              "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
+              this.utmCoordinates
+            );
+          } else {
+            const toast = this.notificationsService.warn(
+              "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡"
+            );
+
+            this.map.removeLayer(this.drawnShape);
+            this.editableLayers.removeLayer(this.drawnShape);
+            this.removeShape();
+            this.ServiceService.disablebutton = false;
+            return;
+          }
+        } else {
           this.map.addLayer(this.drawnShape);
 
           // Convert each L.LatLng object to [x, y] point
@@ -3928,16 +4118,6 @@ export class GisMapComponent implements AfterViewInit {
             "🚀 ~ file: gis-map.component.ts:1361 ~ this.map.on ~ utmCoordinates:",
             this.utmCoordinates
           );
-        } else {
-          const toast = this.notificationsService.warn(
-            "Property Location cannot be outside of the Plot or Compound Area./ቤቱ ያረፈበት ቦታ ከግቢው ውጪ ሊሆን አይችልም፡፡"
-          );
-
-          this.map.removeLayer(this.drawnShape);
-          this.editableLayers.removeLayer(this.drawnShape);
-          this.removeShape();
-          this.ServiceService.disablebutton = false;
-          return;
         }
       }
     } else {

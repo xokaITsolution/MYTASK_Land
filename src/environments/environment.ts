@@ -18,7 +18,7 @@ export const environment = {
   iconpath: window["iconpath"],
   formPath: window["formPath"],
   city: window["city"],
-  username: "AR_Record_Mgr",
+  username: "agebretensay",
   appbase: window["_app_base"],
   location: window["locations"],
   //username: "city_mgr",
@@ -52,6 +52,7 @@ export const environment = {
   propertytasks: window["propertytasks"],
   folderpath: window["folderpath"],
   subcity: window["subcity"],
+  propertyvalidetion: window["propertyvalidetion"],
 };
 
 /*

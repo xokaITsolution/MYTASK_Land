@@ -12,7 +12,9 @@
           <th translate>Date</th>
           <th translate>Task Description</th>
           <th translate>Task Status</th>
-          <th translate>Type</th>
+          <th translate>Task Type </th>
+          <th translate>Estimated_minute</th>
+          <th translate>Minuteslate </th>
           <th></th>
           <th></th>
         </tr>
@@ -22,9 +24,11 @@
           [class.yeloww]="task.status == 'S' ||task.status == 'P'" [class.red]="task.Minutes_late >0">
           <td>{{task.todo_comment}}</td>
           <td>{{task.start_date}}</td>
-          <td>{{task.description}}</td>
-          <td>{{task.status}}</td>
+          <td>{{task.Description}}</td>
+          <td>{{task.Status}}</td>
           <td>{{task.TaskType}}</td>
+          <td>{{task.Estimated_minute_To_Finsh_This_Tasks}}</td>
+          <td>{{task.Minutes_late}}</td>
           <td><button class="btn btn-primary" type="button" *ngIf="task.status!=='Q'"
               (click)="IsLockedBy_OtherUser(task)" translate>
               Pick
@@ -73,7 +77,7 @@
         <select class="form-control" (change)="passdata($event)" [(ngModel)]="selectedUser" NG name="IssuedBy"
           id="IssuedBy">
           <option disabled>select</option>
-          <option *ngFor="let User of SuperviedUsers;" [value]="User.UserId">{{User.FirstName_en}}&nbsp;{{User.MiddleName_en}} &nbsp; {{User.LastName_en}}</option>
+          <option *ngFor="let User of SuperviedUsers;" [value]="User.UserId">{{User.fullname}}</option>
         </select>
       </div>
     </div>
