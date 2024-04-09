@@ -15,7 +15,7 @@ export class MyTaskService {
     environment.rootPath + "BPEL/IsLockedBy_OtherUser";
   private GetSuperviedUsersUrl =
     environment.rootPath + "BPEL/Get_SuperviedUsers"; // URL to web api
-  private AssignToUserUrl = environment.rootPath + "BPEL/reOpen"; // URL to web api
+  private AssignToUserUrl = environment.rootPath + "BPEL/AssigEmpToDo"; // URL to web api
 
   constructor(private http: HttpClient) {}
 
@@ -62,19 +62,21 @@ export class MyTaskService {
     );
   }
 
-  AssignToUser(ApplicationNo, EmpID, todoid, username, status) {
+  AssignToUser(ApplicationNo, EmpID, todoid, username, status, taskid) {
     return this.http.post(
       this.AssignToUserUrl +
         "?ApplicationNo=" +
         ApplicationNo +
-        "&eid=" +
+        "&EmpID=" +
         EmpID +
         "&todoid=" +
         todoid +
         "&userName=" +
         username +
         "&status=" +
-        status,
+        status +
+        "&taskid=" +
+        taskid,
       null
     );
   }

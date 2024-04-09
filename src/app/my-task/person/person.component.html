@@ -289,7 +289,7 @@
                       </div>
                     </span>
                   </div>
-                  <div class="form-group row col-md-6">
+                  <!-- <div class="form-group row col-md-6">
                     <label for="MobileNo" class="col-sm-4 col-form-label" translate>Mobile No</label>
                     <div class="col-sm-8">
                       <input type="text" class="form-control" [(ngModel)]="person.mobile_No" name="MobileNo"
@@ -297,7 +297,7 @@
                         [ngClass]="{ 'is-invalid': MobileNo.invalid }" min="900000000" max="999999999" [disabled]="disabled">
                          
                     </div>
-                  </div>
+                  </div> -->
                   <!-- <div class="form-group row col-md-6">
                     <label for="IsRepresented" class="col-sm-4 col-form-label" translate>Is Represented</label>
   
@@ -341,14 +341,14 @@
                                   binary="true"></p-checkbox>
                     </div>
                   </div>-->
-                  <div class="form-group row col-md-6">
+                  <!-- <div class="form-group row col-md-6">
                     <label for="HomeTele" class="col-sm-4 col-form-label" translate>Home Tele</label>
                     <div class="col-sm-8">
                       <input type="text" class="form-control" [(ngModel)]="person.home_Telephone" name="HomeTele"
                       id="HomeTele" [placeholder]="'Home Tele' | translate"
                          [maxlength]="12" [disabled]="disabled">
                     </div>
-                  </div>
+                  </div> -->
                   <!--<div class="form-group row col-md-6">
                     <label for="RepresentingCustomer" class="col-sm-4 col-form-label" translate>Representing
                       Customer</label>
@@ -378,13 +378,10 @@
               </div>
   
               <div class="form-group col-md-4" >
-                <div class="form-row">
+                <!-- <div class="form-row">
                   <label class="col-sm-2 col-form-label" translate>Photo</label>
                   <div class="col-sm-10">
-                    <!-- <input type="file" class="form-control" [(ngModel)]="person.Photo" name="Photo" id="Photo"
-                            placeholder="Photo">
-                   </div>
-                   <img height="300px" class="m-5 mr-5" src="../../../assets/images.jpg">-->
+                  
                         <div *ngIf="!disabled">
                     <p-fileUpload #form customUpload="true" (uploadHandler)="upload($event,form)" accept="image/*">
                     </p-fileUpload>
@@ -403,7 +400,7 @@
                       <img width="100%" alt="Photo" [src]="placeHolderImage">
                     </div>
                   </div>
-                </div>
+                </div> -->
   
                 <div class="col-md-8">
                   <div>
@@ -414,10 +411,10 @@
             </div>
           </p-fieldset>
           <div class="pull-right">
-            <button type="button" class="btn btn-primary" [disabled]="file.invalid" *ngIf="isnew"
+            <button type="button" class="btn btn-primary"  *ngIf="isnew"
               (click)="Save2()" id="personsave" translate>Save</button>
               
-              <div class="text-danger mt-2" *ngIf="file.invalid" translate>Please fill out all required fields.</div>
+              <!-- <div class="text-danger mt-2" *ngIf="file.invalid" translate>Please fill out all required fields.</div> -->
             <button type="button" class="btn btn-primary"  *ngIf="!isnew"
               (click)="update()" [disabled]="disabled" id="PersonUpdate" translate>Update</button>
   
@@ -491,7 +488,7 @@
           <button class="btn btn-primary" type="button" translate  (click)="getcostumerbyid(globvar)">Search</button>
         </div>
       </div>
-      <button type="button" class="btn btn-primary" (click)="add()" style="float: right;" translate>Add New</button>
+      <!-- <button type="button" class="btn btn-primary" (click)="add()" style="float: right;" translate>Add New</button> -->
         </span>
       
       </div>

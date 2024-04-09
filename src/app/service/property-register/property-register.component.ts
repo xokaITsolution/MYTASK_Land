@@ -73,6 +73,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   picture_South: any;
   picture_West: any;
   proploceach: any;
+  ishavespashal: boolean = false;
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -250,6 +251,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       });
   }
   async save() {
+    if (this.propertyRegister.property_Parent_ID == 0) {
+      this.serviceService.ishavespashal = true;
+    }
     if (
       parseInt(this.propertyRegister.property_Type_ID) == 2 &&
       parseInt(this.propertyRegister.property_Parent_ID) == 0

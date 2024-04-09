@@ -2539,6 +2539,7 @@ export class GisMapComponent implements AfterViewInit {
           // }
           // Show the area in a popup
           console.log("Totalarea", area, utmCoordinates);
+          this.utmCoordinatesforallexcel = utmCoordinates;
           this.ServiceService.Totalarea = parseInt(area.toFixed(2));
           if (this.ServiceService.check) {
             const maxAreaDifference = 0.05 * this.ServiceService.Totalarea;

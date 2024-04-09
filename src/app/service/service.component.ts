@@ -37,6 +37,7 @@ type AOA = any[][];
 })
 export class ServiceComponent implements OnInit {
   maxChars;
+  postintnot: boolean = false;
   aaa;
   isAccountVisible: boolean = false;
   jsonempty = {};
@@ -247,6 +248,8 @@ export class ServiceComponent implements OnInit {
   user_name: string;
   isAccountVisiblemessage: boolean;
   AppNumber: any;
+  issavenote: boolean;
+  issendnote: boolean;
   constructor(
     private modalService: BsModalService,
     private activatedRoute: ActivatedRoute,
@@ -263,6 +266,7 @@ export class ServiceComponent implements OnInit {
 
   hide = true;
   saveFormmjson(formData) {
+    this.validated = true;
     if ("de4937d8-bdcd-46d6-8749-dc31c9f3adcf" == this.SDP_ID) {
       if (environment.subcity == "arada") {
         this.AppNo = "6921d772-3a1c-4641-95a0-0ab320bac3e2";
@@ -624,6 +628,7 @@ export class ServiceComponent implements OnInit {
     //   this.moreDetail.buttonText = "More";
     // }
   }
+
   saveFormm2(formData) {
     console.log("save-form", JSON.stringify(formData));
     this.serviceService
@@ -856,6 +861,7 @@ export class ServiceComponent implements OnInit {
     } else if (this.formcode == "da8c5bd4-ea3d-4f02-b1b2-38cf26d6d1f") {
       this.ID = 10;
     } else if (this.formcode == "cc71e78d-ef6f-4b93-8d8e-3996f1043fba") {
+      this.serviceService.disablefins = false;
       this.ID = 12;
     } else {
       this.ID = 0;
@@ -1152,7 +1158,7 @@ export class ServiceComponent implements OnInit {
   }
 
   getPost(appno) {
-    this.serviceService.getPostit_user().subscribe(
+    this.serviceService.getPostit_user(appno).subscribe(
       (note) => {
         this.user = note.filter((value) => value.application_number == appno);
         console.log("userrrr", this.user);
@@ -1282,7 +1288,7 @@ export class ServiceComponent implements OnInit {
   EnableFinss() {
     //  this.serviceService.disablefins = false;
     // console.log("enableningggg....", this.validated);
-
+    this.validated = true;
     // this.saveForm(this.jsonempty);
     this.validated = true;
     this.isvalidateds(
@@ -1345,12 +1351,13 @@ export class ServiceComponent implements OnInit {
   }
 
   addNote() {
-    //this.NoteObj.postit_note_code = this.DocID;
+    //this.NoteObj.postit_note_code = this.todoID;
     this.serviceService
-      .addNote(this.AppNo, this.NoteObj.remarks, this.NoteObj.postit_note_code)
+      .addNote(this.AppNo, this.NoteObj.remarks, this.todoID)
       .subscribe(
         (message) => {
           const toast = this.notificationsService.success("Sucess", "Saved");
+          this.issendnote = true;
           this.GetNote(message);
         },
         (error) => {
@@ -1362,24 +1369,22 @@ export class ServiceComponent implements OnInit {
       );
   }
   saveNote() {
-    // this.NoteObj.postit_note_code = this.DocID;
-    this.serviceService
-      .saveNote(this.NoteObj.remarks, this.NoteObj.postit_note_code)
-      .subscribe(
-        (message) => {
-          const toast = this.notificationsService.success(
-            "Sucess",
-            "Edited sucessfully"
-          );
-          this.GetNote(message);
-        },
-        (error) => {
-          const toast = this.notificationsService.error(
-            "Error",
-            "SomeThing Went Wrong"
-          );
-        }
-      );
+    //this.NoteObj.postit_note_code = this.todoID;
+    this.serviceService.saveNote(this.NoteObj.remarks, this.todoID).subscribe(
+      (message) => {
+        const toast = this.notificationsService.success(
+          "Sucess",
+          "Edited sucessfully"
+        );
+        this.GetNote(message);
+      },
+      (error) => {
+        const toast = this.notificationsService.error(
+          "Error",
+          "SomeThing Went Wrong"
+        );
+      }
+    );
   }
 
   DeleteNote() {
@@ -1402,7 +1407,7 @@ export class ServiceComponent implements OnInit {
       );
   }
   sendNote() {
-    //this.NoteObj.postit_note_code = this.DocID;
+    // this.NoteObj.postit_note_code = this.todoID;
     //this.SubmitAR(this.serviceService.taskrul)
     this.serviceService
       .sendNote(
@@ -1418,6 +1423,15 @@ export class ServiceComponent implements OnInit {
             "Sucess",
             "Sent Sucessfully"
           );
+          this.serviceService
+            .sendNoteApi(
+              this.NoteObj.remarks,
+              this.AppNo,
+              this.todoID,
+              this.todoID,
+              this.SDP_ID
+            )
+            .subscribe((message) => {});
           this.GetNote(message);
         },
         (error) => {
@@ -1429,6 +1443,7 @@ export class ServiceComponent implements OnInit {
       );
   }
   sendNotte() {
+    // this.NoteObj.postit_note_code = this.todoID;
     this.SubmitAR(this.serviceService.taskrul);
     this.serviceService
       .sendNote(
@@ -1444,13 +1459,24 @@ export class ServiceComponent implements OnInit {
             "Sucess",
             "Sent Sucessfully"
           );
+          this.serviceService
+            .sendNoteApi(
+              this.NoteObj.remarks,
+              this.AppNo,
+              this.todoID,
+              this.todoID,
+              this.SDP_ID
+            )
+            .subscribe((message) => {});
+
           this.GetNote(message);
         },
         (error) => {
-          const toast = this.notificationsService.error(
-            "Error",
-            "SomeThing Went Wrong"
-          );
+          // const toast = this.notificationsService.error(
+          //   "Error",
+          //   "SomeThing Went Wrong"
+          // );
+          this.Close();
         }
       );
   }
@@ -1470,6 +1496,15 @@ export class ServiceComponent implements OnInit {
             "Sucess",
             "Sent Sucessfully"
           );
+          this.serviceService
+            .sendNoteApi(
+              this.NoteObj.remarks,
+              this.AppNo,
+              this.todoID,
+              this.todoID,
+              this.SDP_ID
+            )
+            .subscribe((message) => {});
           this.GetNote(message);
         },
         (error) => {
@@ -1491,12 +1526,12 @@ export class ServiceComponent implements OnInit {
               this.NoteObj = note;
               return true;
             } else {
-              this.NoteObj = { remarks: "", postit_note_code: "" };
+              // this.NoteObj = { remarks: "", postit_note_code: "" };
               return false;
             }
           });
         } else {
-          this.NoteObj = { remarks: "", postit_note_code: "" };
+          // this.NoteObj = { remarks: "", postit_note_code: "" };
         }
       },
       (error) => {
@@ -2462,12 +2497,30 @@ export class ServiceComponent implements OnInit {
   }
   async showdialog(data, name) {
     console.log("vvvvvv", data);
+    this.NoteObj = { remarks: "", postit_note_code: "" };
     let to_to_code;
     this.serviceService.taskrul = data;
     if (name == "R  ") {
       this.showdialoge = true;
     } else {
-      this.SubmitAR(data);
+      if (this.ID == 12) {
+        let isuploaded = await this.checkDocumentIsAvailable();
+        console.log("🚀 ~ showdialog ~ isuploaded:", isuploaded);
+
+        if (!isuploaded == true) {
+          this.SubmitAR(data);
+          // const toast = this.notificationsService.success(
+          //   `This folder does  have any files.`
+          // );
+        } else {
+          const toast = this.notificationsService.error(
+            `This folder does not have any files.`
+          );
+          return;
+        }
+      } else {
+        this.SubmitAR(data);
+      }
       this.serviceService.getUserRole().subscribe((response: any) => {
         for (let index = 0; index < response.length; index++) {
           const element = response[index];
@@ -2513,24 +2566,6 @@ export class ServiceComponent implements OnInit {
           }
         }
       });
-      // if (
-      //   "466A3ADF-CCE5-4FF4-A466-16425D6FBE5E".toLowerCase() === this.tskID ||
-      //   "6036FB05-FFCD-4724-9FED-07893ABCF7D7".toLowerCase() === this.tskID ||
-      //   "1923579E-1E4C-456B-A988-3ACC5FEC5D23".toLowerCase() === this.tskID ||
-      //   "41A08235-8C74-4DC0-918F-353316117B28".toLowerCase() === this.tskID ||
-      //   "EC01C6AF-DE39-4CBB-A20E-28A727C6C4D4".toLowerCase() === this.tskID ||
-      //   "416ED07E-4D3C-4786-A982-44498BCB0768".toLowerCase() === this.tskID ||
-      //   "266365D1-00D4-4843-9AFB-4013CC309047".toLowerCase() === this.tskID ||
-      //   "F515DAB5-45CD-43EB-8967-A5F072A49938".toLowerCase() === this.tskID ||
-      //   "269CBEDA-9357-4930-82F6-9CEF39F54AC1".toLowerCase() === this.tskID ||
-      //   "A8F34D89-7FA1-41E2-9D91-A20941E24C4B".toLowerCase() === this.tskID ||
-      //   "41F3777B-4525-4CA7-A5D1-DF8CEABB232A".toLowerCase() === this.tskID ||
-      //   "83EE7239-D109-4036-8B50-D34093AAA500".toLowerCase() === this.tskID ||
-      //   "E9DC66E7-DD83-46F3-9C48-BB4FD29C7748".toLowerCase() === this.tskID ||
-      //   "A4E830F1-AB5F-47A6-BE56-CCDBB649C45C".toLowerCase() === this.tskID
-      // ) {
-
-      // }
     }
   }
   showdialogee;
@@ -3234,17 +3269,19 @@ export class ServiceComponent implements OnInit {
     this.getPriveysLicence(this.Application_No);
   }
   killtodo() {
+    this.showdialoge = true;
     this.serviceService
       .killtodo(this.AppNo, this.eid, this.todoID, environment.username, "K")
       .subscribe((message) => {
-        this.Close();
+        // this.Close();
       });
   }
   Reopentodo() {
+    this.showdialoge = true;
     this.serviceService
       .Reopentodo(this.AppNo, this.eid, this.todoID, environment.username, "O")
       .subscribe((message) => {
-        this.Close();
+        // this.Close();
       });
   }
 
@@ -3480,6 +3517,65 @@ export class ServiceComponent implements OnInit {
       }
     }
   }
+  async checkDocumentIsAvailable() {
+    let counter = 0;
+    let applicationLength = 0;
+    let isfolderhave = false;
+    const res: any = await this.serviceService
+      .getuserName(this.AppNo)
+      .toPromise();
+    let useNamelist = res;
+    if (useNamelist.length > 0) {
+      const user: any = await this.serviceService
+        .getCustomerByCols(useNamelist[0].userName)
+        .toPromise();
+      let userName = user.procCustomers;
+      if (userName.length > 0) {
+        const AppbyUserId: any = await this.serviceService
+          .getAppbyUserid(userName[0].customer_ID)
+          .toPromise();
+        let ApplicationNumberlist = AppbyUserId.procApplicationLoadByUserIds;
+        if (ApplicationNumberlist.length > 0) {
+          applicationLength = ApplicationNumberlist.length;
+          for (let index = 0; index < ApplicationNumberlist.length; index++) {
+            const element = ApplicationNumberlist[index];
+            const DocIdByAppNo: any = await this.serviceService
+              .getDocIdByAppNo(element.application_number)
+              .toPromise();
+            let procView_RecordAppNoAndDocIdByAppNo =
+              DocIdByAppNo.procView_RecordAppNoAndDocIdByAppNos;
+            if (procView_RecordAppNoAndDocIdByAppNo.length > 0) {
+              let application_code =
+                procView_RecordAppNoAndDocIdByAppNo[0].application_code;
+              let application_detail_id =
+                procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id;
+              const SavedFiles: any = await this.serviceService
+                .getAllDocuments(application_code, application_detail_id)
+                .toPromise();
+
+              if (SavedFiles.length === 0) {
+                isfolderhave = true;
+                const toast = this.notificationsService.warn(
+                  `This folder does not have any files. Please upload files for application number: ${element.application_number}`
+                );
+              } else {
+                counter++;
+              }
+              console.log(
+                "🚀 ~ checkDocumentIsAvailable ~ SavedFiles:",
+                counter,
+                applicationLength,
+                SavedFiles
+              );
+            }
+          }
+        }
+      }
+    }
+
+    return isfolderhave; //counter  === applicationLength;
+  }
+
   closeModalme(id) {
     // this.modal.getModal(id).close();
     this.isAccountVisiblemessage = false;

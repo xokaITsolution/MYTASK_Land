@@ -15,6 +15,7 @@ export class MyTaskComponent implements OnInit {
   isAccountVisible: boolean;
   taskList;
   messageAppNo;
+  loading: boolean = true;
   messageCache = [];
   messageObj = {
     userName: null,
@@ -247,9 +248,6 @@ export class MyTaskComponent implements OnInit {
           }
         });
 
-        for (let i = 0; i < this.taskList.length; i++) {
-          this.seice.docId = this.taskList[i].service_details_id;
-        }
         let num = 1;
         (this.taskList as Array<any>).map((task) => (task["number"] = num++));
         const uniqueJobMatchIDs = {};
@@ -260,10 +258,15 @@ export class MyTaskComponent implements OnInit {
           }
           return false;
         });
+        for (let i = 0; i < this.taskList.length; i++) {
+          this.seice.docId = this.taskList[i].service_details_id;
+        }
         this.taskList = uniqueData;
+        this.loading = false;
       },
       (error) => {
         console.log("error");
+        this.loading = false;
       }
     );
     // });

@@ -132,19 +132,25 @@ export class SupervisorTaskComponent implements OnInit {
     this.ngxSmartModalService.getModal(modal).close();
   }
   passdata(modal) {
+    console.log("🚀 ~ SupervisorTaskComponent ~ passdata ~ modal:", modal);
     this.username =
       modal.target.options[modal.target.options.selectedIndex].text;
 
     this.uid = modal.target.value;
   }
   assign(modal) {
+    console.log(
+      "🚀 ~ SupervisorTaskComponent ~ assign ~ selectedTask:",
+      this.selectedTask
+    );
     this.myTaskService
       .AssignToUser(
         this.selectedTask.todo_comment,
         this.uid,
         this.selectedTask.id,
         this.username,
-        "O"
+        "O",
+        this.selectedTask.tasks_id
       )
       .subscribe(
         (message) => {
@@ -179,6 +185,7 @@ export class SupervisorTaskComponent implements OnInit {
 
     this.ngxSmartModalService.getModal(modal).close();
   }
+
   IsLockedBy_OtherUser(task) {
     // this.go(task);
     this.lockedpromise = this.myTaskService

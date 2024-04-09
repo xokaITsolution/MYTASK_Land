@@ -35,6 +35,7 @@
     
           <th>
             <button type="button" (click)="moreDetailToggle()" class="btn btn-primary" translate>
+             
               {{ moreDetail.toggle === true ? "Less" : "More"}}
             </button>
           
@@ -165,13 +166,13 @@
                 <textarea class="form-control mx-2 mb-2 border-primary" id="note" rows="4" style="background: rgb(202, 236, 255)"
                   [(ngModel)]="NoteObj.remarks" placeholder="write post in note here ...">
                                 </textarea>
-                <button type="button" class="btn btn-primary mx-2" *ngIf="!this.NoteObj.postit_note_code"
+                <button type="button" class="btn btn-primary mx-2" *ngIf="!issendnote"
                   (click)="addNote()" translate>Save</button>
-                <button type="button" class="btn btn-primary mx-4" *ngIf="this.NoteObj.postit_note_code"
+                <button type="button" class="btn btn-primary mx-4" *ngIf="issendnote"
                   (click)="saveNote()" translate>Edit</button>
-                <button type="button" class="btn btn-danger mx-4" *ngIf="this.NoteObj.postit_note_code"
+                <button type="button" class="btn btn-danger mx-4" *ngIf="issendnote"
                   (click)="DeleteNote()" translate>Delete</button>
-                <button type="button" class="btn btn-primary" *ngIf="this.NoteObj.postit_note_code"
+                <button type="button" class="btn btn-primary" *ngIf="issendnote"
                   (click)="sendNote()">
                   <span class="fa fa-telegram"></span> <span translate>Send</span>
                 </button>
@@ -575,8 +576,6 @@
               </div>
             </p-tabPanel>
             <p-tabPanel [header]="'Note' | translate">
-
-
               <p-table [value]="notes">
 
                 <ng-template pTemplate="header">
@@ -592,15 +591,17 @@
                   <tr>
                     <td>{{note.number}}</td>
                     <td>{{note.userName}}</td>
-                    <td style=" white-space: nowrap; 
-                    width: 100px; 
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                   " (click)="openPoopup('note_popup'); preNoteObj.remarks = note.remarks"><textarea>{{ note.remarks }}</textarea></td>
+                    <td>
+                      <textarea class="form-control" style="height: 20vh; background-color: rgb(208, 225, 245) ; width: 100%;" disabled
+                        [(ngModel)]="preNoteObj.remarks"></textarea>
+                    </td>
+                   
+                 
 
                   </tr>
                 </ng-template>
               </p-table>
+               
             </p-tabPanel>
           </p-tabView>
 
@@ -839,6 +840,18 @@
     translate (click)="print()"> <i class="fa fa-print"></i>print</button>
     <button type="button" class="btn btn-primary" (click)="closeModal(); showdWhenNoTodo=false" translate>Done</button>
   </div>
+  <p-dialog *ngIf="postintnot" header="post it note" [responsive]="true" [width]="900" [minY]="70" [baseZIndex]="10000"
+    [closable]="false">
+    <ng-container>
+      <div class="modal-body">
+        <textarea class="form-control" style="height: 20vh; background-color: rgb(208, 225, 245) ; width: 100%;" disabled
+          [(ngModel)]="preNoteObj.remarks"></textarea>
+      </div>
+      <div>
+        <button type="button" class="btn btn-primary" (click)="postintnot=false;">Close</button>
+      </div>
+    </ng-container>
+  </p-dialog>
   <ngx-smart-modal #note_popup identifier="note_popup" class="dd">
 
     <div class="modal-header">
@@ -851,7 +864,7 @@
   </ngx-smart-modal>
 </ng-template>
  
-<p-dialog  [(visible)]="showdialoge"  header="Post It Note"  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
+<p-dialog  [(visible)]="showdialoge"  header="Post it note"  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
  [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                          'max-height': '80vh','min-height':'250px'}">
                           <div class="modal-body">
@@ -874,7 +887,7 @@
 
   <button type="button" class="btn btn-primary mx-2" 
   [disabled]="myInput.value.length==0"
-  *ngIf="!this.NoteObj.postit_note_code"
+  *ngIf="!issendnote"
     (click)="addNote()" translate>Save</button>
   <!-- <button type="button" class="btn btn-primary mx-4" *ngIf="this.NoteObj.postit_note_code"
     (click)="saveNote()" translate>
@@ -884,7 +897,7 @@
     (click)="DeleteNote()" translate>
     Delete
   </button> -->
-  <button type="button" class="btn btn-primary" *ngIf="this.NoteObj.postit_note_code"
+  <button type="button" class="btn btn-primary" *ngIf="issendnote"
     (click)="sendNotte()" translate>
     <span class="fa fa-telegram"></span> Send
   </button>
@@ -892,7 +905,7 @@
    </div>
   </p-dialog>
    
-<p-dialog  [(visible)]="showdialogee"  header="Post It Note"  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
+<p-dialog  [(visible)]="showdialogee"  header="Post Itt Note"  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
 [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                         'max-height': '80vh','min-height':'250px'}">
                          <div class="modal-body">
@@ -915,7 +928,7 @@
 
  <button type="button" class="btn btn-primary mx-2" 
  [disabled]="myInput.value.length==0"
- *ngIf="!this.NoteObj.postit_note_code"
+ *ngIf="!issendnote"
    (click)="addNote()" translate>Save</button>
  <!-- <button type="button" class="btn btn-primary mx-4" *ngIf="this.NoteObj.postit_note_code"
    (click)="saveNote()" translate>
@@ -925,7 +938,7 @@
    (click)="DeleteNote()" translate>
    Delete
  </button> -->
- <button type="button" class="btn btn-primary" *ngIf="this.NoteObj.postit_note_code"
+ <button type="button" class="btn btn-primary" *ngIf="issendnote"
    (click)="sendNotttte()" translate>
    <span class="fa fa-telegram"></span> Send
  </button>

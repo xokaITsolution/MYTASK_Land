@@ -587,9 +587,10 @@ export class PlotComponent implements OnChanges {
     }
   }
   updateplotlocfreeHold() {
-    this.serviceService.leaseOwnerShip.Free_Hold_M2 = parseFloat(
-      localStorage.getItem("PolygonAreanameFrehold")
-    );
+    const freeHoldM2Value = this.serviceService.polygonAreanameFrehold;
+    this.serviceService.leaseOwnerShip.Free_Hold_M2 =
+      freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
+
     this.serviceService.leaseOwnerShip.Free_Hold_M2 = parseFloat(
       this.serviceService.polygonAreanameFrehold
     );
@@ -598,10 +599,13 @@ export class PlotComponent implements OnChanges {
       this.serviceService.leaseOwnerShip.Free_Hold_M2
     );
     if (this.serviceService.coordinate) {
-      let coordinatefreehold = this.convertToMultiPoints(
+      let coordinatefreehold = this.convertToMultiPointsmorethanone(
         this.serviceService.coordinate
       );
-      let coordinate = this.convertToMultiPoint(this.serviceService.coordinate);
+      let coordinate = this.convertToMultiPointgeozone(
+        this.serviceService.coordinate
+      );
+
       this.platformLocation.geo = this.platformLocation.geo;
       this.platformLocation.freholdgis = coordinatefreehold;
       this.platformLocation.geoForwgs84 = coordinate;
@@ -1609,12 +1613,19 @@ export class PlotComponent implements OnChanges {
               this.serviceService.Service_ID
             )
             .subscribe((message: any) => {
+              console.log(
+                "🚀 ~ PlotComponent ~ .subscribe ~ message:",
+                message
+              );
               if (message == 1) {
                 this.serviceService.disablefins = false;
 
                 this.completed.emit();
               } else {
-                const toast = this.notificationsService.error("Error", message);
+                const toast = this.notificationsService.error(
+                  "Error",
+                  "1. አዲሱ  መሬቶች የሊዝ/የነፃ መያዣ መረጃ መመዝገቡን እና ለአሁኑ ደንበኛ ገቢር መሆኑን ያረጋግጡ Make sure the new splited lands   Lease/ Free-hold Information is regstered and active  for Current Customer"
+                );
               }
             });
         }

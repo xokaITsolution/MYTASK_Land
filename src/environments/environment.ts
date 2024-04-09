@@ -7,7 +7,6 @@ export const environment = {
   rootPath: window["rootPath"],
   rootPathApi: window["rootPathApi"],
   // formPath: '',
-
   imagepath: window["_imagepath"],
   imagepathclock: window["_imagepathclock"],
   imagepathfile: window["_imagepathfile"],
@@ -18,7 +17,7 @@ export const environment = {
   iconpath: window["iconpath"],
   formPath: window["formPath"],
   city: window["city"],
-  username: "agebretensay",
+  username: "kalkidan demissie",
   appbase: window["_app_base"],
   location: window["locations"],
   //username: "city_mgr",
@@ -34,7 +33,6 @@ export const environment = {
   certReportPath: window["certReportPath"],
   LetterReportPath: window["LetterReportPath"],
   parentWorkspace: window["parentWorkspace"],
-
   resourcePath: "",
   overlayLayer: window["overlayLayer"],
   layerConfig: window["layerConfig"],

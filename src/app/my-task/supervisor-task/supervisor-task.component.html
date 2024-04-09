@@ -5,7 +5,19 @@
   </div>
 
   <div>
-    <p-table [value]="taskList" [paginator]="true" [rows]="10">
+    <p-table #structure [value]="taskList" [paginator]="true" [rows]="10" [globalFilterFields]="['todo_comment','Status']">
+        <ng-template pTemplate="caption">
+          <div class="flex">
+            <span class="p-input-icon-left ml-auto">
+              <div style="width: 40%;">
+                <i class="pi pi-search"></i>
+                <input type="text" class="form-control" (input)="structure.filterGlobal($event.target.value, 'contains')"
+                  placeholder="Search Globally" />
+        
+              </div>
+            </span>
+          </div>
+        </ng-template>
       <ng-template pTemplate="header">
         <tr>
           <th width="15%" translate>Application</th>

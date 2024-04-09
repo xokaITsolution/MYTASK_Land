@@ -17,6 +17,7 @@ import { BsModalRef, BsModalService } from "ngx-bootstrap";
 
 import { BehaviorSubject } from "rxjs";
 import { DomSanitizer } from "@angular/platform-browser";
+import { ActivatedRoute, Params } from "@angular/router";
 
 @Component({
   selector: "app-certversionupgrade",
@@ -106,6 +107,7 @@ export class CertversionupgradeComponent implements OnChanges {
   certltrview: boolean;
   printenable: boolean;
   multipleplotcanbeadd: boolean = true;
+  AppNonumber: any;
   constructor(
     public serviceService: ServiceService,
     private ngxSmartModalService: NgxSmartModalService,
@@ -113,7 +115,8 @@ export class CertversionupgradeComponent implements OnChanges {
     private sanitizer: DomSanitizer,
     private certificateVersionService: CertificateVersionService,
     public serviceComponent: ServiceComponent,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    private activatedRoute: ActivatedRoute
   ) {}
   isCertifcatePrintforConfirmation: boolean;
   isLetterPrintingConfirmation: boolean;
@@ -122,6 +125,9 @@ export class CertversionupgradeComponent implements OnChanges {
       "🚀 ~ file: cert.component.ts:82 ~ CertComponent ~ ngOnChanges ~ Service_ID:",
       this.serviceService.Service_ID
     );
+    this.activatedRoute.params.subscribe(async (params: Params) => {
+      this.AppNonumber = params["AppNo"];
+    });
     this.serviceService.getUserRole().subscribe((response: any) => {
       if (response) {
         console.log(
@@ -623,7 +629,7 @@ export class CertversionupgradeComponent implements OnChanges {
           );
 
           this.LetterReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
-            environment.LetterReportPath + "/" + this.Selectedcert.title_Deed_No
+            environment.LetterReportPath + "/" + this.AppNonumber
           );
           this.printenable = true;
         }

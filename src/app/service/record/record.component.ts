@@ -187,6 +187,8 @@ export class RecordComponent implements OnChanges {
   aplicno: any;
   disabledtask: boolean = true;
   invalidUnicode: any;
+  selectedAppnoFordelete: any;
+  candeletethisapplication: boolean;
   switchTab(tab: string) {
     this.activeTab = tab;
   }
@@ -219,7 +221,7 @@ export class RecordComponent implements OnChanges {
     Woreda: ["", Validators.required],
     selectedService: new FormControl(),
   });
-  ngOnChanges() {
+  async ngOnChanges() {
     console.log("language", environment.Lang_code);
     if (
       environment.Lang_code === "am-et" ||
@@ -229,55 +231,8 @@ export class RecordComponent implements OnChanges {
     } else {
       this.language = "english";
     }
-    if (environment.subcity == "arada") {
-      this.record.patchValue({
-        SDP: "6921d772-3a1c-4641-95a0-0ab320bac3e2",
-      });
-    } else if (environment.subcity == "bole") {
-      this.record.patchValue({
-        SDP: "89eb1aec-c875-4a08-aaf6-2c36c0864979",
-      });
-    } else if (environment.subcity == "nifasS") {
-      this.record.patchValue({
-        SDP: "f8ea62db-05bc-4f1a-ab30-4e926d43e3fb",
-      });
-    } else if (environment.subcity == "gullele") {
-      this.record.patchValue({
-        SDP: "6a8c042f-a3e1-4375-9769-54d94c2312c6",
-      });
-    } else if (environment.subcity == "addisK") {
-      this.record.patchValue({
-        SDP: "7101d44d-97d5-41aa-957d-82f36d928c07",
-      });
-    } else if (environment.subcity == "lideta") {
-      this.record.patchValue({
-        SDP: "e4d8219e-51f9-40cb-9d53-883c6ca9aaa3",
-      });
-    } else if (environment.subcity == "lemiK") {
-      this.record.patchValue({
-        SDP: "f02e9467-1b7d-4350-bee7-9844d4f56da0",
-      });
-    } else if (environment.subcity == "yeka") {
-      this.record.patchValue({
-        SDP: "8222f028-5fe3-4047-9a50-b52bfa64c851",
-      });
-    } else if (environment.subcity == "akakyK") {
-      this.record.patchValue({
-        SDP: "08f9c927-6366-467a-ba99-c837c5add427",
-      });
-    } else if (environment.subcity == "kirkos") {
-      this.record.patchValue({
-        SDP: "aaa5094c-8899-4708-9f7b-d8ff634a3540",
-      });
-    } else if (environment.subcity == "kolfeK") {
-      this.record.patchValue({
-        SDP: "930d1c20-9e0e-4a50-9eb2-e542fafbad68",
-      });
-    } else if (environment.subcity == "central") {
-      this.record.patchValue({
-        SDP: "275619f2-69c2-4fb7-a053-938f0b62b088",
-      });
-    }
+
+    //let havedata = await this.checkDocumentIsAvailable();
 
     console.log(
       "this.serviceService.currentApplicationUsers",
@@ -385,6 +340,17 @@ export class RecordComponent implements OnChanges {
       console.log(formattedDate);
       regstration_Date = await this.getgregorianToEthiopianDate(formattedDate);
       this.selectedDate = regstration_Date;
+      const subcity = environment.subcity; // Assuming environment.subcity is defined
+      const SDP_ID = this.getSDPID(subcity);
+      console.log("🚀 ~ RecordComponent ~ save ~ SDP_ID:", SDP_ID, subcity);
+      if (SDP_ID !== "") {
+        this.record.patchValue({
+          SDP: SDP_ID,
+        });
+      } else {
+        console.error("Invalid subcity:", subcity);
+        // Handle error as needed, e.g., show error message to the user
+      }
       this.record.patchValue({
         appno: "",
         selectedService: "",
@@ -392,6 +358,7 @@ export class RecordComponent implements OnChanges {
         Woreda: "",
         // Woreda:this.licenceData.Wereda_ID,
         Deed: "",
+        SDP: this.service.currentsdpid,
       });
     } else {
       let regstration_Date;
@@ -515,11 +482,11 @@ export class RecordComponent implements OnChanges {
       date: "",
       Woreda: "",
       FullName_AM: "",
-      // Woreda:this.licenceData.Wereda_ID,
+      SDP: this.service.currentsdpid,
       Deed: "",
     });
   }
-  onRowSelect(event) {
+  async onRowSelect(event) {
     console.log("customer_ID", event);
     this.addnew = false;
     this.service;
@@ -536,67 +503,70 @@ export class RecordComponent implements OnChanges {
     ) {
       this.disabledtask = false;
     }
+    let havedata = await this.checkDocumentIsAvailable();
+
     this.service
       .getByCustomerId(event.customer_ID)
       .subscribe((customer: any) => {
         this.customer = customer;
         console.log("this.customer", this.customer);
-        this.service
-          .getAppbyUserid(event.customer_ID)
-          .subscribe((AppbyUserId: any) => {
-            console.log("AppbyUserId", AppbyUserId);
-            this.ApplicationNumberlist =
-              AppbyUserId.procApplicationLoadByUserIds;
-            console.log(
-              "🚀 ~ RecordComponent ~ .subscribe ~ ApplicationNumberlist:",
-              this.ApplicationNumberlist
-            );
+        // this.service
+        //   .getAppbyUserid(event.customer_ID)
+        //   .subscribe(async (AppbyUserId: any) => {
+        //     console.log("AppbyUserId", AppbyUserId);
+        //     this.ApplicationNumberlist =
+        //       AppbyUserId.procApplicationLoadByUserIds;
+        //     console.log(
+        //       "🚀 ~ RecordComponent ~ .subscribe ~ ApplicationNumberlist:",
+        //       this.ApplicationNumberlist
+        //     );
+        //     let haveapp = await this.checkDocumentIsAvailable();
 
-            this.selectedAppno =
-              AppbyUserId.procApplicationLoadByUserIds.filter(
-                (x) =>
-                  x.application_number == this.useNamelist[0].application_number
-              )[0];
+        //     this.selectedAppno =
+        //       AppbyUserId.procApplicationLoadByUserIds.filter(
+        //         (x) =>
+        //           x.application_number == this.useNamelist[0].application_number
+        //       )[0];
 
-            if (this.ApplicationNumberlist.length > 0) {
-              this.service.getserviceapi().subscribe((service: any) => {
-                const serviceCounts = {};
-                this.ApplicationNumberlist.forEach((application) => {
-                  const code = application.services_service_code;
-                  serviceCounts[code] = (serviceCounts[code] || 0) + 1;
-                });
+        //     if (this.ApplicationNumberlist.length > 0) {
+        //       this.service.getserviceapi().subscribe((service: any) => {
+        //         const serviceCounts = {};
+        //         this.ApplicationNumberlist.forEach((application) => {
+        //           const code = application.services_service_code;
+        //           serviceCounts[code] = (serviceCounts[code] || 0) + 1;
+        //         });
 
-                this.Services = service.filter((service) => {
-                  const code = service.service_code;
-                  return (
-                    !serviceCounts.hasOwnProperty(code) ||
-                    serviceCounts[code] < 2
-                  );
-                });
+        //         this.Services = service.filter((service) => {
+        //           const code = service.service_code;
+        //           return (
+        //             !serviceCounts.hasOwnProperty(code) ||
+        //             serviceCounts[code] < 2
+        //           );
+        //         });
 
-                console.log("serviceserviceservice", service);
-              });
-            }
-            console.log(
-              "🚀 ~ RecordComponent ~ .subscribe ~ selectedAppno:",
-              this.selectedAppno
-            );
-            this.handleSelectionChange();
-          });
-        this.service
-          .getDeedByCustId(event.customer_ID)
-          .subscribe((CustId: any) => {
-            console.log("CustId", CustId.length);
-            if (CustId.length > 0) {
-              console.log("there is data");
-              // this.GetApplicationNumberByUser(this.customer[0].userName);
-            } else {
-              console.log("there is no data");
-            }
-          });
+        //         console.log("serviceserviceservice", service);
+        //       });
+        //     }
+        //     console.log(
+        //       "🚀 ~ RecordComponent ~ .subscribe ~ selectedAppno:",
+        //       this.selectedAppno
+        //     );
+        //     this.handleSelectionChange();
+        //   });
+        // this.service
+        //   .getDeedByCustId(event.customer_ID)
+        //   .subscribe((CustId: any) => {
+        //     console.log("CustId", CustId.length);
+        //     if (CustId.length > 0) {
+        //       console.log("there is data");
+        //       // this.GetApplicationNumberByUser(this.customer[0].userName);
+        //     } else {
+        //       console.log("there is no data");
+        //     }
+        //   });
 
         this.record.patchValue({
-          // SDP: generateGuid(),
+          SDP: this.service.currentsdpid,
           // appno:"BL-"+formattedDate+"-"+randomNumber(1,99999999999999999)
           // FullName_AM:event.data.applicant_First_Name_EN
           FullName_AM: this.customer[0].userName,
@@ -612,7 +582,60 @@ export class RecordComponent implements OnChanges {
       console.log("service", res);
     });
   }
+  getsdp() {
+    if (environment.subcity == "arada") {
+      this.record.patchValue({
+        SDP: "6921d772-3a1c-4641-95a0-0ab320bac3e2",
+      });
+    } else if (environment.subcity == "bole") {
+      this.record.patchValue({
+        SDP: "89eb1aec-c875-4a08-aaf6-2c36c0864979",
+      });
+    } else if (environment.subcity == "nifasS") {
+      this.record.patchValue({
+        SDP: "f8ea62db-05bc-4f1a-ab30-4e926d43e3fb",
+      });
+    } else if (environment.subcity == "gullele") {
+      this.record.patchValue({
+        SDP: "6a8c042f-a3e1-4375-9769-54d94c2312c6",
+      });
+    } else if (environment.subcity == "addisK") {
+      this.record.patchValue({
+        SDP: "7101d44d-97d5-41aa-957d-82f36d928c07",
+      });
+    } else if (environment.subcity == "lideta") {
+      this.record.patchValue({
+        SDP: "e4d8219e-51f9-40cb-9d53-883c6ca9aaa3",
+      });
+    } else if (environment.subcity == "lemiK") {
+      this.record.patchValue({
+        SDP: "f02e9467-1b7d-4350-bee7-9844d4f56da0",
+      });
+    } else if (environment.subcity == "yeka") {
+      this.record.patchValue({
+        SDP: "8222f028-5fe3-4047-9a50-b52bfa64c851",
+      });
+    } else if (environment.subcity == "akakyK") {
+      this.record.patchValue({
+        SDP: "08f9c927-6366-467a-ba99-c837c5add427",
+      });
+    } else if (environment.subcity == "kirkos") {
+      this.record.patchValue({
+        SDP: "aaa5094c-8899-4708-9f7b-d8ff634a3540",
+      });
+    } else if (environment.subcity == "kolfeK") {
+      this.record.patchValue({
+        SDP: "930d1c20-9e0e-4a50-9eb2-e542fafbad68",
+      });
+    } else if (environment.subcity == "central") {
+      this.record.patchValue({
+        SDP: "275619f2-69c2-4fb7-a053-938f0b62b088",
+      });
+    }
+  }
   passapp(e) {
+    console.log("🚀 ~ RecordComponent ~ passapp ~ e:", e);
+
     this.getservice();
     this.activatedRoute.params.subscribe((params: Params) => {
       this.aplicno = params["AppNo"];
@@ -630,12 +653,36 @@ export class RecordComponent implements OnChanges {
     ) {
       this.disabledtask = false;
     } else {
-      if (this.aplicno == e.application_number) {
-        this.disabledtask = true;
-      } else {
-        this.disabledtask = false;
-      }
+      // if (this.aplicno == e.application_number) {
+      //   this.disabledtask = true;
+      // } else {
+      //   this.disabledtask = false;
+      // }
     }
+    this.selectedAppnoFordelete = e.application_number;
+    this.service
+      .getDocIdByAppNo(this.selectedAppnoFordelete)
+      .subscribe((DocIdByAppNo: any) => {
+        let procView_RecordAppNoAndDocIdByAppNo =
+          DocIdByAppNo.procView_RecordAppNoAndDocIdByAppNos;
+        let application_code =
+          procView_RecordAppNoAndDocIdByAppNo[0].application_code;
+        let application_detail_id =
+          procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id;
+        this.service
+          .getAllDocuments(application_code, application_detail_id)
+          .subscribe((SavedFiles) => {
+            console.log(
+              "🚀 ~ RecordComponent ~ .subscribe ~ SavedFiles:",
+              SavedFiles
+            );
+            if (SavedFiles.length === 0) {
+              this.candeletethisapplication = true;
+            } else {
+              this.candeletethisapplication = false;
+            }
+          });
+      });
   }
   handleSelectionChange(): void {
     this.displayTab = true;
@@ -708,20 +755,20 @@ export class RecordComponent implements OnChanges {
                     }
                     this.disableBtn = false;
                     this.disableForm = true;
-                    this.record.patchValue({
-                      appno: this.licenceData.Application_No,
-                      selectedService: this.licenceData.Service_ID,
-                      date: formatDate(
-                        this.licenceData.Created_Date,
-                        "yyyy-MM-dd",
-                        "en"
-                      ),
-                      SDP: this.licenceData.SDP_ID,
-                      Woreda: this.userName[0].wereda_ID,
-                      // Woreda:this.licenceData.Wereda_ID,
-                      Deed: Document[0].title_Deed_No,
-                    });
                   }
+                  this.record.patchValue({
+                    appno: this.licenceData.Application_No,
+                    selectedService: this.licenceData.Service_ID,
+                    date: formatDate(
+                      this.licenceData.Created_Date,
+                      "yyyy-MM-dd",
+                      "en"
+                    ),
+                    SDP: this.licenceData.SDP_ID,
+                    Woreda: this.licenceData.wereda_ID,
+                    // Woreda:this.licenceData.Wereda_ID,
+                    //Deed: Document[0].title_Deed_No,
+                  });
 
                   // if (Document.length < 0) {
                   //   this.getData = false;
@@ -811,13 +858,14 @@ export class RecordComponent implements OnChanges {
   GetApplicationNumberByUser(username) {
     this.service
       .GetApplicationNumberByUser(username)
-      .subscribe((ApplicationNumber: any) => {
+      .subscribe(async (ApplicationNumber: any) => {
         if (ApplicationNumber != null) {
           console.log("finalystatuslist", ApplicationNumber);
           this.ApplicationNumberlist = ApplicationNumber;
           this.ApplicationNumberlist = this.ApplicationNumberlist.filter(
             (value) => value.organization_code == this.record.get("SDP").value
           );
+          let haveapp = await this.checkDocumentIsAvailable();
           // this.AppNoList;
         } else {
           this.RequerdDocspre = [""];
@@ -1206,6 +1254,20 @@ export class RecordComponent implements OnChanges {
   Archive() {
     //this.recordDocumnet.title_Deed_No = this.record.get("Deed").value;
   }
+
+  delete() {
+    this.service.postapplicationdelete(this.selectedAppnoFordelete).subscribe(
+      async (res) => {},
+      async (error) => {
+        if (error.status == "200") {
+          const toast = this.notificationsService.success(
+            "Your Application is deleted "
+          );
+          let haveapp = await this.checkDocumentIsAvailable();
+        }
+      }
+    );
+  }
   async save() {
     if (this.language == "amharic") {
       this.record_date = await this.getEthiopianToGregorian(this.selectedDate);
@@ -1223,14 +1285,22 @@ export class RecordComponent implements OnChanges {
     // this.recordDocumnet.title_Deed_No = this.record.get("Deed").value;
 
     //this.getDocmentArcive(this.record.get("Deed").value);
-    this.GetApplicationNumberByUser(this.record.get("FullName_AM").value);
+    // this.GetApplicationNumberByUser(this.record.get("FullName_AM").value);
+
     // this.Application_Number=this.record.get('appno').value;
     // console.log('loggggg',this.Application_Number);
+
     this.record.patchValue({
       appno: "00000000-0000-0000-0000-000000000000",
+      SDP: this.service.currentsdpid,
+      FullName_AM: this.customer[0].userName,
     });
+    console.log(
+      "🚀 ~ RecordComponent ~ .subscribe ~ record:",
+      this.record.value
+    );
     this.service.saveRecord(this.record.value).subscribe(
-      (res: any) => {
+      async (res: any) => {
         this.service
           .getTasks(this.record.get("selectedService").value)
           .subscribe((ress: any) => {
@@ -1239,11 +1309,14 @@ export class RecordComponent implements OnChanges {
           });
         this.disabledtask = false;
         this.recordDocumnet.application_No = this.service.appnoForRecord;
-        console.log("this.response", this.response[0]);
+        // console.log("this.response", this.response[0]);
+        // Split the input string by '/'
+        const parts = res.split("/");
 
-        this.AppNo = this.response[0];
-        this.DocID = this.response[1];
-        this.getAll(this.AppNo, this.DocID);
+        // Assign the parts to variables
+        this.AppNo = parts[0];
+        this.DocID = parts[1];
+
         this.service
           .getLicencebyid(this.service.licenceData.Licence_Service_ID)
           .subscribe((rec: any) => {
@@ -1256,7 +1329,7 @@ export class RecordComponent implements OnChanges {
             //this.getAllDocumentpre(this.AppNo, this.DocID);
             this.service
               .getDocumentArcbyid(RID)
-              .subscribe((DocumentArc: any) => {
+              .subscribe(async (DocumentArc: any) => {
                 if (DocumentArc) {
                   this.DocumentArc = DocumentArc.procDocument_Archives.filter(
                     (x) => x.document_Number == RID
@@ -1299,7 +1372,9 @@ export class RecordComponent implements OnChanges {
               });
           });
         const toast = this.notificationsService.success("Success", "Saved");
+        let havada = await this.checkDocumentIsAvailable();
         this.completed.emit();
+        this.getAll(this.AppNo, this.DocID);
       },
 
       (error) => {
@@ -1739,8 +1814,116 @@ export class RecordComponent implements OnChanges {
       }
     }
   }
-}
+  async checkDocumentIsAvailable() {
+    return new Promise<boolean>((resolve, reject) => {
+      let counter = 0;
+      let applicationLength = 0;
 
+      this.activatedRoute.params.subscribe(async (params: Params) => {
+        let AppNo = params["AppNo"];
+
+        try {
+          const res: any = await this.service.getuserName(AppNo).toPromise();
+          let useNamelist = res;
+          if (useNamelist.length > 0) {
+            const user: any = await this.service
+              .getCustomerByCols(useNamelist[0].userName)
+              .toPromise();
+            let userName = user.procCustomers;
+            if (userName.length > 0) {
+              const AppbyUserId: any = await this.service
+                .getAppbyUserid(userName[0].customer_ID)
+                .toPromise();
+              this.ApplicationNumberlist =
+                AppbyUserId.procApplicationLoadByUserIds;
+              this.service.getserviceapi().subscribe((service: any) => {
+                const serviceCounts = {};
+                this.ApplicationNumberlist.forEach((application) => {
+                  const code = application.services_service_code;
+                  serviceCounts[code] = (serviceCounts[code] || 0) + 1;
+                });
+
+                this.Services = service.filter((service) => {
+                  const code = service.service_code;
+                  return (
+                    !serviceCounts.hasOwnProperty(code) ||
+                    serviceCounts[code] < 2
+                  );
+                });
+              });
+              if (this.ApplicationNumberlist.length > 0) {
+                applicationLength = this.ApplicationNumberlist.length;
+                for (
+                  let index = 0;
+                  index < this.ApplicationNumberlist.length;
+                  index++
+                ) {
+                  const element = this.ApplicationNumberlist[index];
+                  const DocIdByAppNo: any = await this.service
+                    .getDocIdByAppNo(element.application_number)
+                    .toPromise();
+                  let procView_RecordAppNoAndDocIdByAppNo =
+                    DocIdByAppNo.procView_RecordAppNoAndDocIdByAppNos;
+                  if (procView_RecordAppNoAndDocIdByAppNo.length > 0) {
+                    let application_code =
+                      procView_RecordAppNoAndDocIdByAppNo[0].application_code;
+                    let application_detail_id =
+                      procView_RecordAppNoAndDocIdByAppNo[0]
+                        .application_detail_id;
+                    const SavedFiles: any = await this.service
+                      .getAllDocuments(application_code, application_detail_id)
+                      .toPromise();
+                    this.ApplicationNumberlist[index].nofiles =
+                      SavedFiles.length;
+                    // console.log(
+                    //   "🚀 ~ RecordComponent ~ this.activatedRoute.params.subscribe ~ ApplicationNumberlist:",
+                    //   this.ApplicationNumberlist
+                    // );
+
+                    counter++;
+                  }
+                }
+              }
+            }
+          }
+          resolve(counter === applicationLength);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+  }
+  getSDPID(subcity: string): string {
+    switch (subcity) {
+      case "arada":
+        return "6921d772-3a1c-4641-95a0-0ab320bac3e2";
+      case "bole":
+        return "89eb1aec-c875-4a08-aaf6-2c36c0864979";
+      case "nifasS":
+        return "f8ea62db-05bc-4f1a-ab30-4e926d43e3fb";
+      case "gullele":
+        return "6a8c042f-a3e1-4375-9769-54d94c2312c6";
+      case "addisK":
+        return "7101d44d-97d5-41aa-957d-82f36d928c07";
+      case "lideta":
+        return "e4d8219e-51f9-40cb-9d53-883c6ca9aaa3";
+      case "lemiK":
+        return "f02e9467-1b7d-4350-bee7-9844d4f56da0";
+      case "yeka":
+        return "8222f028-5fe3-4047-9a50-b52bfa64c851";
+      case "akakyK":
+        return "08f9c927-6366-467a-ba99-c837c5add427";
+      case "kirkos":
+        return "aaa5094c-8899-4708-9f7b-d8ff634a3540";
+      case "kolfeK":
+        return "930d1c20-9e0e-4a50-9eb2-e542fafbad68";
+      case "central":
+        return "275619f2-69c2-4fb7-a053-938f0b62b088";
+      default:
+        return ""; // Return empty string or handle error based on your requirements
+    }
+  }
+}
 export class RecordDocumnet {
   public Certificate_Base;
   public document_Number;

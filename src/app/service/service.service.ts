@@ -123,7 +123,9 @@ export class ServiceService {
     environment.rootPath3 + "Certificate_Version/procCertificate_Version";
   private DeedUrl = environment.rootPath + "Deed_Registration"; // URL to web api
 
-  private Postit_user = environment.rootPathApi + "view/View_postit_note_user";
+  private Postit_user =
+    environment.rootPathApi +
+    "view/View_postit_note_user/application_number?application_number";
   private CustomerTypeLookUP = environment.rootPath + "Customer_Type_Lookup"; // URL to web api
   private CustomerLookUP = environment.rootPath + "Customer"; // URL to web api
   private SuspendedReasonLookUP =
@@ -157,6 +159,7 @@ export class ServiceService {
   private SaveNoteURL = environment.rootPath + "BPEL/Edit_postit_notes"; // URL to web api
   private AddNoteURL = environment.rootPath + "BPEL/Set_postit_notes"; // URL to web api
   private SendNoteURL = environment.rootPath + "BPEL/sendNot"; // URL to web api
+  private SendNoteURLapi = environment.rootPathApi + "sendnote/sendnote/"; // URL to web api
   private DeleteNoteURL = environment.rootPath + "BPEL/Delete_postit_notes"; // URL to web api
   private GetNoteURL = environment.rootPath + "BPEL/Get_postit_notes"; // URL to web api
   private isvalidatedURL = environment.rootPath + "BPEL/isvalidated"; // URL to web api
@@ -211,6 +214,7 @@ export class ServiceService {
   private ViewUserInfo =
     environment.rootPathApi +
     "view/View_caseworkeruserorganizationcodeapi/UserName?UserName";
+  private applicationdelete = environment.rootPathApi + "aplication/";
   // environment.rootPath + "BPEL/GetApplicationNumberByUser"; // URL to web api
   httpOptions = {
     headers: new HttpHeaders({ "Content-Type": "application/json" }),
@@ -287,6 +291,7 @@ export class ServiceService {
   RequerdDocspre: any;
   backbuttonviable: boolean;
   appnoForRecord: any;
+  ishavespashal: boolean;
   constructor(private http: HttpClient, private cookieService: CookieService) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -305,6 +310,10 @@ export class ServiceService {
         "/application_number?application_number=" +
         data
     );
+  }
+  postapplicationdelete(data) {
+    // User_ID = this.removeSlash(User_ID);
+    return this.http.get<any>(this.applicationdelete + data);
   }
   setCookies(area: number) {
     // Setting cookies using cookieService
@@ -390,6 +399,21 @@ export class ServiceService {
         AppNo +
         "&searchString&pageIndex&pageSize"
     );
+  }
+  getCustomerByColsp(col) {
+    return this.http.get(this.CustomerByColumn + col).toPromise();
+  }
+
+  getDocIdByAppNop(AppNo) {
+    return this.http.get(this.DocByAppNo + AppNo).toPromise();
+  }
+
+  getAppbyUseridp(UserId) {
+    return this.http.get(this.AppbyUserId + UserId).toPromise();
+  }
+
+  getuserNamep(Appno) {
+    return this.http.get(this.getusernameUrl + Appno).toPromise();
   }
   saveRecord(data) {
     console.log("logggggg1", data);
@@ -585,9 +609,9 @@ export class ServiceService {
   getCurrencies() {
     return this.http.get<any>(this.currencies);
   }
-  getPostit_user() {
+  getPostit_user(appno) {
     // User_ID = this.removeSlash(User_ID);
-    return this.http.get<any>(this.Postit_user);
+    return this.http.get<any>(this.Postit_user + "=" + appno);
   }
   getUnits() {
     return this.http.get<any>(this.units);
@@ -650,15 +674,27 @@ export class ServiceService {
         "?Application_number=" +
         ApplicationNumber +
         "&uid=" +
-        environment.username +
+        noteid +
         "&Msg=" +
-        Msg +
-        "&postitid=" +
-        noteid,
+        Msg,
+
       null
     );
   }
-
+  // addNote(ApplicationNumber, Msg, noteid) {
+  //   return this.http.post(
+  //     this.AddNoteURL +
+  //       "?Application_number=" +
+  //       ApplicationNumber +
+  //       "&uid=" +
+  //       environment.username +
+  //       "&Msg=" +
+  //       Msg +
+  //       "&postitid=" +
+  //       noteid,
+  //     null
+  //   );
+  // }
   GetNote(ApplicationNo) {
     return this.http.post(
       this.GetNoteURL + "?Application_number=" + ApplicationNo,
@@ -693,6 +729,22 @@ export class ServiceService {
       null
     );
   }
+
+  sendNoteApi(msg, AppNo, postit_note_code, todoid, orgid) {
+    return this.http.get(
+      this.SendNoteURLapi +
+        orgid +
+        "/" +
+        postit_note_code +
+        "/" +
+        todoid +
+        "/" +
+        AppNo +
+        "/" +
+        msg
+    );
+  }
+
   saveFormData(formData) {
     const ApplicationCode = "00000000-0000-0000-0000-000000000000";
     const serviceId = "000000-0000-0000-0000-000000000000";

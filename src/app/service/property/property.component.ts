@@ -748,6 +748,9 @@ export class PropertyComponent implements OnChanges {
   }
 
   async nodeSelect(data) {
+    if (this.selectedFile.property_Parent_ID == 0) {
+      this.serviceService.ishavespashal = true;
+    }
     this.getTreeDepth(this.serviceService.files);
     if (data != "1") {
       data.node.styleClass = "custom-selected-node";
@@ -1441,7 +1444,10 @@ export class PropertyComponent implements OnChanges {
               const element: any = Object.assign([], eachPlot[i]);
               console.log("sub property", element);
 
-              if (element.property_ID !== "No Parent") {
+              if (
+                element.property_ID !== "No Parent" ||
+                element.property_Parent_ID != 0
+              ) {
                 const isdeedchildren = await this.checkPropertylocation(
                   element
                 );
@@ -1482,7 +1488,7 @@ export class PropertyComponent implements OnChanges {
     }
   }
   async checkPropertylocation(element) {
-    if (element.property_ID != "No Parent") {
+    if (element.property_ID != "No Parent" || element.property_Parent_ID != 0) {
       const b: any = await this.getProploc(element.property_ID);
       const e = Object.assign([], b);
 
