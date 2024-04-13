@@ -3,10 +3,10 @@
     <span translate>You have </span>{{taskList.length}} <span translate>number of active tasks waiting</span></div>
 
   <div>
-<div *ngIf="loading; else taskTable">
+  <div *ngIf="loading; else taskTable">
   <!-- Loading spinner or message -->
   Loading tasks...
-</div>
+ </div>
 <ng-template #taskTable>
 <p-table [value]="taskList" [paginator]="true" [rows]="10" sortField="taskList.start_date" sortOrder="-1">
   <ng-template pTemplate="header">

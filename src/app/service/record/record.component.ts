@@ -189,6 +189,7 @@ export class RecordComponent implements OnChanges {
   invalidUnicode: any;
   selectedAppnoFordelete: any;
   candeletethisapplication: boolean;
+  isupdated: boolean;
   switchTab(tab: string) {
     this.activeTab = tab;
   }
@@ -265,6 +266,7 @@ export class RecordComponent implements OnChanges {
   }
 
   async addNew() {
+   
     if (this.ApplicationNumberlist.length > 0) {
       this.service.getserviceapi().subscribe((service: any) => {
         // const serviceCodes = new Set(
@@ -340,17 +342,8 @@ export class RecordComponent implements OnChanges {
       console.log(formattedDate);
       regstration_Date = await this.getgregorianToEthiopianDate(formattedDate);
       this.selectedDate = regstration_Date;
-      const subcity = environment.subcity; // Assuming environment.subcity is defined
-      const SDP_ID = this.getSDPID(subcity);
-      console.log("🚀 ~ RecordComponent ~ save ~ SDP_ID:", SDP_ID, subcity);
-      if (SDP_ID !== "") {
-        this.record.patchValue({
-          SDP: SDP_ID,
-        });
-      } else {
-        console.error("Invalid subcity:", subcity);
-        // Handle error as needed, e.g., show error message to the user
-      }
+     
+     
       this.record.patchValue({
         appno: "",
         selectedService: "",
@@ -371,6 +364,7 @@ export class RecordComponent implements OnChanges {
         // Woreda:this.licenceData.Wereda_ID,
         Deed: "",
       });
+      this.isupdated=false
     }
   }
 
@@ -687,6 +681,7 @@ export class RecordComponent implements OnChanges {
   handleSelectionChange(): void {
     this.displayTab = true;
     this.openArchive = true;
+    this.isupdated=true
     this.addnew = false;
     this.procView_RecordAppNoAndDocIdByAppNo = [""];
     this.record.patchValue({
@@ -711,7 +706,16 @@ export class RecordComponent implements OnChanges {
       .subscribe((licenceService) => {
         this.licenceService = licenceService;
         this.licenceData = this.licenceService.list[0];
+        this.service
+        .getTasks(this.licenceData.Service_ID)
+        .subscribe((ress: any) => {
+          if (ress) {
+            this.taskList = ress;
+            this.taskdisable = true;
 
+            console.log("taskresponsess", this.taskList);
+          }
+        });
         this.getPriveysLicence(this.licenceData.Application_No);
         console.log("Licence Service", this.service.licenceData);
 
@@ -827,16 +831,7 @@ export class RecordComponent implements OnChanges {
                   //     });
                   // }
 
-                  this.service
-                    .getTasks(this.licenceData.Service_ID)
-                    .subscribe((ress: any) => {
-                      if (ress) {
-                        this.taskList = ress;
-                        this.taskdisable = true;
-
-                        console.log("taskresponsess", this.taskList);
-                      }
-                    });
+               
                 } else {
                   this.openArchive = true;
                 }

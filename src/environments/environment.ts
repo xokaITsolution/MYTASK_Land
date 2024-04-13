@@ -16,8 +16,8 @@ export const environment = {
   //username: "BL_Tech_Officer",
   iconpath: window["iconpath"],
   formPath: window["formPath"],
-  city: window["city"],
-  username: "kalkidan demissie",
+  city: window["city"], 
+  username: "tilahuntefera",
   appbase: window["_app_base"],
   location: window["locations"],
   //username: "city_mgr",
@@ -61,3 +61,5 @@ export const environment = {
  * on performance if an error is thrown.
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+
+
