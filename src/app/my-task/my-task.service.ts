@@ -16,9 +16,22 @@ export class MyTaskService {
   private GetSuperviedUsersUrl =
     environment.rootPath + "BPEL/Get_SuperviedUsers"; // URL to web api
   private AssignToUserUrl = environment.rootPath + "BPEL/AssigEmpToDo"; // URL to web api
-
+  private MytasksUrls = environment.rootPathApi + "todolist/todolist";
   constructor(private http: HttpClient) {}
 
+  getcompressedtodolist(orgid, lanid) {
+    return this.http.get(
+      this.MytasksUrls +
+        "?username=" +
+        environment.username +
+        "&orgid=" +
+        orgid +
+        "&lanid=" +
+        lanid +
+        "&userroll" +
+        "=00000000-0000-0000-0000-000000000000"
+    );
+  }
   getMytasks(orgid, lanid) {
     return this.http.get(
       this.MytasksUrl +

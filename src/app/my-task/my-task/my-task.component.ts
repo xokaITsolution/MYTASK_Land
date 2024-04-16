@@ -5,6 +5,7 @@ import { ServiceService } from "../../service/service.service";
 import { environment } from "src/environments/environment";
 import { NgxSmartModalService } from "ngx-smart-modal";
 import { NotificationsService } from "angular2-notifications";
+import * as pako from 'pako';
 @Component({
   selector: "app-my-task",
   templateUrl: "./my-task.component.html",
@@ -34,7 +35,8 @@ export class MyTaskComponent implements OnInit {
   AppNumber: any;
   caseUser: any;
   orgID: any;
-
+  myTaskHasNoData:boolean=false;
+  myTaskLoading:boolean=false;
   constructor(
     private myTaskService: MyTaskService,
     private router: Router,
@@ -50,6 +52,7 @@ export class MyTaskComponent implements OnInit {
       this.lanid = "2C2EBBEA-3361-E111-95D5-00E04C05559B";
     }
     this.getMyTask();
+    
   }
   canGo(where) {
     if (this.messageObj.messages) {
@@ -219,7 +222,61 @@ export class MyTaskComponent implements OnInit {
     this.messageAppNo = appNo;
   }
 
+  // async getMyTask() {
+  //   //var userInfo = await this.seice.getViewAspNetUsersWorkInfoDetail(environment.username).toPromise();
+  //   //var orgid= userInfo[0].organization_code;
+  //   // this.seice
+  //   //   .getUserInfoByUserName(environment.username)
+  //   //   .subscribe((uname) => {
+  //   //     this.caseUser = uname[0];
+  //   //     this.orgID = this.caseUser.organization_code;
+
+  //   var orgid = "00000000-0000-0000-0000-000000000000";
+  //   //var orgid = "24d45c72-8088-4591-810a-bc674f9f0a57";
+
+  //   this.myTaskService.getMytaskss(orgid, this.lanid).subscribe(
+  //     (taskList) => {
+  //       this.taskList = taskList;
+  //       this.taskList = Object.assign([], this.taskList.Table1);
+
+  //       console.log("taskList", taskList);
+  //       console.log("dcument id", this.seice.docId);
+  //       this.taskList.sort((b, a) => {
+  //         if (a.start_date > b.start_date) {
+  //           return -1;
+  //         } else if (a.start_date < b.start_date) {
+  //           return 1;
+  //         } else {
+  //           return 0;
+  //         }
+  //       });
+
+  //       let num = 1;
+  //       (this.taskList as Array<any>).map((task) => (task["number"] = num++));
+  //       const uniqueJobMatchIDs = {};
+  //       const uniqueData = this.taskList.filter((item) => {
+  //         if (!uniqueJobMatchIDs[item.todo_comment]) {
+  //           uniqueJobMatchIDs[item.todo_comment] = true;
+  //           return true;
+  //         }
+  //         return false;
+  //       });
+  //       for (let i = 0; i < this.taskList.length; i++) {
+  //         this.seice.docId = this.taskList[i].service_details_id;
+  //       }
+  //       this.taskList = uniqueData;
+  //       this.loading = false;
+  //     },
+  //     (error) => {
+  //       console.log("error");
+  //       this.loading = false;
+  //     }
+  //   );
+  //   // });
+  // }
+
   async getMyTask() {
+    this.myTaskLoading=true;
     //var userInfo = await this.seice.getViewAspNetUsersWorkInfoDetail(environment.username).toPromise();
     //var orgid= userInfo[0].organization_code;
     // this.seice
@@ -231,10 +288,33 @@ export class MyTaskComponent implements OnInit {
     var orgid = "00000000-0000-0000-0000-000000000000";
     //var orgid = "24d45c72-8088-4591-810a-bc674f9f0a57";
 
-    this.myTaskService.getMytaskss(orgid, this.lanid).subscribe(
+    this.myTaskService.getcompressedtodolist(orgid, this.lanid).subscribe(
       (taskList) => {
-        this.taskList = taskList;
-        this.taskList = Object.assign([], this.taskList.Table1);
+        console.log('compressed todo:', taskList);
+
+        const compressedData = taskList['table1'];
+        
+        // Decode the base64 encoded compressed data
+        const decodedData = atob(compressedData);
+        
+        // Convert the decoded data to a Uint8Array
+        const uint8Array = new Uint8Array(decodedData.length);
+        for (let i = 0; i < decodedData.length; ++i) {
+          uint8Array[i] = decodedData.charCodeAt(i);
+        }
+        
+        // Decompress the data using pako
+        const inflatedData = pako.inflate(uint8Array, { to: 'string' });
+        
+        // Parse the decompressed JSON string
+        const todoList = JSON.parse(inflatedData);
+        
+        // Wrap the array inside an object with key "Table1"
+        const formattedTodoList = { Table1: todoList };
+        
+        console.log('formatted todo list:', formattedTodoList);
+        
+        this.taskList = Object.assign([],formattedTodoList.Table1);
 
         console.log("taskList", taskList);
         console.log("dcument id", this.seice.docId);
@@ -246,6 +326,7 @@ export class MyTaskComponent implements OnInit {
           } else {
             return 0;
           }
+          
         });
 
         let num = 1;
@@ -258,13 +339,21 @@ export class MyTaskComponent implements OnInit {
           }
           return false;
         });
+        this.myTaskLoading=false;
         for (let i = 0; i < this.taskList.length; i++) {
           this.seice.docId = this.taskList[i].service_details_id;
         }
         this.taskList = uniqueData;
         this.loading = false;
+
+        if(this.taskList.length==0){
+          this.myTaskHasNoData=true;
+        }else{
+          this.myTaskHasNoData=false;
+        }
       },
       (error) => {
+        this.myTaskLoading=false;
         console.log("error");
         this.loading = false;
       }

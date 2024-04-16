@@ -748,8 +748,8 @@ export class PropertyComponent implements OnChanges {
   }
 
   async nodeSelect(data) {
-    if (this.selectedFile.property_Parent_ID == 0) {
-      this.serviceService.ishavespashal = true;
+    if (this.selectedFile.property_Parent_ID != "0" || this.selectedFile.property_Parent_ID != null) {
+      this.serviceService.ishavespashal = false;
     }
     this.getTreeDepth(this.serviceService.files);
     if (data != "1") {

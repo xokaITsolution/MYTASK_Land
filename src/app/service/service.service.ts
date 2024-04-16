@@ -291,7 +291,7 @@ export class ServiceService {
   RequerdDocspre: any;
   backbuttonviable: boolean;
   appnoForRecord: any;
-  ishavespashal: boolean;
+  ishavespashal: boolean=true;
   constructor(private http: HttpClient, private cookieService: CookieService) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);

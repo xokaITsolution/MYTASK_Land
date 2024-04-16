@@ -525,7 +525,22 @@ export class CertComponent implements OnChanges {
     this.serviceService
       .getCertificateVersion1(certver.title_Deed_No)
       .subscribe((CertificateVersion: any) => {
-        this.CertificateVersion = CertificateVersion.procCertificate_Versions;
+        this.CertificateVersion = CertificateVersion.procCertificate_Versions
+        .sort((a, b) => {
+          // If a's is_Active is true and b's is_Active is false, a comes first
+          if (a.is_Active && !b.is_Active) {
+            return -1;
+          }
+          // If a's is_Active is false and b's is_Active is true, b comes first
+          else if (!a.is_Active && b.is_Active) {
+            return 1;
+          }
+          // For all other cases, maintain the current order
+          else {
+            return 0;
+          }
+        });
+
         var img = this.CertificateVersion.filter((x) => x.is_Active == true);
         if (img.length > 0) {
           console.log("img", img[0].certificate_Image);
@@ -590,11 +605,26 @@ export class CertComponent implements OnChanges {
   getCertificateVersion(Base) {
     this.serviceService.getCertificateVersion1(Base.Title_Deed_No).subscribe(
       (CertificateVersion: any) => {
-        this.CertificateVersion = CertificateVersion.procCertificate_Versions;
+        this.CertificateVersion = CertificateVersion.procCertificate_Versions
+        .sort((a, b) => {
+          // If a's is_Active is true and b's is_Active is false, a comes first
+          if (a.is_Active && !b.is_Active) {
+            return -1;
+          }
+          // If a's is_Active is false and b's is_Active is true, b comes first
+          else if (!a.is_Active && b.is_Active) {
+            return 1;
+          }
+          // For all other cases, maintain the current order
+          else {
+            return 0;
+          }
+        });
+
         const uniqueJobMatchIDs = {};
         const uniqueData = this.CertificateVersion.filter((item) => {
-          if (!uniqueJobMatchIDs[item.version_ID]) {
-            uniqueJobMatchIDs[item.version_ID] = true;
+          if (!uniqueJobMatchIDs[item.version_No]) {
+            uniqueJobMatchIDs[item.version_No] = true;
             return true;
           }
           return false;

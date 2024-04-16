@@ -40,7 +40,7 @@
       <td>{{task.TaskType}}</td>
       <td>{{task.Estimated_minute_To_Finsh_This_Tasks}}</td>
       <td>
-        <button *ngIf="i < 5 || (task.status == 'O' || task.status == 'A  ' || task.status == 'R  ' || task.status == 'AS') && task.userId !== '00000000-0000-0000-0000-000000000000'"
+        <button *ngIf="i < 5 || task.status == 'S' || (task.status == 'O' || task.status == 'A  ' || task.status == 'R  ' || task.status == 'AS') && task.userId !== '00000000-0000-0000-0000-000000000000'"
           class="btn btn-primary" type="button" (click)="IsLockedBy_OtherUser(task)" translate>Pick</button>
       </td>
     </tr>
@@ -49,7 +49,24 @@
 </ng-template>
   </div>
 </div>
-
+<div *ngIf="myTaskLoading" class="col-md-5">
+  <div class="spinner-border text-primary"></div>
+  <span style="font-size: 1.3em;font-family: 
+               'Times New Roman', Times, serif;
+                font-weight: bold;
+                color:steelblue;
+                ">
+     &nbsp; Loading ...
+  </span>
+ 
+</div>
+<div *ngIf="!myTaskLoading&&myTaskHasNoData"  class="col-md-5">
+  <span style="color: steelblue;
+               font-weight: 600;
+               font-size: 1.1em;">
+          Task lists are unavailabe...</span>&nbsp;
+  <button type="button" class="btn btn-info" (click)="getMyTask()">Retry</button>
+</div>
 <p-dialog
 header="{{user_name}}"
 [(visible)]="isAccountVisible"

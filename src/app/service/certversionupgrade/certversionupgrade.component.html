@@ -79,7 +79,7 @@
                                 id="IsActive1" binary="true"></p-checkbox>
                         </td> -->
                         <td class="fit-content-cell">
-                            <button type="button" class="btn btn-primary" (click)="Selectversion(version)"
+                            <button type="button" class="btn btn-primary" *ngIf="version.is_Active" (click)="Selectversion(version)"
                                 translate>select</button>
                         </td>
                         <!-- <td *ngIf="!isnews">

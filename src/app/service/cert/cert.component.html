@@ -69,18 +69,11 @@
               <p-checkbox [disabled]="true" [(ngModel)]="version.is_Active" name="IsActive1" id="IsActive1"
                 binary="true"></p-checkbox>
             </td>
-            <!-- <td class="fit-content-cell">
-              <p-checkbox [disabled]="true" [(ngModel)]="version.is_Printed" name="IsActive1" id="IsActive1"
-                binary="true"></p-checkbox>
-            </td>
+          
             <td class="fit-content-cell">
-              <p-checkbox [disabled]="true" [(ngModel)]="version.is_Issued" name="IsActive1" id="IsActive1"
-                binary="true"></p-checkbox>
-            </td> -->
-            <td class="fit-content-cell">
-              <button type="button" class="btn btn-primary" (click)="Selectversion(version)" translate>select</button>
+              <button type="button" class="btn btn-primary" (click)="Selectversion(version)" *ngIf="version.is_Active" translate>select</button>
             </td><td  *ngIf="isnews" >
-                <button *ngIf="isnews && !disable" type="button" [ngClass]="{'blinking': isnew}" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
+                <button *ngIf="isnews && !disable && version.is_Active" type="button" [ngClass]="{'blinking': isnew}" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
                 (click)="loading2(version);ismodaEnable=true;isnew=false">Edit</button>
             </td>
           </tr>
