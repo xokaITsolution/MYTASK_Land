@@ -421,21 +421,18 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   async selectdeed(deed) {
     this.deedform = true;
     this.isnew = false;
-    if (this.language === "amharic") {
-      deed.Date = await this.getEthiopianToGregorian(deed.date);
-    } else {
-      deed.Date = deed.date.split("T")[0];
-    }
+ 
 
     this.titleDeedRegistration = deed;
     this.serviceService
       .getcustomerbycusid(deed.transfer_From_Customer)
-      .subscribe((res: any) => {
+      .subscribe(async (res: any) => {
         const customerdata = res.procCustomers;
         console.log(
           "🚀 ~ TitleDeedRegistrationComponent ~ .subscribe ~ customerdata:",
           customerdata
         );
+
         if (
           parseInt(this.titleDeedRegistration.transfer_Type) == 2014 ||
           parseInt(this.titleDeedRegistration.transfer_Type) == 2044 ||
@@ -445,13 +442,16 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
         } else {
           this.Isshow = false;
         }
+        if (this.language === "amharic") {
+          deed.Date = await this.getEthiopianToGregorian(deed.date);
+        } else {
+          deed.Date = deed.date.split("T")[0];
+        }
 
         this.Transfer_From_CustomerName =
           customerdata[0].applicant_First_Name_AM;
       });
-    this.Transfer_From_CustomerName = this.CustomerLookUP.filter(
-      (x) => x.customer_ID == deed.transfer_From_Customer
-    )[0].FullName_AM;
+   
     this.serviceService
       .getcustomerbycusid(deed.transfer_To_Customer)
       .subscribe((res: any) => {
@@ -488,7 +488,9 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
       this.serviceService.Service_ID ===
         "5DE49606-4DC6-4FB1-8F37-0CFC948FDC83".toLocaleLowerCase() || //Merge two or more bordering plot managed by the free hold
       this.serviceService.Service_ID ===
-        "8a8588ae-0267-48b7-88ac-f3f18ac02167".toLocaleLowerCase()
+        "8a8588ae-0267-48b7-88ac-f3f18ac02167".toLocaleLowerCase() ||
+      this.serviceService.Service_ID ===
+        "86997006-53C7-4BBD-9F56-E79721B4561E".toLocaleLowerCase()
     ) {
       this.titleDeedRegistration.transfer_From_Customer = customer.customer_ID;
       console.log("closeing.....");
@@ -525,7 +527,10 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
         this.serviceService.Service_ID ===
           "5DE49606-4DC6-4FB1-8F37-0CFC948FDC83".toLocaleLowerCase() || //Merge two or more bordering plot managed by the free hold
         this.serviceService.Service_ID ===
-          "8a8588ae-0267-48b7-88ac-f3f18ac02167".toLocaleLowerCase()
+          "8a8588ae-0267-48b7-88ac-f3f18ac02167".toLocaleLowerCase() 
+          ||
+      this.serviceService.Service_ID ===
+        "86997006-53C7-4BBD-9F56-E79721B4561E".toLocaleLowerCase()
       ) {
         this.titleDeedRegistration.transfer_To_Customer = customer.customer_ID;
         console.log("closeing.....");

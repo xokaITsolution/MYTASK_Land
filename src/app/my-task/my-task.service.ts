@@ -11,6 +11,8 @@ export class MyTaskService {
   private SupervisertasksUrl = environment.rootPath + "BPEL/GetlistofTodo"; // URL to web api
   private ViewAspNetUsersWorkInfoDetail =
     environment.rootPathApi + "view/View_postit_note_user";
+  private getSendPaymentReminder =
+    environment.rootPathApi + "finance/SendPaymentReminder";
   private IsLockedBy_OtherUserUrl =
     environment.rootPath + "BPEL/IsLockedBy_OtherUser";
   private GetSuperviedUsersUrl =
@@ -93,6 +95,11 @@ export class MyTaskService {
       null
     );
   }
+  GetgetSendPaymentReminder(application) {
+    return this.http.get(
+      this.getSendPaymentReminder + "?applicationNumber=" + application
+    );
+  }
   GetSuperviedUsers() {
     return this.http.get(
       this.GetSuperviedUsersUrl + "?username=" + environment.username
@@ -107,6 +114,7 @@ export class MyTaskService {
         "&orgid=00000000-0000-0000-0000-000000000000&lanid=2C2EBBEA-3361-E111-95D5-00E04C05559B"
     );
   }
+
   IsLockedBy_OtherUser(todoid) {
     return this.http.get(
       this.IsLockedBy_OtherUserUrl +

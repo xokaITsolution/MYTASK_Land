@@ -250,6 +250,7 @@ export class ServiceComponent implements OnInit {
   AppNumber: any;
   issavenote: boolean;
   issendnote: boolean;
+  attachedBY: any;
   constructor(
     private modalService: BsModalService,
     private activatedRoute: ActivatedRoute,
@@ -1146,6 +1147,7 @@ export class ServiceComponent implements OnInit {
             "Error",
             "SomeThing Went Wrong"
           );
+          this.Close();
         }
       },
       (error) => {
@@ -1153,6 +1155,7 @@ export class ServiceComponent implements OnInit {
           "Error",
           "SomeThing Went Wrong"
         );
+        this.Close();
       }
     );
   }
@@ -1825,6 +1828,7 @@ export class ServiceComponent implements OnInit {
 
       this.documents = this.sanitizer.bypassSecurityTrustResourceUrl(file);
       this.documentss = true;
+      this.attachedBY=r[0].attachedBY;
       console.log("responceses", r[0].document);
     });
     console.log("documentsdoc");

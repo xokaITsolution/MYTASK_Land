@@ -129,19 +129,18 @@ export class PropertyComponent implements OnChanges {
               );
             } else {
               this.serviceService
-                .GetProportyValidationURL(this.serviceService.LicenceserviceID)
-                .subscribe((message: any) => {
-                  if (message == 1) {
-                    this.serviceService.disablefins = false;
+            .GetProportyValidationURL(this.serviceService.LicenceserviceID)
+            .subscribe((message:any) => {
+              console.log("🚀 ~ PropertyComponent ~ .subscribe ~ message:", message.Message)
 
-                    this.completed.emit();
-                  } else {
-                    const toast = this.notificationsService.error(
-                      "Error",
-                      message
-                    );
-                  }
-                });
+              if (message.Message == "1") {
+                this.serviceService.disablefins = false;
+
+                this.completed.emit();
+              } else {
+                const toast = this.notificationsService.error("Error", message.Message);
+              }
+            });
             }
           }
         }
@@ -946,16 +945,18 @@ export class PropertyComponent implements OnChanges {
         this.serviceService.Plot_Size_M2
       ) {
         this.serviceService
-          .GetProportyValidationURL(this.serviceService.LicenceserviceID)
-          .subscribe((message: any) => {
-            if (message == 1) {
-              this.serviceService.disablefins = false;
+            .GetProportyValidationURL(this.serviceService.LicenceserviceID)
+            .subscribe((message:any) => {
+              console.log("🚀 ~ PropertyComponent ~ .subscribe ~ message:", message.Message)
 
-              this.completed.emit();
-            } else {
-              const toast = this.notificationsService.error("Error", message);
-            }
-          });
+              if (message.Message == "1") {
+                this.serviceService.disablefins = false;
+
+                this.completed.emit();
+              } else {
+                const toast = this.notificationsService.error("Error", message.Message);
+              }
+            });
       } else {
         const toast = this.notificationsService.warn(
           "if the lease type is proportional the sum of property built-in size must be equal to lease size/የሊዝ አይነት ተመጣጣኝ ከሆነ አብሮ የተሰራው ንብረት ድምር ከሊዝ መጠን ጋር እኩል መሆን አለበት።"
@@ -987,21 +988,18 @@ export class PropertyComponent implements OnChanges {
                 );
               } else {
                 this.serviceService
-                  .GetProportyValidationURL(
-                    this.serviceService.LicenceserviceID
-                  )
-                  .subscribe((message: any) => {
-                    if (message == 1) {
-                      this.serviceService.disablefins = false;
+            .GetProportyValidationURL(this.serviceService.LicenceserviceID)
+            .subscribe((message:any) => {
+              console.log("🚀 ~ PropertyComponent ~ .subscribe ~ message:", message.Message)
 
-                      this.completed.emit();
-                    } else {
-                      const toast = this.notificationsService.error(
-                        "Error",
-                        message
-                      );
-                    }
-                  });
+              if (message.Message == "1") {
+                this.serviceService.disablefins = false;
+
+                this.completed.emit();
+              } else {
+                const toast = this.notificationsService.error("Error", message.Message);
+              }
+            });
               }
             }
           }
@@ -1020,19 +1018,18 @@ export class PropertyComponent implements OnChanges {
               );
             } else {
               this.serviceService
-                .GetProportyValidationURL(this.serviceService.LicenceserviceID)
-                .subscribe((message: any) => {
-                  if (message == 1) {
-                    this.serviceService.disablefins = false;
+            .GetProportyValidationURL(this.serviceService.LicenceserviceID)
+            .subscribe((message:any) => {
+              console.log("🚀 ~ PropertyComponent ~ .subscribe ~ message:", message.Message)
 
-                    this.completed.emit();
-                  } else {
-                    const toast = this.notificationsService.error(
-                      "Error",
-                      message
-                    );
-                  }
-                });
+              if (message.Message == "1") {
+                this.serviceService.disablefins = false;
+
+                this.completed.emit();
+              } else {
+                const toast = this.notificationsService.error("Error", message.Message);
+              }
+            });
             }
           }
         }
@@ -1190,13 +1187,15 @@ export class PropertyComponent implements OnChanges {
         } else {
           this.serviceService
             .GetProportyValidationURL(this.serviceService.LicenceserviceID)
-            .subscribe((message: any) => {
-              if (message == 1) {
+            .subscribe((message:any) => {
+              console.log("🚀 ~ PropertyComponent ~ .subscribe ~ message:", message.Message)
+
+              if (message.Message == "1") {
                 this.serviceService.disablefins = false;
 
                 this.completed.emit();
               } else {
-                const toast = this.notificationsService.error("Error", message);
+                const toast = this.notificationsService.error("Error", message.Message);
               }
             });
         }
@@ -1209,16 +1208,18 @@ export class PropertyComponent implements OnChanges {
         return;
       } else {
         this.serviceService
-          .GetProportyValidationURL(this.serviceService.LicenceserviceID)
-          .subscribe((message: any) => {
-            if (message == 1) {
-              this.serviceService.disablefins = false;
+            .GetProportyValidationURL(this.serviceService.LicenceserviceID)
+            .subscribe((message:any) => {
+              console.log("🚀 ~ PropertyComponent ~ .subscribe ~ message:", message.Message)
 
-              this.completed.emit();
-            } else {
-              const toast = this.notificationsService.error("Error", message);
-            }
-          });
+              if (message.Message == "1") {
+                this.serviceService.disablefins = false;
+
+                this.completed.emit();
+              } else {
+                const toast = this.notificationsService.error("Error", message.Message);
+              }
+            });
       }
     }
   }
@@ -1419,7 +1420,8 @@ export class PropertyComponent implements OnChanges {
       this.serviceService
         .getPropertyLists(element.plot_ID)
         .subscribe(async (PropertyList: any) => {
-          let PropertyLists = PropertyList.procProperty_Registrations;
+          console.log("🚀 ~ PropertyComponent ~ .subscribe ~ PropertyList:", PropertyList)
+          let PropertyLists = PropertyList.procProperty_Registrations
           PropertyLists = Object.assign([], PropertyLists);
           console.log(
             "🚀 ~ file: property.component.ts:1291 ~ PropertyComponent ~ .subscribe ~ PropertyLists:",
@@ -1464,21 +1466,18 @@ export class PropertyComponent implements OnChanges {
                   // );
                   if (!isnullplot) {
                     this.serviceService
-                      .GetProportyValidationURL(
-                        this.serviceService.LicenceserviceID
-                      )
-                      .subscribe((message: any) => {
-                        if (message == 1) {
-                          this.serviceService.disablefins = false;
+            .GetProportyValidationURL(this.serviceService.LicenceserviceID)
+            .subscribe((message:any) => {
+              console.log("🚀 ~ PropertyComponent ~ .subscribe ~ message:", message.Message)
 
-                          this.completed.emit();
-                        } else {
-                          const toast = this.notificationsService.error(
-                            "Error",
-                            message
-                          );
-                        }
-                      });
+              if (message.Message == "1") {
+                this.serviceService.disablefins = false;
+
+                this.completed.emit();
+              } else {
+                const toast = this.notificationsService.error("Error", message.Message);
+              }
+            });
                   }
                 }
               }

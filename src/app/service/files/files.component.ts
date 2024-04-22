@@ -121,6 +121,7 @@ export class FilesComponent implements OnChanges {
   preview = false;
   useridfromdoc: any;
   clickedButtonIndex: number | null = null;
+  attachedBY: any;
   constructor(
     public serviceService: ServiceService,
     // public serviceComponent: ServiceComponent,
@@ -352,6 +353,7 @@ export class FilesComponent implements OnChanges {
   showdiv(doc) {
     this.documentss = false;
     this.serviceService.getAllDocumentt(doc).subscribe((r) => {
+      console.log("🚀 ~ FilesComponent ~ this.serviceService.getAllDocumentt ~ r:", r)
       let fileData = JSON.parse(atob(r[0].document));
 
       let { type, data } = fileData;
@@ -364,6 +366,7 @@ export class FilesComponent implements OnChanges {
 
       this.documentss = true;
       this.useridfromdoc = r[0].userId;
+      this.attachedBY=r[0].attachedBY;
       console.log("responceses", r[0].userId, this.userid);
     });
     console.log("documentsdoc");

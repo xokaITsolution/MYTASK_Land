@@ -6,6 +6,7 @@ import { environment } from "src/environments/environment";
 import { NgxSmartModalService } from "ngx-smart-modal";
 import { NotificationsService } from "angular2-notifications";
 import * as pako from 'pako';
+import { error } from "console";
 @Component({
   selector: "app-my-task",
   templateUrl: "./my-task.component.html",
@@ -129,7 +130,31 @@ export class MyTaskComponent implements OnInit {
         // }
         // else{
         if (message == false) {
-          this.go(task);
+          this.myTaskService.GetgetSendPaymentReminder(task.todo_comment).subscribe(
+            (message:any) => {
+              if(message.Message == "0"){
+                this.go(task);
+              }else{
+                const toastWarning = this.notificationsService.error(
+                  message.Message
+                );
+                return;
+              }
+            },error => {
+              this.go(task);
+            //  if( error.status =="200"){
+            //   if(message == true){
+            //     this.go(task);
+            //   }else{
+            //     const toastWarning = this.notificationsService.error(
+            //       message
+            //     );
+            //     return;
+            //   }
+            //  }
+
+            })
+
         } else {
           const toastWarning = this.notificationsService.error(
             "Warning",
@@ -328,6 +353,16 @@ export class MyTaskComponent implements OnInit {
           }
           
         });
+        this.taskList.sort((b, a) => {
+          if (a.Estimated_minute_To_Finsh_This_Tasks > b.Estimated_minute_To_Finsh_This_Tasks) {
+            return -1;
+          } else if (a.Estimated_minute_To_Finsh_This_Tasks < b.Estimated_minute_To_Finsh_This_Tasks) {
+            return 1;
+          } else {
+            return 0;
+          }
+          
+        });
 
         let num = 1;
         (this.taskList as Array<any>).map((task) => (task["number"] = num++));
@@ -364,19 +399,6 @@ export class MyTaskComponent implements OnInit {
   go(task) {
     console.log("task.to_screen", task.to_screen);
 
-    // if (task.to_screen == 'a7a1e05e-32c2-4f44-ad58-306572c64593') {
-    //   console.log('path if :: ', '/services/2/' + task.todo_comment + '/' + task.task_types_id + '/' + task.tasks_id + '/' + task.service_details_id + '/' + task.id + '/' + task.to_screen);
-    //   // this.router.navigateByUrl('/services/2/' + task.todo_comment + '/' + task.task_types_id + '/' + task.tasks_id + '/' + task.service_details_id + '/' + task.id);
-    //   location.replace(window['_app_base'] + '/services/2/' + task.todo_comment + '/' + task.task_types_id + '/' + task.tasks_id + '/' + task.service_details_id + '/' + task.id)
-    // } else if (task.to_screen == 'da8c5bd4-ea3d-4f02-b1b2-38cf26d6d1ff') {
-    //   console.log('path else if 1 :: ', '/services/3/' + task.todo_comment + '/' + task.task_types_id + '/' + task.tasks_id + '/' + task.service_details_id + '/' + task.id);
-    //   // this.router.navigateByUrl('/services/3/' + task.todo_comment + '/' + task.task_types_id + '/' + task.tasks_id + '/' + task.service_details_id + '/' + task.id);
-    //   location.replace(window['_app_base'] + '/services/3/' + task.todo_comment + '/' + task.task_types_id + '/' + task.tasks_id + '/' + task.service_details_id + '/' + task.id)
-    // } else if (task.to_screen == '9e0834e9-7ec2-460c-a5ed-7ade1204c7ee') {
-    //   console.log('path else if 2 :: ', '/services/4/' + task.todo_comment + '/' + task.task_types_id + '/' + task.tasks_id + '/' + task.service_details_id + '/' + task.id);
-    //   // this.router.navigateByUrl('/services/4/' + task.todo_comment + '/' + task.task_types_id + '/' + task.tasks_id + '/' + task.service_details_id + '/' + task.id);
-    //   location.replace(window['_app_base'] + '/services/4/' + task.todo_comment + '/' + task.task_types_id + '/' + task.tasks_id + '/' + task.service_details_id + '/' + task.id)
-    // } else {
     console.log(
       "path else :: ",
       "/services/1/" +

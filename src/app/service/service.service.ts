@@ -64,7 +64,7 @@ export class ServiceService {
   private Task_Service = environment.rootpath2 + "getTasks";
   private All_Org = environment.rootpath2 + "AllOrg";
   public customerUrl =
-    environment.rootPathApi + "PdfCompressor/PdfCompressor/base64";
+    environment.rootPathApi + "Customer/procCustomer";
   public Username =
     environment.rootPathApi + "view/View_GetcustomerAllWithVitalId/";
   public CustomerId =
@@ -928,12 +928,20 @@ export class ServiceService {
   getDocmentArcive(CertefcateCode) {
     return this.http.get(
       this.UpdateCertURL +
-        "?" +
-        "sortOrder=test&currentFilter=" +
-        CertefcateCode +
-        "&searchString&pageIndex&pageSize"
+        "/"  +
+        CertefcateCode 
+        
     );
   }
+  // getDocmentArcive(CertefcateCode) {
+  //   return this.http.get(
+  //     this.UpdateCertURL +
+  //       "?" +
+  //       "sortOrder=test&currentFilter=" +
+  //       CertefcateCode +
+  //       "&searchString&pageIndex&pageSize"
+  //   );
+  // }
 
   UpdateDocmentArcive(cerltter) {
     return this.http.put(this.UpdateCertURL, cerltter);
@@ -1402,3 +1410,5 @@ export class AppointmentByAppResult {
   aspnet_UsersInRoles: UserRole[];
   View_AppointementByApp: Application[];
 }
+
+

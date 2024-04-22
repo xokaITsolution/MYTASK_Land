@@ -559,14 +559,14 @@ export class CertComponent implements OnChanges {
                   this.serviceService.Service_ID
                 )
                 .subscribe((message: any) => {
-                  if (message == 1) {
+                  if (message.Message == "1") {
                     this.serviceService.disablefins = false;
 
                     this.completed.emit();
                   } else {
                     const toast = this.notificationsService.error(
                       "Error",
-                      message
+                      message.Message
                     );
                   }
                 });
@@ -711,14 +711,14 @@ export class CertComponent implements OnChanges {
                     this.serviceService.Service_ID
                   )
                   .subscribe((message: any) => {
-                    if (message == 1) {
+                    if (message.Message == "1") {
                       this.serviceService.disablefins = false;
 
                       this.completed.emit();
                     } else {
                       const toast = this.notificationsService.error(
                         "Error",
-                        message
+                        message.Message
                       );
                     }
                   });

@@ -1581,14 +1581,14 @@ export class PlotComponent implements OnChanges {
                       this.serviceService.Service_ID
                     )
                     .subscribe((message: any) => {
-                      if (message == 1) {
+                      if (message.Message == "1") {
                         this.serviceService.disablefins = false;
 
                         this.completed.emit();
                       } else {
                         const toast = this.notificationsService.error(
                           "Error",
-                          message
+                          message.Message
                         );
                       }
                     });
@@ -1617,14 +1617,14 @@ export class PlotComponent implements OnChanges {
                 "🚀 ~ PlotComponent ~ .subscribe ~ message:",
                 message
               );
-              if (message == 1) {
+              if (message.Message == "1") {
                 this.serviceService.disablefins = false;
 
                 this.completed.emit();
               } else {
                 const toast = this.notificationsService.error(
                   "Error",
-                  "1. አዲሱ  መሬቶች የሊዝ/የነፃ መያዣ መረጃ መመዝገቡን እና ለአሁኑ ደንበኛ ገቢር መሆኑን ያረጋግጡ Make sure the new splited lands   Lease/ Free-hold Information is regstered and active  for Current Customer"
+                  message.Message
                 );
               }
             });

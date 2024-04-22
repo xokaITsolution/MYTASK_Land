@@ -40,7 +40,7 @@
       <td>{{task.TaskType}}</td>
       <td>{{task.Estimated_minute_To_Finsh_This_Tasks}}</td>
       <td>
-        <button *ngIf="i < 5 || task.status == 'S' || (task.status == 'O' || task.status == 'A  ' || task.status == 'R  ' || task.status == 'AS') && task.userId !== '00000000-0000-0000-0000-000000000000'"
+        <button *ngIf="i < 10 || task.status == 'S' || (task.status == 'O' || task.status == 'A  ' || task.status == 'R  ' || task.status == 'AS') && task.userId !== '00000000-0000-0000-0000-000000000000'"
           class="btn btn-primary" type="button" (click)="IsLockedBy_OtherUser(task)" translate>Pick</button>
       </td>
     </tr>

@@ -32,6 +32,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { BehaviorSubject, empty } from "rxjs";
 import { jsPDF } from "jspdf";
 import { ActivatedRoute, Params } from "@angular/router";
+import {TreeNode} from 'primeng/api';
 
 @Component({
   selector: "app-record",
@@ -62,6 +63,7 @@ export class RecordComponent implements OnChanges {
   Plot: any;
   Deed: any;
   AppNo: any;
+  fileCounts: number[] = [];
   Licence_ID;
   AppCodeFromFile: any;
   DocIdFromFile: any;
@@ -169,6 +171,7 @@ export class RecordComponent implements OnChanges {
   pictoShow: any;
   Customer: any;
   PreviewshowdialogeArray: boolean[] = [];
+  shownofilesArray: boolean[] = [];
   hide: any;
   hid: boolean;
   taskEnable: boolean;
@@ -190,6 +193,9 @@ export class RecordComponent implements OnChanges {
   selectedAppnoFordelete: any;
   candeletethisapplication: boolean;
   isupdated: boolean;
+  Attacheduserid: any;
+  nofiles: any;
+  RID: any=null;
   switchTab(tab: string) {
     this.activeTab = tab;
   }
@@ -200,7 +206,8 @@ export class RecordComponent implements OnChanges {
     private sanitizer: DomSanitizer,
     private modalService: BsModalService,
     private formBuilder: FormBuilder,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute ,
+   
   ) {
     this.recordDocumnet = new RecordDocumnet();
     this.addRecord = new AddRecord();
@@ -216,13 +223,16 @@ export class RecordComponent implements OnChanges {
     appno: new FormControl(),
     FullName_AM: new FormControl(),
     Deed: new FormControl(),
-    SDP: new FormControl(),
+    SDP: new FormControl({disabled: true}),
     date: new FormControl(new Date().toISOString().substr(0, 10)),
-    Org: new FormControl(),
+    Org: new FormControl({disabled: true}),
     Woreda: ["", Validators.required],
     selectedService: new FormControl(),
   });
   async ngOnChanges() {
+    this.service.getaspnetuser().subscribe((r) => {
+      this.Attacheduserid = r[0].userid;
+    });
     console.log("language", environment.Lang_code);
     if (
       environment.Lang_code === "am-et" ||
@@ -278,16 +288,22 @@ export class RecordComponent implements OnChanges {
         // this.Services = service.filter(
         //   (service) => !serviceCodes.has(service.service_code)
         // );
-        const serviceCounts = {};
-        this.ApplicationNumberlist.forEach((application) => {
-          const code = application.services_service_code;
-          serviceCounts[code] = (serviceCounts[code] || 0) + 1;
-        });
+        if(this.Customer[0].customer_Type_ID ==3102){
+          const serviceCounts = {};
+          this.ApplicationNumberlist.forEach((application) => {
+            const code = application.services_service_code;
+            serviceCounts[code] = (serviceCounts[code] || 0) + 1;
+          });
+  
+          this.Services = service.filter((service) => {
+            const code = service.service_code;
+            return !serviceCounts.hasOwnProperty(code) || serviceCounts[code] < 2;
+          });
 
-        this.Services = service.filter((service) => {
-          const code = service.service_code;
-          return !serviceCounts.hasOwnProperty(code) || serviceCounts[code] < 2;
-        });
+        }else{
+          this.Services = service
+        }
+
 
         console.log("serviceserviceservicess", service);
       });
@@ -659,10 +675,11 @@ export class RecordComponent implements OnChanges {
       .subscribe((DocIdByAppNo: any) => {
         let procView_RecordAppNoAndDocIdByAppNo =
           DocIdByAppNo.procView_RecordAppNoAndDocIdByAppNos;
-        let application_code =
-          procView_RecordAppNoAndDocIdByAppNo[0].application_code;
-        let application_detail_id =
-          procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id;
+          if(procView_RecordAppNoAndDocIdByAppNo.length > 0){
+
+          
+        let application_code = procView_RecordAppNoAndDocIdByAppNo[0].application_code;
+        let application_detail_id = procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id;
         this.service
           .getAllDocuments(application_code, application_detail_id)
           .subscribe((SavedFiles) => {
@@ -676,7 +693,21 @@ export class RecordComponent implements OnChanges {
               this.candeletethisapplication = false;
             }
           });
-      });
+        }else{
+          const toast = this.notificationsService.error(
+            "error",
+            "this application number(folder) have error you have to delete and create again /ይህ የመተግበሪያ ቁጥር(አቃፊ) ስህተት አለብህ መሰረዝ እና እንደገና መፍጠር አለብህ"
+          );
+          this.candeletethisapplication = true;
+        }
+      },error=>{
+        const toast = this.notificationsService.error(
+          "error",
+          "this application number(folder) have error you have to delete and create again /ይህ የመተግበሪያ ቁጥር(አቃፊ) ስህተት አለብህ መሰረዝ እና እንደገና መፍጠር አለብህ"
+        );
+        this.candeletethisapplication = true;
+      }
+      );
   }
   handleSelectionChange(): void {
     this.displayTab = true;
@@ -729,6 +760,7 @@ export class RecordComponent implements OnChanges {
             let RID;
             if (rec.procLicense_Services.length > 0) {
               RID = rec.procLicense_Services[0].recordNo;
+              this.RID=rec.procLicense_Services[0].recordNo;
             }
             console.log("🚀 ~ RecordComponent ~ .subscribe ~ RID:", RID);
             this.service
@@ -857,6 +889,8 @@ export class RecordComponent implements OnChanges {
         if (ApplicationNumber != null) {
           console.log("finalystatuslist", ApplicationNumber);
           this.ApplicationNumberlist = ApplicationNumber;
+         
+
           this.ApplicationNumberlist = this.ApplicationNumberlist.filter(
             (value) => value.organization_code == this.record.get("SDP").value
           );
@@ -869,6 +903,8 @@ export class RecordComponent implements OnChanges {
         }
       });
   }
+
+
   getorg() {
     this.service.getorg().subscribe((org) => {
       this.Org = org;
@@ -1264,10 +1300,23 @@ export class RecordComponent implements OnChanges {
     );
   }
   async save() {
+    this.service
+    .getLicencebyid(this.service.licenceData.Licence_Service_ID)
+    .subscribe(async (rec: any) => {
+      console.log(
+        "🚀 ~ RecordComponent ~ ).subscribe ~ rec:",
+        this.service.licenceData
+      );
+     
+      if (rec.procLicense_Services.length > 0) {
+       
+        this.RID=rec.procLicense_Services[0].recordNo;
+      }
     if (this.language == "amharic") {
       this.record_date = await this.getEthiopianToGregorian(this.selectedDate);
       this.record.patchValue({
         date: this.record_date,
+        Deed:this.RID
       });
 
       // console.log("saveing.....", this.Base.Registration_Date);
@@ -1277,18 +1326,13 @@ export class RecordComponent implements OnChanges {
     this.taskdisable = true;
     this.documentAddress = true;
 
-    // this.recordDocumnet.title_Deed_No = this.record.get("Deed").value;
-
-    //this.getDocmentArcive(this.record.get("Deed").value);
-    // this.GetApplicationNumberByUser(this.record.get("FullName_AM").value);
-
-    // this.Application_Number=this.record.get('appno').value;
-    // console.log('loggggg',this.Application_Number);
+  
 
     this.record.patchValue({
       appno: "00000000-0000-0000-0000-000000000000",
       SDP: this.service.currentsdpid,
       FullName_AM: this.customer[0].userName,
+      Deed:this.RID
     });
     console.log(
       "🚀 ~ RecordComponent ~ .subscribe ~ record:",
@@ -1381,6 +1425,7 @@ export class RecordComponent implements OnChanges {
       }
     );
     this.addnew = true;
+  })
     // this.displayGIS=false
   }
   UpdateAttachments(Attachments) {
@@ -1619,7 +1664,9 @@ export class RecordComponent implements OnChanges {
     console.log("SavedFileeeees", updatedArray);
     console.log("RequerdDocspre", this.RequerdDocspre);
     this.RequerdDocspre.forEach((item, index) => {
-      this.PreviewshowdialogeArray[index] = false; // Initialize all dialog variables to false
+      this.PreviewshowdialogeArray[index] = false;
+      
+      
     });
   }
 
@@ -1831,54 +1878,58 @@ export class RecordComponent implements OnChanges {
                 .toPromise();
               this.ApplicationNumberlist =
                 AppbyUserId.procApplicationLoadByUserIds;
-              this.service.getserviceapi().subscribe((service: any) => {
-                const serviceCounts = {};
-                this.ApplicationNumberlist.forEach((application) => {
-                  const code = application.services_service_code;
-                  serviceCounts[code] = (serviceCounts[code] || 0) + 1;
-                });
 
-                this.Services = service.filter((service) => {
-                  const code = service.service_code;
-                  return (
-                    !serviceCounts.hasOwnProperty(code) ||
-                    serviceCounts[code] < 2
-                  );
-                });
-              });
-              if (this.ApplicationNumberlist.length > 0) {
-                applicationLength = this.ApplicationNumberlist.length;
-                for (
-                  let index = 0;
-                  index < this.ApplicationNumberlist.length;
-                  index++
-                ) {
-                  const element = this.ApplicationNumberlist[index];
-                  const DocIdByAppNo: any = await this.service
-                    .getDocIdByAppNo(element.application_number)
-                    .toPromise();
-                  let procView_RecordAppNoAndDocIdByAppNo =
-                    DocIdByAppNo.procView_RecordAppNoAndDocIdByAppNos;
-                  if (procView_RecordAppNoAndDocIdByAppNo.length > 0) {
-                    let application_code =
-                      procView_RecordAppNoAndDocIdByAppNo[0].application_code;
-                    let application_detail_id =
-                      procView_RecordAppNoAndDocIdByAppNo[0]
-                        .application_detail_id;
-                    const SavedFiles: any = await this.service
-                      .getAllDocuments(application_code, application_detail_id)
-                      .toPromise();
-                    this.ApplicationNumberlist[index].nofiles =
-                      SavedFiles.length;
-                    // console.log(
-                    //   "🚀 ~ RecordComponent ~ this.activatedRoute.params.subscribe ~ ApplicationNumberlist:",
-                    //   this.ApplicationNumberlist
-                    // );
+                // this.ApplicationNumberlist.forEach((item, index) => {
+                //   this.shownofilesArray[index] = true; 
+                // });
+              // this.service.getserviceapi().subscribe((service: any) => {
+              //   const serviceCounts = {};
+              //   this.ApplicationNumberlist.forEach((application) => {
+              //     const code = application.services_service_code;
+              //     serviceCounts[code] = (serviceCounts[code] || 0) + 1;
+              //   });
 
-                    counter++;
-                  }
-                }
-              }
+              //   this.Services = service.filter((service) => {
+              //     const code = service.service_code;
+              //     return (
+              //       !serviceCounts.hasOwnProperty(code) ||
+              //       serviceCounts[code] < 2
+              //     );
+              //   });
+              // });
+              // if (this.ApplicationNumberlist.length > 0) {
+              //   applicationLength = this.ApplicationNumberlist.length;
+              //   for (
+              //     let index = 0;
+              //     index < this.ApplicationNumberlist.length;
+              //     index++
+              //   ) {
+              //     const element = this.ApplicationNumberlist[index];
+              //     const DocIdByAppNo: any = await this.service
+              //       .getDocIdByAppNo(element.application_number)
+              //       .toPromise();
+              //     let procView_RecordAppNoAndDocIdByAppNo =
+              //       DocIdByAppNo.procView_RecordAppNoAndDocIdByAppNos;
+              //     if (procView_RecordAppNoAndDocIdByAppNo.length > 0) {
+              //       let application_code =
+              //         procView_RecordAppNoAndDocIdByAppNo[0].application_code;
+              //       let application_detail_id =
+              //         procView_RecordAppNoAndDocIdByAppNo[0]
+              //           .application_detail_id;
+              //       const SavedFiles: any = await this.service
+              //         .getAllDocuments(application_code, application_detail_id)
+              //         .toPromise();
+              //       this.ApplicationNumberlist[index].nofiles =
+              //         SavedFiles.length;
+              //       // console.log(
+              //       //   "🚀 ~ RecordComponent ~ this.activatedRoute.params.subscribe ~ ApplicationNumberlist:",
+              //       //   this.ApplicationNumberlist
+              //       // );
+
+              //       counter++;
+              //     }
+              //   }
+              // }
             }
           }
           resolve(counter === applicationLength);
@@ -1888,6 +1939,27 @@ export class RecordComponent implements OnChanges {
       });
     });
   }
+ async eachfileupload(application_number){
+  const DocIdByAppNo: any = await this.service
+  .getDocIdByAppNo(application_number)
+  .toPromise();
+let procView_RecordAppNoAndDocIdByAppNo =
+  DocIdByAppNo.procView_RecordAppNoAndDocIdByAppNos;
+if (procView_RecordAppNoAndDocIdByAppNo.length > 0) {
+  let application_code =
+    procView_RecordAppNoAndDocIdByAppNo[0].application_code;
+  let application_detail_id =
+    procView_RecordAppNoAndDocIdByAppNo[0]
+      .application_detail_id;
+  const SavedFiles: any = await this.service
+    .getAllDocuments(application_code, application_detail_id)
+    .toPromise();
+  // this.nofiles =
+  //   SavedFiles.length;
+  this.fileCounts[application_number] =SavedFiles.length == 0 ? 0 :SavedFiles.length;
+   
+}
+ }
   getSDPID(subcity: string): string {
     switch (subcity) {
       case "arada":

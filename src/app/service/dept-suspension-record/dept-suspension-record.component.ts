@@ -217,10 +217,22 @@ export class DeptSuspensionRecordComponent implements OnChanges {
   }
 
   closeModal(customer) {
-    this.deptSuspensionRecord.suspended_By = customer.customer_ID;
-    console.log("closeing.....");
-    console.log("closeing.....", customer.customer_ID);
-    // this.ngxSmartModalService.getModal(modal).close();
+    if (
+      customer.customer_ID == '00000000-0000-0000-0000-000000000000'
+    ) {
+      const toast = this.notificationsService.warn(
+        "warn",
+        "you must enter existing customer with account . you must enter different customer "
+      );
+      return;
+    }
+      else{
+
+        this.deptSuspensionRecord.suspended_By = customer.customer_ID;
+        console.log("closeing.....");
+        console.log("closeing.....", customer.customer_ID);
+        // this.ngxSmartModalService.getModal(modal).close();
+      }
   }
 }
 

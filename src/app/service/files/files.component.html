@@ -12,6 +12,7 @@
                 <th translate>No</th>
                 <th translate>Document</th>
                 <th translate>Attachment</th>
+                
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-RequerdDocpre let-rowIndex="rowIndex" *ngFor="let RequerdDocpre of RecordComponent.RequerdDocspre;let ok of hide; let i = index;">
@@ -64,9 +65,9 @@
   
     </button>
                       <p-dialog [(visible)]="preview" header="Preview" [responsive]="true" [width]="900" [minY]="70"
-[baseZIndex]="10000" [contentStyle]="{ 'overflow-x': 'hidden', 
- 'max-height': '80vh','min-height':'400px'}" [closable]="false">
+[baseZIndex]="10000" [contentStyle]="{ 'overflow-x': 'hidden', 'max-height': '80vh','min-height':'400px'}" [closable]="false">
 <div *ngIf="documentss">
+ 
 <div
 *ngIf="mimeExtension[this.mimeTypee].extension == 'pdf'">
  <iframe width="100%" height="400px" alt="FileUPloaded" class="pdf-ifram"  [src]="documents">
@@ -86,13 +87,16 @@
 [download]="RequerdDocpre.description_en + '.' + mimeExtension[this.mimeTypee].extension" style="font-weight: bolder; font-size: larger;font-style: italic;">Attached
 -
 Please download!</a>
+
 </div>
+<h3 ><span class="badge badge-warning" style="align-self: right;">Attached BY:{{attachedBY}}</span></h3>
 
 </div>
  <div *ngIf="!documentss">
    <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s"></p-progressSpinner></div>
    
   <p-footer>
+    
     <button type="button"  *ngIf="userid==useridfromdoc && documentss" class="btn btn-danger" [id]="'r'+ i" (click)="removeUpload(RequerdDocpre)"
                             translate="">Remove</button>
      <button style="align-self: right;" type="button" [hidden]="!documentss" class="btn btn-primary" (click)="preview=false" translate>Close</button>
@@ -194,6 +198,7 @@ Please download!</a>
                     </div>
                   </div>
                 </td>
+            
               </tr>
             </ng-template>
           </p-table>

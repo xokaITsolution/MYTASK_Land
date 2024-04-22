@@ -3464,7 +3464,7 @@ export class GisMapComponent implements AfterViewInit {
         "🚀 ~ processcoordinates ~ allmultiplshape:",
         this.ServiceService.coordinate
       );
-      this.map.removeControl(this.drawControll);
+      //this.map.removeControl(this.drawControll);
     }
   }
 
