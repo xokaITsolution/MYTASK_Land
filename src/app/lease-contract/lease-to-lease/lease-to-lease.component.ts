@@ -35,6 +35,7 @@ export class LeaseToLeaseComponent implements OnInit {
       console.log("Observable Params:", p);
       // this.ServiceService.tiltledeed = p["AppNo"];
       this.AppNo = p["AppNo"];
+      debugger
     });
     this.newLeaseTolease.ID = Guid.create().toString();
     // this.Get_Lease_contract();
