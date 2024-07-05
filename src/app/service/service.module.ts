@@ -107,16 +107,23 @@ import { GisMapBackupComponent } from "./gis-map-backup/gis-map-backup.component
 import { DndDirective } from "../shared/fileUploader/dnd.directive";
 import { FileuploaderComponent } from "../shared/fileUploader/fileuploader/fileuploader.component";
 import { ProgressComponent } from "../shared/fileUploader/progress/progress.component";
+import { LeaseContractModule } from "../lease-contract/lease-contract.module";
 import { NetworkDatabaseMonitoringToolComponent } from "./network-database-monitoring-tool/network-database-monitoring-tool.component";
 import { NetworkMonitoringService } from "./network-database-monitoring-tool/network-monitoring.service";
 import { DatabaseMonitoringService } from "./network-database-monitoring-tool/database-monitoring.service";
+import { FilterPipe } from "./FilterPipe";
+
+import {MyLibModule} from 'my-lib'
+
+
 @NgModule({
   imports: [
+    MyLibModule,
     QRCodeModule,
     //BackButtonDisableModule.forRoot({
     //  preserveScrollPosition: true
     // }),
-
+    BlockUIModule,
     ReactiveFormsModule,
     NgbModule,
     FormsModule,
@@ -172,6 +179,7 @@ import { DatabaseMonitoringService } from "./network-database-monitoring-tool/da
     MatGridListModule,
     MatCardModule,
     MatCheckboxModule,
+    LeaseContractModule,
     MatIconModule,
     MatDialogModule,
     MatProgressBarModule,
@@ -180,6 +188,7 @@ import { DatabaseMonitoringService } from "./network-database-monitoring-tool/da
   ],
 
   declarations: [
+    FilterPipe,
     ProgressComponent,
     FileuploaderComponent,
     DndDirective,

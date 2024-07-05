@@ -25,12 +25,16 @@
             {{ licenceData.Application_No }}
           </th>
           <th id="serviceName" scope="col" translate>
-            <span for="serviceName" translate> Plot ID :</span>
+            <span for="serviceName" translate> service :</span>
             {{ licenceData.Service_Name }}
           </th>
           <th id="parcel" scope="col" translate>
             <span for="parcel" translate> Plot ID:</span>
             {{ licenceData.Parcel_ID }}
+          </th>
+          <th id="parcel" scope="col" translate  >
+            <span for="parcel" translate> Title deed no:</span>
+            {{ licenceData.Property_ID }}
           </th>
     
           <th>
@@ -58,6 +62,7 @@
               <th translate>Email</th>
               <th translate>QueueNo</th>
               <th translate>Message</th>
+              <th  translate>seller</th>
              
             </tr>
             <tr *ngIf="custmerInformation">
@@ -69,6 +74,7 @@
               <td >{{ custmerInformation.email }}</td>
               <td >{{ custmerInformation.queueNo }}</td>
               <td ><button type="button" class="btn btn-primary m-2" (click)="showMessage(licenceData.Application_No)"> Message</button></td>
+              <td  ><button type="button" class="btn btn-primary m-2" (click)="isDialogVisible()"> seller/ሻጭ</button></td>
             </tr>
           </thead>
         </table>
@@ -259,6 +265,12 @@
                
                   <app-record [useNamelist]="useNamelist"  (completed)="saveFormm2()"></app-record>
               </div>
+              <div *ngIf="ID==14">
+                <app-land-wizard [AppNo]="AppNo"></app-land-wizard>
+              </div>
+              <div *ngIf="ID==13">
+               <app-lease-contract (completed)="EnableFinss();plot();saveFormmplot('{}');"></app-lease-contract>
+            </div>
               <div *ngIf="ID==9">
                 <app-property (completed)="saveFormm('{}');" (getpro)="getPropertyTypeLookUP()" [LicenceData]="licenceData"
                         [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="false" [AppNo]="AppNo"
@@ -266,6 +278,18 @@
                       </app-property> 
                     
                 </div>
+                <div *ngIf="ID==20">
+                  <!-- <lib-lease-bid [custid]=1></lib-lease-bid> -->
+                  <lib-bid-detail (completed)="saveFormm('{}');"></lib-bid-detail>  
+                      
+                  </div>
+                  <div *ngIf="ID==21">
+                    <lib-lease-yearly-bid-plan (completed)="saveFormm('{}');"></lib-lease-yearly-bid-plan> 
+                       
+                    </div>
+                    <div *ngIf="ID==22">
+                      <lib-lease-ready-for-bid (completed)="saveFormm('{}');"></lib-lease-ready-for-bid> 
+                      </div>
               <div *ngIf="ID==404;" translate>
                 Form not found
               </div>
@@ -289,6 +313,7 @@
     </div>
 
   </div>
+  
   <!--The content below is only a placeholder and can be replaced.-->
   <div class="p-3 border-secondary border-5 bg-secondary text-white h-10 text-center m-10 mt-10">
     <div class="btn-group">
@@ -315,13 +340,13 @@
           <a
             class="dropdown-item"
             *ngIf="tskTyp != 'c800fb16-f961-e111-95d6-00e04c05559b'"
-            (click)="Submit('00000000-0000-0000-0000-000000000000')"
+            (click)="isconfirmsaveplot=true"
             >Submit/ላከው</a
           >
           <span *ngIf="tskTyp == 'c800fb16-f961-e111-95d6-00e04c05559b'">
             <span *ngFor="let DropDownLists of DropDownList">
             <a class="dropdown-item"
-            (click)="showdialog(DropDownLists.task_rules_code, DropDownLists.rule_Code)">{{ language === 'amharic' ? DropDownLists.decision_rule_Local : DropDownLists.decision_rule_en }}
+            (click)="confirm2(DropDownLists.task_rules_code, DropDownLists.rule_Code)">{{ language === 'amharic' ? DropDownLists.decision_rule_Local : DropDownLists.decision_rule_en }}
             </a>
               <li class="divider dropdown-divider"></li>
             </span>
@@ -350,8 +375,9 @@
   <button class="btn btn-primary mr-2" (click)="Close()" translate>Pend & close</button>
 
   </div>
+ </div>
 </div>
-</div>
+
 <div *ngIf="okdb" _ngcontent-c5="" class="col-md-12" ><!----><div _ngcontent-c5="" class="ng-star-inserted"><div _ngcontent-c5="" class="p-3 bg-success text-white"><table _ngcontent-c5="" class="table"><thead _ngcontent-c5=""><tr _ngcontent-c5=""><th _ngcontent-c5="" scope="col"><span _ngcontent-c5="" translate="">Status: Database</span></th></tr></thead></table></div></div><!----></div>
 
 <div *ngIf="!okdb"  _ngcontent-c5="" class="col-md-12"  ><!----><div _ngcontent-c5="" class="ng-star-inserted"><div _ngcontent-c5="" class="p-3 bg-danger text-white"><table _ngcontent-c5="" class="table"><thead _ngcontent-c5=""><tr _ngcontent-c5=""><th _ngcontent-c5="" scope="col"><span _ngcontent-c5="" translate="">Status: Database</span></th></tr></thead></table></div></div><!----></div>
@@ -383,11 +409,13 @@
     <div class="aa">
       <div class="col-sm-2" translate>Application No</div>
       <div class="aa">
-        <select *ngIf="ifAppNo" class="form-control" [(ngModel)]="AppN" (change)="getappdataForeach(AppN)"
-          name="CustomerType" id="ApplicationLIst">
+        <!-- Add a search input box -->
+        <input type="text" [(ngModel)]="searchTextapplication" placeholder="Search...">
+        <select *ngIf="ifAppNo" class="form-control" [(ngModel)]="AppN" (change)="getappdataForeach(AppN)" name="CustomerType" id="ApplicationList">
           <option disabled>select</option>
-          <option *ngFor="let AppNo of ApplicationNumberlist" [value]="AppNo.application_number">{{AppNo.application_number}} | {{AppNo.title_Deed_No}}| {{AppNo.service_Name}} | {{AppNo.application_Date}}</option>
+          <option *ngFor="let AppNo of ApplicationNumberlist | filter: searchTextapplication" [value]="AppNo.application_number">{{AppNo.application_number}} | {{AppNo.title_Deed_No}} | {{AppNo.service_Name}} | {{AppNo.application_Date}}</option>
         </select>
+        
       </div>
     </div>
     <div *ngIf="ifTask && !showdWhenNoTodo" class="aa" >
@@ -484,7 +512,7 @@
               
               </div>
         <div *ngIf="preAppID==12">
-        <app-record [useNamelist]="useNamelist"  [disable]="true"></app-record>
+        <app-record [useNamelist]="useNamelist"  [disable]="true" ></app-record>
               
               </div>
               <!-- <div *ngIf="preAppID==6" id="dform">
@@ -529,7 +557,12 @@
                    
                   <div *ngIf="mimeExtension[RequerdDocpre.mimeType].extension == 'pdf'">
                   
-                  <button type="button" class="btn btn-primary" id="Preview{{i}}" (click)="PreviewshowdialogeArray[i] = true">Preview</button>
+                    <button type="button" class="btn btn-primary" id="Preview{{i}}" *ngIf="!RequerdDocpre.dar" (click)="PreviewshowdialogeArray[i] = true">Preview</button>
+                    <div class="carddd"  *ngIf="RequerdDocpre.dar">
+                      <p >You can check the document in <b style="color: green;">(PreviewDar)</b> or <b style="color: green;">(PreviewnotDar and MergedDAR)</b>/ሰነዱን በ <b style="color: green;">(PreviewDar)</b> ወይም <b style="color: green;">(PreviewnotDar and MergedDAR)</b> ውስጥ መፈለግ ይችላሉ</p>
+                  </div> <br> <button type="button" class="btn btn-primary sp" id="Preview{{i}}"  *ngIf="RequerdDocpre.dar"    (click)="previewdar(i);PreviewshowdialogeArray[i] = true" style="margin-right: 10px;">PreviewDar</button>
+                    <button type="button" class="btn btn-success" id="Preview{{i}}"  *ngIf="RequerdDocpre.dar"  (click)="previewnotdar(i);PreviewshowdialogeArray[i] = true">PreviewnotDar and MergedDAR</button>
+  
                  
                   <p-dialog [(visible)]="PreviewshowdialogeArray[i]"  header="Preview" [responsive]="true" [width]="900" [minY]="70"
                     [baseZIndex]="10000" [contentStyle]="{ 'overflow-x': 'hidden', 
@@ -542,6 +575,9 @@
                       <iframe width="100%" height="400px" [src]="RequerdDocpre.File" alt="FileUploaded" class="pdf-iframe">
 
                       </iframe>
+                      <a [href]="RequerdDocpre.File"
+                      [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType].extension">Attached -
+                      Please download!</a>
                     </div>
                     <div>
                     <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = false">close</button>
@@ -1131,3 +1167,59 @@
       <button type="button" class="btn btn-primary" (click)="closeModalme('messages')" translate>Done</button>
     
     </p-dialog>
+  
+   
+    <p-dialog [header]="'Confirmation' | translate" [(visible)]="isconfirmsaveplot" [responsive]="true" [width]="300"
+  [minY]="40" [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                           'max-height': '80vh','min-height':'50px'}">
+  <p translate>
+    Are you sure that you want to proceed/እርግጠኛ ነዎት መቀጠል ይፈልጋሉ?
+  </p>
+
+  <p-footer>
+    <button type="button" pButton icon="pi pi-check" (click)="isconfirmsaveplot=false;confirm1()"
+      [label]="'yes' | translate"></button>
+    <button type="button" pButton icon="pi pi-close" (click)="isconfirmsaveplot=false" [label]="'no'| translate "
+      class="ui-button-secondary"></button>
+  </p-footer>
+</p-dialog>
+  
+<p-dialog [header]="'Confirmation' | translate" [(visible)]="isconfirmsaveAR" [responsive]="true" [width]="300"
+[minY]="40" [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                         'max-height': '80vh','min-height':'50px'}">
+<p translate>
+  Are you sure that you want to proceed/እርግጠኛ ነዎት መቀጠል ይፈልጋሉ?
+</p>
+
+<p-footer>
+  <button type="button" pButton icon="pi pi-check" (click)="isconfirmsaveAR=false;confirm3()"
+    [label]="'yes' | translate"></button>
+  <button type="button" pButton icon="pi pi-close" (click)="isconfirmsaveAR=false" [label]="'no'| translate "
+    class="ui-button-secondary"></button>
+</p-footer>
+</p-dialog>
+
+<p-dialog header="Seller Information" [visible]="isconfirmseller"   [responsive]="true" [width]="400" [baseZIndex]="10000">
+  <div class="id-card" *ngIf="customerdata.length > 0">
+    <div class="id-card-header">
+      <img *ngIf="customerdata[0].photo" [src]="'data:image/jpeg;base64,' + customerdata[0].photo" alt="Customer Photo" class="customer-photo">
+    </div>
+    <div class="id-card-body">
+      <h2>{{ customerdata[0].applicant_First_Name_EN }} {{ customerdata[0].applicant_Middle_Name_En }} {{ customerdata[0].applicant_Last_Name_EN }}</h2>
+      <p><strong>Address:</strong> {{ customerdata[0].address }}</p>
+      <p><strong>Woreda:</strong> {{ customerdata[0].wereda_ID }}</p>
+      <p><strong>ID:</strong> {{ sellerkebeleid }}</p>
+    </div>
+  </div>
+  <p-footer>
+    <button type="button" pButton icon="pi pi-check" (click)="isconfirmseller =false" label="OK"></button>
+  </p-footer>
+</p-dialog>
+
+
+
+
+
+<!-- <p-blockUI [blocked]="blocked">
+  <i class="fa fa-lock fa-5x" style="position:absolute;top:25%;left:50%"></i>
+</p-blockUI> -->

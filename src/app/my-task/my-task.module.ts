@@ -28,6 +28,7 @@ import { MessageService } from 'primeng/api';
 import { PersonComponent } from './person/person.component';
 import { ArchiveComponent } from './archive/archive.component';
 import { NgxDocViewerModule } from 'ngx-doc-viewer';
+import { OtpComponent } from './my-task/otp/otp.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -59,7 +60,7 @@ import { NgxDocViewerModule } from 'ngx-doc-viewer';
     TranslateModule.forChild({}),
     NgxSmartModalModule.forChild(),
   ],
-  declarations: [TaskComponent, MyTaskComponent, PersonComponent,SupervisorTaskComponent, ArchiveComponent,],
+  declarations: [TaskComponent, MyTaskComponent, PersonComponent,SupervisorTaskComponent, ArchiveComponent, OtpComponent,],
   providers: [MyTaskService, MessageService, NgxSmartModalService]
 })
 export class MyTaskModule {

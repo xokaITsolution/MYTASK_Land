@@ -45,8 +45,8 @@
               (click)="IsLockedBy_OtherUser(task)" translate>
               Pick
             </button></td>
-          <td>
-            <button type="button" class="btn btn-primary" (click)="openModal(task)" translate>assign</button>
+          <td >
+            <button type="button" *ngIf="task.user_roles_id !='51f75ae2-2d81-4702-ba4f-2c46ac6d8d9d'" class="btn btn-primary" (click)="openModal(task);getSupportedInputTypes(task)" translate>assign</button>
           </td>
         </tr>
       </ng-template>
@@ -81,8 +81,6 @@
 
 <p-dialog header="List of Users" [(visible)]="isAccountVisible" [style]="{ width: '30vw' }" [draggable]="false"
   [resizable]="false" [maximizable]="true" [baseZIndex]="10000">
-
-
     <div class="col-sm-12 row  m-3">
       <label for="IssuedBy" class="col-sm-4 col-form-label" translate>Select user</label>
       <div class="col-sm-8">
@@ -98,7 +96,6 @@
         <button type="button" class="btn btn-primary" (click)="assign('empList');" translate>Assign</button>
       </div>
     </div>
-
 </p-dialog>
 
 

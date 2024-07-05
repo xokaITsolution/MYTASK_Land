@@ -23,6 +23,7 @@ import { Guid } from "guid-typescript";
 })
 export class PersonComponent implements OnChanges {
   modalRef: BsModalRef;
+  nationalid
   mobNumberPattern = "^((\\+91-?)|0)?[0-9]{10}$";
   @Output() updated = new EventEmitter<Person>();
   @Input() LicenceData;
@@ -57,6 +58,8 @@ export class PersonComponent implements OnChanges {
   globvar: any;
   language: string;
   iform: boolean = false;
+  customerusername: any;
+  disable: boolean;
   constructor(
     private modalService: BsModalService,
     private serviceService: ServiceService,
@@ -78,6 +81,7 @@ export class PersonComponent implements OnChanges {
     //     this.getMSEEmployees();
     //     this.getErcaTinNos();
     //     console.log("sing ::",this.singleWin);
+   
     this.person.customer_ID = Guid.create();
     this.person.customer_ID = this.person.customer_ID.value;
     this.getLookups();
@@ -87,6 +91,7 @@ export class PersonComponent implements OnChanges {
     this.getcostemerbyuserid();
     this.getcustomerworkfrom();
     this.GetLookups();
+    
     // this.placeHolderImage = this.sanitizer.bypassSecurityTrustResourceUrl(
     //   `${environment.phisicalPath}../images.jpg`
     // )
@@ -117,6 +122,15 @@ export class PersonComponent implements OnChanges {
     });
   }
   getcostumerbyid(globvar) {
+    if(globvar.includes('OI0') || globvar.includes('OT0')){
+      this.disable=false
+      this.disabled=false
+    }
+    else{
+      this.disabled=true
+      this.disable=true
+    }
+    this.customerusername=globvar
     this.serviceService.getcustomerAll(globvar).subscribe((resp: any) => {
       this.customerdata = resp.procCustomers;
     });
@@ -422,10 +436,31 @@ export class PersonComponent implements OnChanges {
       }
     );
   }
+  updateApi(){
+    this.serviceService.getUserRole().subscribe((response: any) => {
+      console.log("responseresponseresponse", response, response[0].RoleId);
+      this.person.updated_By = response[0].UserId;
+      this.person.updated_Date = new Date();
+    let data ={ tin : this.customerusername+ "::" + this.person.updated_By}
+    this.serviceService.UpdateCustomerAPI(data).subscribe(
+      (CustID) => {
+        this.getcostumerbyid(this.customerusername);
+        const toast = this.notificationsService.success(
+          "Sucess",
+          "Succesfully edited"
+        );
+        this.iform=false
+      })})
+  }
 
   update() {
+    this.serviceService.getUserRole().subscribe((response: any) => {
+      console.log("responseresponseresponse", response, response[0].RoleId);
+      this.person.updated_By = response[0].UserId;
+      this.person.updated_Date = new Date();
     this.serviceService.UpdateCustomer(this.person).subscribe(
       (CustID) => {
+     
         this.getcostumerbyid(this.person.customer_ID);
         const toast = this.notificationsService.success(
           "Sucess",
@@ -439,6 +474,7 @@ export class PersonComponent implements OnChanges {
         );
       }
     );
+  })
     // this.getcostemerbyuserid()
   }
 }

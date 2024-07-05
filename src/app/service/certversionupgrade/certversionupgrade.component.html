@@ -1,13 +1,25 @@
 <div class="row m-3">
     <div class="col-md-6" *ngIf="!displayGIS">
-        <p-table [value]="BaseTablefinal" [paginator]="true" [rows]="3">
+        <p-table #cert_tabl [value]="BaseTablefinalALL.flat()" [paginator]="true" [rows]="3" [globalFilterFields]="['Title_Deed_No']">
+            <ng-template pTemplate="caption">
+                <div class="flex">
+                  <span class="p-input-icon-left ml-auto">
+                    <div style="width: 40%;">
+                      <i class="pi pi-search"></i>
+                      <input class="form-control" (input)="cert_tabl.filterGlobal($event.target.value, 'contains')"
+                        placeholder="Search by property ID " />
+            
+                    </div>
+                  </span>
+                </div>
+              </ng-template>
             <ng-template pTemplate="header">
                 <tr>
                     <th scope="col" translate>Title Deed No</th>
                     <!-- <th scope="col" translate>Registration Date</th> -->
                     <th scope="col" translate>{{Fields.FIELD_ONE}}</th>
                     <th scope="col">
-                        <div *ngIf="BaseTablefinal">
+                        <div *ngIf="BaseTablefinalALL.flat()">
                             <!--<button type="button" *ngIf="BaseTable.length < noadds && !disable" class="btn btn-primary" (click)="AddBase('NewCretafcateBase')">AddNew</button></div>-->
                             <!-- <button type="button" *ngIf="!disable" class="btn btn-primary" (click)="AddBase(template)"
                                 translate>AddNew</button> -->

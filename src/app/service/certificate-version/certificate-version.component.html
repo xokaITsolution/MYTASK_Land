@@ -358,9 +358,9 @@
 
     <!-- </div> -->
   </div>
-  <button type="button" class="btn btn-primary" *ngIf="!isnew" (click)="Save()" [disabled]="!f.valid"
+  <button type="button" class="btn btn-primary" *ngIf="!isnew && !serviceService.itcanntupdate" (click)="Save()" [disabled]="!f.valid"
     translate>Update</button>
-  <button type="button" class="btn btn-primary" *ngIf="isnew" (click)="add()" [disabled]="!certificateVersion.is_Active"
+  <button type="button" class="btn btn-primary" *ngIf="isnew && !serviceService.itcanntupdate" (click)="add()" [disabled]="!certificateVersion.is_Active"
     translate>Save</button>
     <span style="color: red;" *ngIf="!certificateVersion.is_Active"> click check box is_active is mandatory </span>
 </form>

@@ -1,0 +1,70 @@
+<!-- <div>
+    <div>
+      <p-table #structure [value]="contractList" [paginator]="true" [rows]="10">
+        <ng-template pTemplate="header">
+          <tr>
+            <th translate>contact_type</th>
+            <th translate>contract_date</th>
+            <th></th>
+            <th>
+              <button class="btn btn-primary" type="button" (click)="showForm=true" translate>
+                Add New
+              </button>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-lease_contract>
+          <tr>
+            <td>{{lease_contract.contact_Type}}</td>
+            <td>{{lease_contract.contract_date}}</td>
+            <td>
+              <button class="btn btn-primary" type="button" (click)="selected(lease_contract)" *ngIf="enable_edit" translate>
+                Edit
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  
+  <div *ngIf="showForm" class="container">
+    <div class="card">
+      <h2>Construction Review</h2>
+      <div class="form-container">
+        <section>
+          <div class="p-fluid">
+            <div class="field">
+              <label for="customer_id">Property ID</label>
+              <input class="form-control" #customer_id="ngModel" id="customer_id" type="text"
+                required pInputText [(ngModel)]="newLevel.CID" />
+            </div>
+            <div class="field">
+              <label for="status">Status</label>
+              <input class="form-control" #status="ngModel" id="status" type="checkbox" required pInputText
+                [disabled]="true" [(ngModel)]="leaserPaymentHead.status" />
+            </div>
+          </div>
+        </section>
+        
+        <section class="form-column">
+          <div class="p-fluid">
+            <div class="field">
+              <label for="date">Date</label>
+              <input class="form-control" #date="ngModel" [disabled]="true"
+                id="date" type="date" required pInputText [(ngModel)]="leaserPaymentHead.date" />
+            </div>
+          </div>
+        </section>
+      </div>
+  
+      <div class="card-footer">
+        <button class="btn btn-secondary btn-success" type="button" label="Update"
+          (click)="InsertnewConReviewTran();showFormdetail=true">Save</button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="showFormdetail">
+    <app-con-review-transaction-detail></app-con-review-transaction-detail>
+  </div>
+   -->

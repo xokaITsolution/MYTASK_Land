@@ -122,6 +122,10 @@ export class ThemComponent implements OnChanges {
     this.themCertificateVersion.application_No =
       this.licenceData.Application_No;
     this.themCertificateVersion.to_Do_ID = this.todoid;
+    this.serviceService.getUserRole().subscribe((response: any) => {
+      console.log("responseresponseresponse", response, response[0].RoleId);
+      this.themCertificateVersion.created_By = response[0].UserId;
+      //this.themCertificateVersion.created_Date = new Date();
     this.themService.saveapi(this.themCertificateVersion).subscribe(
       (deptSuspension) => {
         console.log("deptSuspension");
@@ -147,7 +151,8 @@ export class ThemComponent implements OnChanges {
         }
       }
     );
-    console.log("saveing....");
+  })
+    //console.log("saveing....");
   }
 
   Delete() {
@@ -206,6 +211,10 @@ export class ThemComponent implements OnChanges {
     this.themCertificateVersion.application_No =
       this.licenceData.Application_No;
     this.themCertificateVersion.to_Do_ID = this.todoid;
+    this.serviceService.getUserRole().subscribe((response: any) => {
+      console.log("responseresponseresponse", response, response[0].RoleId);
+      this.themCertificateVersion.updated_By = response[0].UserId;
+     // this.themCertificateVersion.updated_Date = new Date();
     this.themService.Addapi(this.themCertificateVersion).subscribe(
       (deptSuspension) => {
         console.log("deptSuspension");
@@ -232,8 +241,8 @@ export class ThemComponent implements OnChanges {
           );
         }
       }
-    );
-    console.log("saveing....");
+    );})
+    //console.log("saveing....");
   }
 
   addThem() {
@@ -331,4 +340,8 @@ class ThemCertificateVersion {
   public application_No;
   public to_Do_ID;
   public customer_ID:any;
+  public created_Date;
+  public updated_Date ;
+  public created_By ;
+  public updated_By ;
 }

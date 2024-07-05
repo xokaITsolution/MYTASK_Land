@@ -107,7 +107,7 @@ export class GisMapComponent implements AfterViewInit {
   multishapearray: any[] = [];
   drawControll: any;
   allcoordenatezone: any[] = [];
-
+  is_validloading:boolean=true
   constructor(
     public ServiceService: ServiceService,
     private messageService: MessageService,
@@ -232,6 +232,8 @@ export class GisMapComponent implements AfterViewInit {
           }
         }
       }
+    }else{
+      this.is_validloading=false
     }
 
     //this.initMap();
@@ -432,10 +434,13 @@ export class GisMapComponent implements AfterViewInit {
                 this.layers.push(newLayer);
               } else {
                 //
+                let newBaseUrl = "https://ct.addisland.gov.et:8443";
+                let currentUrl = item.href;
+                let updatedUrl = currentUrl.replace("http://10.32.141.15:8080", newBaseUrl);
                 console.log("This is layergroup:", item.name);
                 // Perform actions for groups or other types
                 var woredalayers = await this.geoser
-                  .getLayersFromGeoserver(item.href)
+                  .getLayersFromGeoserver(updatedUrl)
                   .toPromise();
                 // let keys = Object.keys(woredalayers)
                 var woredalayers =
@@ -521,7 +526,256 @@ export class GisMapComponent implements AfterViewInit {
       // else{}
     }
   }
+  async toggleLayer_expandf(event) {
+    if (this.subcity == "central_AddisLand") {
+    } else {
+      //
+      console.log("event", event);
+      if (
+        event.parent == undefined ||
+        event.parent == "central spatial data"
+      ) {
+        // this.fetchedGroups.push(event.node.label);
+        const group = this.fetchedGroups.find(
+          (fetched) => fetched === event.label
+        );
+        // if (event.node.parent == "AddisLand") {
+        //   console.log("🚀 ~ toggleLayer_expand ~ parent:", event.node.parent)
+        // }
+        if (event.node.parent == "central spatial data") {
+          if (group) {
+            console.log("🚀 ~ toggleLayer_expand ~ group:", group);
+          } else {
+            this.fetchedGroups.push(event.label);
+            var AddisLand = await this.geoser
+              .getLayersFromGeoserver(event.value)
+              .toPromise();
+            let keys = Object.keys(AddisLand);
+            if (keys[0] == "layer") {
+              const newLayer: Layer = {
+                name: AddisLand.layername,
+                vectorLayer: null,
+                tileLayer: null,
+              };
+              this.GetFeatureCapablities(
+                AddisLand.layername,
+                newLayer,
+                event.workspace
+              );
+              this.Centralspatial.push(newLayer);
+            }
+            var AddisLandGroups = AddisLand.layerGroup.publishables.published;
+            // if (typeof AddisLandGroups === 'object') {
+            if (Array.isArray(AddisLandGroups)) {
+              console.log(
+                "🚀 ~ toggleLayer_expand ~ AddisLandGroups:",
+                AddisLandGroups
+              );
+            } else {
+              AddisLandGroups = this.json2array(AddisLandGroups);
+              // console.log("subcities", this.subcities);
+            }
+            // }
+            for (let i = 0; i < AddisLandGroups.length; i++) {
+              var centralspatial_sub = await this.geoser
+                .getLayersFromGeoserver(AddisLandGroups[i].value)
+                .toPromise();
+              let keys = Object.keys(centralspatial_sub);
+              if (keys[0] == "layer") {
+                const newLayer: Layer = {
+                  name: centralspatial_sub.layername,
+                  vectorLayer: null,
+                  tileLayer: null,
+                };
+                this.GetFeatureCapablities(
+                  AddisLand.layername,
+                  newLayer,
+                  event.workspace
+                );
+                this.Centralspatial.push(newLayer);
+              }
+            }
+          }
+        } else {
+          if (group) {
+            console.log("🚀 ~ toggleLayer_expand ~ group:", group);
+          } else {
+            this.fetchedGroups.push(event.node.label);
+            var AddisLand = await this.geoser
+              .getLayersFromGeoserver(event.value)
+              .toPromise();
+            //
+            let keys = Object.keys(AddisLand);
+            var subcityGroups = AddisLand.layerGroup.publishables.published;
+            // if (typeof AddisLandGroups === 'object') {
+            if (Array.isArray(subcityGroups)) {
+              console.log(
+                "🚀 ~ toggleLayer_expand ~ AddisLandGroups:",
+                subcityGroups
+              );
+            } else {
+              subcityGroups = this.json2array(subcityGroups);
+              // console.log("subcities", this.subcities);
+            }
+            // }
+            for (let i = 0; i < subcityGroups.length; i++) {
+              const element = subcityGroups[i].name.split(":");
+              subcityGroups[i].name = element[1];
+              subcityGroups[i].workspace = element[0];
+              const newLayer: Layer = {
+                name: subcityGroups[i].name,
+                vectorLayer: null,
+                tileLayer: null,
+              };
+              this.GetFeatureCapablities(
+                subcityGroups[i].name,
+                newLayer,
+                subcityGroups[i].workspace
+              );
+              this.Centralspatial.push(newLayer);
+              // }
+            }
+          }
+        }
+      } else if (
+        event.node.label == this.subcity ||
+        event.node.parent.label == this.subcity
+      ) {
+        //
+        const group = this.fetchedGroups.find(
+          (fetched) => fetched === event.label
+        );
+        if (event.node.parent.label == this.subcity) {
+          if (group) {
+            console.log("🚀 ~ toggleLayer_expand ~ group:", group);
+          } else {
+            //
+            this.fetchedGroups.push(event.label);
+            var AddisLand = await this.geoser
+              .getLayersFromGeoserver(event.value)
+              .toPromise();
+            let keys = Object.keys(AddisLand);
+            var subcityGroups = AddisLand.layerGroup.publishables.published;
+            if (Array.isArray(subcityGroups)) {
+              console.log(
+                "🚀 ~ toggleLayer_expand ~ AddisLandGroups:",
+                subcityGroups
+              );
+            } else {
+              subcityGroups = this.json2array(subcityGroups);
+              // console.log("subcities", this.subcities);
+            }
+            subcityGroups.forEach(async (item: any) => {
+              // Checking the type of item
+              if (item["@type"] === "layer") {
+                //
+                // console.log("This is a layer:", item.name);
+                // Perform actions for layers
+                const element = item["name"].split(":");
+                const newLayer: Layer = {
+                  name: element[1],
+                  vectorLayer: null,
+                  tileLayer: null,
+                };
+                this.GetFeatureCapablities(element[1], newLayer, element[0]);
+                this.layers.push(newLayer);
+              } else {
+                //
+                let newBaseUrl = "https://ct.addisland.gov.et:8443";
+                let currentUrl = item.href;
+                let updatedUrl = currentUrl.replace("http://10.32.141.15:8080", newBaseUrl);
+                console.log("This is layergroup:", item.name);
+                // Perform actions for groups or other types
+                var woredalayers = await this.geoser
+                  .getLayersFromGeoserver(updatedUrl)
+                  .toPromise();
+                // let keys = Object.keys(woredalayers)
+                var woredalayers =
+                  woredalayers.layerGroup.publishables.published;
+                //;
+                if (Array.isArray(woredalayers)) {
+                  console.log(
+                    "🚀 ~ toggleLayer_expand ~ AddisLandGroups:",
+                    woredalayers
+                  );
+                } else {
+                  woredalayers = this.json2array(woredalayers);
+                  // console.log("subcities", this.subcities);
+                }
+                woredalayers.forEach(async (item: any) => {
+                  // Checking the type of item
+                  if (item["@type"] === "layer") {
+                    // console.log("This is a layer:", item.name);
+                    // Perform actions for layers
+                    const element = item["name"].split(":");
+                    const newLayer: Layer = {
+                      name: element[1],
+                      vectorLayer: null,
+                      tileLayer: null,
+                    };
+                    this.GetFeatureCapablities(
+                      element[1],
+                      newLayer,
+                      element[0]
+                    );
+                    this.layers.push(newLayer);
+                  } else {
+                    console.log("layerGroup");
+                  }
+                });
+              }
+            });
+          }
+        } else {
+          if (group) {
+            console.log("🚀 ~ toggleLayer_expand ~ group:", group);
+          } else {
+            this.fetchedGroups.push(event.label);
+            var AddisLand = await this.geoser
+              .getLayersFromGeoserver(event.value)
+              .toPromise();
+            let keys = Object.keys(AddisLand);
+            var subcityGroups = AddisLand.layerGroup.publishables.published;
+            // if (typeof AddisLandGroups === 'object') {
+            if (Array.isArray(subcityGroups)) {
+              console.log(
+                "🚀 ~ toggleLayer_expand ~ AddisLandGroups:",
+                subcityGroups
+              );
+            } else {
+              subcityGroups = this.json2array(subcityGroups);
+              // console.log("subcities", this.subcities);
+            }
+            subcityGroups.forEach((item: any) => {
+              // Checking the type of item
+              if (item["@type"] === "layer") {
+                // console.log("This is a layer:", item.name);
+                // Perform actions for layers
+                const element = item["name"].split(":");
+
+                // element[0]
+                //
+                const newLayer: Layer = {
+                  name: element[1],
+                  vectorLayer: null,
+                  tileLayer: null,
+                };
+                this.GetFeatureCapablities(element[1], newLayer, element[0]);
+                this.layers.push(newLayer);
+              } else {
+                console.log("This is layergroup:", item.name);
+                // Perform actions for groups or other types
+              }
+            });
+          }
+        }
+      }
+      // else{}
+    }
+  }
+
   toggleLayer_Checked(event) {
+    console.log("🚀 ~ toggleLayer_Checked ~ event:", event)
     // // Apply styles only to the selected node
     event.styleClass = "custom-selected-node";
     // // this.activeNode = [event.node];
@@ -536,13 +790,20 @@ export class GisMapComponent implements AfterViewInit {
       }
       console.log("event", event);
       const layerName = event.label;
+      console.log("🚀 ~ toggleLayer_Checked ~ layerName:", layerName ,this.Centralspatial)
       if (event.workspace == "AddisAbaba_AddisLand") {
-        this.layer = this.Centralspatial.find((l) => l.name === layerName);
+        if (this.Centralspatial.length > 0){
+
+          this.layer = this.Centralspatial.find((l) => l.name === layerName);
+        }else{
+          this.layer = this.nodes[0].children.find((l) => l.label === layerName);
+        }
       } else {
         this.layer = this.layers.find((l) => l.name === layerName);
         // ;
       }
-
+      console.log("🚀 ~ toggleLayer_Checked ~ layer:", this.layer)
+          
       if (this.layer && this.layer.vectorLayer) {
         event.randomColor =
           this.layer.vectorLayer.options.style === null
@@ -615,6 +876,9 @@ export class GisMapComponent implements AfterViewInit {
     this.nodes = [];
 
     for (let i = 0; i < parentgroup.length; i++) {
+      let newBaseUrl = "https://ct.addisland.gov.et:8443";
+      let currentUrl = parentgroup[0].href;
+      let updatedUrl = currentUrl.replace("http://10.32.141.15:8080", newBaseUrl);
       let a: AssignedBodyTree = {
         label: "",
         workspace: "",
@@ -624,12 +888,12 @@ export class GisMapComponent implements AfterViewInit {
       };
       a["label"] = parentgroup[0].name;
       a["workspace"] = "";
-      a["value"] = parentgroup[0].href;
+      a["value"] =updatedUrl;
       a.children = [];
       //
       // this.getcapablities(this.subcities[i].workspace);
       var centralcity = await this.geoser
-        .getLayersFromGeoserver(parentgroup[0].href)
+        .getLayersFromGeoserver(updatedUrl)
         .toPromise();
       let keys = Object.keys(centralcity);
       // console.log("wor.key", keys);
@@ -654,6 +918,9 @@ export class GisMapComponent implements AfterViewInit {
 
       // console.log("subb", this.subcities.length);
       for (let n = 0; n < this.centralAddis.length; n++) {
+        let newBaseUrl = "https://ct.addisland.gov.et:8443";
+      let currentUrl = this.centralAddis[n].href;
+      let updatedUrl = currentUrl.replace("http://10.32.141.15:8080", newBaseUrl);
         let f: AssignedBodyTree = {
           label: "",
           workspace: "",
@@ -667,16 +934,16 @@ export class GisMapComponent implements AfterViewInit {
         this.centralAddis[n].workspace = element[0];
         f["label"] = this.centralAddis[n].name;
         f["workspace"] = this.centralAddis[n].workspace;
-        f["value"] = this.centralAddis[n].href;
+        f["value"] = updatedUrl;
         f.children = [];
         a.children.push(f);
         if (this.centralAddis[n].name == "central spatial data") {
           var central = await this.geoser
-            .getLayersFromGeoserver(this.centralAddis[n].href)
+            .getLayersFromGeoserver(updatedUrl)
             .toPromise();
           // let keys = Object.keys(sub)
           var central = await this.geoser
-            .getLayersFromGeoserver(this.centralAddis[n].href)
+            .getLayersFromGeoserver(updatedUrl)
             .toPromise();
           let keys = Object.keys(central);
           if (keys[0] == "layer") {
@@ -698,6 +965,9 @@ export class GisMapComponent implements AfterViewInit {
           //
           const l1 = Object.assign([], this.central_base);
           for (let x = 0; x < this.central_base.length; x++) {
+            let newBaseUrl = "https://ct.addisland.gov.et:8443";
+      let currentUrl = this.central_base[x].href;
+      let updatedUrl = currentUrl.replace("http://10.32.141.15:8080", newBaseUrl);
             let y: AssignedBodyTree = {
               label: "",
               workspace: "",
@@ -710,12 +980,12 @@ export class GisMapComponent implements AfterViewInit {
             this.central_base[x].workspace = element[0];
             y["label"] = this.central_base[x].name;
             y["workspace"] = this.central_base[x].workspace;
-            y["value"] = this.central_base[x].href;
+            y["value"] = updatedUrl;
             y.children = [];
             f.children.push(y);
 
             var centralsub = await this.geoser
-              .getLayersFromGeoserver(this.central_base[x].href)
+              .getLayersFromGeoserver(updatedUrl)
               .toPromise();
             // console.log("worlay",worlay.layer.name);
             let keys = Object.keys(centralsub);
@@ -744,6 +1014,9 @@ export class GisMapComponent implements AfterViewInit {
             const l1 = Object.assign([], this.centralsublayers);
 
             for (let m = 0; m < this.centralsublayers.length; m++) {
+              let newBaseUrl = "https://ct.addisland.gov.et:8443";
+      let currentUrl = this.centralsublayers[m].href;
+      let updatedUrl = currentUrl.replace("http://10.32.141.15:8080", newBaseUrl);
               let z: AssignedBodyTree = {
                 label: "",
                 workspace: "",
@@ -756,12 +1029,12 @@ export class GisMapComponent implements AfterViewInit {
               this.centralsublayers[m].workspace = element[0];
               z["label"] = this.centralsublayers[m].name;
               z["workspace"] = this.centralsublayers[m].workspace;
-              z["value"] = this.centralsublayers[m].href;
+              z["value"] = updatedUrl;
               z.children = [];
               y.children.push(z);
 
               var cntralplan = await this.geoser
-                .getLayersFromGeoserver(this.centralsublayers[m].href)
+                .getLayersFromGeoserver(updatedUrl)
                 .toPromise();
               // console.log("worlay",worlay.layer.name);
               let keys = Object.keys(cntralplan);
@@ -790,6 +1063,9 @@ export class GisMapComponent implements AfterViewInit {
               const l1 = Object.assign([], this.cntralplanlayers);
               //
               for (let q = 0; q < this.cntralplanlayers.length; q++) {
+                let newBaseUrl = "https://ct.addisland.gov.et:8443";
+                let currentUrl = this.cntralplanlayers[q].href;
+                let updatedUrl = currentUrl.replace("http://10.32.141.15:8080", newBaseUrl);
                 let p: AssignedBodyTree = {
                   label: "",
                   workspace: "",
@@ -802,7 +1078,7 @@ export class GisMapComponent implements AfterViewInit {
                 this.cntralplanlayers[q].workspace = element[0];
                 p["label"] = this.cntralplanlayers[q].name;
                 p["workspace"] = this.cntralplanlayers[q].workspace;
-                p["value"] = this.cntralplanlayers[q].href;
+                p["value"] = updatedUrl;
                 p.children = [];
                 z.children.push(p);
               }
@@ -849,6 +1125,9 @@ export class GisMapComponent implements AfterViewInit {
         if (n == this.centralAddis.length - 1) {
           //
           for (let j = 0; j < this.subcities.length; j++) {
+            let newBaseUrl = "https://ct.addisland.gov.et:8443";
+            let currentUrl = this.subcities[j].href;
+            let updatedUrl = currentUrl.replace("http://10.32.141.15:8080", newBaseUrl);
             let b: AssignedBodyTree = {
               label: "",
               workspace: "",
@@ -866,13 +1145,13 @@ export class GisMapComponent implements AfterViewInit {
             }
             b["label"] = this.subcities[j].name;
             b["workspace"] = this.subcities[j].workspace;
-            b["value"] = this.subcities[j].href;
+            b["value"] = updatedUrl;
             b.children = [];
             a.children.push(b);
             //
             // this.getcapablities(this.subcities[j].workspace);
             var wor = await this.geoser
-              .getLayersFromGeoserver(this.subcities[j].href)
+              .getLayersFromGeoserver(updatedUrl)
               .toPromise();
             let keys = Object.keys(wor);
             // console.log("wor.key", keys);
@@ -898,6 +1177,9 @@ export class GisMapComponent implements AfterViewInit {
             const l1 = Object.assign([], this.woredas);
 
             for (let k = 0; k < this.woredas.length; k++) {
+              let newBaseUrl = "https://ct.addisland.gov.et:8443";
+              let currentUrl = this.woredas[k].href;
+              let updatedUrl = currentUrl.replace("http://10.32.141.15:8080", newBaseUrl);
               let c: AssignedBodyTree = {
                 label: "",
                 workspace: "",
@@ -910,12 +1192,12 @@ export class GisMapComponent implements AfterViewInit {
               this.woredas[k].workspace = element[0];
               c["label"] = this.woredas[k].name;
               c["workspace"] = this.woredas[k].workspace;
-              c["value"] = this.woredas[k].href;
+              c["value"] = updatedUrl;
               c.children = [];
               b.children.push(c);
               //
               var worlay = await this.geoser
-                .getLayersFromGeoserver(this.woredas[k].href)
+                .getLayersFromGeoserver(updatedUrl)
                 .toPromise();
               // console.log("worlay",worlay.layer.name);
               let keys = Object.keys(worlay);
@@ -944,6 +1226,9 @@ export class GisMapComponent implements AfterViewInit {
               const l1 = Object.assign([], this.woredaLayers);
 
               for (let l = 0; l < this.woredaLayers.length; l++) {
+                let newBaseUrl = "https://ct.addisland.gov.et:8443";
+                let currentUrl = this.woredaLayers[l].href;
+                let updatedUrl = currentUrl.replace("http://10.32.141.15:8080", newBaseUrl);
                 let d: AssignedBodyTree = {
                   label: "",
                   workspace: "",
@@ -956,12 +1241,12 @@ export class GisMapComponent implements AfterViewInit {
                 this.woredaLayers[l].workspace = element[0];
                 d["label"] = this.woredaLayers[l].name;
                 d["workspace"] = this.woredaLayers[l].workspace;
-                d["value"] = this.woredaLayers[l].href;
+                d["value"] = updatedUrl;
                 d.children = [];
                 c.children.push(d);
                 //
                 var worlayonebyone = await this.geoser
-                  .getLayersFromGeoserver(this.woredaLayers[l].href)
+                  .getLayersFromGeoserver(updatedUrl)
                   .toPromise();
                 // console.log("worlay",worlay.layer.name);
                 let keys = Object.keys(worlayonebyone);
@@ -992,6 +1277,9 @@ export class GisMapComponent implements AfterViewInit {
                 // const l1 = Object.assign([], this.woredaLayersOneByOne);
 
                 for (let m = 0; m < this.woredaLayersOneByOne.length; m++) {
+                  let newBaseUrl = "https://ct.addisland.gov.et:8443";
+                  let currentUrl = this.woredaLayersOneByOne[m].href;
+                  let updatedUrl = currentUrl.replace("http://10.32.141.15:8080", newBaseUrl);
                   let e: AssignedBodyTree = {
                     label: "",
                     workspace: "",
@@ -1006,7 +1294,7 @@ export class GisMapComponent implements AfterViewInit {
                   e["label"] = this.woredaLayersOneByOne[m].name;
                   e["workspace"] = this.woredaLayersOneByOne[m].workspace;
                   e.label = this.woredaLayersOneByOne[m].name;
-                  e.value = this.woredaLayersOneByOne[m].href;
+                  e.value = updatedUrl;
                   e.children = [];
                   // this.woredaLayersOneByOne[l].children = [];
                   d.children.push(e);
@@ -1021,7 +1309,8 @@ export class GisMapComponent implements AfterViewInit {
     // this.geoser.isLoading = new BehaviorSubject<boolean>(
     //   false
     // );
-
+    this.nodes[0].expanded = true;
+    this.toggleLayer_expand({ node: this.nodes[0] });
     console.log("this.files", this.nodes);
   }
 
@@ -1139,7 +1428,10 @@ export class GisMapComponent implements AfterViewInit {
         }
       }
       for (let index = 0; index < this.styleHref.length; index++) {
-        const element = this.styleHref[index].href;
+        let newBaseUrl = "https://ct.addisland.gov.et:8443";
+        let currentUrl = this.styleHref[index].href;
+        let updatedUrl = currentUrl.replace("http://10.32.141.15:8080", newBaseUrl);
+        const element = updatedUrl;
 
         //calls fetch style method
         this.fetchstylefile(element, (style: any) => {
@@ -1635,7 +1927,7 @@ export class GisMapComponent implements AfterViewInit {
 
         // Add HTML content for the North arrow
         container.innerHTML =
-          '<img src="http://ct.addisland.gov.et/datepicker/img/northarow.png" alt="North Arrow">';
+          '<img src="https://ct.addisland.gov.et/datepicker/img/northarow.png" alt="North Arrow">';
 
         // Set up a click event on the container to rotate the map to north
         container.onclick = function () {
@@ -1732,6 +2024,8 @@ export class GisMapComponent implements AfterViewInit {
       console.log("Shape created:", e, this.ServiceService.check);
       const layer = e.layer;
       this.ondrawingshape = true;
+      this.allcoordenatezone=[]
+      this.utmCoordinates=[]
       if (!this.ServiceService.check) {
         console.log("Shape created:alllatlong", this.alllatlongPlot);
         if (this.alllatlongPlot.length === 0) {
@@ -2486,7 +2780,8 @@ export class GisMapComponent implements AfterViewInit {
     this.map.on("draw:edited", (e) => {
       console.log("Shape editmoveend:", e);
       const editedLayers: any = e.layers;
-
+      this.allcoordenatezone=[]
+      this.utmCoordinates=[]
       editedLayers.eachLayer((layer) => {
         if (layer instanceof L.Polygon) {
           let coordinates = layer.getLatLngs()[0] as L.LatLng[]; // Get the coordinates of the edited polygon
@@ -2735,6 +3030,27 @@ export class GisMapComponent implements AfterViewInit {
       this.markerLayer.clearLayers(); // Clear all markers from the layer
     }
   }
+  convertCoordinatesToUTMshape(
+    coordinates: [number, number, number][]
+  ): { northing: number; easting: number; zone: number; hemisphere: string }[] {
+    const utmCoordinates: {
+      northing: number;
+      easting: number;
+      zone: number;
+      hemisphere: string;
+    }[] = [];
+    
+    console.log(coordinates);
+  
+    coordinates.forEach((coord) => {
+      const [lat, lng] = coord;
+      const utmPoint = this.conveLatLngToUTM(lng, lat);
+      utmCoordinates.push(utmPoint);
+    });
+  
+    return utmCoordinates;
+  }
+  
 
   convertCoordinatesToUTM(
     coordinates: { lat: number; lng: number }[]
@@ -3082,6 +3398,7 @@ export class GisMapComponent implements AfterViewInit {
   //   fileReader.readAsText(file);
   // }
   importShapes(event: any): void {
+    this.ServiceService.coordinate=[]
     const file: File = event.target.files[0];
     const fileReader: FileReader = new FileReader();
     fileReader.onload = (e: any) => {
@@ -3216,6 +3533,21 @@ export class GisMapComponent implements AfterViewInit {
     };
     fileReader.readAsText(file);
   }
+  filterCoordinatesshape(input: Coordinate[][]): any[][][] {
+    const output: any[][][] = [];
+
+    input.forEach(group => {
+        const newGroup = group.map(coord => [
+            coord.northing.toFixed(4),
+            coord.easting.toFixed(4),
+            coord.hemisphere,
+            coord.zone.toString()
+        ]);
+        output.push(newGroup);
+    });
+
+    return output;
+}
   filterCoordinates(input: any[][]): any[][][] {
     const output: any[][][] = [];
     let currentGroup: any[][] = [];
@@ -3306,8 +3638,8 @@ export class GisMapComponent implements AfterViewInit {
                 (coord) =>
                   coord.map((row) =>
                     this.conveUTMToLatLngforshapefile(
-                      row[1],
-                      row[0],
+                      row[1] ,
+                      row[0] ,
                       37,
                       isNorthernHemisphere
                     )
@@ -3352,10 +3684,33 @@ export class GisMapComponent implements AfterViewInit {
             firstFeature.geometry.coordinates
           ) {
             const coordinates = firstFeature.geometry.coordinates[0]; // Assuming it's a Polygon
+            const utmCoordinates = this.convertCoordinatesToUTMshape(coordinates)
+            const subtract_northing = 207.34388375;
+          const subtract_easting = 95.4782061405;
 
+          const utmCoordinatesall = utmCoordinates.map(
+            (item) => {
+              item.northing -= subtract_northing;
+              item.easting -= subtract_easting;
+              return item; // Return the modified item
+            }
+          );
+            console.log("🚀 ~ extractShapefileFromZip ~ utmCoordinates:", utmCoordinates)
             // Calculate the center of the shape
             const center = this.calculateCenter(coordinates);
-
+            const area = this.calculateUTMPolygonArea(utmCoordinatesall);
+            this.ServiceService.Totalarea = parseInt(area.toFixed(2));
+            this.ServiceService.setCookies(area);
+            const allShapes: any[] = [];
+            allShapes.push(utmCoordinatesall)
+            console.log("🚀 ~ extractShapefileFromZip ~ allShapes:", allShapes)
+           const  utmCoordinatesalll=this.filterCoordinatesshape(allShapes)
+            this.allcoordenatezone.push(utmCoordinatesalll[0]);
+            this.ServiceService.coordinate = this.allcoordenatezone;
+            console.log(
+              "🚀 ~ extractShapefileFromZip ~ utmCoordinates:",
+              this.ServiceService.coordinate
+            );
             // Use the center for the map flyTo
             this.animateMap(center);
           }
@@ -3595,6 +3950,7 @@ export class GisMapComponent implements AfterViewInit {
       this.map.flyTo(center, zoomLevel, {
         duration: flyToDuration,
       });
+      this.is_validloading=false
       // this.map.setView(center, 15);
     }
   }
@@ -3702,6 +4058,7 @@ export class GisMapComponent implements AfterViewInit {
       this.map.flyTo(center, zoomLevel, {
         duration: flyToDuration,
       });
+      this.is_validloading=false
       // this.map.setView(center, 15);
     }
   }
@@ -3772,17 +4129,18 @@ export class GisMapComponent implements AfterViewInit {
       "the drawing or imported shape of plot location already exists on map you so can only update/የቦታው ሥዕል ወይም ከውጪ የመጣ ቅርጽ አስቀድሞ በካርታው ላይ ስላለ ማዘመን ብቻ ይችላሉ።"
     );
   }
-  public checktheshapeexistans(latLngss) {
+  public async checktheshapeexistans(latLngss) {
+    //this.toggleLayer_expand(this.nodes)
     console.log(
       "🚀 ~ file: gis-map.component.ts:2821 ~ checktheshapeexistans ~ latLngss:",
       latLngss
     );
-    let filtertheshape = this.findShapeFromGeoJSON(
+    let filtertheshape = await this.findShapeFromGeoJSON(
       this.plot_locations_gejon,
       latLngss
     );
     if (this.nodes) {
-      let selectednode = this.findNode(this.nodes[0], "Plot_Locations");
+      let selectednode = await this.findNode(this.nodes[0], "Plot_Locations");
       console.log(
         "🚀 ~ file: gis-map.component.ts:2813 ~ shape.forEach ~ findAradaImageMNode:",
         this.plot_locations_gejon
@@ -3859,7 +4217,7 @@ export class GisMapComponent implements AfterViewInit {
     this.ServiceService.coordinateForwgs84 = this.mapToPolygonFormat(latLngs);
     utmCoordinates.push(utmCoordinates[0]);
     this.ServiceService.coordinate = utmCoordinates;
-    console.log(utmCoordinates);
+    console.log("utmCoordinatesutmCoordinatesutmCoordinates",utmCoordinates);
 
     // Remove the previously drawn shape, if any
     if (this.drawnShape) {
@@ -4122,7 +4480,10 @@ export class GisMapComponent implements AfterViewInit {
         }
       }
     } else {
-      if (this.fromexcel === true && this.alllatlong.length == 1) {
+      this.checktheshapeexistans(latLngss);
+      // this.fromexcel === true &&
+      if ( this.alllatlong.length == 1) {
+        
         if (
           this.ServiceService.allLicenceData.Parcel_ID == null &&
           this.ServiceService.allLicenceData.Plot_Merge_1 == null &&
@@ -4137,6 +4498,8 @@ export class GisMapComponent implements AfterViewInit {
 
           this.checktheshapeexistans(latLngss);
         }
+      }else{
+        this.checktheshapeexistans(latLngss);
       }
     }
     let utmCoordinates = this.convertCoordinatesToUTM(latLngs);
@@ -4243,6 +4606,7 @@ export class GisMapComponent implements AfterViewInit {
     }
   }
   public processImportedShapesXLSXmulti(data: any[]): void {
+  
     console.log("dataaaa", data);
     // Remove the header row from the data
     const coordinates = data.slice(1);
@@ -4444,13 +4808,28 @@ export class GisMapComponent implements AfterViewInit {
   }
 
   updateplote(filtertheshape: any) {
-    console.log(
-      "🚀 ~ file: gis-map.component.ts:2965 ~ updateplote ~ filtertheshape:",
-      filtertheshape
-    );
-    this.completed.emit(filtertheshape);
+    let ploteid=filtertheshape.Plot_Ids
+     
+           let sDPcode=this.extractLeadingLetters(ploteid)
+           let currentapplicationsDP=this.extractLeadingLetters(this.ServiceService.appnoForRecord)
+           
+          
+          console.log(
+            "🚀 ~ currentfiltertheshape:",
+            ploteid , sDPcode ,currentapplicationsDP 
+          );
+          if (sDPcode != currentapplicationsDP){
+            const toast = this.notificationsService.error("Error", 'the plot location you import already exists on the basemap registered by other sub city contact the sub city first\ያስገቡት ቦታ አስቀድሞ በሌላ ክፍለ ከተማ በተመዘገበው ባዝ ካርታ ላይ አለ በቅድሚያ ክፍለ ከተማውን ያነጋግሩ');
+          }else{
+
+             this.completed.emit(filtertheshape);
+          }
   }
-  findNode(tree: any, label: string): any {
+  extractLeadingLetters(str) {
+    const match = str.match(/^[A-Za-z]+/);
+    return match ? match[0] : '';
+}
+  async findNode(tree: any, label: string) {
     console.log(
       "🚀 ~ file: gis-map.component.ts:2908 ~ findNode ~ tree:",
       tree
@@ -5148,11 +5527,11 @@ export class GisMapComponent implements AfterViewInit {
     //console.log(easting, northing, zone, hemisphere);
 
     const latLngCoords = utm.toLatLon(easting, northing, zone, hemisphere);
-    console.log("Latitude, Longitude:", latLngCoords);
+   // console.log("Latitude, Longitude:", latLngCoords);
 
-    return [latLngCoords.longitude, latLngCoords.latitude, 0];
+    return [latLngCoords.longitude +0.0008668, latLngCoords.latitude +0.001876 , 0];
   }
-  findShapeFromGeoJSON(geoJSON, coordinates) {
+  async findShapeFromGeoJSON(geoJSON, coordinates) {
     // Ensure the GeoJSON has features
     if (geoJSON && geoJSON.features && geoJSON.features.length > 0) {
       for (const feature of geoJSON.features) {
@@ -5448,3 +5827,10 @@ export interface Coordinates {
   hemisphere: string;
   zone: number;
 }
+
+type Coordinate = {
+  northing: number;
+  easting: number;
+  hemisphere: string;
+  zone: number;
+};

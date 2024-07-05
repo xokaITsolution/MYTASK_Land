@@ -1,0 +1,145 @@
+<div class="container">
+    <div class="card">
+        <h2> Lease Payment Head Detail</h2>
+        <div class="form-container">
+            <!-- left column of the form -->
+
+            <section>
+                <div class="p-fluid">
+                    <!-- <div class="field">
+                        <label for="Lease_code">Lease code</label>
+                        <input class="form-control" #Lease_code="ngModel" id="Lease_code" type="text" required
+                            pInputText [(ngModel)]="leasePaymentHeadDetail.Lease_code"
+                            [ngClass]="{ 'ng-dirty': (Lease_code.invalid && submitted) || (Lease_code.dirty && Lease_code.invalid) }" />
+                        <small *ngIf="(Lease_code.invalid && submitted) || (Lease_code.dirty && Lease_code.invalid)"
+                            class="p-error">Lease code is required.</small>
+                    </div> -->
+                    <div class="field">
+                        <label for="PlotID">PlotID</label>
+                        <input class="form-control" #PlotID="ngModel" id="PlotID" type="text" required pInputText
+                            [disabled]="true" [(ngModel)]="leasePaymentHeadDetail.PlotID"
+                            [ngClass]="{ 'ng-dirty': (PlotID.invalid && submitted) || (PlotID.dirty && PlotID.invalid) }" />
+                        <small *ngIf="(PlotID.invalid && submitted) || (PlotID.dirty && PlotID.invalid)"
+                            class="p-error">PlotID is required.</small>
+                    </div>
+
+                    <div class="field">
+                        <label for="Total_Plot_Size">Total Plot Size</label>
+                        <input class="form-control" #Total_Plot_Size="ngModel" id="Total_Plot_Size" type="text" required
+                            [disabled]="true" pInputText [(ngModel)]="leasePaymentHeadDetail.Total_Plot_Size"
+                            [ngClass]="{ 'ng-dirty': (Total_Plot_Size.invalid && submitted) || (Total_Plot_Size.dirty && Total_Plot_Size.invalid) }" />
+                        <small
+                            *ngIf="(Total_Plot_Size.invalid && submitted) || (Total_Plot_Size.dirty && Total_Plot_Size.invalid)"
+                            class="p-error">Total Plot Size is required.</small>
+                    </div>
+
+
+                    <!-- <div class="field">
+                        <label for="Amount_of_down_payment">Amount of down payment</label>
+                        <input class="form-control" #Amount_of_down_payment="ngModel" id="Amount_of_down_payment"
+                            type="text" required pInputText [(ngModel)]="leasePaymentHeadDetail.Amount_of_down_payment"
+                            [ngClass]="{ 'ng-dirty': (Amount_of_down_payment.invalid && submitted) || (Amount_of_down_payment.dirty && Amount_of_down_payment.invalid) }" />
+                        <small
+                            *ngIf="(Amount_of_down_payment.invalid && submitted) || (Amount_of_down_payment.dirty && Amount_of_down_payment.invalid)"
+                            class="p-error">Amount of down payment is required.</small>
+                    </div> -->
+                    <div class="form-container">
+                        <!-- Amount of down payment -->
+                        <div class="field">
+                            <label for="Amount_of_down_payment">Amount of down payment</label>
+                            <input class="form-control" disabled #Amount_of_down_payment="ngModel"
+                                id="Amount_of_down_payment" type="text" required pInputText
+                                [(ngModel)]="leasePaymentHeadDetail.Amount_of_down_payment"
+                                [ngClass]="{ 'ng-dirty': (Amount_of_down_payment.invalid && submitted) || (Amount_of_down_payment.dirty && Amount_of_down_payment.invalid) }" />
+                        </div>
+                        <div class="plu">+</div>
+                        <div class="field">
+                            <label for="New_Input_Field"> Additional</label>
+                            <input class="form-control" (input)="checkIfNumberInserted1($event.target.value)"
+                                id="New_Input_Field" type="number" required pInputText  />
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="Current_lease_bid_price">Current lease bid price</label>
+                        <input class="form-control" #Current_lease_bid_price="ngModel" id="Current_lease_bid_price"
+                            type="text" required pInputText [(ngModel)]="leasePaymentHeadDetail.Current_lease_bid_price"
+                            [disabled]="true"
+                            [ngClass]="{ 'ng-dirty': (Current_lease_bid_price.invalid && submitted) || (Current_lease_bid_price.dirty && Current_lease_bid_price.invalid) }" />
+                        <small
+                            *ngIf="(Current_lease_bid_price.invalid && submitted) || (Current_lease_bid_price.dirty && Current_lease_bid_price.invalid)"
+                            class="p-error">Current lease bid price is required.</small>
+                    </div>
+
+
+                    <div class="field">
+                        <label for="Current_lease_Price">Current lease Price</label>
+                        <input class="form-control" #Current_lease_Price="ngModel" id="Current_lease_Price" type="text"
+                            required pInputText [(ngModel)]="leasePaymentHeadDetail.Current_lease_Price"
+                            [disabled]="true"
+                            [ngClass]="{ 'ng-dirty': (Current_lease_Price.invalid && submitted) || (Current_lease_Price.dirty && Current_lease_Price.invalid) }" />
+                        <small
+                            *ngIf="(Current_lease_Price.invalid && submitted) || (Current_lease_Price.dirty && Current_lease_Price.invalid)"
+                            class="p-error">Current lease Price is required.</small>
+                    </div>
+                </div>
+            </section>
+            <!-- right column of the form -->
+            <section>
+                <div class="p-fluid">
+                    <div class="field">
+                        <label for="Plot_Size_By_Lease_Bid_Price">Plot Size By Lease Bid Price</label>
+                        <input disabled class="form-control" #Plot_Size_By_Lease_Bid_Price="ngModel"
+                            id="Plot_Size_By_Lease_Bid_Price" type="number" required pInputText
+                            [(ngModel)]="leasePaymentHeadDetail.Plot_Size_By_Lease_Bid_Price"
+                            [ngClass]="{ 'ng-dirty': (Plot_Size_By_Lease_Bid_Price.invalid && submitted) || (Plot_Size_By_Lease_Bid_Price.dirty && Plot_Size_By_Lease_Bid_Price.invalid) }" />
+                    </div>
+                    <div class="field" [ngClass]="{ 'minimized': isNumberInserted }">
+                        <label for="Plot_size_By_Lease_Price">Plot size By Lease Price</label>
+                        <input class="form-control" (input)="checkIfNumberInserted($event.target.value)"
+                            #Plot_size_By_Lease_Price="ngModel" id="Plot_size_By_Lease_Price" type="number" required
+                            pInputText [(ngModel)]="leasePaymentHeadDetail.Plot_size_By_Lease_Price" />
+                        <!-- (change)="checkIfNumberInserted($event.target.value)" -->
+                        <!-- (input)="checkIfNumberInserted($event.target.value)" -->
+                    </div>
+
+                    <div class="field">
+                        <label for="Total_lease_amount_to_be_paid">Total lease amount to be paid</label>
+                        <input class="form-control" #Total_lease_amount_to_be_paid="ngModel" [disabled]="true"
+                            id="Total_lease_amount_to_be_paid" type="text" required pInputText
+                            [(ngModel)]="leasePaymentHeadDetail.Total_lease_amount_to_be_paid"
+                            [ngClass]="{ 'ng-dirty': (Total_lease_amount_to_be_paid.invalid && submitted) || (Total_lease_amount_to_be_paid.dirty && Total_lease_amount_to_be_paid.invalid) }" />
+                        <small
+                            *ngIf="(Total_lease_amount_to_be_paid.invalid && submitted) || (Total_lease_amount_to_be_paid.dirty && Total_lease_amount_to_be_paid.invalid)"
+                            class="p-error">Total lease amount to be paid is required.</small>
+                    </div>
+
+
+                    <div class="field">
+                        <label for="Remaining_lease_payment">Remaining lease payment</label>
+                        <input class="form-control" #Remaining_lease_payment="ngModel" id="Remaining_lease_payment"
+                            [disabled]="true" type="text" required pInputText
+                            [(ngModel)]="leasePaymentHeadDetail.Remaining_lease_payment"
+                            [ngClass]="{ 'ng-dirty': (Remaining_lease_payment.invalid && submitted) || (Remaining_lease_payment.dirty && Remaining_lease_payment.invalid) }" />
+                        <small
+                            *ngIf="(Remaining_lease_payment.invalid && submitted) || (Remaining_lease_payment.dirty && Remaining_lease_payment.invalid)"
+                            class="p-error">Remaining lease payment is required.</small>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- <div class="card-footer"><button pButton pInputText label="Previous" (click)="PrvPage()"></button> <button 
+                class="btn btn-secondary btn-success" label="Update" (click)="save()">Update</button>-->
+
+        <!-- </div> -->
+
+        <!-- [disabled]="Enable" -->
+        <div class="card-footer"><button class="btn btn-secondary btn-success" type="button" label="Update"
+                (click)="updateleaserPaymentHeadDetail()">Update</button>
+            <div class="pull-left">
+                <div class="card-footer"><button type="button" *ngIf="disablegen" class="btn btn-primary btn-success" label="Update"
+                        (click)="Generate_lease_plan()">Generate Lease Plan</button>
+                </div>
+            </div>
+        </div>
+    </div>

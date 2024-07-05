@@ -44,9 +44,19 @@
               </tr>
             </ng-template>
           </p-table>
-
+          
           <!-- <td *ngIf="application.nofiles !== undefined">{{ application.nofiles }}</td>
       <td *ngIf="application.nofiles === undefined">No files</td> -->
+        </div>
+        <div *ngIf="appLoading" class="col-md-5">
+          <div class="spinner-border text-primary"></div>
+          <span style="font-size: 1.3em;font-family: 
+                       'Times New Roman', Times, serif;
+                        font-weight: bold;
+                        color:steelblue;
+                        ">
+             &nbsp; Loading ...
+          </span>
         </div>
       </div>
 
@@ -132,10 +142,11 @@
             <div class="col-md-12">
               <div class="col-sm-8 offset-sm-4">
                 <!-- Add New button -->
-                <button [hidden]="hideNeww" type="button" class="btn btn-primary ml-2" (click)="addNew()"
+                <button [hidden]="hideNeww" *ngIf="itcanaddfolder" type="button" class="btn btn-primary ml-2" (click)="addNew()"
                   [disabled]="disable" translate>
                   ADD NEW
                 </button>
+                
                 <!-- Clear Data button -->
                 <button [hidden]="!hideNeww" type="button" class="btn btn-primary ml-2"
                   (click)="clear(); hideNew = false" [disabled]="btnDisable" translate>
@@ -150,12 +161,14 @@
                   translate>
                   DELETE
                 </button>
+
                 <!-- Archive button -->
                 <button type="button" class="btn btn-primary ml-2" (click)="documentAddress = true; Archive()"
                   [hidden]="!openArchive" translate>
                   {{ archive }}
                 </button>
               </div>
+              <span style="color: red" *ngIf="!itcanaddfolder" >first you have to  save document location to add other folder/መጀመሪያ ሌላ አቃፊ ለመጨመር የሰነድ ቦታ ማስቀመጥ አለብዎት</span>
             </div>
           </div>
           <div class="form-row">

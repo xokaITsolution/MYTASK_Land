@@ -1,11 +1,16 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../environments/environment";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root",
 })
 export class MyTaskService {
+  private apicustomerUrl = 'nationalid/individualId/individualId/';
+  private apicustomerinsertUrl = 'nationalid/nationalid/nationalid/nationalid/nationalid/';
+  private apisendotpUrl = 'nationalid/individualId/individualId/sendotp/';
+
   private MytasksUrl = environment.rootPath + "BPEL/GetlistofTodo"; // URL to web api
   private MytasksUrlsuper = environment.rootPath + "BPEL/GetTodoListToSup"; // URL to web api
   private SupervisertasksUrl = environment.rootPath + "BPEL/GetlistofTodo"; // URL to web api
@@ -20,6 +25,18 @@ export class MyTaskService {
   private AssignToUserUrl = environment.rootPath + "BPEL/AssigEmpToDo"; // URL to web api
   private MytasksUrls = environment.rootPathApi + "todolist/todolist";
   constructor(private http: HttpClient) {}
+  getgetcustomer(individualId: any): Observable<any> {
+    const url = `${environment.rootPathnational}${this.apicustomerUrl}${individualId}`;
+    return this.http.get(url);
+  }
+  customerinsert(individualId: any,otp,updatedby): Observable<any> {
+    const url = `${environment.rootPathnational}${this.apicustomerinsertUrl}${individualId}/${otp}/${updatedby}`;
+    return this.http.get(url);
+  }
+  sendotp(individualId: string): Observable<any> {
+    const url = `${environment.rootPathnational}${this.apisendotpUrl}${individualId}`;
+    return this.http.get(url);
+  }
 
   getcompressedtodolist(orgid, lanid) {
     return this.http.get(

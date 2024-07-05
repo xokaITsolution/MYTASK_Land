@@ -113,7 +113,10 @@ export class CertificateVersionComponent implements OnChanges {
 
   Save() {
     console.log("certificateVersion", this.certificateVersion);
-
+    this.serviceService.getUserRole().subscribe((response: any) => {
+      console.log("responseresponseresponse", response, response[0].RoleId);
+      this.certificateVersion.updated_By = response[0].UserId;
+      this.certificateVersion.updated_Date = new Date();
     this.certificateVersionService
       .SaveCertificate(this.certificateVersion)
       .subscribe(
@@ -126,12 +129,12 @@ export class CertificateVersionComponent implements OnChanges {
               this.serviceService.Service_ID
             )
             .subscribe((message: any) => {
-              if (message == 1) {
+              if (message.Message == "1") {
                 this.serviceService.disablefins = false;
 
                 this.completed.emit();
               } else {
-                const toast = this.notificationsService.error("Error", message);
+                const toast = this.notificationsService.error("Error", message.Message);
               }
             });
 
@@ -152,6 +155,7 @@ export class CertificateVersionComponent implements OnChanges {
           // }
         }
       );
+    })
     console.log("saveing....");
     /*console.log(this.certificateVersion);
     this.messageService.add({severity: 'error', sticky: true, summary: 'Error Message', detail: 'Validation failed'});
@@ -160,6 +164,10 @@ export class CertificateVersionComponent implements OnChanges {
   }
 
   add() {
+    this.serviceService.getUserRole().subscribe((response: any) => {
+      console.log("responseresponseresponse", response, response[0].RoleId);
+      this.certificateVersion.created_By = response[0].UserId;
+      this.certificateVersion.created_Date = new Date();
     this.certificateVersionService
       .AddCertificate(this.certificateVersion)
       .subscribe(
@@ -174,12 +182,12 @@ export class CertificateVersionComponent implements OnChanges {
               this.serviceService.Service_ID
             )
             .subscribe((message: any) => {
-              if (message == 1) {
+              if (message.Message == "1") {
                 // this.serviceService.disablefins = false;
 
                 this.completed.emit();
               } else {
-                const toast = this.notificationsService.error("Error", message);
+                const toast = this.notificationsService.error("Error", message.Message);
               }
             });
 
@@ -199,6 +207,7 @@ export class CertificateVersionComponent implements OnChanges {
           // }
         }
       );
+    })
     console.log("saveing....");
   }
 
@@ -258,9 +267,9 @@ export class CertificateVersionComponent implements OnChanges {
 
 class CertificateVersion {
   public Application_No: string;
-  public Certificate_ID: number;
-  public version_ID: number;
-  public Deed_ID: number;
+  public Certificate_ID: any;
+  public version_ID: any;
+  public Deed_ID: any;
   public color: string;
   public Photo: string;
   public serial_No: string;
@@ -297,5 +306,9 @@ class CertificateVersion {
   public s_Plot_ID;
   public e_Plot_ID;
   public w_Plot_ID;
-  public Partner_Photo;
+  public Partner_Photo; 
+  public created_Date;
+  public updated_Date ;
+  public created_By ;
+  public updated_By ;
 }

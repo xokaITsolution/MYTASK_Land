@@ -1,1 +1,180 @@
-<p>lease-contract works!</p>
+<div>
+
+  <div>
+    <p-table #structure [value]="contractList" [paginator]="true" [rows]="10"
+      >
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th translate>contact_type</th>
+          <th translate>contract_date</th>
+          <th></th>
+          <th>
+            <button class="btn btn-primary"  type="button"  (click)="Addnew()" translate>
+              Add New
+            </button>
+          </th>
+        </tr>
+      </ng-template>
+      <!-- (click)="IsLockedBy_OtherUser(task)" -->
+      <ng-template pTemplate="body" let-lease_contract>
+        <tr>
+            <td>{{lease_contract.contact_Type}}</td>
+            <td>{{lease_contract.contract_date}}</td>
+
+          <td><button class="btn btn-primary" type="button" 
+              (click)="selected(lease_contract)" *ngIf="enable_edit" translate>
+              Edit
+            </button></td>
+          <!-- <td>
+            <button type="button" class="btn btn-primary" (click)="openModal(task)" translate>assign</button>
+          </td> -->
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+
+</div>
+<div class=" m-3" >
+  <div>
+    <!--foredit-->
+    <div class="m-3" *ngIf="showForm">
+      <!-- <p-tabView (onChange)="tabChanged($event)" [(activeIndex)]="selectedTab"  selected="true"> -->
+      <p-tabView (onChange)="tabChanged($event)" [(activeIndex)]="selectedTab" selected="true">
+        <p-tabPanel [header]="'Lease Contract'">
+          <div class="mt-3">
+
+            <div>
+              <form class="m-10"  #f="ngForm" name="newLeaseContractForm">
+                <div>
+                  <p-fieldset legend="Information">
+                    <div class="m-3 row">
+                      <!-- First Column -->
+                      <div class="col-md-6">
+                        <div  class="form-group row">
+                          <label for="LeaseCode" class="col-sm-4 col-form-label" translate>Lease Code</label>
+                          <div class="col-sm-8">
+                            <input type="text" disabled class="form-control" [(ngModel)]="newLeaseContract.lease_code"
+                              name="LeaseCode" id="LeaseCode" [placeholder]="'Lease Code'">
+                          </div>
+                        </div>
+
+                        <div class="form-group row" *ngIf="language !== 'amharic'">
+                          <label for="ContractDate" class="col-sm-4 col-form-label" translate>Contract Date</label>
+                          <div class="col-sm-8">
+                            <input type="date" class="form-control" [disabled]="disable"
+                              [(ngModel)]="newLeaseContract.contract_date" name="ContractDate" id="ContractDate"
+                              [placeholder]="'Contract Date'" #ContractDate="ngModel"
+                              [ngClass]="{ 'is-invalid': ContractDate.invalid }" required>
+                          </div>
+                        </div>
+                        <div class="form-group row" *ngIf="language === 'amharic'">
+                          <label for="ContractDate" class="col-sm-4 col-form-label" translate>Contract Date</label>
+                          <div class="col-sm-8">
+                            <input type="text" readonly class="form-control" [disabled]="disable"
+                              [(ngModel)]="newLeaseContract.contract_date" name="ContractDate" id="ContractDate"
+                              [placeholder]="'Contract Date'" #ContractDate="ngModel"
+                              [ngClass]="{ 'is-invalid': ContractDate.invalid }" required appDatepickerEthiopian
+                              (dateEmitter)="selectedDateTime($event,1)">
+                          </div>
+                        </div>
+                        <!-- SDP -->
+                        <div hidden class="form-group row">
+                          <label for="SDP" class="col-sm-4 col-form-label" translate>SDP</label>
+                          <div class="col-sm-8">
+                            <input type="text" class="form-control" [(ngModel)]="newLeaseContract.sdp" name="SDP"
+                              id="SDP" hidden [placeholder]="'SDP' ">
+                          </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                          <label for="ContactType" class="col-sm-4 col-form-label" translate>Contact Type</label>
+                          <div class="col-sm-8">
+                            <select class="form-control" [(ngModel)]="newLeaseContract.contact_Type" name="ContactType"
+                              id="ContactType" required>
+                            
+                              <option value="" disabled selected>Select Contract Type</option>
+                              <option *ngFor="let contractType of contractTypearray"
+                                [value]="contractType.contract_Type">
+                                {{ contractType.name }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Second Column -->
+                      <div class="col-md-6">
+                        <!-- Branch Name -->
+                        <div class="form-group row">
+                          <label for="PhoneNO" class="col-sm-4 col-form-label" translate>Branch Name</label>
+                          <div class="col-sm-8">
+                            <input type="text" disabled class="form-control" [(ngModel)]="newLeaseContract.sdp"
+                              name="BranchName" id="BranchName" [placeholder]="'Branch Name' ">
+                          </div>
+                        </div>
+                        <!-- Worda -->
+                        <div class="form-group row">
+                          <label for="Worda" class="col-sm-4 col-form-label" translate>Worda</label>
+                          <div class="col-sm-8">
+                            <input type="text" disabled class="form-control" [(ngModel)]="newLeaseContract.worda" name="Worda"
+                              id="Worda" [placeholder]="'Worda' ">
+                          </div>
+                        </div>
+                        <!-- Phone NO -->
+                        <div class="form-group row">
+                          <label for="PhoneNO" class="col-sm-4 col-form-label" translate>Phone NO</label>
+                          <div class="col-sm-8">
+                            <input type="text" class="form-control" [(ngModel)]="newLeaseContract.phone_no"
+                              name="PhoneNO" id="PhoneNO" [placeholder]="'Phone NO' ">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="pull-left">
+
+                      <button type="button" class="btn btn-primary" [disabled]="!f.valid"  *ngIf="!isnew && !disable" (click)="updatelease_contract()"
+                        translate>Update</button>
+                      <button type="button" class="btn btn-primary" [disabled]="!f.valid"  *ngIf="isnew && !disable" (click)="InsertLeaseContract()"
+                        translate>Save</button>
+                    </div>
+                  </p-fieldset>
+                </div>
+              </form>
+            </div>
+            <div style="float: right;"> <button type="button" [disabled]="!enablenext" class="btn btn-primary mr-1" (click)="selectedTab = 1;nextClicked()"
+                translate>Next</button></div>
+          </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'Lease Regstration'" [disabled]="true">
+          <div class="mt-3">
+    <div class="m-3">
+        <p-tabView (onChange)="tabChanged($event)" [(activeIndex)]="selectedTab1" selected="true">
+          <p-tabPanel [header]="'Lease to Lease'" [disabled]="!_service.EnambleLease_to_Lease">
+            <div class="mt-3">
+              <app-lease-to-lease #child></app-lease-to-lease>
+             
+            </div>
+          </p-tabPanel>
+          
+          <p-tabPanel [header]="'FreeHold to Lease'" [disabled]="!_service.EnambleFreeHold_to_Lease">
+            <div class="mt-3">
+              <app-free-hold-to-lease #child></app-free-hold-to-lease>
+
+            </div>
+          </p-tabPanel>
+        </p-tabView>
+       
+      </div>
+            <div style="float: left;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab = 0;ServiceService.disablefins = true;"
+                translate>previous</button>
+            </div>
+          </div>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+
+
+  </div>
+</div>
+<p-toast position="bottom-right"></p-toast>

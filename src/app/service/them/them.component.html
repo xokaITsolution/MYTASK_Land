@@ -35,7 +35,7 @@
     <div class="form-group row col-md-7">
       <label for="Remark" class="col-sm-3 col-form-label" translate>Remark</label>
       <div class="col-sm-9">
-        <textarea class="form-control" [disabled]="disable" [(ngModel)]="themCertificateVersion.Rremark" name="Remark"
+        <textarea class="form-control" [disabled]="disable" [(ngModel)]="themCertificateVersion.remark" name="Remark"
                   id="Remark"
                   [placeholder]="'Remark' | translate"></textarea>
       </div>
@@ -66,8 +66,8 @@
 
 
   </div>
-  <button type="button" *ngIf="!isnew && !disable" class="btn btn-primary" (click)="save()" translate>Save</button>
-  <button type="button" *ngIf="isnew && !disable" class="btn btn-primary" (click)="add()" translate>Save</button>
+  <button type="button" *ngIf="!isnew && !disable && !serviceService.itcanntupdate" class="btn btn-primary" (click)="save()" translate>Save</button>
+  <button type="button" *ngIf="isnew && !disable && !serviceService.itcanntupdate" class="btn btn-primary" (click)="add()" translate>Save</button>
   <button type="button" class="btn btn-danger ml-3" (click)="Delete()" *ngIf="!isnew && !disable" translate>Delete
   </button>
 </form>
