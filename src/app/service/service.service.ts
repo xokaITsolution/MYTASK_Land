@@ -51,6 +51,9 @@ export class ServiceService {
   private ProportyValidationURL =
     environment.rootPathApi +
     "ProportyValidation/Proporty_Validation/Proporty_Validation/Proporty_Validation/Applicationcode/";
+  private ProportyValidationbyURL =
+    environment.rootPathApi +
+    "ProportyValidation/ProportyValidation/ProportyValidation/ProportyValidation/ProportyValidation/Proporty_Validation/Proporty_Validation/Proporty_Validation/Applicationcode/";
 
   private GetApplicationNumberByUserURLsapi =
     environment.rootPathApi +
@@ -185,6 +188,7 @@ export class ServiceService {
   OrganizationparentUrl =
     environment.rootPath2 + "Job/procOrganization/Organization";
   saveCustomerdata = environment.rootPath3 + "Customer/procCustomer/";
+  saveCustomerdataapi = environment.rootPath3 + "Tax/procTINERCA/system";
   PdfCompressor =
     "http://197.156.93.110/xoka.jobapi/api/compress/DeflateCompression/Compresse";
   saveplotlocdata = environment.rootPath3 + "Plot_Location/procPlot_Location/";
@@ -292,6 +296,14 @@ export class ServiceService {
   backbuttonviable: boolean;
   appnoForRecord: any;
   ishavespashal: boolean=true;
+  itcanntupdate: boolean=false;
+  Licence_Service_ID: any;
+  recordno: any;
+  errorservices: any;
+  appnoForRecorderror: any;
+  salesFrominformat: boolean=false
+  sellerCustomerId: string;
+  currentproprtyID: any;
   constructor(private http: HttpClient, private cookieService: CookieService) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -385,8 +397,8 @@ export class ServiceService {
   getDeedByCustId(CustId) {
     return this.http.get(this.DeedByCustId + "?Customer_ID=" + CustId);
   }
-  getAppbyUserid(UserId) {
-    return this.http.get(this.AppbyUserId + UserId);
+  getAppbyUserid(UserId ,appno) {
+    return this.http.get(this.AppbyUserId + UserId +'/'+appno);
   }
   getaspnetuser() {
     return this.http.get(this.userbyusername + environment.username);
@@ -511,6 +523,9 @@ export class ServiceService {
   }
   GetProportyValidationURL(Appno) {
     return this.http.get(this.ProportyValidationURL + Appno);
+  }
+  GetProportyValidationbyURL(Appno) {
+    return this.http.get(this.ProportyValidationbyURL + Appno);
   }
   GetCertficate_ver_Validation(Appno, serviceid) {
     return this.http.get(
@@ -845,6 +860,9 @@ export class ServiceService {
   UpdateCustomer(data) {
     return this.http.put(this.saveCustomerdata, data);
   }
+  UpdateCustomerAPI(data) {
+    return this.http.post(this.saveCustomerdataapi, data);
+  }
   getCustomer(custID) {
     return this.http.get(
       this.CustomerLookUP +
@@ -1163,7 +1181,7 @@ export class ServiceService {
     return this.http.get(
       this.PlotLandUseLookUP +
         "?" +
-        "sortOrder=test&currentFilter&searchString&pageIndex&pageSize=70"
+        "sortOrder=test&currentFilter&searchString&pageIndex&pageSize=100"
     );
   }
 

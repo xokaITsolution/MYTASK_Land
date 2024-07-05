@@ -267,9 +267,9 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
           binary="true"></p-checkbox>
       </div>
     </div> -->
-    <button type="button" class="btn btn-primary" *ngIf="!isnew && !disable" (click)="save();" [disabled]="!f.valid"
+    <button type="button" class="btn btn-primary" *ngIf="!isnew && !disable &&!serviceService.itcanntupdate" (click)="save();" [disabled]="!f.valid"
       translate>update</button>
-    <button type="button" class="btn btn-primary" *ngIf="isnew && !disable" (click)="confirmsave();" [disabled]="!f.valid"
+    <button type="button" class="btn btn-primary" *ngIf="isnew && !disable && !serviceService.itcanntupdate" (click)="confirmsave();" [disabled]="!f.valid"
       translate>Save</button>
 
 </form>
@@ -282,7 +282,7 @@ button type="button" class="btn btn-danger ml-3" (click)="Delete()" [disabled]="
       <th scope="col" translate>Date</th>
       <th scope="col" translate>isActive</th>
       <th scope="col">
-        <button type="button"  class="btn btn-primary" (click)=" adddeed()" *ngIf="!disable" translate>Add New</button>
+        <button type="button"  class="btn btn-primary" (click)=" adddeed()" *ngIf="!disable && !serviceService.itcanntupdate" translate>Add New</button>
       </th>
     </tr>
   </ng-template>

@@ -55,6 +55,7 @@ export class RecordComponent implements OnChanges {
   Isshow: boolean = false;
   Org: any;
   hideNeww: boolean;
+  applicationData:ApplicationData
   appno: any;
   Woreda: any;
   selectedService: any;
@@ -196,6 +197,9 @@ export class RecordComponent implements OnChanges {
   Attacheduserid: any;
   nofiles: any;
   RID: any=null;
+  itcanaddfolder: boolean;
+  appLoading: boolean;
+  isrecordofficer: boolean;
   switchTab(tab: string) {
     this.activeTab = tab;
   }
@@ -232,7 +236,7 @@ export class RecordComponent implements OnChanges {
   async ngOnChanges() {
     this.service.getaspnetuser().subscribe((r) => {
       this.Attacheduserid = r[0].userid;
-    });
+   
     console.log("language", environment.Lang_code);
     if (
       environment.Lang_code === "am-et" ||
@@ -256,6 +260,7 @@ export class RecordComponent implements OnChanges {
       this.getservice();
       this.getorg();
       this.SEARCH(this.useNamelist[0].userName);
+
     }
 
     this.addnew = true;
@@ -273,6 +278,7 @@ export class RecordComponent implements OnChanges {
     const formattedDate = `${day}${month}${year}`;
 
     console.log("formattedDate", formattedDate); // Output: 2023-10-02
+  });
   }
 
   async addNew() {
@@ -288,7 +294,7 @@ export class RecordComponent implements OnChanges {
         // this.Services = service.filter(
         //   (service) => !serviceCodes.has(service.service_code)
         // );
-        if(this.Customer[0].customer_Type_ID ==3102){
+        if(this.Customer[0].customer_Type_ID ==3102 || this.Customer[0].customer_Type_ID ==4120){
           const serviceCounts = {};
           this.ApplicationNumberlist.forEach((application) => {
             const code = application.services_service_code;
@@ -330,7 +336,7 @@ export class RecordComponent implements OnChanges {
       created_Date: "",
       updated_Date: "",
       deleted_Date: "",
-      is_all_hardcopy_uploaded: "",
+      is_all_hardcopy_uploaded: true,
     };
     console.log("ADD NEW button clicked!");
     this.addnew = false;
@@ -407,7 +413,7 @@ export class RecordComponent implements OnChanges {
       created_Date: "",
       updated_Date: "",
       deleted_Date: "",
-      is_all_hardcopy_uploaded: "",
+      is_all_hardcopy_uploaded: true,
     };
     console.log("ADD NEW button clicked!");
     // this.addnew=false
@@ -478,7 +484,7 @@ export class RecordComponent implements OnChanges {
       created_Date: "",
       updated_Date: "",
       deleted_Date: "",
-      is_all_hardcopy_uploaded: "",
+      is_all_hardcopy_uploaded: true,
     };
     console.log("ADD NEW button clicked!");
     // this.addnew=false
@@ -569,7 +575,7 @@ export class RecordComponent implements OnChanges {
         //     console.log("CustId", CustId.length);
         //     if (CustId.length > 0) {
         //       console.log("there is data");
-        //       // this.GetApplicationNumberByUser(this.customer[0].userName);
+       // this.GetApplicationNumberByUser(this.customer[0].userName);
         //     } else {
         //       console.log("there is no data");
         //     }
@@ -710,6 +716,11 @@ export class RecordComponent implements OnChanges {
       );
   }
   handleSelectionChange(): void {
+  if(this.ApplicationNumberlist.length > 1){
+    this.itcanaddfolder=true
+  } else{
+    this.itcanaddfolder=false
+  }
     this.displayTab = true;
     this.openArchive = true;
     this.isupdated=true
@@ -772,6 +783,7 @@ export class RecordComponent implements OnChanges {
                   );
                   console.log("this.DocumentArc", Document);
                   if (Document.length > 0) {
+                    this.itcanaddfolder=true
                     this.recordDocumnet = Document[0];
                     if (this.language == "amharic") {
                       this.recordDocumnet.regstration_Date =
@@ -891,6 +903,7 @@ export class RecordComponent implements OnChanges {
           this.ApplicationNumberlist = ApplicationNumber;
          
 
+          console.log("🚀 ~ RecordComponent ~ .subscribe ~ ApplicationNumberlist:", this.ApplicationNumberlist)
           this.ApplicationNumberlist = this.ApplicationNumberlist.filter(
             (value) => value.organization_code == this.record.get("SDP").value
           );
@@ -1142,6 +1155,31 @@ export class RecordComponent implements OnChanges {
       });
   }
   async add() {
+    this.service.getUserRole().subscribe(async (response: any) => {
+      if (response) {
+        for (let index = 0; index < response.length; index++) {
+          const element = response[index];
+
+          if (
+            element.RoleId ===
+            "AEE24EEB-09B6-4F70-B924-D10CFCF757BA".toLocaleLowerCase() ||
+            element.RoleId ===
+            "270F762A-5393-4971-83BA-C7FF7D560BDA".toLocaleLowerCase() ||
+            element.RoleId ===
+            "F07A844C-E107-44AB-AA18-9D462BC7CDA3".toLocaleLowerCase()  ||
+            element.RoleId ===
+            "8C133397-587E-456F-AB31-9CF5358BE8D2".toLocaleLowerCase()  ||
+            element.RoleId ===
+            "B59EA343-65EF-4C41-95A8-02D9AD81BFCD".toLocaleLowerCase() 
+          ) {
+            this.isrecordofficer = true;
+            break;
+          } else {
+            this.isrecordofficer = false;
+          }
+        }
+      
+    
     if (
       this.recordDocumnet.document_Number === null ||
       this.recordDocumnet.document_Number == ""
@@ -1159,7 +1197,7 @@ export class RecordComponent implements OnChanges {
     }
 
     this.recordDocumnet.application_No = this.service.appnoForRecord;
-
+   if(this.isrecordofficer){
     this.service.CreateDocmentArcive(this.recordDocumnet).subscribe(
       async (message) => {
         console.log("message", message);
@@ -1173,7 +1211,48 @@ export class RecordComponent implements OnChanges {
         console.log(this.service.licenceData);
 
         this.service.licenceData.RecordNo = this.recordDocumnet.document_Number;
-        this.service.UpdateLicence(this.service.licenceData).subscribe(
+        let applicationData = {
+          licence_Service_ID: this.service.licenceData.Licence_Service_ID,
+          application_No: this.service.licenceData.Application_No,
+          service_ID: this.service.licenceData.Service_ID,
+          service_Name: this.service.licenceData.Service_Name,
+          property_ID: this.service.licenceData.Property_ID,
+          certificate_Code: this.service.licenceData.Certificate_Code,
+          parcel_ID: this.service.licenceData.Parcel_ID,
+          plot_Merge_1: this.service.licenceData.Plot_Merge_1,
+          plot_Merge_2: this.service.licenceData.Plot_Merge_2,
+          plot_Merge_3: this.service.licenceData.Plot_Merge_3,
+          plot_Merge_4: this.service.licenceData.Plot_Merge_4,
+          sdP_ID: this.service.licenceData.SDP_ID,
+          wereda_ID: this.service.licenceData.Wereda_ID,
+          email: this.service.licenceData.Email,
+          cust_Phone_No: this.service.licenceData.Cust_Phone_No,
+          cust_Photo: this.service.licenceData.Cust_Photo,
+          applicant_First_Name_AM: this.service.licenceData.Applicant_First_Name_AM,
+          applicant_First_Name_EN: this.service.licenceData.Applicant_First_Name_EN,
+          applicant_Middle_Name_AM: this.service.licenceData.Applicant_Middle_Name_AM,
+          applicant_Middle_Name_En: this.service.licenceData.Applicant_Middle_Name_En,
+          applicant_Last_Name_AM: this.service.licenceData.Applicant_Last_Name_AM,
+          applicant_Last_Name_EN: this.service.licenceData.Applicant_Last_Name_EN,
+          applicant_Mother_Name_AM: this.service.licenceData.Applicant_Mother_Name_AM,
+          applicant_Mother_Name_EN: this.service.licenceData.Applicant_Mother_Name_EN,
+          application_Date: this.service.licenceData.Application_Date,
+          cust_TIN_No: this.service.licenceData.Cust_TIN_No,
+          is_Revalidated: this.service.licenceData.Is_Revalidated,
+          is_Paid: this.service.licenceData.Is_Paid,
+          created_By: this.service.licenceData.Created_By,
+          updated_By: this.service.licenceData.Updated_By,
+          deleted_By: this.service.licenceData.Deleted_By,
+          is_Deleted: this.service.licenceData.Is_Deleted,
+          created_Date: this.service.licenceData.Created_Date,
+          updated_Date: this.service.licenceData.Updated_Date,
+          deleted_Date: this.service.licenceData.Deleted_Date,
+          customerID: this.service.licenceData.CustomerID,
+          number_Of_Copy_Doc: this.service.licenceData.Number_Of_Copy_Doc,
+          recordNo: this.service.licenceData.RecordNo
+        };
+        
+        this.service.UpdateLicence(applicationData).subscribe(
           (Licence) => {},
           (error) => {
             const toast = this.notificationsService.error("Error", error.error);
@@ -1210,7 +1289,16 @@ export class RecordComponent implements OnChanges {
         }
       }
     );
+  }else{
+    const toast = this.notificationsService.error(
+      "Error",
+      "you don't have record officer role"
+    );
+    return
+  }
     console.log("saveing....");
+}
+  })
   }
   getDocmentArcive(Title_Deed_No) {
     this.globalDeed = Title_Deed_No;
@@ -1254,7 +1342,7 @@ export class RecordComponent implements OnChanges {
             created_Date: "",
             updated_Date: "",
             deleted_Date: "",
-            is_all_hardcopy_uploaded: "",
+            is_all_hardcopy_uploaded: true,
           };
         }
         // if (this.language == "amharic") {
@@ -1472,7 +1560,48 @@ export class RecordComponent implements OnChanges {
         console.log(this.service.licenceData);
 
         this.service.licenceData.RecordNo = this.recordDocumnet.document_Number;
-        this.service.UpdateLicence(this.service.licenceData).subscribe(
+        let applicationData = {
+          licence_Service_ID: this.service.licenceData.Licence_Service_ID,
+          application_No: this.service.licenceData.Application_No,
+          service_ID: this.service.licenceData.Service_ID,
+          service_Name: this.service.licenceData.Service_Name,
+          property_ID: this.service.licenceData.Property_ID,
+          certificate_Code: this.service.licenceData.Certificate_Code,
+          parcel_ID: this.service.licenceData.Parcel_ID,
+          plot_Merge_1: this.service.licenceData.Plot_Merge_1,
+          plot_Merge_2: this.service.licenceData.Plot_Merge_2,
+          plot_Merge_3: this.service.licenceData.Plot_Merge_3,
+          plot_Merge_4: this.service.licenceData.Plot_Merge_4,
+          sdP_ID: this.service.licenceData.SDP_ID,
+          wereda_ID: this.service.licenceData.Wereda_ID,
+          email: this.service.licenceData.Email,
+          cust_Phone_No: this.service.licenceData.Cust_Phone_No,
+          cust_Photo: this.service.licenceData.Cust_Photo,
+          applicant_First_Name_AM: this.service.licenceData.Applicant_First_Name_AM,
+          applicant_First_Name_EN: this.service.licenceData.Applicant_First_Name_EN,
+          applicant_Middle_Name_AM: this.service.licenceData.Applicant_Middle_Name_AM,
+          applicant_Middle_Name_En: this.service.licenceData.Applicant_Middle_Name_En,
+          applicant_Last_Name_AM: this.service.licenceData.Applicant_Last_Name_AM,
+          applicant_Last_Name_EN: this.service.licenceData.Applicant_Last_Name_EN,
+          applicant_Mother_Name_AM: this.service.licenceData.Applicant_Mother_Name_AM,
+          applicant_Mother_Name_EN: this.service.licenceData.Applicant_Mother_Name_EN,
+          application_Date: this.service.licenceData.Application_Date,
+          cust_TIN_No: this.service.licenceData.Cust_TIN_No,
+          is_Revalidated: this.service.licenceData.Is_Revalidated,
+          is_Paid: this.service.licenceData.Is_Paid,
+          created_By: this.service.licenceData.Created_By,
+          updated_By: this.service.licenceData.Updated_By,
+          deleted_By: this.service.licenceData.Deleted_By,
+          is_Deleted: this.service.licenceData.Is_Deleted,
+          created_Date: this.service.licenceData.Created_Date,
+          updated_Date: this.service.licenceData.Updated_Date,
+          deleted_Date: this.service.licenceData.Deleted_Date,
+          customerID: this.service.licenceData.CustomerID,
+          number_Of_Copy_Doc: this.service.licenceData.Number_Of_Copy_Doc,
+          recordNo: this.service.licenceData.RecordNo
+        };
+        
+        this.service.UpdateLicence(applicationData).subscribe(
           (Licence) => {},
           (error) => {
             const toast = this.notificationsService.error("Error", error.error);
@@ -1857,13 +1986,20 @@ export class RecordComponent implements OnChanges {
     }
   }
   async checkDocumentIsAvailable() {
+    console.log("🚀 ~ RecordComponent ~ .subscribe ~ ApplicationNumberlist:", this.ApplicationNumberlist)
+    this.appLoading=true
     return new Promise<boolean>((resolve, reject) => {
       let counter = 0;
       let applicationLength = 0;
 
       this.activatedRoute.params.subscribe(async (params: Params) => {
         let AppNo = params["AppNo"];
-
+        if (this.service.Service_ID === '2145F90D-E911-42F2-9AD7-C2455A4D9DCD'.toLocaleLowerCase() || 
+        this.service.Service_ID === 'DE4937D8-BDCD-46D6-8749-DC31C9F3ADCF'.toLocaleLowerCase()){ 
+           AppNo = this.service.appnoForRecorderror
+           this.service.appnoForRecord=this.service.appnoForRecorderror
+           console.log("🚀 ~ RecordComponent ~ this.service.Service_ID==='DE4937D8-BDCD-46D6-8749-DC31C9F3ADCF'.toLocaleLowerCase ~ AppNo:", AppNo)
+        }
         try {
           const res: any = await this.service.getuserName(AppNo).toPromise();
           let useNamelist = res;
@@ -1873,11 +2009,48 @@ export class RecordComponent implements OnChanges {
               .toPromise();
             let userName = user.procCustomers;
             if (userName.length > 0) {
+              if(this.disable == true &&  this.service.sellerCustomerId!=undefined ){
+
+                userName[0].customer_ID= this.service.sellerCustomerId
+              }
               const AppbyUserId: any = await this.service
-                .getAppbyUserid(userName[0].customer_ID)
+                .getAppbyUserid(userName[0].customer_ID , this.service.appnoForRecord )
                 .toPromise();
-              this.ApplicationNumberlist =
-                AppbyUserId.procApplicationLoadByUserIds;
+             
+                this.service
+          .getLicencebyid(this.service.LicenceserviceID)
+          .subscribe((rec: any) => {
+           
+            let RID;
+            if (rec.procLicense_Services.length > 0) {
+              RID = rec.procLicense_Services[0].recordNo;
+              this.RID=rec.procLicense_Services[0].recordNo;
+            }
+              if(this.RID !=null){
+                this.ApplicationNumberlist =
+                AppbyUserId.procApplicationLoadByUserIds.filter(x=>x.recordNo == this.RID)
+                this.appLoading=false
+              }else{
+
+                if(this.Customer[0].customer_Type_ID ==3102 || this.Customer[0].customer_Type_ID ==4120){
+                  this.ApplicationNumberlist =
+                  AppbyUserId.procApplicationLoadByUserIds;
+                }else{
+              
+                   if (this.disable){
+                    this.ApplicationNumberlist = AppbyUserId.procApplicationLoadByUserIds
+                   }else{
+
+                     this.ApplicationNumberlist = AppbyUserId.procApplicationLoadByUserIds.filter(x=>x.application_number == this.service.appnoForRecord);
+                   }
+                  console.log("🚀 ~ RecordComponent ~ this.activatedRoute.params.subscribe ~ ApplicationNumberlist:", this.ApplicationNumberlist)
+                
+                  
+                 }
+                 this.appLoading=false
+              }
+                })
+
 
                 // this.ApplicationNumberlist.forEach((item, index) => {
                 //   this.shownofilesArray[index] = true; 
@@ -2022,4 +2195,47 @@ export class AddRecord {
   public Org;
   public Woreda;
   public selectedService;
+}
+
+// Define an interface to represent the structure of the provided data
+export interface ApplicationData {
+  Applicant_First_Name_AM: string | null;
+  Applicant_First_Name_EN: string | null;
+  Applicant_Last_Name_AM: string | null;
+  Applicant_Last_Name_EN: string | null;
+  Applicant_Middle_Name_AM: string | null;
+  Applicant_Middle_Name_En: string | null;
+  Applicant_Mother_Name_AM: string | null;
+  Applicant_Mother_Name_EN: string | null;
+  Application_Date: string; // Assuming this is always present and in ISO date format
+  Application_No: string;
+  Certificate_Code: string | null;
+  Created_By: string;
+  Created_Date: string; // Assuming this is always present and in ISO date format
+  Cust_Phone_No: string;
+  Cust_Photo: any; // Type could be more specific depending on the actual data type
+  Cust_TIN_No: string;
+  CustomerID: any; // Type could be more specific depending on the actual data type
+  Deleted_By: string | null;
+  Deleted_Date: string | null; // Assuming this is always present and in ISO date format
+  Email: string | null;
+  Is_Deleted: boolean | null;
+  Is_Paid: boolean | null;
+  Is_Revalidated: boolean | null;
+  Licence_Service_ID: string;
+  Number_Of_Copy_Doc: number | null;
+  Parcel_ID: any; // Type could be more specific depending on the actual data type
+  Plot_Merge_1: any; // Type could be more specific depending on the actual data type
+  Plot_Merge_2: any; // Type could be more specific depending on the actual data type
+  Plot_Merge_3: any; // Type could be more specific depending on the actual data type
+  Plot_Merge_4: any; // Type could be more specific depending on the actual data type
+  Property_ID: any; // Type could be more specific depending on the actual data type
+  RecordNo: string;
+  SDP_ID: string;
+  Service_ID: string;
+  Service_Name: string;
+  Updated_By: string | null;
+  Updated_Date: string | null; // Assuming this is always present and in ISO date format
+  Wereda_ID: number;
+ 
 }

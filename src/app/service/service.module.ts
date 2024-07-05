@@ -110,13 +110,19 @@ import { ProgressComponent } from "../shared/fileUploader/progress/progress.comp
 import { NetworkDatabaseMonitoringToolComponent } from "./network-database-monitoring-tool/network-database-monitoring-tool.component";
 import { NetworkMonitoringService } from "./network-database-monitoring-tool/network-monitoring.service";
 import { DatabaseMonitoringService } from "./network-database-monitoring-tool/database-monitoring.service";
+import { FilterPipe } from "./FilterPipe";
+
+import {MyLibModule} from 'my-lib'
+
+
 @NgModule({
   imports: [
+    MyLibModule,
     QRCodeModule,
     //BackButtonDisableModule.forRoot({
     //  preserveScrollPosition: true
     // }),
-
+    BlockUIModule,
     ReactiveFormsModule,
     NgbModule,
     FormsModule,
@@ -180,6 +186,7 @@ import { DatabaseMonitoringService } from "./network-database-monitoring-tool/da
   ],
 
   declarations: [
+    FilterPipe,
     ProgressComponent,
     FileuploaderComponent,
     DndDirective,

@@ -99,6 +99,15 @@
       </div>
     </div>
     <div class="form-group row col-md-7">
+      <label for="grade" class="col-sm-3 col-form-label" translate>Grade(ደረጃ)</label>
+      <div class="col-sm-9">
+        <input type="number" class="form-control"  [disabled]="disable" [(ngModel)]="deptSuspensionRecord.grade" name="grade"
+               id="grade"  [placeholder]="'grade' | translate"
+             #grade="ngModel" 
+             [ngClass]="{ 'is-invalid': grade.invalid }"  required >
+      </div>
+    </div>
+    <div class="form-group row col-md-7">
       <label for="LetterRefDate" class="col-sm-3 col-form-label" translate>Letter Ref Date</label>
       <div class="col-sm-9">
         <input type="date" class="form-control"  [disabled]="disable" [(ngModel)]="deptSuspensionRecord.letter_Ref_Date" name="LetterRefDate"
@@ -131,6 +140,13 @@
       binary="true"></p-checkbox>
     </div>
   </div> 
+  <div class="form-group row col-md-7" *ngIf="isdeleted">
+    <label class="col-sm-3 col-form-label" for="Is_delete" translate>Is Deleted</label>
+    <div class="col-sm-9">
+    <p-checkbox [(ngModel)]="deptSuspensionRecord.is_Deleted" (click)="selectOption('is_Deleted')"   name="Is_delete" id="Is_delete"
+      binary="true"></p-checkbox>
+    </div>
+  </div> 
 <!-- 
 <div class="form-group row col-md-7">
   <label class="col-sm-3 col-form-label" for="IsReleased" translate>Is Released</label>
@@ -150,11 +166,11 @@
 
 
   </div>
-  <div class="btn-toolbar" *ngIf="deptSuspensionRecord.id  && !disable"><!--
+  <div class="btn-toolbar" *ngIf="deptSuspensionRecord.id  && !disable && !serviceService.itcanntupdate"><!--
     <button  type="button" class="btn btn-primary mr-2" (click)="add()">New Version</button>-->
     <button type="button" [disabled]="f.invalid"  class="btn btn-primary" (click)="save()" translate>update</button>
   </div>
-  <div class="btn-toolbar" *ngIf="!deptSuspensionRecord.id  && !disable">
+  <div class="btn-toolbar" *ngIf="!deptSuspensionRecord.id  && !disable && !serviceService.itcanntupdate">
     <button type="button" [disabled]="f.invalid" class="btn btn-primary" (click)="add()" translate>Save</button>
   <div *ngIf="isBank" style="color: red;"> በዋስትና የተያዘ/Collateral dept amount is required</div>
   </div>
@@ -170,7 +186,7 @@
       <th scope="col" translate>Suspension Start Date</th>
       <th scope="col" translate>Suspension End Date</th>
       <th scope="col">
-        <button type="button" class="btn btn-primary" (click)=" adddeed()" *ngIf="!disable" translate>Add New</button>
+        <button type="button" class="btn btn-primary" (click)=" adddeed()" *ngIf="!disable && !serviceService.itcanntupdate" translate>Add New</button>
       </th>
     </tr>
   </ng-template>

@@ -29,6 +29,16 @@ export class MyTaskComponent implements OnInit {
     NEXT: "d00",
     PREV: "d01",
   };
+  identifiers = [
+    "2a558556-97d4-4dfb-a8a6-1cc04d2aaf12",
+    "f391f658-a6cf-47dc-b844-964def4ecd56",
+    "77124a10-c952-4df1-bfd7-be112e6a96ff",
+    "beb66e16-8a05-41dc-9da1-cf4f540d48ff",
+    "ec23ceaf-b6f7-4d99-82cc-e23ee23f0425",
+    "fad61b19-b6a5-4c58-a399-eb548cedb1d2",
+    "23bd7067-3a8b-43fa-a2fb-f703bc51e90e",
+    "045976fa-123f-4b38-aad7-f9ec37cd11f4"
+  ];
   loadingMessage = false;
   user: any;
   user_name: any;
@@ -70,7 +80,9 @@ export class MyTaskComponent implements OnInit {
       return false;
     }
   }
-
+  isInIdentifiers(taskId: any): boolean {
+    return this.identifiers.includes(taskId);
+  }
   navigateMessage(direction) {
     if (
       this.messageObj.messages ? this.messageObj.messages.length > 0 : false
@@ -300,6 +312,15 @@ export class MyTaskComponent implements OnInit {
   //   // });
   // }
 
+  filterByUserId(checked: boolean) {
+    if (checked) {
+      // Filter out tasks where userId is not equal to '00000000-0000-0000-0000-000000000000'
+      this.taskList = this.taskList.filter(task => task.userId !== '00000000-0000-0000-0000-000000000000');
+    } else {
+      // Reset to display all tasks
+      this.getMyTask();
+    }
+  }
   async getMyTask() {
     this.myTaskLoading=true;
     //var userInfo = await this.seice.getViewAspNetUsersWorkInfoDetail(environment.username).toPromise();
@@ -343,26 +364,26 @@ export class MyTaskComponent implements OnInit {
 
         console.log("taskList", taskList);
         console.log("dcument id", this.seice.docId);
-        this.taskList.sort((b, a) => {
-          if (a.start_date > b.start_date) {
-            return -1;
-          } else if (a.start_date < b.start_date) {
-            return 1;
-          } else {
-            return 0;
-          }
+        // this.taskList.sort((b, a) => {
+        //   if (a.start_date > b.start_date) {
+        //     return -1;
+        //   } else if (a.start_date < b.start_date) {
+        //     return 1;
+        //   } else {
+        //     return 0;
+        //   }
           
-        });
-        this.taskList.sort((b, a) => {
-          if (a.Estimated_minute_To_Finsh_This_Tasks > b.Estimated_minute_To_Finsh_This_Tasks) {
-            return -1;
-          } else if (a.Estimated_minute_To_Finsh_This_Tasks < b.Estimated_minute_To_Finsh_This_Tasks) {
-            return 1;
-          } else {
-            return 0;
-          }
+        // });
+        // this.taskList.sort((b, a) => {
+        //   if (a.Estimated_minute_To_Finsh_This_Tasks > b.Estimated_minute_To_Finsh_This_Tasks) {
+        //     return -1;
+        //   } else if (a.Estimated_minute_To_Finsh_This_Tasks < b.Estimated_minute_To_Finsh_This_Tasks) {
+        //     return 1;
+        //   } else {
+        //     return 0;
+        //   }
           
-        });
+        // });
 
         let num = 1;
         (this.taskList as Array<any>).map((task) => (task["number"] = num++));

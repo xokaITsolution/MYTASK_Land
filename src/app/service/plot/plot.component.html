@@ -11,6 +11,11 @@
           <button type="button" class="btn btn-primary" (click)="getAllplotLocationafter();ischeckPlotaev=true;ismodaEnable=true;serviceService.check = true;calculettotal()"
             *ngIf="!disable && PlotManagementListfinal.length < 5" translate>Add New</button>
         </th>
+        <th scope="col" *ngIf="isInclusion">
+        
+          <button type="button" class="btn btn-primary" (click)="getAllplotLocationafter();ischeckPlotaev=true;ismodaEnable=true;serviceService.check = true;calculettotal()"
+            *ngIf="isInclusion" translate>Inclusion by it self(በራሱ ማካተት)</button>
+        </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-Plot  let-rowData>
@@ -54,7 +59,10 @@
       
 
           <span *ngIf="serviceService.toMess" style="color:red;font-weight: bolder;font-size: large;"   translate>you need to save Plote Location first</span>
-     
+         
+          <button  type="button" class="btn btn-info ml-3"  (click)="getplotlocbyidcheck(plot_ID)">
+            check inserted Spatial coordinates
+          </button>
       
       <button *ngIf="!serviceService.toMess" type="button" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
         (click)="getAllplotLocation();ismodaEnable=true;">Spatial</button> &nbsp;
@@ -158,13 +166,13 @@
       <div class="ngxsmartmodal-footer" *ngIf="!serviceService.isconfirmsave">
         <!-- Modal footer content -->
        
-          <button type="button" style="float: right;" *ngIf="ischeckPlotaev" class="btn btn-primary m-2" (click)="Savetempora()" translate>Save</button>
+          <button type="button" style="float: right;" *ngIf="ischeckPlotaev && !serviceService.itcanntupdate" class="btn btn-primary m-2" (click)="Savetempora()" translate>Save</button>
           <button type="button" style="float: right;" class="btn btn-primary m-2" (click)="saveplotloc();ismodaEnable=false"
-            *ngIf="isplotllocnew && !ischeckPlotaev &&  !disable" translate>Save</button>
+            *ngIf="isplotllocnew && !ischeckPlotaev &&  !disable && !serviceService.itcanntupdate" translate>Save</button>
           
-          <button type="button" style="float: right;" *ngIf="!isplotllocnew && !ischeckPlotaev && !isfreehoadinsert && !disable" class="btn btn-primary m-2"
+          <button type="button" style="float: right;" *ngIf="!isplotllocnew && !ischeckPlotaev && !isfreehoadinsert && !disable && !serviceService.itcanntupdate" class="btn btn-primary m-2"
             (click)="updateplotloc();closeModall()"  translate>Update</button>
-          <button type="button" style="float: right;" *ngIf="isfreehoadinsert" class="btn btn-primary m-2"
+          <button type="button" style="float: right;" *ngIf="isfreehoadinsert && !serviceService.itcanntupdate" class="btn btn-primary m-2"
             (click)="updateplotlocfreeHold();closeModall()" translate>Insert FreeHold </button>
           
           <button type="button" style="float: right;" class="btn btn-danger m-2" (click)="ismodaEnable=false" translate>Close</button>
@@ -209,6 +217,63 @@
     </div>
   </div>
 </div> -->
-
-
-
+<p-dialog  [(visible)]="showdialogee"  header="Post Itt Note"  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
+[baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                        'max-height': '80vh','min-height':'250px'}">
+                         <div class="modal-body">
+<p-tabView   selected="true">
+       <p-tabPanel [header]="'lease coordinates ' | translate">
+<p-table [value]="leaseholdGIs" [paginator]="true" [rows]="5">
+  <ng-template pTemplate="header">
+    <tr>
+      <th scope="col" translate>easting</th>
+      <th scope="col" translate>northing</th>
+      <th scope="col" translate>zone</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-gis  let-rowData>
+    <tr  class="some-class" tabindex="1"  [class.uistatehighlight]="rowData === highlighted">
+      
+      <td class="fit-content-cell">{{gis.easting}} </td>
+      <td class="fit-content-cell">{{gis.northing}}</td>
+      <td class="fit-content-cell">{{gis.zone}}</td>
+      
+    </tr>
+  </ng-template>
+</p-table>
+<button  type="button" class="btn btn-success ml-3" *ngIf="leaseholdGIs"   (click)="convertToCSVondrwaing(leaseholdGIs)">
+  convert inserted Spatial excel
+</button>
+</p-tabPanel>
+<p-tabPanel [header]="'freehold coordinates' | translate">
+  <p-table [value]="freeholdGIs" [paginator]="true" [rows]="5">
+    <ng-template pTemplate="header">
+      <tr>
+        <th scope="col" translate>easting</th>
+        <th scope="col" translate>northing</th>
+        <th scope="col" translate>zone</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-gis  let-rowData>
+      <tr  class="some-class" tabindex="1"  [class.uistatehighlight]="rowData === highlighted">
+        
+        <td class="fit-content-cell">{{gis.easting}} </td>
+        <td class="fit-content-cell">{{gis.northing}}</td>
+        <td class="fit-content-cell">{{gis.zone}}</td>
+        
+      </tr>
+    </ng-template>
+  </p-table>
+  <button  type="button" class="btn btn-success ml-3" *ngIf="freeholdGIs"  (click)="convertToCSVondrwaing(freeholdGIs)">
+    convert inserted Spatial excel
+  </button>
+</p-tabPanel> 
+</p-tabView>
+</div>
+<div style="float: right;">
+  <button type="button" class="btn btn-primary" 
+   (click)="showdialogee=false" translate>
+    close
+ </button>
+</div>
+</p-dialog>

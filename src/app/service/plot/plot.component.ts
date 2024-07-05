@@ -7,10 +7,7 @@ import {
   TemplateRef,
 } from "@angular/core";
 import { ServiceService } from "../service.service";
-import {
-  PlatformLocation,
-  PlotManagment,
-} from "../plot-managment/plot-managment.component";
+import {PlatformLocation, PlotManagment} from "../plot-managment/plot-managment.component";
 import { ServiceComponent } from "../service.component";
 import { NotificationsService } from "angular2-notifications";
 import { environment } from "src/environments/environment";
@@ -71,6 +68,7 @@ export class PlotComponent implements OnChanges {
   plotidlist: any;
   processedPlotIDs = new Set();
   processedPlotIDsCoordinates = new Set();
+  processedPlotIDsCoordinatess = new Set();
   isfreehoadinsert: boolean;
   serviceisundoumneted: boolean;
   mapConfig = {
@@ -78,6 +76,12 @@ export class PlotComponent implements OnChanges {
     zoom: 10, // Initial zoom level
   };
   checkAPIstatus: boolean;
+  plotlocshow: any;
+  leaseholdGIs: any[];
+  freeholdGIs: any[];
+  showdialogee: boolean;
+  ishaveplotlocation: boolean=false;
+  isInclusion: boolean;
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -117,6 +121,9 @@ export class PlotComponent implements OnChanges {
       this.serviceService.serviceisundoumneted = true;
     } else {
       this.serviceService.serviceisundoumneted = false;
+    }
+    if (this.serviceService.Service_ID==='81F8770B-2C1E-4255-8BE1-341089703FA1'){
+      this.isInclusion=true
     }
     this.PlotManagementListfinal = [];
     this.noinvalidplot = 0;
@@ -224,13 +231,15 @@ export class PlotComponent implements OnChanges {
       if (this.plotloc.length == 0) {
         console.log("plotloc:", this.plotloc);
         this.isfinished = false;
-
+        this.ishaveplotlocation=false
         this.platformLocation = new PlatformLocation();
+        this.platformLocation.ploteId=this.serviceService.selectedplotid
         this.isplotllocnew = true;
       } else {
+      
         this.platformLocation = this.plotloc[0];
         console.log("plotloc:plotloc:", this.plotloc[0]);
-
+        this.ishaveplotlocation=true
         // Check if the plot_ID has already been processed before calling the method
         if (!this.processedPlotIDsCoordinates.has(plot_ID)) {
           this.convertPolygonCoordinates(
@@ -481,16 +490,76 @@ export class PlotComponent implements OnChanges {
     // Check if the value retrieved from localStorage is not null for Free_Hold_M2
     //const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
     const freeHoldM2Value = this.serviceService.polygonAreanameFrehold;
-    this.serviceService.leaseOwnerShip.Free_Hold_M2 =
+    this.serviceService.leaseOwnerShip.free_Hold_M2 =
       freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
 
     // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
     // const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
     const leaseHoldM2Value = this.serviceService.polygonAreaname;
-    this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+    this.serviceService.leaseOwnerShip.lease_Hold_M2 =
       leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
   }
+
+  convertToCSVondrwaing(data: any[]): void {
+
+    const utmCoordinateslast = data;
+    console.log(
+      "🚀 ~ convertToCSVondrwaing ~ utmCoordinateslast:",
+      utmCoordinateslast
+    );
+
+    console.log(
+      "🚀 ~ utmCoordinateslast=utmCoordinateslast.map ~ utmCoordinateslast:",
+      utmCoordinateslast
+    );
+
+    // Add constant values
+    const zone = 37;
+    let hemisphere = "P";
+
+    // Convert data to CSV format
+    let csvContent = "";
+
+    // Add headers to CSV
+    const headers = ["northing", "easting", "hemisphere", "zone"];
+    csvContent += headers.join(",") + "\n";
+
+    // Add constant values to each row
+    // Add constant values to each row
+    utmCoordinateslast.forEach((item, index) => {
+      csvContent +=
+        item.northing + "," + item.easting + "," + hemisphere + "," + zone;
+      if (index !== utmCoordinateslast.length - 1) {
+        // Add new line if it's not the last row
+        csvContent += "\n";
+      }
+    });
+
+    // Create a blob with CSV content
+    const blob = new Blob([csvContent], { type: "text/csv" });
+
+    // Create a temporary URL for the blob
+    const url = window.URL.createObjectURL(blob);
+
+    // Create a link and trigger the download
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "shapes.csv");
+    document.body.appendChild(link);
+    link.click();
+
+    // Cleanup
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
   updateplotloc() {
+    if (this.serviceService.Licence_Service_ID != this.serviceService.LicenceserviceID){
+      const toast = this.notificationsService.error(
+        "Error",
+        "this plot created by other technical officer so you can't update it /ይህ ፕሎት በሌላ ቴክኒካል ኦፊሰር የተፈጠረ ስለሆነ ማዘመን አይችሉም"
+      );
+      return
+    }
     console.log("coordinatcoordinat", this.serviceService.coordinate);
     if (this.serviceService.coordinate) {
       let coordinate = this.convertToMultiPointgeozone(
@@ -499,6 +568,7 @@ export class PlotComponent implements OnChanges {
       let coordinate2 = this.convertToMultiPointsmorethanone(
         this.serviceService.coordinate
       );
+      console.log("🚀 ~ PlotComponent ~ updateplotloc ~ coordinate2:", coordinate2)
       this.platformLocation.geo = coordinate2;
       this.platformLocation.geowithzone = coordinate;
       // this.platformLocation.geoForwgs84 =
@@ -507,7 +577,7 @@ export class PlotComponent implements OnChanges {
       this.serviceService.getUserRole().subscribe((response: any) => {
         console.log("responseresponseresponse", response, response[0].RoleId);
         this.platformLocation.updated_By = response[0].UserId;
-        this.platformLocation.updated_Date = new Date();
+        // this.platformLocation.updated_Date =this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss'); 
         if (response[0].RoleId == "f8dda85e-f967-4ac5-bf79-4d989ecfb863") {
           this.platformLocation.team_Leader_Approved_By = response[0].UserId;
           this.platformLocation.team_Leader_Approved = true;
@@ -588,15 +658,15 @@ export class PlotComponent implements OnChanges {
   }
   updateplotlocfreeHold() {
     const freeHoldM2Value = this.serviceService.polygonAreanameFrehold;
-    this.serviceService.leaseOwnerShip.Free_Hold_M2 =
+    this.serviceService.leaseOwnerShip.free_Hold_M2 =
       freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
 
-    this.serviceService.leaseOwnerShip.Free_Hold_M2 = parseFloat(
+    this.serviceService.leaseOwnerShip.free_Hold_M2 = parseFloat(
       this.serviceService.polygonAreanameFrehold
     );
     console.log(
       "coordinatcoordinat",
-      this.serviceService.leaseOwnerShip.Free_Hold_M2
+      this.serviceService.leaseOwnerShip.free_Hold_M2
     );
     if (this.serviceService.coordinate) {
       let coordinatefreehold = this.convertToMultiPointsmorethanone(
@@ -852,7 +922,7 @@ export class PlotComponent implements OnChanges {
         polygonPoints[0][2] !== polygonPoints[polygonPoints.length - 1][2]
       ) {
         // Indicate an invalid polygon
-        return "Invalid polygon: The first and last points must be the same.";
+        const toast = this.notificationsService.error( "Invalid polygon: The first and last points must be the same.")
       }
 
       // Remove the last point if it's identical to the first point
@@ -1163,14 +1233,18 @@ export class PlotComponent implements OnChanges {
     return uniqueArray;
   }
   async SelectPLot(plot) {
+    this.ishaveplotlocation=false
     this.SelectedPlot = plot;
     this.serviceService.fornewplotinsert = false;
     console.log("dfghgfd", plot);
     this.plot_ID = this.SelectedPlot.plot_ID;
     this.serviceService.selectedplotid = this.plot_ID;
+    this.Parcel_ID= this.serviceService.selectedplotid
     this.serviceService.Totalarea = this.SelectedPlot.plot_Size_M2;
     plot.SDP_ID = this.serviceComponent.licenceData.SDP_ID;
+
     plot.Licence_Service_ID = this.LicenceData.Licence_Service_ID;
+    this.serviceService.Licence_Service_ID=this.SelectedPlot.Licence_Service_ID    ;
     plot.Application_No = this.AppNo;
     if (this.language != "amharic") {
       plot.registration_Date = plot.registration_Date.split("T")[0];
@@ -1368,6 +1442,14 @@ export class PlotComponent implements OnChanges {
           [],
           this.serviceService.PlotStutusLook.list
         );
+        // if(this.serviceService.Service_ID != '449A14BD-E0C0-4EDA-92F5-68B3FCF83433'.toLocaleLowerCase()
+        // || this.serviceService.Service_ID != 'DE330170-550B-4BF2-9908-DC557F92A7CC'.toLocaleLowerCase()
+        // || this.serviceService.Service_ID != '05BF5DE7-7170-43CE-8320-C747748D40E5'.toLocaleLowerCase()
+        // || this.serviceService.Service_ID != '5FE58D7F-6E9F-452E-B85B-8CD501F020BE'.toLocaleLowerCase()
+        // || this.serviceService.Service_ID != '05DB54FC-E388-4E5E-AAAA-BD6141C8E533'.toLocaleLowerCase()
+        // ){
+        //   this.serviceService.PlotStutusLook=this.serviceService.PlotStutusLook.filter(x=>x.Plot_Status_ID != 2019)
+        // }
         console.log("PlotStutusLookUP", this.serviceService.PlotStutusLook);
       },
       (error) => {
@@ -1549,19 +1631,19 @@ export class PlotComponent implements OnChanges {
             this.serviceService.Service_ID
         ) {
           this.leaseOwnerShipService
-            .getAll(this.plot_ID)
+            .getAllapi(this.plot_ID)
             .subscribe((CertificateVersion: any) => {
               let tasks = CertificateVersion;
-              tasks = Object.assign([], tasks.list);
+              tasks = Object.assign([], tasks.procLease_and_Owned_Lands);
               const uniquePlotIDs = new Set();
               const totalsize = tasks
-                .filter((x) => parseInt(x.Status) === 1)
+                .filter((x) => parseInt(x.status) === 1)
                 .reduce((sum, node) => {
-                  if (!uniquePlotIDs.has(node.Plot_ID)) {
+                  if (!uniquePlotIDs.has(node.plot_ID)) {
                     sum +=
-                      parseFloat(node.Free_Hold_M2) +
-                      parseFloat(node.Lease_Hold_M2);
-                    uniquePlotIDs.add(node.Plot_ID);
+                      parseFloat(node.free_Hold_M2) +
+                      parseFloat(node.lease_Hold_M2);
+                    uniquePlotIDs.add(node.plot_ID);
                   }
 
                   return sum;
@@ -1574,7 +1656,7 @@ export class PlotComponent implements OnChanges {
               );
 
               if (tasks.length > 0) {
-                if (totalsize === this.serviceService.Totalarea) {
+                if (this.serviceService.Totalarea == this.serviceService.Totalarea) {
                   this.serviceService
                     .GetPlotValidationURL(
                       this.serviceService.LicenceserviceID,
@@ -1639,18 +1721,84 @@ export class PlotComponent implements OnChanges {
     this.CanDone = false;
   }
   async getlese(plotID) {
-    var a: any = this.leaseOwnerShipService.getAll(plotID).toPromise();
+    var a: any = this.leaseOwnerShipService.getAllapi(plotID).toPromise();
 
     return a;
   }
   async checkLease_and_Owned_Land(element) {
     let b = await this.getlese(element.plot_ID);
-    b = Object.assign([], b.list);
+    b = Object.assign([], b.procLease_and_Owned_Lands);
     if (b.length === 0) {
       return false; // No deed record for current property
     }
 
     return true; // All children and descendants have deed records
+  }
+
+  getconvertPolygonCoordinates(polygonString: string): any[] {
+    const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
+    console.log("🚀 ~ convertPolygonCoordinates ~ coordinates:", coordinates);
+
+    const result = [];
+
+    if (coordinates) {
+      const uniqueCoordinates = new Set(); // Using a Set to store unique coordinates
+      for (const coord of coordinates) {
+        const [easting, northing, hemisphere, zone] = coord.split(" ");
+
+        // Check if the coordinate is unique before adding it to the result
+        const uniqueCoordString = `${easting},${northing}`;
+        if (!uniqueCoordinates.has(uniqueCoordString)) {
+          uniqueCoordinates.add(uniqueCoordString);
+          result.push({
+            northing: (parseFloat(northing)).toString(),
+            easting: (parseFloat(easting)).toString(),
+            hemisphere: hemisphere,
+            zone: zone,
+          });
+        }
+      }
+    }
+
+ 
+    return  result 
+  }
+
+  getplotlocbyidcheck(plot_ID) {
+
+    this.serviceService.getPlotloc(plot_ID).subscribe(async (response: any) => {
+      this.plotlocshow = response.procPlot_Locations;
+
+      if ( this.plotlocshow.length == 0) {
+       
+      } else {
+       
+        
+        // Check if the plot_ID has already been processed before calling the method
+        if (!this.processedPlotIDsCoordinatess.has(plot_ID)) {
+        this.leaseholdGIs= await this.getconvertPolygonCoordinates(
+            this.plotlocshow[0].geowithzone
+          );
+
+          if (
+            this.plotlocshow[0].geoForwgs84 != null &&
+            this.plotlocshow[0].freholdgis
+          ) {
+           this.freeholdGIs=await this.getconvertPolygonCoordinates(
+              this.plotlocshow[0].geoForwgs84
+            );
+          }
+
+          console.log("plotloc:plotloc:show", this.plotlocshow[0] ,this.leaseholdGIs ,this.freeholdGIs);
+          // Add the plot_ID to the set of processed plot IDs
+          if(this.leaseholdGIs != undefined){
+            this.showdialogee=true
+          }
+          this.processedPlotIDsCoordinatess.add(plot_ID);
+        }
+       
+      }
+    });
   }
 
   EnableFinsLise() {

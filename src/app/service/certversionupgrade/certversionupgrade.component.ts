@@ -108,6 +108,8 @@ export class CertversionupgradeComponent implements OnChanges {
   printenable: boolean;
   multipleplotcanbeadd: boolean = true;
   AppNonumber: any;
+  BaseTablefinalALL=[];
+  cuurentversionselected: any;
   constructor(
     public serviceService: ServiceService,
     private ngxSmartModalService: NgxSmartModalService,
@@ -174,6 +176,7 @@ export class CertversionupgradeComponent implements OnChanges {
     this.plotList = [];
     this.PlotManagementList = [];
     this.PlotManagementListfinal = [];
+    this.BaseTablefinalALL=[];
     if (this.licenceData.Parcel_ID) {
       this.noadds++;
       this.getplotlist(this.licenceData.Parcel_ID);
@@ -372,34 +375,49 @@ export class CertversionupgradeComponent implements OnChanges {
     );
   }
 
+  // getBase(ploat) {
+  //   this.serviceService.getBaseTable(ploat).subscribe(
+  //     async (BaseTable: any) => {
+  //       if (BaseTable) {
+  //         if (this.language == "amharic") {
+  //           BaseTable[0].Registration_Date =
+  //             await this.getgregorianToEthiopianDate(
+  //               BaseTable[0].Registration_Date
+  //             );
+  //         }
+  //       }
+  //       // this.BaseTable = (Object.assign([], this.BaseTable));
+  //       const uniqueJobMatchIDs = {};
+  //       const uniqueData = BaseTable.filter((item) => {
+  //         if (!uniqueJobMatchIDs[item.title_Deed_No]) {
+  //           uniqueJobMatchIDs[item.title_Deed_No] = true;
+  //           return true;
+  //         }
+  //         return false;
+  //       });
+  //       this.BaseTable = uniqueData;
+  //       if (this.BaseTable.length > 0) {
+  //         this.BaseTablefinal.push(this.BaseTable[0])
+  //         this.BaseTablefinal = this.BaseTablefinal.filter(
+  //           (item, index, self) =>
+  //             self.findIndex((i) => i.Ownership_ID === item.Ownership_ID && i.title_Deed_No === item.title_Deed_No) ===
+  //             index
+  //         );
+  //         console.log("BaseTable", this.BaseTablefinal);
+  //       }
+  //     },
+  //     (error) => {
+  //       console.log("error");
+  //     }
+  //   );
+  // }
   getBase(ploat) {
     this.serviceService.getBaseTable(ploat).subscribe(
       async (BaseTable: any) => {
-        if (BaseTable) {
-          if (this.language == "amharic") {
-            BaseTable[0].Registration_Date =
-              await this.getgregorianToEthiopianDate(
-                BaseTable[0].Registration_Date
-              );
-          }
-        }
-        // this.BaseTable = (Object.assign([], this.BaseTable));
-        const uniqueJobMatchIDs = {};
-        const uniqueData = BaseTable.filter((item) => {
-          if (!uniqueJobMatchIDs[item.Ownership_ID]) {
-            uniqueJobMatchIDs[item.Ownership_ID] = true;
-            return true;
-          }
-          return false;
-        });
-        this.BaseTable = uniqueData;
-        if (this.BaseTable.length > 0) {
-          this.BaseTablefinal.push(this.BaseTable[0]);
-          this.BaseTablefinal = this.BaseTablefinal.filter(
-            (item, index, self) =>
-              self.findIndex((i) => i.Title_Deed_No === item.Title_Deed_No) ===
-              index
-          );
+        if (BaseTable.length > 0) {
+          const newUniqueItems = this.getUniqueItems(BaseTable, ['Ownership_ID', 'Plot_ID', 'Title_Deed_No']);
+          this.BaseTablefinal = []; // Clear existing data before updating
+          this.mergeUniqueItems(newUniqueItems);
           console.log("BaseTable", this.BaseTablefinal);
         }
       },
@@ -407,6 +425,38 @@ export class CertversionupgradeComponent implements OnChanges {
         console.log("error");
       }
     );
+  }
+  
+  getUniqueItems(data, keys) {
+    const uniqueSet = new Set();
+    const uniqueArray = [];
+  
+    data.forEach(item => {
+      const combination = keys.map(key => item[key]).join('|');
+      if (!uniqueSet.has(combination)) {
+        uniqueSet.add(combination);
+        uniqueArray.push(item);
+      }
+    });
+  
+    return uniqueArray;
+  }
+  
+  mergeUniqueItems(newItems) {
+
+    const uniqueJobMatchIDs = {};
+        const uniqueData = newItems.filter((item) => {
+          if (!uniqueJobMatchIDs[item.Title_Deed_No]) {
+            uniqueJobMatchIDs[item.Title_Deed_No] = true;
+            return true;
+          }
+          return false;
+        });
+        this.BaseTablefinalALL.push([...uniqueData]);
+    
+  
+  
+    console.log("🚀 ~ CertComponent ~ mergeUniqueItems ~ BaseTablefinalALL:", this.BaseTablefinalALL);
   }
   modalRef: BsModalRef;
   openModall(template: TemplateRef<any>) {
@@ -538,17 +588,21 @@ export class CertversionupgradeComponent implements OnChanges {
     console.log("ceertform", this.ceertform);
   }
   Selectversion(certver) {
+    console.log("🚀 ~ CertversionupgradeComponent ~ Selectversion ~ certver:", certver)
+   this.cuurentversionselected=certver.version_ID
     console.log(
       "city",
       environment.city,
       environment.Lang_code,
-      environment.appbase,
+      environment.appbase, 
       environment.location
     );
     this.serviceService
       .getCertificateVersion1(certver.title_Deed_No)
       .subscribe((CertificateVersion: any) => {
         this.CertificateVersion = CertificateVersion.procCertificate_Versions;
+        console.log("🚀 ~ CertversionupgradeComponent ~ .subscribe ~ CertificateVersion:", this.CertificateVersion)
+       
         var img = this.CertificateVersion.filter((x) => x.is_Active == true);
         if (img.length > 0) {
           //console.log("img", img[0].certificate_Image);
@@ -564,10 +618,11 @@ export class CertversionupgradeComponent implements OnChanges {
                 // this.serviceService.disablefins = false;
                 this.addcerltter();
               } else {
+            
                 this.serviceService
                   .GetCertficate_ver_Validation(
                     this.serviceService.LicenceserviceID,
-                    this.serviceService.Service_ID
+                    this.cuurentversionselected                   
                   )
                   .subscribe((message: any) => {
                     if (message.Message == "1") {
@@ -593,10 +648,11 @@ export class CertversionupgradeComponent implements OnChanges {
         if (this.serviceService.ishavetitleDeedRegistrationList) {
           this.isprintedtask = true;
           if (this.serviceService.isRecordDocumentationManager === false) {
+             
             this.serviceService
               .GetCertficate_ver_Validation(
                 this.serviceService.LicenceserviceID,
-                this.serviceService.Service_ID
+                    this.cuurentversionselected
               )
               .subscribe((message: any) => {
                 if (message.Message == "1") {
@@ -628,6 +684,8 @@ export class CertversionupgradeComponent implements OnChanges {
             environment.certReportPath + "/" + this.Selectedcert.title_Deed_No
           );
 
+          console.log("🚀 ~ CertversionupgradeComponent ~ .subscribe ~ certReportPath:", this.certReportPath)
+          
           this.LetterReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
             environment.LetterReportPath + "/" + this.AppNonumber
           );
@@ -684,7 +742,11 @@ export class CertversionupgradeComponent implements OnChanges {
           return false;
         });
         this.CertificateVersion = uniqueData;
-        console.log("CertificateVersion", this.CertificateVersion);
+        let fitlercert=this.CertificateVersion.filter(x=>x.is_Active == true)
+        console.log("CertificateVersion", this.CertificateVersion ,this.serviceService.Service_ID);
+        if ("de4937d8-bdcd-46d6-8749-dc31c9f3adcf".toString() == this.serviceService.Service_ID || fitlercert.length==0){
+          this.completed.emit();
+        }
 
         // this.CertificateVersion = Object.assign(
         //   [],
@@ -750,10 +812,13 @@ export class CertversionupgradeComponent implements OnChanges {
     //   this.Saved = true;
     // }
     // this.serviceService.disablefins = false;
+    if ("DE4937D8-BDCD-46D6-8749-DC31C9F3ADCF".toString() == this.serviceService.Service_ID){
+      this.completed.emit();
+    }else{
     this.serviceService
       .GetCertficate_ver_Validation(
         this.serviceService.LicenceserviceID,
-        this.serviceService.Service_ID
+        this.cuurentversionselected
       )
       .subscribe((message: any) => {
         if (message.Message == "1") {
@@ -766,6 +831,7 @@ export class CertversionupgradeComponent implements OnChanges {
       });
     this.certverForm = true;
     this.getCertificateVersion(this.SelectedBase);
+    }
   }
   //cetr letter
 
@@ -991,7 +1057,7 @@ export class CertversionupgradeComponent implements OnChanges {
                 this.serviceService
                   .GetCertficate_ver_Validation(
                     this.serviceService.LicenceserviceID,
-                    this.serviceService.Service_ID
+                    this.cuurentversionselected
                   )
                   .subscribe((message: any) => {
                     if (message.Message == "1") {
@@ -1055,7 +1121,7 @@ export class CertversionupgradeComponent implements OnChanges {
         this.serviceService
           .GetCertficate_ver_Validation(
             this.serviceService.LicenceserviceID,
-            this.serviceService.Service_ID
+            this.cuurentversionselected
           )
           .subscribe((message: any) => {
             if (message.Message == "1") {
@@ -1119,7 +1185,7 @@ export class CertversionupgradeComponent implements OnChanges {
         this.serviceService
           .GetCertficate_ver_Validation(
             this.serviceService.LicenceserviceID,
-            this.serviceService.Service_ID
+            this.cuurentversionselected
           )
           .subscribe((message: any) => {
             if (message.Message == "1") {

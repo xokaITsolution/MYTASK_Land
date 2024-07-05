@@ -70,7 +70,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
     private activatedRoute: ActivatedRoute
   ) {
     this.serviceService.leaseOwnerShip = new LeaseOwnerShip();
-    this.serviceService.leaseOwnerShip.ID = Guid.create().toString();
+    this.serviceService.leaseOwnerShip.id = Guid.create().toString();
   }
   highlighted;
   ngOnChanges() {
@@ -88,15 +88,15 @@ export class LeaseOwnerShipComponent implements OnChanges {
       this.getleaseOwnerShip(this.SelectedPlot.plot_ID);
       this.serviceService.getCookies();
       if (this.addnew) {
-        this.serviceService.leaseOwnerShip.Plot_ID = this.SelectedPlot.plot_ID;
+        this.serviceService.leaseOwnerShip.plot_ID = this.SelectedPlot.plot_ID;
         console.log("lease select", this.SelectedPlot);
         console.log(
           "lease plot id",
-          this.serviceService.leaseOwnerShip.Plot_ID,
+          this.serviceService.leaseOwnerShip.plot_ID,
           this.serviceService.polygonAreaname
         );
 
-        this.serviceService.leaseOwnerShip.SDP_ID = this.SelectedPlot.sdP_ID;
+        this.serviceService.leaseOwnerShip.sdP_ID = this.SelectedPlot.sdP_ID;
         // this.serviceService.leaseOwnerShip.Lease_Hold_M2 = parseInt(
         //   localStorage.getItem("PolygonAreaname")
         // );
@@ -131,7 +131,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
     } else {
       this.language = "english";
     }
-    this.serviceService.leaseOwnerShip.SDP_ID =
+    this.serviceService.leaseOwnerShip.sdP_ID =
       this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
     // if( this.serviceService.leaseOwnerShip.SDP_ID!=null || this.serviceService.leaseOwnerShip.SDP_ID!=undefined ){
     //   this.addLease()
@@ -149,20 +149,20 @@ export class LeaseOwnerShipComponent implements OnChanges {
       this.isfreehole = true;
       // Check if the value retrieved from localStorage is not null for Free_Hold_M2
       if (
-        this.serviceService.leaseOwnerShip.Free_Hold_M2 == null ||
-        this.serviceService.leaseOwnerShip.Free_Hold_M2 == 0
+        this.serviceService.leaseOwnerShip.free_Hold_M2 == null ||
+        this.serviceService.leaseOwnerShip.free_Hold_M2 == 0
       ) {
         const freeHoldM2Value = this.serviceService.polygonAreanameFrehold;
-        this.serviceService.leaseOwnerShip.Free_Hold_M2 =
+        this.serviceService.leaseOwnerShip.free_Hold_M2 =
           freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
       }
 
       if (
-        this.serviceService.leaseOwnerShip.Lease_Hold_M2 == null ||
-        this.serviceService.leaseOwnerShip.Lease_Hold_M2 == 0
+        this.serviceService.leaseOwnerShip.lease_Hold_M2 == null ||
+        this.serviceService.leaseOwnerShip.lease_Hold_M2 == 0
       ) {
         const leaseHoldM2Value = this.serviceService.polygonAreaname;
-        this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+        this.serviceService.leaseOwnerShip.lease_Hold_M2 =
           leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
       }
       this.serviceService.isFreeHold = true;
@@ -173,39 +173,39 @@ export class LeaseOwnerShipComponent implements OnChanges {
       // Check if the value retrieved from localStorage is not null for Free_Hold_M2
       //const freeHoldM2Value = localStorage.getItem("PolygonAreanameFrehold");
       const freeHoldM2Value = this.serviceService.polygonAreanameFrehold;
-      this.serviceService.leaseOwnerShip.Free_Hold_M2 = 0;
+      this.serviceService.leaseOwnerShip.free_Hold_M2 = 0;
       // freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
 
       // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
       if (
-        this.serviceService.leaseOwnerShip.Lease_Hold_M2 == null ||
-        this.serviceService.leaseOwnerShip.Lease_Hold_M2 == 0
+        this.serviceService.leaseOwnerShip.lease_Hold_M2 == null ||
+        this.serviceService.leaseOwnerShip.lease_Hold_M2 == 0
       ) {
         //const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
         const leaseHoldM2Value = this.serviceService.polygonAreaname;
-        this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+        this.serviceService.leaseOwnerShip.lease_Hold_M2 =
           leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
       }
     } else if (value == 3) {
       this.islease = false;
       this.iislease = true;
       this.isfreehole = true;
-      this.serviceService.leaseOwnerShip.Lease_Hold_M2 = 0;
+      this.serviceService.leaseOwnerShip.lease_Hold_M2 = 0;
       // Check if the value retrieved from localStorage is not null for Free_Hold_M2
       if (
-        this.serviceService.leaseOwnerShip.Free_Hold_M2 == null ||
-        this.serviceService.leaseOwnerShip.Free_Hold_M2 == 0
+        this.serviceService.leaseOwnerShip.free_Hold_M2 == null ||
+        this.serviceService.leaseOwnerShip.free_Hold_M2 == 0
       ) {
         //onst freeHoldM2Value = localStorage.getItem("PolygonAreaname");
         const freeHoldM2Value = this.serviceService.polygonAreaname;
-        this.serviceService.leaseOwnerShip.Free_Hold_M2 =
+        this.serviceService.leaseOwnerShip.free_Hold_M2 =
           freeHoldM2Value !== null ? parseFloat(freeHoldM2Value) : 0;
       }
       // Check if the value retrieved from localStorage is not null for Lease_Hold_M2
       //const leaseHoldM2Value = localStorage.getItem("PolygonAreaname");
       const leaseHoldM2Value = this.serviceService.polygonAreaname;
-      this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
-        this.serviceService.leaseOwnerShip.Lease_Hold_M2;
+      this.serviceService.leaseOwnerShip.lease_Hold_M2 =
+        this.serviceService.leaseOwnerShip.lease_Hold_M2;
       // leaseHoldM2Value !== null ? parseFloat(leaseHoldM2Value) : 0;
     }
     if (
@@ -250,7 +250,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
   }
   selectedDateTime(dates: any, selecter) {
     if (selecter == 2) {
-      this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+      this.serviceService.leaseOwnerShip.date_of_final_lease_payment =
         dates[0]._day + "/" + dates[0]._month + "/" + dates[0]._year;
     }
   }
@@ -266,17 +266,17 @@ export class LeaseOwnerShipComponent implements OnChanges {
       this.iseditablesize = false;
     }
     console.log("tasktasktasktask", task);
-    this.plotIdselected = task.Plot_ID;
-    this.serviceService.Totalarea = task.Lease_Hold_M2 + task.Free_Hold_M2;
+    this.plotIdselected = task.plot_ID;
+    this.serviceService.Totalarea = task.lease_Hold_M2 + task.free_Hold_M2;
 
     console.log();
     // Check if the value retrieved from localStorage is not null for Free_Hold_M2
 
     this.serviceService.currentplotsize =
-      this.serviceService.leaseOwnerShip.Lease_Hold_M2 +
-      this.serviceService.leaseOwnerShip.Lease_Hold_M2;
-    this.serviceService.leaseOwnerShip.Current_lease_bid_price = 0;
-    this.serviceService.leaseOwnerShip.Remaining_lease_payment = 0;
+      this.serviceService.leaseOwnerShip.lease_Hold_M2 +
+      this.serviceService.leaseOwnerShip.lease_Hold_M2;
+    this.serviceService.leaseOwnerShip.current_lease_bid_price = 0;
+    this.serviceService.leaseOwnerShip.remaining_lease_payment = 0;
     this.addnew = false;
     // this.leaseForm = true;
     if (this.language == "amharic") {
@@ -340,7 +340,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
 
     this.serviceService.isleaseForm = true;
     this.serviceService
-      .getcustomerbyid(task.Customer_ID)
+      .getcustomerbyid(task.customer_ID)
       .subscribe((resp: any) => {
         console.log("tasktasktasktask", resp.procCustomers);
         this.customerdata = resp.procCustomers;
@@ -378,32 +378,32 @@ export class LeaseOwnerShipComponent implements OnChanges {
     ) {
       this.serviceService.isleaseForm = true;
       this.serviceService.leaseOwnerShip = new LeaseOwnerShip();
-      this.serviceService.leaseOwnerShip.ID = Guid.create().toString();
-      this.serviceService.leaseOwnerShip.Plot_ID = this.SelectedPlot.plot_ID;
-      this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+      this.serviceService.leaseOwnerShip.id = Guid.create().toString();
+      this.serviceService.leaseOwnerShip.plot_ID = this.SelectedPlot.plot_ID;
+      this.serviceService.leaseOwnerShip.lease_Hold_M2 =
         this.SelectedPlot.plot_Size_M2;
-      this.serviceService.leaseOwnerShip.Free_Hold_M2 = 0;
-      this.serviceService.leaseOwnerShip.Type_ID = 1;
+      this.serviceService.leaseOwnerShip.free_Hold_M2 = 0;
+      this.serviceService.leaseOwnerShip.type_ID = 1;
 
-      this.serviceService.leaseOwnerShip.To_Do_ID = this.todoidcurrent;
-      this.serviceService.leaseOwnerShip.Application_No = this.applicationo;
-      this.serviceService.leaseOwnerShip.Lease_No = this.applicationo;
+      this.serviceService.leaseOwnerShip.to_Do_ID = this.todoidcurrent;
+      this.serviceService.leaseOwnerShip.application_No = this.applicationo;
+      this.serviceService.leaseOwnerShip.lease_No = this.applicationo;
 
       // this.serviceService.leaseOwnerShip.SDP_ID = this.LicenceData.SDP_ID;
-      this.serviceService.leaseOwnerShip.SDP_ID =
+      this.serviceService.leaseOwnerShip.sdP_ID =
         this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
       this.addnew = true;
       this.leaseForm = true;
     } else {
       this.serviceService.isleaseForm = true;
       this.serviceService.leaseOwnerShip = new LeaseOwnerShip();
-      this.serviceService.leaseOwnerShip.ID = Guid.create().toString();
-      this.serviceService.leaseOwnerShip.Plot_ID = this.SelectedPlot.plot_ID;
-      this.serviceService.leaseOwnerShip.To_Do_ID = this.todoidcurrent;
-      this.serviceService.leaseOwnerShip.Application_No = this.applicationo;
-      this.serviceService.leaseOwnerShip.Lease_No = this.applicationo;
+      this.serviceService.leaseOwnerShip.id = Guid.create().toString();
+      this.serviceService.leaseOwnerShip.plot_ID = this.SelectedPlot.plot_ID;
+      this.serviceService.leaseOwnerShip.to_Do_ID = this.todoidcurrent;
+      this.serviceService.leaseOwnerShip.application_No = this.applicationo;
+      this.serviceService.leaseOwnerShip.lease_No = this.applicationo;
       if (this.SelectedPlot.plot_Size_M2 > 0) {
-        this.serviceService.leaseOwnerShip.Lease_Hold_M2 =
+        this.serviceService.leaseOwnerShip.lease_Hold_M2 =
           this.SelectedPlot.plot_Size_M2;
       } else {
         this.serviceService.currentplotsize = parseFloat(
@@ -411,7 +411,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
         );
       }
       // this.serviceService.leaseOwnerShip.SDP_ID = this.LicenceData.SDP_ID;
-      this.serviceService.leaseOwnerShip.SDP_ID =
+      this.serviceService.leaseOwnerShip.sdP_ID =
         this.serviceComponent.ServiceDeliveryUnitLookUP[0].organization_code;
       this.addnew = true;
       this.leaseForm = true;
@@ -436,17 +436,17 @@ export class LeaseOwnerShipComponent implements OnChanges {
         tasks = Object.assign([], tasks.list);
         console.log("this.tasksss", tasks);
 
-        this.serviceService.leaseOwnerShip.Free_Hold_M2 = parseFloat(
-          tasks[0].Free_Hold_M2
+        this.serviceService.leaseOwnerShip.free_Hold_M2 = parseFloat(
+          tasks[0].free_Hold_M2
         );
 
-        this.serviceService.leaseOwnerShip.Lease_Hold_M2 = parseFloat(
-          tasks[0].Free_Hold_M2
+        this.serviceService.leaseOwnerShip.lease_Hold_M2 = parseFloat(
+          tasks[0].free_Hold_M2
         );
         console.log(
           "this.tasksss",
-          tasks[0].Free_Hold_M2,
-          tasks[0].Lease_Hold_M2
+          tasks[0].free_Hold_M2,
+          tasks[0].lease_Hold_M2
         );
       });
   }
@@ -454,10 +454,10 @@ export class LeaseOwnerShipComponent implements OnChanges {
   getleaseOwnerShip(plotID) {
     console.log("plotIDplotID", plotID);
 
-    this.leaseOwnerShipService.getAll(plotID).subscribe(
+    this.leaseOwnerShipService.getAllapi(plotID).subscribe(
       (CertificateVersion) => {
         this.tasks = CertificateVersion;
-        this.tasks = Object.assign([], this.tasks.list);
+        this.tasks = Object.assign([], this.tasks.procLease_and_Owned_Lands);
         console.log("this.tasks", this.tasks);
         this.serviceService.leaselist = this.tasks;
         if (this.tasks.length > 0) {
@@ -480,11 +480,11 @@ export class LeaseOwnerShipComponent implements OnChanges {
               }
             }
           }
-          if (parseInt(this.tasks[0].Type_ID) === 1) {
+          if (parseInt(this.tasks[0].type_ID) === 1) {
             this.islease = true;
             this.iislease = false;
             this.isfreehole = false;
-          } else if (parseInt(this.tasks[0].Type_ID) === 2) {
+          } else if (parseInt(this.tasks[0].type_ID) === 2) {
             this.islease = true;
             this.iislease = true;
             this.isfreehole = false;
@@ -494,7 +494,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
             this.isfreehole = false;
           }
 
-          if (this.todoidcurrent == this.tasks[0].To_Do_ID) {
+          if (this.todoidcurrent == this.tasks[0].to_Do_ID) {
             this.iscanEdite = true;
           } else {
             this.iscanEdite = false;
@@ -559,41 +559,51 @@ export class LeaseOwnerShipComponent implements OnChanges {
   //   });
   // }
   async save() {
-    console.log(
-      this.serviceService.currentplotsize,
-      this.serviceService.leaseOwnerShip.Lease_Hold_M2
-    );
+    // console.log("🚀 ~ PlotManagmentComponent ~ save ~ Licence_Service_ID:", this.serviceService.LicenceserviceID,
+    // this.serviceService.Licence_Service_ID
+    // )
+    if (this.serviceService.Licence_Service_ID != this.serviceService.LicenceserviceID){
+      const toast = this.notificationsService.error(
+        "Error",
+        "this plot created by other technical officer so you can't update it /ይህ ፕሎት በሌላ ቴክኒካል ኦፊሰር የተፈጠረ ስለሆነ ማዘመን አይችሉም"
+      );
+      return
+    }
+    // console.log(
+    //   this.serviceService.currentplotsize,
+    //   this.serviceService.leaseOwnerShip.lease_Hold_M2
+    // );
     const maxAreaDifference =
       environment.Totalareatolerance * this.serviceService.currentplotsize;
     let toaleplotsize =
-      this.serviceService.leaseOwnerShip.Lease_Hold_M2 +
-      this.serviceService.leaseOwnerShip.Free_Hold_M2;
+      this.serviceService.leaseOwnerShip.lease_Hold_M2 +
+      this.serviceService.leaseOwnerShip.free_Hold_M2;
     const areaDifference = Math.abs(
       toaleplotsize - parseFloat(localStorage.getItem("PolygonAreaname"))
     );
     console.log(maxAreaDifference, areaDifference);
 
     let totalsize =
-      parseFloat(this.serviceService.leaseOwnerShip.Free_Hold_M2) +
-      parseFloat(this.serviceService.leaseOwnerShip.Lease_Hold_M2);
+      parseFloat(this.serviceService.leaseOwnerShip.free_Hold_M2) +
+      parseFloat(this.serviceService.leaseOwnerShip.lease_Hold_M2);
 
     console.log("totalsize", totalsize);
 
-    this.serviceService
-      .getAll(this.serviceService.leaseOwnerShip.Plot_ID)
+    this.leaseOwnerShipService
+      .getAllapi(this.serviceService.leaseOwnerShip.plot_ID)
       .subscribe((CertificateVersion: any) => {
         let tasks = CertificateVersion;
-        tasks = Object.assign([], tasks.list);
+        tasks = Object.assign([], tasks.procLease_and_Owned_Lands);
         console.log("this.tasks", tasks);
 
         console.log("leaselist", tasks);
         if (tasks.length > 0) {
           tasks.forEach((element) => {
-            if (element.Plot_ID != this.serviceService.leaseOwnerShip.Plot_ID) {
+            if (element.Plot_ID != this.serviceService.leaseOwnerShip.plot_ID) {
               if (parseInt(element.Status) === 1) {
                 let totalsizeeach =
-                  parseFloat(element.Free_Hold_M2) +
-                  parseFloat(element.Lease_Hold_M2);
+                  parseFloat(element.free_Hold_M2) +
+                  parseFloat(element.lease_Hold_M2);
 
                 this.totalsizeofleaseeach += totalsizeeach;
               }
@@ -613,26 +623,28 @@ export class LeaseOwnerShipComponent implements OnChanges {
       return;
     } else {
       if (this.language == "amharic") {
-        this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+        this.serviceService.leaseOwnerShip.date_of_final_lease_payment =
           await this.getEthiopianToGregorian(
-            this.serviceService.leaseOwnerShip.Date_of_final_lease_payment
+            this.serviceService.leaseOwnerShip.date_of_final_lease_payment
           );
       }
-
+      this.serviceService.getUserRole().subscribe((response: any) => {
+        console.log("responseresponseresponse", response, response[0].RoleId);
+        this.serviceService.leaseOwnerShip.updated_By = response[0].UserId;
+    
       this.leaseOwnerShipService
-        .save(this.serviceService.leaseOwnerShip)
+        .saveapi(this.serviceService.leaseOwnerShip)
         .subscribe(
           async (deptSuspension) => {
             console.log("deptSuspension", deptSuspension);
             const toast = this.notificationsService.success(
-              "Sucess",
-              deptSuspension
+              "Sucess"
             );
             // localStorage.setItem("PolygonAreaname", "" + 0);
             // localStorage.setItem("PolygonAreanameFrehold", "" + 0);
 
             //this.serviceService.disablefins = false;
-            this.getleaseOwnerShip(this.serviceService.leaseOwnerShip.Plot_ID);
+            this.getleaseOwnerShip(this.serviceService.leaseOwnerShip.plot_ID);
             const maxAreaDifferences =
               environment.Totalareatolerance * this.serviceService.Totalarea;
 
@@ -677,10 +689,10 @@ export class LeaseOwnerShipComponent implements OnChanges {
                 error.error.InnerException.Errors[0].message
               );
               if (this.language == "amharic") {
-                this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+                this.serviceService.leaseOwnerShip.date_of_final_lease_payment =
                   await this.getgregorianToEthiopianDate(
                     this.serviceService.leaseOwnerShip
-                      .Date_of_final_lease_payment
+                      .date_of_final_lease_payment
                   );
               }
             } else {
@@ -689,26 +701,32 @@ export class LeaseOwnerShipComponent implements OnChanges {
                 "SomeThing Went Wrong"
               );
               if (this.language == "amharic") {
-                this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+                this.serviceService.leaseOwnerShip.date_of_final_lease_payment =
                   await this.getgregorianToEthiopianDate(
                     this.serviceService.leaseOwnerShip
-                      .Date_of_final_lease_payment
+                      .date_of_final_lease_payment
                   );
               }
             }
           }
         );
       console.log("saveing....");
+      })
     }
+  
   }
 
   Delete() {
     // this.confirmationService.confirm({
     // message: "Are you sure u want to delete this Lease?",
     //accept: () => {
-    this.serviceService.leaseOwnerShip.Is_Deleted = true;
+    this.serviceService.leaseOwnerShip.is_Deleted = true;
+    this.serviceService.getUserRole().subscribe((response: any) => {
+      console.log("responseresponseresponse", response, response[0].RoleId);
+      this.serviceService.leaseOwnerShip.updated_By = response[0].UserId;
+  
     this.leaseOwnerShipService
-      .Delete(this.serviceService.leaseOwnerShip.Lease_No)
+      .Delete(this.serviceService.leaseOwnerShip.lease_No)
       .subscribe(
         (deptSuspension) => {
           const toast = this.notificationsService.success(
@@ -720,7 +738,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
           this.addnew = false;
 
           if (this.SelectedPlot) {
-            this.getleaseOwnerShip(this.serviceService.leaseOwnerShip.Plot_ID);
+            this.getleaseOwnerShip(this.serviceService.leaseOwnerShip.plot_ID);
           }
           //this.completeddel.emit(this.plotManagment);
         },
@@ -740,13 +758,14 @@ export class LeaseOwnerShipComponent implements OnChanges {
         }
       );
     console.log("saveing....");
+    })
   }
   //});
   //}
 
   async add() {
     if (
-      this.serviceService.leaseOwnerShip.Customer_ID ===
+      this.serviceService.leaseOwnerShip.customer_ID ===
       "00000000-0000-0000-0000-000000000000"
     ) {
       const toast = this.notificationsService.warn(
@@ -758,8 +777,8 @@ export class LeaseOwnerShipComponent implements OnChanges {
     const maxAreaDifferences =
       environment.Totalareatolerance * this.serviceService.currentplotsize;
     let totalpoltsize =
-      this.serviceService.leaseOwnerShip.Lease_Hold_M2 +
-      this.serviceService.leaseOwnerShip.Free_Hold_M2;
+      this.serviceService.leaseOwnerShip.lease_Hold_M2 +
+      this.serviceService.leaseOwnerShip.free_Hold_M2;
     let freeHoldM2Value = parseFloat(
       localStorage.getItem("PolygonAreanameFrehold")
     );
@@ -770,23 +789,26 @@ export class LeaseOwnerShipComponent implements OnChanges {
     const areaDifferences = Math.abs(totalpoltsize - totalsum);
     console.log(maxAreaDifferences, areaDifferences, totalsum);
     if (
-      this.serviceService.leaseOwnerShip.To_Do_ID == null ||
-      this.serviceService.leaseOwnerShip.To_Do_ID == undefined
+      this.serviceService.leaseOwnerShip.to_Do_ID == null ||
+      this.serviceService.leaseOwnerShip.to_Do_ID == undefined
     ) {
-      this.serviceService.leaseOwnerShip.To_Do_ID = this.todoidcurrent;
+      this.serviceService.leaseOwnerShip.to_Do_ID = this.todoidcurrent;
     }
 
     let totalsize =
-      parseFloat(this.serviceService.leaseOwnerShip.Free_Hold_M2) +
-      parseFloat(this.serviceService.leaseOwnerShip.Lease_Hold_M2);
+      parseFloat(this.serviceService.leaseOwnerShip.free_Hold_M2) +
+      parseFloat(this.serviceService.leaseOwnerShip.lease_Hold_M2);
 
     console.log("totalsize", totalsize);
-
-    this.serviceService
-      .getAll(this.serviceService.leaseOwnerShip.Plot_ID)
+    this.serviceService.getUserRole().subscribe((response: any) => {
+      console.log("responseresponseresponse", response, response[0].RoleId);
+      this.serviceService.leaseOwnerShip.created_By = response[0].UserId;
+  
+    this.leaseOwnerShipService
+      .getAllapi(this.serviceService.leaseOwnerShip.plot_ID)
       .subscribe((CertificateVersion: any) => {
         let tasks = CertificateVersion;
-        tasks = Object.assign([], tasks.list);
+        tasks = Object.assign([], tasks.procLease_and_Owned_Lands);
         console.log("this.tasks", tasks);
 
         console.log("leaselist", tasks);
@@ -800,11 +822,11 @@ export class LeaseOwnerShipComponent implements OnChanges {
             ) {
             } else {
               if (
-                element.Plot_ID != this.serviceService.leaseOwnerShip.Plot_ID
+                element.Plot_ID != this.serviceService.leaseOwnerShip.plot_ID
               ) {
                 let totalsizeeach =
-                  parseFloat(element.Free_Hold_M2) +
-                  parseFloat(element.Lease_Hold_M2);
+                  parseFloat(element.free_Hold_M2) +
+                  parseFloat(element.lease_Hold_M2);
 
                 this.totalsizeofleaseeach += totalsizeeach;
               }
@@ -815,6 +837,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
           this.totalsizeoflease = totalsum;
         }
       });
+    })
     if (
       "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() ==
         this.serviceService.Service_ID ||
@@ -822,27 +845,31 @@ export class LeaseOwnerShipComponent implements OnChanges {
         this.serviceService.Service_ID
     ) {
       if (this.language == "amharic") {
-        this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+        this.serviceService.leaseOwnerShip.date_of_final_lease_payment =
           await this.getEthiopianToGregorian(
-            this.serviceService.leaseOwnerShip.Date_of_final_lease_payment
+            this.serviceService.leaseOwnerShip.date_of_final_lease_payment
           );
       }
+      this.serviceService.getUserRole().subscribe((response: any) => {
+        console.log("responseresponseresponse", response, response[0].RoleId);
+        this.serviceService.leaseOwnerShip.created_By = response[0].UserId;
+    
       this.leaseOwnerShipService
-        .Add(this.serviceService.leaseOwnerShip)
+        .Addapi(this.serviceService.leaseOwnerShip)
         .subscribe(
           async (deptSuspension) => {
             console.log("deptSuspension", deptSuspension);
             const toast = this.notificationsService.success(
-              "Sucess",
-              deptSuspension
+              "Sucess"
+              
             );
             localStorage.setItem("PolygonAreaname", "" + 0);
             localStorage.setItem("PolygonAreanameFrehold", "" + 0);
 
             this.serviceService.Totalarea =
-              parseFloat(this.serviceService.leaseOwnerShip.Lease_Hold_M2) +
-              parseFloat(this.serviceService.leaseOwnerShip.Free_Hold_M2);
-            this.getleaseOwnerShip(this.serviceService.leaseOwnerShip.Plot_ID);
+              parseFloat(this.serviceService.leaseOwnerShip.lease_Hold_M2) +
+              parseFloat(this.serviceService.leaseOwnerShip.free_Hold_M2);
+            this.getleaseOwnerShip(this.serviceService.leaseOwnerShip.plot_ID);
             const maxAreaDifferences =
               environment.Totalareatolerance * this.serviceService.Totalarea;
 
@@ -860,9 +887,9 @@ export class LeaseOwnerShipComponent implements OnChanges {
             }
 
             if (this.language == "amharic") {
-              this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+              this.serviceService.leaseOwnerShip.date_of_final_lease_payment =
                 await this.getgregorianToEthiopianDate(
-                  this.serviceService.leaseOwnerShip.Date_of_final_lease_payment
+                  this.serviceService.leaseOwnerShip.date_of_final_lease_payment
                 );
             }
 
@@ -890,22 +917,23 @@ export class LeaseOwnerShipComponent implements OnChanges {
                 "Error",
                 error.error.InnerException.Errors[0].message
               );
-              this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+              this.serviceService.leaseOwnerShip.date_of_final_lease_payment =
                 await this.getgregorianToEthiopianDate(
-                  this.serviceService.leaseOwnerShip.Date_of_final_lease_payment
+                  this.serviceService.leaseOwnerShip.date_of_final_lease_payment
                 );
             } else {
               const toast = this.notificationsService.error(
                 "Error",
                 "SomeThing Went Wrong"
               );
-              this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+              this.serviceService.leaseOwnerShip.date_of_final_lease_payment =
                 await this.getgregorianToEthiopianDate(
-                  this.serviceService.leaseOwnerShip.Date_of_final_lease_payment
+                  this.serviceService.leaseOwnerShip.date_of_final_lease_payment
                 );
             }
           }
         );
+      })
     } else {
       if (this.totalsizeoflease < totalsize) {
         const toast = this.notificationsService.warn(
@@ -914,28 +942,31 @@ export class LeaseOwnerShipComponent implements OnChanges {
         return;
       } else {
         if (this.language == "amharic") {
-          this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+          this.serviceService.leaseOwnerShip.date_of_final_lease_payment =
             await this.getEthiopianToGregorian(
-              this.serviceService.leaseOwnerShip.Date_of_final_lease_payment
+              this.serviceService.leaseOwnerShip.date_of_final_lease_payment
             );
         }
+        this.serviceService.getUserRole().subscribe((response: any) => {
+          console.log("responseresponseresponse", response, response[0].RoleId);
+          this.serviceService.leaseOwnerShip.created_By = response[0].UserId;
+      
         this.leaseOwnerShipService
-          .Add(this.serviceService.leaseOwnerShip)
+          .Addapi(this.serviceService.leaseOwnerShip)
           .subscribe(
             async (deptSuspension) => {
               console.log("deptSuspension", deptSuspension);
               const toast = this.notificationsService.success(
-                "Sucess",
-                deptSuspension
+                "Sucess"
               );
               localStorage.setItem("PolygonAreaname", "" + 0);
               localStorage.setItem("PolygonAreanameFrehold", "" + 0);
 
               this.serviceService.Totalarea =
-                parseFloat(this.serviceService.leaseOwnerShip.Lease_Hold_M2) +
-                parseFloat(this.serviceService.leaseOwnerShip.Free_Hold_M2);
+                parseFloat(this.serviceService.leaseOwnerShip.lease_Hold_M2) +
+                parseFloat(this.serviceService.leaseOwnerShip.free_Hold_M2);
               this.getleaseOwnerShip(
-                this.serviceService.leaseOwnerShip.Plot_ID
+                this.serviceService.leaseOwnerShip.plot_ID
               );
               const maxAreaDifferences =
                 environment.Totalareatolerance * this.serviceService.Totalarea;
@@ -954,10 +985,10 @@ export class LeaseOwnerShipComponent implements OnChanges {
               }
 
               if (this.language == "amharic") {
-                this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+                this.serviceService.leaseOwnerShip.date_of_final_lease_payment =
                   await this.getgregorianToEthiopianDate(
                     this.serviceService.leaseOwnerShip
-                      .Date_of_final_lease_payment
+                      .date_of_final_lease_payment
                   );
               }
 
@@ -983,26 +1014,27 @@ export class LeaseOwnerShipComponent implements OnChanges {
               if (error.status == "400") {
                 const toast = this.notificationsService.error(
                   "Error",
-                  error.error.InnerException.Errors[0].message
+                  error.error
                 );
-                this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+                this.serviceService.leaseOwnerShip.date_of_final_lease_payment =
                   await this.getgregorianToEthiopianDate(
                     this.serviceService.leaseOwnerShip
-                      .Date_of_final_lease_payment
+                      .date_of_final_lease_payment
                   );
               } else {
                 const toast = this.notificationsService.error(
                   "Error",
                   "SomeThing Went Wrong"
                 );
-                this.serviceService.leaseOwnerShip.Date_of_final_lease_payment =
+                this.serviceService.leaseOwnerShip.date_of_final_lease_payment =
                   await this.getgregorianToEthiopianDate(
                     this.serviceService.leaseOwnerShip
-                      .Date_of_final_lease_payment
+                      .date_of_final_lease_payment
                   );
               }
             }
           );
+        })
         console.log("saveing....");
       }
     }
@@ -1014,7 +1046,7 @@ export class LeaseOwnerShipComponent implements OnChanges {
   visible;
   closeModal(customer) {
     this.visible = false;
-    this.serviceService.leaseOwnerShip.Customer_ID = customer.customer_ID;
+    this.serviceService.leaseOwnerShip.customer_ID = customer.customer_ID;
 
     if (this.language == "amharic") {
       this.Customer_NAME =
@@ -1036,24 +1068,52 @@ export class LeaseOwnerShipComponent implements OnChanges {
 }
 
 export class LeaseOwnerShip {
-  public ID: string;
-  public Type_ID: any;
-  public Lease_No: any;
-  public Lease_Price: any;
-  public Free_Hold_M2: any;
-  public Lease_Hold_M2: any;
-  public Customer_ID: any;
-  public Plot_ID: any;
-  public Status;
-  public SDP_ID;
-  public To_Do_ID;
-  public Is_Deleted;
-  public Application_No;
-  public Total_lease_amount_to_be_paid;
-  public Amount_of_down_payment;
-  public Amount_of_the_annual_lease_payment;
-  public Lease_period_in_Year;
-  public Date_of_final_lease_payment;
-  public Current_lease_bid_price;
-  public Remaining_lease_payment;
+  // public ID: string;
+  // public Type_ID: any;
+  // public Lease_No: any;
+  // public Lease_Price: any;
+  // public Free_Hold_M2: any;
+  // public Lease_Hold_M2: any;
+  // public Customer_ID: any;
+  // public Plot_ID: any;
+  // public Status;
+  // public SDP_ID;
+  // public To_Do_ID;
+  // public Is_Deleted;
+  // public Application_No;
+  // public Total_lease_amount_to_be_paid;
+  // public Amount_of_down_payment;
+  // public Amount_of_the_annual_lease_payment;
+  // public Lease_period_in_Year;
+  // public Date_of_final_lease_payment;
+  // public Current_lease_bid_price;
+  // public Remaining_lease_payment;
+  // {
+    public id 
+    public to_Do_ID
+    public approved_By
+    public type_ID
+    public lease_No
+    public free_Hold_M2
+    public lease_Hold_M2
+    public plot_ID
+    public sdP_ID
+    public customer_ID
+    public application_No
+    public status
+    public total_lease_amount_to_be_paid
+    public amount_of_down_payment
+    public amount_of_the_annual_lease_payment
+    public lease_period_in_Year
+    public date_of_final_lease_payment
+    public created_By
+    public updated_By
+    public deleted_By
+     public is_Deleted
+    // public created_Date
+    // public updated_Date
+    // public deleted_Date
+    public remaining_lease_payment
+    public current_lease_bid_price
+  
 }

@@ -6,6 +6,7 @@ import {
   ElementRef,
   TemplateRef,
   ViewEncapsulation,
+  Pipe, PipeTransform ,
 } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { ServiceService } from "./service.service";
@@ -23,9 +24,11 @@ import * as FileSaver from "file-saver";
 import { BehaviorSubject } from "rxjs/internal/BehaviorSubject";
 //import { MatProgressBarModule } from '@angular/material/progress-bar';
 
-import { DialogService, DynamicDialogConfig } from "primeng/api";
+import { ConfirmationService, DialogService, DynamicDialogConfig } from "primeng/api";
 import { FilePreviewDialogComponent } from "./file-preview-dialog/file-preview-dialog.component";
 import { NetworkMonitoringService } from "./network-database-monitoring-tool/network-monitoring.service";
+import { format } from "util";
+import { formatDate } from "@angular/common";
 
 export * from "./qrcode.directive";
 type AOA = any[][];
@@ -35,7 +38,8 @@ type AOA = any[][];
   styleUrls: ["./demo/demo.component.scss"],
   encapsulation: ViewEncapsulation.None,
 })
-export class ServiceComponent implements OnInit {
+
+export class ServiceComponent implements OnInit  {
   maxChars;
   postintnot: boolean = false;
   aaa;
@@ -58,6 +62,7 @@ export class ServiceComponent implements OnInit {
   documentupload: any;
   uploadedDocumnet: boolean;
   licenceData: any = {};
+  searchTextapplication:any
   AppNo;
   tskTyp;
   DropDownList;
@@ -79,7 +84,7 @@ export class ServiceComponent implements OnInit {
   SDP;
   hideit: boolean = false;
   isDownloading = false;
-
+  isconfirmseller: boolean = false;
   preAppID;
   note_popup;
   formcode;
@@ -251,6 +256,22 @@ export class ServiceComponent implements OnInit {
   issavenote: boolean;
   issendnote: boolean;
   attachedBY: any;
+  binaryData: any;
+  dar: boolean;
+  RID: null;
+  userName: any;
+  Customer: any;
+  blocked: boolean=false;
+  isconfirmsaveAR: boolean;
+  rule_Code: any;
+  task_rules_code: any;
+  isconfirmsaveplot: boolean;
+  itcanntupdate: boolean;
+  docid: any;
+  propertyid: any;
+  customerdata: Person[] = [];
+  iscustomerdata: boolean;
+  sellerkebeleid: string = '';
   constructor(
     private modalService: BsModalService,
     private activatedRoute: ActivatedRoute,
@@ -262,37 +283,44 @@ export class ServiceComponent implements OnInit {
     private renderer: Renderer2,
     private el: ElementRef,
     private dialogService: DialogService,
-    private networkService: NetworkMonitoringService
-  ) {}
-
+    private networkService: NetworkMonitoringService ,
+    private confirmationService: ConfirmationService
+  ) {
+  
+  }
+  
+  
   hide = true;
   saveFormmjson(formData) {
     this.validated = true;
-    if ("de4937d8-bdcd-46d6-8749-dc31c9f3adcf" == this.SDP_ID) {
+    if ("de4937d8-bdcd-46d6-8749-dc31c9f3adcf" == this.SDP_ID ||
+      "2145F90D-E911-42F2-9AD7-C2455A4D9DCD".toLocaleLowerCase()  == this.SDP_ID ||
+      "1b30e6d6-0ade-443e-be18-22de948bfd1e".toLocaleLowerCase()  == this.SDP_ID
+    ) {
       if (environment.subcity == "arada") {
         this.AppNo = "6921d772-3a1c-4641-95a0-0ab320bac3e2";
       } else if (environment.subcity == "bole") {
         this.AppNo = "89eb1aec-c875-4a08-aaf6-2c36c0864979";
-      } else if (environment.subcity == "nifasS") {
+      } else if (environment.subcity == "nifass") {
         this.AppNo = "f8ea62db-05bc-4f1a-ab30-4e926d43e3fb";
       } else if (environment.subcity == "gullele") {
         this.AppNo = "6a8c042f-a3e1-4375-9769-54d94c2312c6";
-      } else if (environment.subcity == "addisK") {
+      } else if (environment.subcity == "addisk") {
         this.AppNo = "7101d44d-97d5-41aa-957d-82f36d928c07";
       } else if (environment.subcity == "lideta") {
         this.AppNo = "e4d8219e-51f9-40cb-9d53-883c6ca9aaa3";
-      } else if (environment.subcity == "lemiK") {
+      } else if (environment.subcity == "lemik") {
         this.AppNo = "f02e9467-1b7d-4350-bee7-9844d4f56da0";
       } else if (environment.subcity == "yeka") {
         this.AppNo = "8222f028-5fe3-4047-9a50-b52bfa64c851";
-      } else if (environment.subcity == "akakyK") {
+      } else if (environment.subcity == "akakyk") {
         this.AppNo = "08f9c927-6366-467a-ba99-c837c5add427";
       } else if (environment.subcity == "kirkos") {
         this.AppNo = "aaa5094c-8899-4708-9f7b-d8ff634a3540";
-      } else if (environment.subcity == "kolfeK") {
+      } else if (environment.subcity == "kolfek") {
         this.AppNo = "930d1c20-9e0e-4a50-9eb2-e542fafbad68";
       } else if (environment.subcity == "central") {
-        this.AppNo = "275619f2-69c2-4fb7-a053-938f0b62b088";
+        this.AppNo = "1EFB0336-26C6-4BF1-AEB8-8DA0D4F7DBBB";
       }
       if (this.Licence_Service_ID == undefined) {
         this.Licence_Service_ID = "00000000-0000-0000-0000-000000000000";
@@ -380,7 +408,14 @@ export class ServiceComponent implements OnInit {
         );
     }
   }
-
+  transform(items: any[], searchText: string): any[] {
+    if (!items) return [];
+    if (!searchText) return items;
+    searchText = searchText.toLowerCase();
+    return items.filter(item => {
+      return item.application_number.toLowerCase().includes(searchText);
+    });
+  }
   saveFormm(formData) {
     if ("de4937d8-bdcd-46d6-8749-dc31c9f3adcf" == this.SDP_ID) {
       if (environment.subcity == "arada") {
@@ -495,7 +530,10 @@ export class ServiceComponent implements OnInit {
     }
   }
   saveFormmplot(formData) {
-    if ("de4937d8-bdcd-46d6-8749-dc31c9f3adcf" == this.SDP_ID) {
+    if ("de4937d8-bdcd-46d6-8749-dc31c9f3adcf" == this.SDP_ID ||
+      "2145F90D-E911-42F2-9AD7-C2455A4D9DCD".toLocaleLowerCase()  == this.SDP_ID ||
+      "1b30e6d6-0ade-443e-be18-22de948bfd1e".toLocaleLowerCase()  == this.SDP_ID
+    ) {
       if (environment.subcity == "arada") {
         this.AppNo = "6921d772-3a1c-4641-95a0-0ab320bac3e2";
       } else if (environment.subcity == "bole") {
@@ -519,7 +557,7 @@ export class ServiceComponent implements OnInit {
       } else if (environment.subcity == "kolfeK") {
         this.AppNo = "930d1c20-9e0e-4a50-9eb2-e542fafbad68";
       } else if (environment.subcity == "central") {
-        this.AppNo = "275619f2-69c2-4fb7-a053-938f0b62b088";
+        this.AppNo = "1EFB0336-26C6-4BF1-AEB8-8DA0D4F7DBBB";
       }
       if (this.Licence_Service_ID == undefined) {
         this.Licence_Service_ID = "00000000-0000-0000-0000-000000000000";
@@ -693,6 +731,8 @@ export class ServiceComponent implements OnInit {
     return mimeExtensions[mimeType] || "file";
   }
   ngOnInit() {
+   
+    //console.log("🚀 ~ ngOnInit ~ formattedDate:", formattedDate)
     // setInterval(() => {
     //   this.serviceService
     //     .getdbstatus("00000000-0000-0000-0000-000000000000")
@@ -795,6 +835,7 @@ export class ServiceComponent implements OnInit {
     this.activatedRoute.params.subscribe((params: Params) => {
       console.log("leaseappppppp", params);
       // this.ID = params['id'];
+      this.docid =params["docid"];
       this.formcode = params["formcode"];
       this.AppNo = params["AppNo"];
       this.SDP_ID = params["SDP_ID"];
@@ -802,6 +843,7 @@ export class ServiceComponent implements OnInit {
       this.getAll(this.AppNo);
       this.tskTyp = params["tskTyp"];
       this.tskID = params["tskID"];
+
       // if (this.serviceService.propertytaskslist != undefined) {
       //   let filterpropertyid = this.serviceService.propertytaskslist.filter(
       //     (x: any) => x.id.toLocaleLowerCase() === this.tskID
@@ -864,6 +906,10 @@ export class ServiceComponent implements OnInit {
     } else if (this.formcode == "cc71e78d-ef6f-4b93-8d8e-3996f1043fba") {
       this.serviceService.disablefins = false;
       this.ID = 12;
+    } 
+    else if (this.formcode == "cc71e78d-ef6f-4b93-8d8e-3996f1043faa") {
+      //this.serviceService.disablefins = false;
+      this.ID = 20;
     } else {
       this.ID = 0;
 
@@ -1061,29 +1107,30 @@ export class ServiceComponent implements OnInit {
                   if (
                     this.RequerdDocspre[i].description_en.indexOf("DAR") !== -1
                   ) {
+                    this.RequerdDocspre[i].dar=true
                     const binaryData = atob(SavedFiles[j].document);
-                    const arrayBuffer = new ArrayBuffer(binaryData.length);
+                    this.binaryData=atob(SavedFiles[j].document);
+                    const arrayBuffer = new ArrayBuffer(this.binaryData.length);
                     const uint8Array = new Uint8Array(arrayBuffer);
-
-                    for (let i = 0; i < binaryData.length; i++) {
-                      uint8Array[i] = binaryData.charCodeAt(i);
+                    
+                    for (let i = 0; i < this.binaryData.length; i++) {
+                        uint8Array[i] = this.binaryData.charCodeAt(i);
                     }
-
+                    
                     // Create Blob
                     const blob = new Blob([uint8Array], {
-                      type: "application/pdf",
+                        type: "application/pdf",
                     });
+                    
                     // Set Blob URL as iframe source
-                    // this.documentupload =  this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
+                    this.RequerdDocspre[i].dar=true
                     this.RequerdDocspre[i].mimeType = "application/pdf";
-                    this.RequerdDocspre[i].File =
-                      this.sanitizer.bypassSecurityTrustResourceUrl(
+                    this.RequerdDocspre[i].File = this.sanitizer.bypassSecurityTrustResourceUrl(
                         URL.createObjectURL(blob)
-                      );
-
-                    this.RequerdDocspre[i].document_code =
-                      SavedFiles[j].document_code;
+                    );
+                 this.dar=true
                   } else {
+                    this.RequerdDocspre[i].dar=false
                     let fileData = JSON.parse(atob(SavedFiles[j].document));
 
                     let { type, data } = fileData;
@@ -1525,8 +1572,8 @@ export class ServiceComponent implements OnInit {
         if (Notes) {
           console.log("NoteObj", Notes);
           (Notes as Array<any>).some((note) => {
+            this.NoteObj = note;
             if (note.postit_note_code === message) {
-              this.NoteObj = note;
               return true;
             } else {
               // this.NoteObj = { remarks: "", postit_note_code: "" };
@@ -1538,10 +1585,10 @@ export class ServiceComponent implements OnInit {
         }
       },
       (error) => {
-        const toast = this.notificationsService.error(
-          "Error",
-          "SomeThing Went Wrong"
-        );
+        // const toast = this.notificationsService.error(
+        //   "Error",
+        //   "SomeThing Went Wrong"
+        // );
       }
     );
   }
@@ -2077,20 +2124,20 @@ export class ServiceComponent implements OnInit {
                   allTasks = tasks["Table1"];
 
                   allTasks.find((task) => {
-                    console.log(
-                      "task :: ",
-                      task["step_no"],
-                      " & ",
-                      task["todo_comment"],
-                      " app number :: ",
-                      this.AppNo
-                    );
+                    // console.log(
+                    //   "task :: ",
+                    //   task["step_no"],
+                    //   " & ",
+                    //   task["todo_comment"],
+                    //   " app number :: ",
+                    //   this.AppNo
+                    // );
                     if (task["todo_comment"] == this.AppNo && this.AppNo) {
                       applicationFound = true;
                       this.PreAppData.find((appData) => {
                         if (appData.tasks_task_code == this.tskID) {
-                          console.warn("found already saved task :: ", appData);
-                          console.log("nnn", appData.form_code);
+                          // console.warn("found already saved task :: ", appData);
+                          // console.log("nnn", appData.form_code);
                           if (task["tasks_id"] != this.tskID) {
                             console.warn("found already passed task");
                             isPickable = false;
@@ -2192,14 +2239,14 @@ export class ServiceComponent implements OnInit {
                 allTasks = tasks["Table1"];
 
                 allTasks.find((task) => {
-                  console.log(
-                    "task :: ",
-                    task["step_no"],
-                    " & ",
-                    task["todo_comment"],
-                    " app number :: ",
-                    this.AppNo
-                  );
+                  // console.log(
+                  //   "task :: ",
+                  //   task["step_no"],
+                  //   " & ",
+                  //   task["todo_comment"],
+                  //   " app number :: ",
+                  //   this.AppNo
+                  // );
                   if (task["todo_comment"] == this.AppNo && this.AppNo) {
                     applicationFound = true;
                     this.PreAppData.find((appData) => {
@@ -2272,7 +2319,7 @@ export class ServiceComponent implements OnInit {
     this.getPost(task.todo_comment);
     this.getRequiredDocspre(task.tasks_task_code);
     this.getAllDocumentpre(this.SelectedpreApp.Licence_Service_ID, task.docId);
-
+    this.serviceService.appnoForRecord =task.todo_comment
     // this.getAllDocumentpre(this.SelectedpreApp.Licence_Service_ID, task.docId);
     if (task.form_code == "a7a1e05e-32c2-4f44-ad58-306572c64593") {
       this.preAppID = 2;
@@ -2631,6 +2678,7 @@ export class ServiceComponent implements OnInit {
               "Sucess",
               "sucesss"
             );
+            this.blocked=false;
           } else {
             const toast = this.notificationsService.error(
               "Error",
@@ -2770,6 +2818,7 @@ export class ServiceComponent implements OnInit {
               "Sucess",
               "sucesss"
             );
+            this.blocked=false;
             // if (
             //   "466A3ADF-CCE5-4FF4-A466-16425D6FBE5E".toLowerCase() ===
             //     this.tskID ||
@@ -2962,13 +3011,48 @@ export class ServiceComponent implements OnInit {
     );
   }
   GetApplicationNumberByUser(username, orgcode) {
+    this.serviceService.getCustomerByCols(username).subscribe((user: any) => {
+      this.userName = user.procCustomers;
+      console.log("this.userName", this.userName);
+
+      if (this.userName.length > 0) {
+        this.serviceService
+          .getByCustomerId(this.userName[0].customer_ID)
+          .subscribe((customer: any) => {
+            console.log("customerrrr", customer.length);
+            this.Customer = customer;
+         
+            if (customer.length > 0) {
+            } else {
+              this.Customer = [];
+            }
+          });
+        // this.userName=this.userName
+        console.log("getUsernme", this.userName[0]);
+
+        // console.log('environment',environment.subcity);s
+      } else {
+        this.Customer = [];
+      }
+    });
+    this.serviceService
+    .getLicencebyid(this.serviceService.LicenceserviceID)
+    .subscribe(async (rec: any) => {
+    console.log("🚀 ~ .subscribe ~ rec:", rec)
     this.serviceService
       .GetApplicationNumberByUsers(username, orgcode)
       .subscribe((ApplicationNumber: any) => {
-        console.log("🚀 ~ .subscribe ~ ApplicationNumber:", ApplicationNumber);
         this.ApplicationNumberlist = ApplicationNumber;
-
-        console.log("🚀 ~ .subscribe ~ Parcel_ID:", this.licenceData.Parcel_ID);
+        
+        let RID;
+        if (rec.procLicense_Services.length > 0) {
+          RID = rec.procLicense_Services[0].recordNo;
+          this.RID=rec.procLicense_Services[0].recordNo;
+        }
+     
+          //console.log("🚀 ~ .subscribe ~ ApplicationNumber:", ApplicationNumber ,this.RID);
+          
+        //console.log("🚀 ~ .subscribe ~ Parcel_ID:", this.licenceData.Parcel_ID);
         if (this.licenceData.Parcel_ID != null) {
           this.serviceService
             .GetpreviousApplicationNumberByUsers(
@@ -2978,6 +3062,8 @@ export class ServiceComponent implements OnInit {
             .subscribe((PriveLicence: any) => {
               console.log("🚀 ~ .subscribe ~ PriveLicence:", PriveLicence);
               if (PriveLicence.length > 0) {
+                this.sellerkebeleid=PriveLicence[0].previousUserName
+                this.getcustomer()
                 this.serviceService
                   .GetApplicationNumberByprevious(
                     PriveLicence[0].title_Deed_No,
@@ -2989,15 +3075,18 @@ export class ServiceComponent implements OnInit {
                       "🚀 ~ .subscribe ~ ApplicationNumber:",
                       ApplicationNumber
                     );
+
                     ApplicationNumber.forEach((element) => {
                       this.ApplicationNumberlist.push(element);
                     });
                   });
+                 
                 console.log(
                   "🚀 ~ .subscribe ~ ApplicationNumberlist:",
                   this.ApplicationNumberlist
                 );
               }
+
             });
         }
 
@@ -3022,10 +3111,52 @@ export class ServiceComponent implements OnInit {
           } else {
             return 0;
           }
-        });
-      });
-  }
 
+        });
+        if(this.Customer !=undefined ){
+
+          if (this.Customer.length > 0 ){
+  
+            if(this.Customer[0].customer_Type_ID !=3102 || this.Customer[0].customer_Type_ID !=4120){
+            if(this.RID !=null){
+              this.ApplicationNumberlist =this.ApplicationNumberlist.filter(x=>x.
+                recordNo
+                == this.RID)
+              }
+            }
+          }
+        }
+      });
+    })
+  }
+  getcustomer(): void {
+ 
+    //this.sellerkebeleid = globvar;
+    console.log("🚀 ~ this.serviceService.getcustomerAll ~ customerdata:", this.sellerkebeleid);
+    this.serviceService.getcustomerAll(this.sellerkebeleid).subscribe(
+      (resp: any) => {
+        this.customerdata = resp.procCustomers || [];
+        if( this.sellerkebeleid  != this.custmerInformation.tin && this.customerdata[0].customer_ID!='00000000-0000-0000-0000-000000000000' ) {
+            
+          this.serviceService.salesFrominformat=true
+          this.serviceService.sellerCustomerId=this.customerdata[0].customer_ID
+        }else {
+          this.serviceService.salesFrominformat=false
+
+        }
+        console.log("🚀 ~ this.serviceService.getcustomerAll ~ customerdata:", this.customerdata[0]);
+      },
+      (error) => {
+        console.error("Error fetching customer data:", error);
+        this.customerdata = [];
+        this.serviceService.salesFrominformat=false
+      }
+    );
+  }
+  isDialogVisible(): boolean {
+    this.getcustomer()
+    return this.isconfirmseller =true
+  }
   getSuspendedReasonLookUP() {
     this.serviceService.getSuspendedReasonLookUP().subscribe(
       (SuspendedReasonLookUP) => {
@@ -3064,12 +3195,15 @@ export class ServiceComponent implements OnInit {
 
   getPropertyStatusLookUP() {
     this.serviceService.getPropertyStatusLookUP().subscribe(
-      (PropertyStatusLookUP) => {
+      (PropertyStatusLookUP:any) => {
         this.PropertyStatusLookUP = PropertyStatusLookUP;
         this.PropertyStatusLookUP = Object.assign(
           [],
           this.PropertyStatusLookUP.list
         );
+        // if(this.serviceService.Service_ID != '05DB54FC-E388-4E5E-AAAA-BD6141C8E533'.toLocaleLowerCase()){
+        //   this.PropertyStatusLookUP=  this.PropertyStatusLookUP.filter(x=>x.P_Status_ID != 3049)
+        // }
         // this.PropertyStatusLookUP.unshift({
         //   P_Status_ID: null,
         //   Property_Status: "select",
@@ -3098,10 +3232,19 @@ export class ServiceComponent implements OnInit {
                 [],
                 this.ServiceDeliveryUnitLookUP
               );
-              this.ServiceDeliveryUnitLookUP =
+               if (this.serviceService.currentsdpid == '1efb0336-26c6-4bf1-aeb8-8da0d4f7dbbb'){
+                this.ServiceDeliveryUnitLookUP =
                 this.ServiceDeliveryUnitLookUP.filter(
-                  (value) => value.organization_code == this.SDP_ID
+                  (value) => value.organization_code 
                 );
+               }else{
+                this.ServiceDeliveryUnitLookUP =
+                this.ServiceDeliveryUnitLookUP.filter(
+                  (value) => value.organization_code == this.serviceService.currentsdpid
+                );
+               }
+             
+                
               console.log(
                 "ServiceDeliveryUnitLookUP",
                 this.ServiceDeliveryUnitLookUP
@@ -3239,7 +3382,15 @@ export class ServiceComponent implements OnInit {
           [],
           this.serviceService.PlotStutusLook.list
         );
-        // console.log('PlotStutusLookUP', PlotStutusLookUP);
+        // if(  this.serviceService.Service_ID != '449A14BD-E0C0-4EDA-92F5-68B3FCF83433'.toLocaleLowerCase()
+        //   || this.serviceService.Service_ID != 'DE330170-550B-4BF2-9908-DC557F92A7CC'.toLocaleLowerCase()
+        //   || this.serviceService.Service_ID != '05BF5DE7-7170-43CE-8320-C747748D40E5'.toLocaleLowerCase()
+        //   || this.serviceService.Service_ID != '5FE58D7F-6E9F-452E-B85B-8CD501F020BE'.toLocaleLowerCase()
+        //   || this.serviceService.Service_ID != '05DB54FC-E388-4E5E-AAAA-BD6141C8E533'.toLocaleLowerCase()
+        //   ){
+        //   this.serviceService.PlotStutusLook=this.serviceService.PlotStutusLook.filter(x=>x.Plot_Status_ID != 2019)
+        // }
+         console.log('PlotStutusLookUP' ,this.serviceService.PlotStutusLook);
       },
       (error) => {
         console.log("error");
@@ -3290,7 +3441,191 @@ export class ServiceComponent implements OnInit {
   }
 
   public getAll(AppNo) {
-    this.serviceService
+    this.serviceService.getAll(AppNo).subscribe(
+      (res:any) => {
+        if (res.list.length > 0) {
+        let licenceServiceeach = res.list[0];
+    //   console.log("🚀 ~ getAll ~ licenceService:", licenceServiceeach)
+       this
+     console.log("🚀 ~ getAll ~ licenceService:",licenceServiceeach.Service_ID)
+    if (licenceServiceeach.Service_ID === '2145F90D-E911-42F2-9AD7-C2455A4D9DCD'.toLocaleLowerCase() || 
+    licenceServiceeach.Service_ID === 'DE4937D8-BDCD-46D6-8749-DC31C9F3ADCF'.toLocaleLowerCase()){ 
+      this.serviceService.getAll(AppNo).subscribe(
+        (re:any) => {
+          if (re.list.length > 0) {
+          let licenceService = re.list[0];
+          console.log("🚀 ~ getAll ~ licenceService:", licenceService)
+          this.serviceService.errorservices=licenceService.Service_ID
+          this.serviceService.getPlotManagementApi(licenceService.Parcel_ID).subscribe(
+       
+            async (PlotManagementLists: any) => {
+              let PlotManagementList = PlotManagementLists.procPlot_Registrations;
+              if (PlotManagementList.length > 0) {
+                 console.log("🚀 ~ PlotManagementList:", PlotManagementList)
+                 const AppNolist=PlotManagementList[0].application_No
+                 this.serviceService.currentsdpid = PlotManagementList[0].sdP_ID;
+                 this.serviceService.appnoForRecorderror=AppNolist
+                 this.serviceService
+                 .GetApplicationNumberByUserInfo(AppNolist)
+                 .subscribe((licenceService) => {
+                   this.custmerInformation = licenceService[0];
+                   console.log(
+                     "🚀 ~ .subscribe ~ custmerInformation:",
+                     this.custmerInformation
+                   );
+                   
+                 });
+               
+               this.serviceService.getAll(AppNo).subscribe(
+                 (licenceService) => {
+                   this.licenceService = licenceService;
+                   console.log("Licence Service", this.licenceService);
+                   if (this.licenceService.list.length > 0) {
+                     this.licenceData = this.licenceService.list[0];
+           
+                     this.serviceService.licenceData = this.licenceData;
+                     this.SDP_ID = this.licenceData.SDP_ID;
+                    
+                     this.Service_ID = this.licenceData.Service_ID;
+                     this.getServiceDeliveryUnitLookUP();
+                     this.serviceService.Service_ID = this.licenceData.Service_ID;
+                     this.serviceService.serviceDP = this.SDP_ID;
+                     this.Licence_Service_ID = this.licenceData.Licence_Service_ID;
+                     this.AppCode = this.licenceData.Licence_Service_ID; //
+                     this.AppNo = this.licenceData.Application_No; //
+                     this.serviceService.appnoForRecord = this.licenceData.Application_No;
+                     this.serviceService.LicenceserviceID = this.Licence_Service_ID;
+                      if (this.Service_ID =='2a513f83-221c-4cba-b497-a437417f3c69'){
+                       this.serviceService.itcanntupdate=true
+                      }
+                      
+                     console.log("licenceData", this.licenceData);
+                     this.getuserName(AppNolist);
+                     if (this.licenceData.Certificate_Code > 0) {
+                       this.getPriveysLicence(this.licenceData.Certificate_Code);
+                     } else {
+                       this.getPriveysLicence(this.licenceData.Application_No);
+                     }
+                   }
+                   this.loading = false;
+                 },
+                 (error) => {
+                   console.log(error);
+                   this.se.emit(this.eventTypes.JSONFOUND);
+                 }
+               );
+               }else{
+                this.serviceService
+                .GetApplicationNumberByUserInfo(AppNo)
+                .subscribe((licenceService) => {
+                  this.custmerInformation = licenceService[0];
+                  console.log(
+                    "🚀 ~ .subscribe ~ custmerInformation:",
+                    this.custmerInformation
+                  );
+                  
+                });
+              console.log("appppppp", AppNo);
+              this.serviceService.getAll(AppNo).subscribe(
+                (licenceService) => {
+                  this.licenceService = licenceService;
+                  console.log("Licence Service", this.licenceService);
+                  if (this.licenceService.list.length > 0) {
+                    this.licenceData = this.licenceService.list[0];
+          
+                    this.serviceService.licenceData = this.licenceData;
+                    this.SDP_ID = this.licenceData.SDP_ID;
+                    this.serviceService.currentsdpid = this.SDP_ID;
+                    this.Service_ID = this.licenceData.Service_ID;
+                
+                    this.serviceService.Service_ID = this.licenceData.Service_ID;
+                    this.serviceService.serviceDP = this.SDP_ID;
+                    this.Licence_Service_ID = this.licenceData.Licence_Service_ID;
+                    this.AppCode = this.licenceData.Licence_Service_ID; //
+                    this.AppNo = this.licenceData.Application_No; //
+                    this.serviceService.appnoForRecord = this.licenceData.Application_No;
+                    this.propertyid=this.licenceData.Property_ID
+                    this.serviceService.recordno=this.licenceData.recordNo
+                    this.serviceService.LicenceserviceID = this.Licence_Service_ID;
+                     if (this.Service_ID =='2a513f83-221c-4cba-b497-a437417f3c69'){
+                      this.serviceService.itcanntupdate=true
+                     }
+                    console.log("licenceData", this.licenceData);
+                    this.getuserName(this.AppNo);
+                    if (this.licenceData.Certificate_Code > 0) {
+                      this.getPriveysLicence(this.licenceData.Certificate_Code);
+                    } else {
+                      this.getPriveysLicence(this.licenceData.Application_No);
+                    }
+                  }
+                  this.loading = false;
+                },
+                (error) => {
+                  console.log(error);
+                  this.se.emit(this.eventTypes.JSONFOUND);
+                }
+              );
+               }
+                         
+                  
+              
+            })
+          }else{
+            this.serviceService
+            .GetApplicationNumberByUserInfo(AppNo)
+            .subscribe((licenceService) => {
+              this.custmerInformation = licenceService[0];
+              console.log(
+                "🚀 ~ .subscribe ~ custmerInformation:",
+                this.custmerInformation
+              );
+              
+            });
+          console.log("appppppp", AppNo);
+          this.serviceService.getAll(AppNo).subscribe(
+            (licenceService) => {
+              this.licenceService = licenceService;
+              console.log("Licence Service", this.licenceService);
+              if (this.licenceService.list.length > 0) {
+                this.licenceData = this.licenceService.list[0];
+      
+                this.serviceService.licenceData = this.licenceData;
+                this.SDP_ID = this.licenceData.SDP_ID;
+                this.serviceService.currentsdpid = this.SDP_ID;
+                this.Service_ID = this.licenceData.Service_ID;
+            
+                this.serviceService.Service_ID = this.licenceData.Service_ID;
+                this.serviceService.serviceDP = this.SDP_ID;
+                this.Licence_Service_ID = this.licenceData.Licence_Service_ID;
+                this.AppCode = this.licenceData.Licence_Service_ID; //
+                this.AppNo = this.licenceData.Application_No; //
+                this.serviceService.appnoForRecord = this.licenceData.Application_No;
+                this.propertyid=this.licenceData.Property_ID
+                this.serviceService.recordno=this.licenceData.recordNo
+                this.serviceService.LicenceserviceID = this.Licence_Service_ID;
+                 if (this.Service_ID =='2a513f83-221c-4cba-b497-a437417f3c69'){
+                  this.serviceService.itcanntupdate=true
+                 }
+                console.log("licenceData", this.licenceData);
+                this.getuserName(this.AppNo);
+                if (this.licenceData.Certificate_Code > 0) {
+                  this.getPriveysLicence(this.licenceData.Certificate_Code);
+                } else {
+                  this.getPriveysLicence(this.licenceData.Application_No);
+                }
+              }
+              this.loading = false;
+            },
+            (error) => {
+              console.log(error);
+              this.se.emit(this.eventTypes.JSONFOUND);
+            }
+          );
+          }
+        })
+
+    }else{
+ this.serviceService
       .GetApplicationNumberByUserInfo(AppNo)
       .subscribe((licenceService) => {
         this.custmerInformation = licenceService[0];
@@ -3298,8 +3633,8 @@ export class ServiceComponent implements OnInit {
           "🚀 ~ .subscribe ~ custmerInformation:",
           this.custmerInformation
         );
+        
       });
-    this.getuserName(this.AppNo);
     console.log("appppppp", AppNo);
     this.serviceService.getAll(AppNo).subscribe(
       (licenceService) => {
@@ -3312,34 +3647,29 @@ export class ServiceComponent implements OnInit {
           this.SDP_ID = this.licenceData.SDP_ID;
           this.serviceService.currentsdpid = this.SDP_ID;
           this.Service_ID = this.licenceData.Service_ID;
+      
           this.serviceService.Service_ID = this.licenceData.Service_ID;
           this.serviceService.serviceDP = this.SDP_ID;
           this.Licence_Service_ID = this.licenceData.Licence_Service_ID;
           this.AppCode = this.licenceData.Licence_Service_ID; //
           this.AppNo = this.licenceData.Application_No; //
           this.serviceService.appnoForRecord = this.licenceData.Application_No;
+          this.propertyid=this.licenceData.Property_ID
+          this.serviceService.currentproprtyID=this.licenceData.Property_ID
+          this.serviceService.recordno=this.licenceData.recordNo
           this.serviceService.LicenceserviceID = this.Licence_Service_ID;
+           if (this.Service_ID =='2a513f83-221c-4cba-b497-a437417f3c69'){
+            this.serviceService.itcanntupdate=true
+           }
           console.log("licenceData", this.licenceData);
-
+          this.getuserName(this.AppNo);
           if (this.licenceData.Certificate_Code > 0) {
-            this.getPriveysLicence(this.licenceData.Certificate_Code);
+            //this.getPriveysLicence(this.licenceData.Certificate_Code);
+            this.getPriveysLicence(this.licenceData.Application_No);
           } else {
             this.getPriveysLicence(this.licenceData.Application_No);
           }
         }
-
-        // if (this.ID == 2) {
-        //   this.disablefins = false;
-        //   this.getPlotManagement();
-        // } else if (this.ID == 3) {
-        //   this.disablefins = false;
-        //   this.getPlotManagement();
-        // } else if (this.ID == 4) {
-        //   this.disablefins = false;
-        //   this.getDeed();
-        // }
-        // console.log('Licence data2', this.licenceData);
-        // this.taskType = this.licenceData.TaskType;
         this.loading = false;
       },
       (error) => {
@@ -3347,6 +3677,61 @@ export class ServiceComponent implements OnInit {
         this.se.emit(this.eventTypes.JSONFOUND);
       }
     );
+    }
+  }else{
+    this.serviceService
+    .GetApplicationNumberByUserInfo(AppNo)
+    .subscribe((licenceService) => {
+      this.custmerInformation = licenceService[0];
+      console.log(
+        "🚀 ~ .subscribe ~ custmerInformation:",
+        this.custmerInformation
+      );
+      
+    });
+  console.log("appppppp", AppNo);
+  this.serviceService.getAll(AppNo).subscribe(
+    (licenceService) => {
+      this.licenceService = licenceService;
+      console.log("Licence Service", this.licenceService);
+      if (this.licenceService.list.length > 0) {
+        this.licenceData = this.licenceService.list[0];
+
+        this.serviceService.licenceData = this.licenceData;
+        this.SDP_ID = this.licenceData.SDP_ID;
+        this.serviceService.currentsdpid = this.SDP_ID;
+        this.Service_ID = this.licenceData.Service_ID;
+    
+        this.serviceService.Service_ID = this.licenceData.Service_ID;
+        this.serviceService.serviceDP = this.SDP_ID;
+        this.Licence_Service_ID = this.licenceData.Licence_Service_ID;
+        this.AppCode = this.licenceData.Licence_Service_ID; //
+        this.AppNo = this.licenceData.Application_No; //
+        this.serviceService.appnoForRecord = this.licenceData.Application_No;
+        this.propertyid=this.licenceData.Property_ID
+        this.serviceService.recordno=this.licenceData.recordNo
+        this.serviceService.LicenceserviceID = this.Licence_Service_ID;
+         if (this.Service_ID =='2a513f83-221c-4cba-b497-a437417f3c69'){
+          this.serviceService.itcanntupdate=true
+         }
+        console.log("licenceData", this.licenceData);
+        this.getuserName(this.AppNo);
+        if (this.licenceData.Certificate_Code > 0) {
+          this.getPriveysLicence(this.licenceData.Certificate_Code);
+        } else {
+          this.getPriveysLicence(this.licenceData.Application_No);
+        }
+      }
+      this.loading = false;
+    },
+    (error) => {
+      console.log(error);
+      this.se.emit(this.eventTypes.JSONFOUND);
+    }
+  );
+  }
+
+})
   }
   getuserName(AppNo) {
     this.serviceService.getuserName(AppNo).subscribe((res: any) => {
@@ -3521,67 +3906,177 @@ export class ServiceComponent implements OnInit {
       }
     }
   }
-  async checkDocumentIsAvailable() {
-    let counter = 0;
-    let applicationLength = 0;
-    let isfolderhave = false;
-    const res: any = await this.serviceService
-      .getuserName(this.AppNo)
-      .toPromise();
-    let useNamelist = res;
-    if (useNamelist.length > 0) {
-      const user: any = await this.serviceService
-        .getCustomerByCols(useNamelist[0].userName)
-        .toPromise();
-      let userName = user.procCustomers;
-      if (userName.length > 0) {
-        const AppbyUserId: any = await this.serviceService
-          .getAppbyUserid(userName[0].customer_ID)
-          .toPromise();
-        let ApplicationNumberlist = AppbyUserId.procApplicationLoadByUserIds;
-        if (ApplicationNumberlist.length > 0) {
-          applicationLength = ApplicationNumberlist.length;
-          for (let index = 0; index < ApplicationNumberlist.length; index++) {
-            const element = ApplicationNumberlist[index];
-            const DocIdByAppNo: any = await this.serviceService
-              .getDocIdByAppNo(element.application_number)
-              .toPromise();
-            let procView_RecordAppNoAndDocIdByAppNo =
-              DocIdByAppNo.procView_RecordAppNoAndDocIdByAppNos;
-            if (procView_RecordAppNoAndDocIdByAppNo.length > 0) {
-              let application_code =
-                procView_RecordAppNoAndDocIdByAppNo[0].application_code;
-              let application_detail_id =
-                procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id;
-              const SavedFiles: any = await this.serviceService
-                .getAllDocuments(application_code, application_detail_id)
-                .toPromise();
+  previewdar(i){
+    const arrayBuffer = new ArrayBuffer(this.binaryData.length);
+ const uint8Array = new Uint8Array(arrayBuffer);
+ 
+ for (let i = 0; i < this.binaryData.length; i++) {
+     uint8Array[i] = this.binaryData.charCodeAt(i);
+ }
+ 
+ // Create Blob
+ const blob = new Blob([uint8Array], {
+     type: "application/pdf",
+ });
+ 
+ // Set Blob URL as iframe source
+ this.RequerdDocspre[i].mimeType = "application/pdf";
+ this.RequerdDocspre[i].File = this.sanitizer.bypassSecurityTrustResourceUrl(
+     URL.createObjectURL(blob)
+ );}
+ previewnotdar(i){
+   let fileData = JSON.parse(this.binaryData);
+   let { type, data } = fileData;
+ 
+   this.RequerdDocspre[i].mimeType = type;
+   this.RequerdDocspre[i].File = "data:" + type + ";base64, " + data;
+   
+ 
+   this.RequerdDocspre[i].File = this.sanitizer.bypassSecurityTrustResourceUrl(
+       this.RequerdDocspre[i].File
+   );}
+   async checkDocumentIsAvailable(){
+    return false;
+   }
+  // async checkDocumentIsAvailable() {
+  //   let counter = 0;
+  //   let applicationLength = 0;
+  //   let isfolderhave = false;
+  //   const res: any = await this.serviceService
+  //     .getuserName(this.AppNo)
+  //     .toPromise();
+  //   let useNamelist = res;
+  //   if (useNamelist.length > 0) {
+  //     const user: any = await this.serviceService
+  //       .getCustomerByCols(useNamelist[0].userName)
+  //       .toPromise();
+  //     let userName = user.procCustomers;
+  //     if (userName.length > 0) {
+  //       const AppbyUserId: any = await this.serviceService
+  //         .getAppbyUserid(userName[0].customer_ID)
+  //         .toPromise();
+  //       let ApplicationNumberlist = AppbyUserId.procApplicationLoadByUserIds;
+  //       this.serviceService
+  //       .getLicencebyid(this.serviceService.LicenceserviceID)
+  //       .subscribe(async (rec: any) => {
+         
+  //         let RID;
+  //         if (rec.procLicense_Services.length > 0) {
+  //           RID = rec.procLicense_Services[0].recordNo;
+  //           this.RID=rec.procLicense_Services[0].recordNo;
+  //         }
+  //           if(this.RID !=null){
+  //             this.ApplicationNumberlist =
+  //             AppbyUserId.procApplicationLoadByUserIds.filter(x=>x.recordNo == this.RID)
+  //           }
 
-              if (SavedFiles.length === 0) {
-                isfolderhave = true;
-                const toast = this.notificationsService.warn(
-                  `This folder does not have any files. Please upload files for application number: ${element.application_number}`
-                );
-              } else {
-                counter++;
-              }
-              console.log(
-                "🚀 ~ checkDocumentIsAvailable ~ SavedFiles:",
-                counter,
-                applicationLength,
-                SavedFiles
-              );
-            }
-          }
-        }
-      }
-    }
+          
 
-    return isfolderhave; //counter  === applicationLength;
-  }
+  //       if (ApplicationNumberlist.length > 0) {
+  //         applicationLength = ApplicationNumberlist.length;
+  //         for (let index = 0; index < ApplicationNumberlist.length; index++) {
+  //           const element = ApplicationNumberlist[index];
+  //           const DocIdByAppNo: any = await this.serviceService
+  //             .getDocIdByAppNo(element.application_number)
+  //             .toPromise();
+  //           let procView_RecordAppNoAndDocIdByAppNo =
+  //             DocIdByAppNo.procView_RecordAppNoAndDocIdByAppNos;
+  //           if (procView_RecordAppNoAndDocIdByAppNo.length > 0) {
+  //             let application_code =
+  //               procView_RecordAppNoAndDocIdByAppNo[0].application_code;
+  //             let application_detail_id =
+  //               procView_RecordAppNoAndDocIdByAppNo[0].application_detail_id;
+  //             const SavedFiles: any = await this.serviceService
+  //               .getAllDocuments(application_code, application_detail_id)
+  //               .toPromise();
+
+  //             if (SavedFiles.length === 0) {
+  //               isfolderhave = true;
+  //               const toast = this.notificationsService.warn(
+  //                 `This folder does not have any files. Please upload files for application number: ${element.application_number}`
+  //               );
+  //             } else {
+  //               counter++;
+  //             }
+  //             console.log(
+  //               "🚀 ~ checkDocumentIsAvailable ~ SavedFiles:",
+  //               counter,
+  //               applicationLength,
+  //               SavedFiles
+  //             );
+  //           }
+  //         }
+  //       }
+  //     })
+  //     }
+  //   }
+
+  //   return isfolderhave; //counter  === applicationLength;
+  // }
+  confirm1() {
+   
+          this.blocked=true;
+            const toast = this.notificationsService.success('You have accepted')
+           this.Submit('00000000-0000-0000-0000-000000000000')
+       
+}
+confirm2(task_rules_code, rule_Code) {
+  this.isconfirmsaveAR=true
+this.task_rules_code=task_rules_code,
+ this.rule_Code=rule_Code
+          this.blocked=true;
+            const toast = this.notificationsService.success('You have accepted')
+          
+      
+}
+confirm3(){
+  this.showdialog(this.task_rules_code, this.rule_Code)
+}
 
   closeModalme(id) {
     // this.modal.getModal(id).close();
     this.isAccountVisiblemessage = false;
   }
+}
+
+interface Person {
+   customer_ID: any;
+   applicant_First_Name_AM: any;
+   applicant_First_Name_EN: any;
+   applicant_Middle_Name_AM: any;
+   applicant_Middle_Name_En: any;
+   applicant_Last_Name_AM: any;
+   applicant_Last_Name_EN: any;
+   applicant_Mother_Name_AM: any;
+   applicant_Mother_Name_EN: any;
+   tin: any;
+   gender: any;
+   sdP_ID: any;
+   wereda_ID: any;
+   email: any;
+   mobile_No: any;
+   photo: any;
+   home_Telephone: any;
+   house_No: any;
+   address: any;
+   kebele: any;
+   nationality: any;
+   residence_Country: any;
+   state_Region: any;
+   city: any;
+   passport_ID: any;
+   is_Active: any;
+   is_Represented: any;
+   parent_Customer_ID: any;
+   is_them: any;
+   customer_Type_ID: any;
+   is_Representative: any;
+   customer_Status: any;
+   created_By: any;
+   updated_By: any;
+   deleted_By: any;
+   is_Deleted: any;
+   created_Date: any;
+   updated_Date: any;
+   deleted_Date: any;
 }

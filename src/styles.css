@@ -10,6 +10,7 @@
 @import "~material-icons/iconfont/material-icons.css";
 @import "~@angular/material/prebuilt-themes/indigo-pink.css"; */
 @import "~leaflet/dist/leaflet.css";
+
 .browser-back-button {
   display: none !important;
 }
@@ -511,3 +512,40 @@ th {
   background: rgb(20, 62, 146) !important;
   color: rgb(255, 255, 255);
 } */
+.id-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.id-card-header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.customer-photo {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+}
+
+.id-card-body {
+  text-align: center;
+}
+
+.id-card-body h2 {
+  margin: 10px 0;
+  font-size: 1.5em;
+}
+
+.id-card-body p {
+  margin: 5px 0;
+}

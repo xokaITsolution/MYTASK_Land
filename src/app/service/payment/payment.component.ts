@@ -51,7 +51,12 @@ export class PaymentComponent implements OnChanges {
   ismodaEnable: boolean = false;
   isMaximized: boolean;
   maxWidth: string = "1800px";
-
+  identifiers = [
+    "1b30e6d6-0ade-443e-be18-22de948bfd1e",
+    "2145F90D-E911-42F2-9AD7-C2455A4D9DCD".toLocaleLowerCase(),
+    "de4937d8-bdcd-46d6-8749-dc31c9f3adcf"
+  ];
+  iscasher: boolean;
   constructor(
     private sanitizer: DomSanitizer,
     private serviceService: ServiceService,
@@ -64,6 +69,7 @@ export class PaymentComponent implements OnChanges {
 
   ngOnChanges() {
     console.log("disable", this.disable);
+   
     this.getPaymentManagement();
     this.yourQRCodeDataPayment =
       environment.PaymentReportPath + "/" + this.AppNo;
@@ -72,10 +78,14 @@ export class PaymentComponent implements OnChanges {
     );
     console.log(" this.PaymentProcessPath", this.PaymentProcessPath);
   }
-
+  isInIdentifiers(taskId: string): boolean {
+    return this.identifiers.includes(taskId);
+  }
   getPaymentManagement() {
     console.log("AAppNo", this.AppNo);
-
+    if (this.isInIdentifiers(this.serviceService.Service_ID) ){
+      this.serviceService.disablefins=false
+    }
     this.serviceService.getPayment(this.AppNo).subscribe(
       (PaymentList) => {
         this.PaymentList = PaymentList;
@@ -83,6 +93,7 @@ export class PaymentComponent implements OnChanges {
         if (this.PaymentList) {
           this.Amount = this.PaymentList[0].Amount;
         }
+     
         console.log("PaymentList", PaymentList);
       },
       (error) => {
@@ -99,7 +110,7 @@ export class PaymentComponent implements OnChanges {
       (PaymentDetailList) => {
         this.PaymentDetailList = PaymentDetailList;
         this.PaymentDetailList = Object.assign([], this.PaymentDetailList.list);
-
+        this.completed.emit()
         this.PaymentForm = true;
 
         for (let i = 0; i < this.PaymentDetailList.length; i++) {
@@ -153,7 +164,8 @@ export class PaymentComponent implements OnChanges {
   //   // Payment.Date_Paid = Payment.Date_Paid.split('T')[0];
   // }
 
-  AddnewPaymentDetail(PaymentDetail) {
+  AddnewPaymentDetail(PaymentDetail) { 
+    PaymentDetail.Is_Paid=false
     console.log("PaymentDetail", PaymentDetail);
     this.serviceService.addPaymentDetail(PaymentDetail).subscribe(
       (message) => {
@@ -203,25 +215,54 @@ export class PaymentComponent implements OnChanges {
     // Payment.Date_Paid = Payment.Date_Paid.split('T')[0];
   }
   SavePaymentDetail(PaymentDetail) {
-    this.serviceService.savePaymentDetail(PaymentDetail).subscribe(
-      (message) => {
-        const toast = this.notificationsService.success("Sucess", message);
-        this.getPaymentManagement();
+    this.serviceService.getUserRole().subscribe((response: any) => {
+      if (response) {
+        for (let index = 0; index < response.length; index++) {
+          const element = response[index];
 
-        if (!this.Saved) {
-          this.completed.emit();
-          this.serviceService.disablefins = false;
-          this.Saved = true;
+          if (
+            element.RoleId ===
+            "4728621A-4E75-4E81-8C92-012E9EF19A45".toLocaleLowerCase() ||
+            element.RoleId ===
+            "4AA43499-05F3-49CC-86FD-D9D2A15F8328".toLocaleLowerCase()
+          ) {
+          
+            this.iscasher = true;
+            this.serviceService.savePaymentDetail(PaymentDetail).subscribe(
+              (message) => {
+                const toast = this.notificationsService.success("Sucess", message);
+                this.getPaymentManagement();
+        
+                if (!this.Saved) {
+                  this.completed.emit();
+                  this.serviceService.disablefins = false;
+                  this.Saved = true;
+                }
+              },
+              (error) => {
+                console.log("error");
+                const toast = this.notificationsService.error(
+                  "Error",
+                  "SomeThing Went Wrong"
+                );
+              }
+            );
+            break;
+          } else {
+            
+            this.iscasher = false;
+          }
         }
-      },
-      (error) => {
-        console.log("error");
-        const toast = this.notificationsService.error(
-          "Error",
-          "SomeThing Went Wrong"
-        );
+        if(!this.iscasher){
+          const toast = this.notificationsService.error(
+            "Error",
+            "you don't have cashier role"
+          );
+        }
       }
-    );
+    
+   
+  })
     // Payment.Date_Paid = Payment.Date_Paid.split('T')[0];
   }
   SaveePaymentDetail(PaymentDetail) {

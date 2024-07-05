@@ -3,7 +3,7 @@
 <form #f="ngForm" novalidate name="proform">
  
             
-
+  <h3><span class="badge badge-warning">This property registered by : {{technicaluser}} </span></h3>
   <div class="form-row">
     <div class="form-group row col-md-6">
       <label for="PlotID" class="col-sm-3 col-form-label" translate>PlotID</label>
@@ -54,6 +54,15 @@
                required type="number" appNumberOnly [ngClass]="{ 'is-invalid': Proportional_from_Compound_Size.invalid }" [disabled]="disable">
           </div>
         </div>
+        <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
+          <label for="ParkingSize" class="col-sm-3 col-form-label" translate>proportional Area of the House from the communal</label>
+          <div class="col-sm-9">
+            <input type="number" class="form-control" [(ngModel)]="propertyRegister.parking_Area_M2" name="ParkingSize"
+              id="ParkingSize" [placeholder]="'Parking size'|translate"
+              appNumberOnly 
+               [disabled]="disable" >
+          </div>
+        </div>
     <div class="form-group row col-md-6" >
       <label for="PropertyStatus" class="col-sm-3 col-form-label" translate>Property Status</label>
       <div class="col-sm-9">
@@ -70,7 +79,7 @@
       <label for="PropertyType" class="col-sm-3 col-form-label" translate>Property Type</label>
       <div class="col-sm-9">
       
-      <select [disabled]="disable" class="form-control" [(ngModel)]="propertyRegister.property_Type_ID" name="PropertyType"
+      <select [disabled]="disable" class="form-control" [(ngModel)]="propertyRegister.property_Type_ID" name="PropertyType" #mySelect (change)='onOptionsSelected(mySelect.value)'
         id="PropertyType" #PropertyType="ngModel" [ngClass]="{ 'is-invalid': PropertyType.invalid }" required>
         <option *ngFor="let propertyType of serviceComponent.PropertyTypeLookUP" [value]="propertyType.Property_Type_ID">
           {{propertyType.Property_Type}}
@@ -141,20 +150,14 @@
         </div>
       </div>
     </div> -->
-    <!-- <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
-      <label for="ParkingSize" class="col-sm-3 col-form-label" translate>Parking size</label>
-      <div class="col-sm-9">
-        <input type="number" class="form-control" [(ngModel)]="propertyRegister.parking_Area_M2" name="ParkingSize"
-          id="ParkingSize" [placeholder]="'Parking size'|translate"
-          #ParkingSize="ngModel" appNumberOnly 
-          [ngClass]="{ 'is-invalid': ParkingSize.invalid }" [disabled]="disable" required>
-      </div>
-    </div> -->
+    
 <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
   <label for="HouseNo" class="col-sm-3 col-form-label" translate>House No</label>
   <div class="col-sm-9">
     <input type="text" class="form-control" [(ngModel)]="propertyRegister.houseNo" name="HouseNo" id="HouseNo"
-      [placeholder]="'House No'|translate" [disabled]="disable" pattern="[0-9A-Za-z/-]+">
+      [placeholder]="'House No'|translate" [disabled]="disable" 
+      [ngClass]="{ 'is-invalid': HouseNo.invalid }"  #HouseNo="ngModel" 
+      [required]="isbuildingApartama">
   </div>
 </div>
 
@@ -199,16 +202,17 @@
         <input class="form-control" id="Building_No"
           name="Building_No" [placeholder]="'Building No'|translate" type="text" [(ngModel)]="propertyRegister.building_No" 
            #Building_No="ngModel"  
-          [ngClass]="{ 'is-invalid': Building_No.invalid && isbuildingApartama }" [disabled]="disable" [required]="isbuildingApartama"
+          [ngClass]="{ 'is-invalid': Building_No.invalid }" [disabled]="disable" [required]="isbuilding"
            ></div>
     </div>
-    <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture && isbuildingApartama">
+    <!-- *ngIf="!serviceService.isagriculture && isbuildingApartama" -->
+    <div class="form-group row col-md-6" >
       <label class="col-sm-3 col-form-label" for="Room_No" translate="">Room
         No</label>
       <div class="col-sm-9">
-        <input class="form-control" id="Room_No" name="Room_No" [placeholder]="'Building No'|translate" type="text"
-          [(ngModel)]="propertyRegister.room_No" #Room_No="ngModel"
-          [ngClass]="{ 'is-invalid': Room_No.invalid && isbuildingApartama }" [disabled]="disable" [required]="isbuildingApartama">
+        <input class="form-control" id="Room_No" name="Room_No" [placeholder]="'Room No'|translate" type="text"
+          [(ngModel)]="propertyRegister.room_No" 
+          [disabled]="disable" >
       </div>
     </div>
     
@@ -226,7 +230,7 @@
         <input class="form-control" id="Floor_No" name="Floor_No" [(ngModel)]="propertyRegister.floor_No"
           [placeholder]="'Floor No'|translate" type="number" 
           #Floor_No="ngModel"  
-          [ngClass]="{ 'is-invalid': Floor_No.invalid && isbuildingApartama }" [disabled]="disable" [required]="isbuildingApartama"
+          [ngClass]="{ 'is-invalid': Floor_No.invalid  }" [disabled]="disable" [required]="isbuildingApartama"
           ></div>
     </div>
   
@@ -258,15 +262,14 @@
     <button *ngIf="isnew && !serviceService.ishavespashal" type="button" [ngClass]="{'blinking': !serviceService.ispropoertylocation}" class="btn btn-primary  ml-3" data-toggle="modal" data-target="#myModal" translate
       (click)="ismodaEnable=true;getcurrentlocationdata()">Spatial</button>&nbsp;
 
-      <button *ngIf="isnew && !disable"    type="button" [disabled]="!f.valid" class="btn btn-primary" (click)="checkplothavecertificet();"
+      <button *ngIf="isnew && !disable && !serviceService.itcanntupdate"    type="button" [disabled]="!f.valid" class="btn btn-primary" (click)="checkplothavecertificet();"
       translate>update</button>
       <span style="color:red;font-weight: bolder;font-size: large;" *ngIf="!serviceService.ispropoertylocation"
         translate>you need to save
         Property Location first</span>
   
-    <button *ngIf="!isnew && !disable" type="button" [disabled]="!f.valid" class="btn btn-primary" (click)="confirmsave();"
+    <button *ngIf="!isnew && !disable && !serviceService.itcanntupdate" type="button" [disabled]="!f.valid" class="btn btn-primary" (click)="confirmsave();"
       translate>Save</button>
-
 
 </form>
 
@@ -405,9 +408,9 @@
             <span translate class="text-danger">Requierd</span>
           </div>
           <button type="button" class="btn btn-primary" (click)="saveproploc();closeModall()"
-            *ngIf="!isproplocnew &&  !disable" [disabled]="!location.valid" translate>Save</button>
+            *ngIf="!isproplocnew &&  !disable && !serviceService.itcanntupdate" [disabled]="!location.valid" translate>Save</button>
           <button type="button" class="btn btn-primary" (click)="updateproploc();closeModall()"
-            *ngIf="isproplocnew &&  !disable" [disabled]="!location.valid" translate>Update</button>
+            *ngIf="isproplocnew &&  !disable && !serviceService.itcanntupdate" [disabled]="!location.valid" translate>Update</button>
           <button type="button" class="btn btn-danger" (click)="closeModall()" translate>Close</button>
         </div>
       </form>
@@ -524,7 +527,7 @@
             <button type="button" class="btn btn-primary" (click)="saveproploc();ismodaEnable=false" *ngIf="!isproplocnew &&  !disable"
               [disabled]="!location.valid" translate>Save</button>
             <button type="button" class="btn btn-primary" (click)="updateproploc();ismodaEnable=false"
-              *ngIf="isproplocnew &&  !disable" [disabled]="!location.valid" translate>Update</button>
+              *ngIf="isproplocnew &&  !disable && !serviceService.itcanntupdate" [disabled]="!location.valid" translate>Update</button>
             <button type="button" class="btn btn-danger" (click)="ismodaEnable=false" translate>Close</button>
           </div>
       </div>

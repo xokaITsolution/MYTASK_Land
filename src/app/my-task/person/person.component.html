@@ -46,7 +46,7 @@
                 <label for="Customer_Type" class="col-sm-4 col-form-label" translate>Customer Type</label>
   
                 <div class="col-sm-8">
-                  <select [disabled]="disabled"   style="height: 50px;"class="form-control" style="height: 50px;" (change)="pass($event)" [(ngModel)]="person.customer_Type_ID" name="Customer_Type"
+                  <select disabled   style="height: 50px;"class="form-control" style="height: 50px;" (change)="pass($event)" [(ngModel)]="person.customer_Type_ID" name="Customer_Type"
                     id="Customer_Type" #Customer_Type="ngModel" [ngClass]="{ 'is-invalid': Customer_Type.invalid }"
                     required>
                     <option disabled>select</option>
@@ -87,7 +87,7 @@
               <div class="form-group row col-md-4" >
                 <label for="Nationality" class="col-sm-4 col-form-label" translate>Nationality</label>
                 <div class="col-sm-8">
-                  <select [disabled]="disabled" style="height: 50px;"class="form-control" [(ngModel)]="person.nationality" name="Nationality" id="Nationality">
+                  <select disabled style="height: 50px;"class="form-control" [(ngModel)]="person.nationality" name="Nationality" id="Nationality">
                     <option disabled>select</option>
                     <option *ngFor="let Country of CountryLookUP;" [value]="Country.Code">
                       {{Country.Name}}
@@ -132,8 +132,8 @@
               <div class="form-group row col-md-4" >
                 <label for="ResidenceCountry" class="col-sm-4 col-form-label" translate>Residence Country</label>
                 <div class="col-sm-8">
-                  <select style="height: 50px;"class="form-control" [(ngModel)]="person.residence_Country" name="ResidenceCountry"
-                    id="ResidenceCountry"  [disabled]="disabled">
+                  <select style="height: 50px;"class="form-control"  [(ngModel)]="person.residence_Country" name="ResidenceCountry"
+                    id="ResidenceCountry" disabled>
                     
                     <option *ngFor="let Country of CountryLookUP;" [value]="Country.Code" >
                       {{Country.Name}}
@@ -145,7 +145,7 @@
               <div class="form-group row col-md-4" >
                 <label for="MotherName" class="col-sm-4 col-form-label" translate>Mother Name</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" required [(ngModel)]="person.applicant_Mother_Name_EN" name="MotherName"
+                  <input type="text" class="form-control" readonly required [(ngModel)]="person.applicant_Mother_Name_EN" name="MotherName"
                     id="MotherName" [placeholder]="'Mother Name' | translate" #MotherName="ngModel"
                     [ngClass]="{ 'is-invalid': MotherName.invalid }" pattern="[a-zA-Z\s]+" [disabled]="disabled">
                       <div *ngIf="MotherName.invalid && (MotherName.dirty || MotherName.touched)" class="invalid-feedback">
@@ -157,7 +157,7 @@
               <div class="form-group row col-md-4" >
                 <label for="MotherNameAm" class="col-sm-4 col-form-label" translate>Mother Name Am</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" [(ngModel)]="person.applicant_Mother_Name_AM" required name="MotherNameAm"
+                  <input type="text" class="form-control" readonly [(ngModel)]="person.applicant_Mother_Name_AM" required name="MotherNameAm"
                     id="MotherNameAm" [placeholder]="'MotherName Am' | translate" #MotherNameAm="ngModel"
                     [ngClass]="{ 'is-invalid': MotherNameAm.invalid }" onkeypress="return !((event.keyCode >=33 &&  event.keyCode<=127))" [disabled]="disabled">
                       <div *ngIf="MotherNameAm.invalid && (MotherNameAm.dirty || MotherNameAm.touched)" class="invalid-feedback">
@@ -179,8 +179,8 @@
                   <div class="form-group row col-md-6">
                     <label for="State/Region" class="col-sm-4 col-form-label" translate>State/Region</label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control" [(ngModel)]="person.state_Region" name="State/Region"
-                        id="State/Region" [placeholder]="'State/Region' | translate" #State="ngModel" [disabled]="disabled"
+                      <input type="text" class="form-control" readonly [(ngModel)]="person.state_Region" name="State/Region"
+                        id="State/Region" [placeholder]="'State/Region' | translate" #State="ngModel" disabled
                         [ngClass]="{ 'is-invalid': State.invalid }" >
                     </div>
                   </div>
@@ -201,25 +201,15 @@
                     <div class="col-sm-8">
                       <!-- <input type="text" class="form-control" [(ngModel)]="person.City" name="City" id="City"
                         placeholder="City" #Cityy="ngModel"> -->
-                      <select style="height: 50px;"class="form-control" (ngModelChange)="getWoredaLookUPbyorg($event)"
-                        [(ngModel)]="person.sDP_ID" name="SubCity" id="SubCity" #SubCity="ngModel"
-                        [ngClass]="{ 'is-invalid': SubCity.invalid }" >
-                        <option disabled>select</option>
-                        <option *ngFor="let SubCity of ServiceDeliveryUnitLookUP;"
-                          [value]="SubCity.organization_code">{{SubCity.name_en}}
-                        </option>
-                          <select style="height: 50px;" [disabled]="disabled" class="form-control" name="SubCity" id="SubCity" [(ngModel)]="person.sDP_ID" 
-                            >
-                            <option *ngFor="let city of zones" [value]="city.lkdetail_code">{{ city.english_description }}
-                            </option>
-                          </select>
-                        </select>
+                        <input readonly type="text" class="form-control" [(ngModel)]="person.city" name="city"
+                        id="city" placeholder="Sub city" 
+                        >
                     </div>
                   </div>
                   <div class="form-group row col-md-6" >
                     <label for="Woreda" class="col-sm-4 col-form-label" translate>Woreda</label>
                     <div class="col-sm-8">
-                      <input [disabled]="disabled" type="number" class="form-control" [(ngModel)]="person.wereda_ID" name="Woreda" id="Woreda"
+                      <input disabled type="number" class="form-control" [(ngModel)]="person.wereda_ID" name="Woreda" id="Woreda"
                         [placeholder]="'Woreda' | translate"  min="1" max="14">
                         <!-- <select [disabled]="disabled" class="form-control" name="woreda" id="woreda" [(ngModel)]="person.Wereda_ID" 
                           >
@@ -248,7 +238,7 @@
                   <div class="form-group row col-md-6" hidden>
                     <label for="City" class="col-sm-4 col-form-label" translate>City</label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control" [(ngModel)]="person.city" name="City" id="City"
+                      <input type="text" class="form-control" disabled [(ngModel)]="person.city" name="City" id="City"
                         [placeholder]="'City' | translate"  >
                         <!-- [ngClass]="{ 'is-invalid': City.invalid }" > -->
                     </div>
@@ -257,21 +247,21 @@
                     <label for="TIN" class="col-sm-4 col-form-label" translate>TIN</label>
                     <div class="col-sm-8">
                       <input type="text" class="form-control" [(ngModel)]="person.tin"  [pattern]="mobNumberPattern" name="TIN"  id="TIN"
-                        [placeholder]="'TIN' | translate"  [maxlength]="10" [required]="required" [disabled]="disabled">
+                        [placeholder]="'TIN' | translate"  [maxlength]="10" [required]="required" disabled>
                     </div>
                   </div>
                   <div class="form-group row col-md-6" >
                     <label for="PassportID" class="col-sm-4 col-form-label" translate>Passport ID</label>
                     <div class="col-sm-8">
                       <input type="text" class="form-control" [(ngModel)]="person.passport_ID" name="PassportID"
-                        id="PassportID" [placeholder]="'Passport ID' | translate" [disabled]="disabled">
+                        id="PassportID" [placeholder]="'Passport ID' | translate" disabled>
                     </div>
                   </div>
                   <div class="form-group row col-md-6">
                     <label for="Email" class="col-sm-4 col-form-label" translate>Email</label>
                     <div class="col-sm-8">
                       <input type="Email" class="form-control" [(ngModel)]="person.email" name="Email" id="Email"
-                        [placeholder]="'Email' | translate"  [disabled]="disabled">
+                        [placeholder]="'Email' | translate"  disabled>
                     </div>
                   </div>
                   <div class="form-group  col-md-6">
@@ -309,7 +299,7 @@
                   <div class="form-group row col-md-6" [hidden]="notindividual">
                     <label for="Sex" class="col-sm-4 col-form-label" translate>Sex</label>
                     <div class="col-sm-8">
-                      <select [disabled]="disabled" style="height: 50px;"class="form-control" [(ngModel)]="person.gender" name="Sex" id="Sex" #Sex="ngModel" re
+                      <select disabled style="height: 50px;"class="form-control" [(ngModel)]="person.gender" name="Sex" id="Sex" #Sex="ngModel" re
                         [ngClass]="{ 'is-invalid': Sex.invalid }"  [required]="required1">
                         <option disabled translate>select</option>
                         <option value="Male" translate>Male</option>
@@ -327,9 +317,9 @@
                   <div class="form-group row col-md-6">
                     <label for="Address" class="col-sm-4 col-form-label" translate>Address</label>
                     <div class="col-sm-8">
-                      <textarea class="form-control" [(ngModel)]="person.address" name="Address" id="Address"
+                      <textarea class="form-control" disabled [(ngModel)]="person.address" name="Address" id="Address"
                         [placeholder]="'Address' | translate"  required  #address="ngModel"
-                        [ngClass]="{ 'is-invalid': address.invalid }" [disabled]="disabled">
+                        [ngClass]="{ 'is-invalid': address.invalid }" >
                       </textarea>
                     </div>
                   </div>
@@ -366,8 +356,8 @@
                   <div class="form-group row col-md-6">
                     <label for="HouseNo" class="col-sm-4 col-form-label" translate>House No</label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control" [(ngModel)]="person.house_No" name="HouseNo" id="HouseNo"
-                        [placeholder]="'House No' | translate"  [disabled]="disabled" >
+                      <input type="text" class="form-control"  readonly [(ngModel)]="person.house_No" name="HouseNo" id="HouseNo"
+                        [placeholder]="'House No' | translate"  disabled>
                     </div>
                   </div>
   
@@ -411,13 +401,16 @@
             </div>
           </p-fieldset>
           <div class="pull-right">
-            <button type="button" class="btn btn-primary"  *ngIf="isnew"
+            <!-- <button type="button" class="btn btn-primary"  *ngIf="isnew"
               (click)="Save2()" id="personsave" translate>Save</button>
-              
+               -->
               <!-- <div class="text-danger mt-2" *ngIf="file.invalid" translate>Please fill out all required fields.</div> -->
-            <button type="button" class="btn btn-primary"  *ngIf="!isnew"
-              (click)="update()" [disabled]="disabled" id="PersonUpdate" translate>Update</button>
-  
+            <button type="button" class="btn btn-primary m-2"  *ngIf="!disable"
+              (click)="update()"  id="PersonUpdate" translate>Update</button>
+            <button type="button" class="btn btn-secondary m-2"  *ngIf="disable"
+              (click)="updateApi()"  id="PersonUpdate" translate>Update from (tin and vital)</button>
+              <button type="button" class="btn btn-secondary m-2"  *ngIf="disable"
+              (click)="nationalid=true"  id="PersonUpdate" translate>Update from (National ID)</button>
           </div>
         </div>
       </p-fieldset>
@@ -573,4 +566,11 @@
          
       </div>
     </p-dialog>
+
+    <p-dialog  [(visible)]="nationalid"><app-otp [username]="globvar" [nationalid]="nationalid"  (getCustomerByIdEvent)="getcostumerbyid($event)"></app-otp>
+      <div class=" float-left">
+        <button  (click)="getcostumerbyid(globvar);iform=false;nationalid=false"  class="btn btn-danger ml-2" translate>Close</button>
+         
+      </div></p-dialog>
     <simple-notifications></simple-notifications>
+

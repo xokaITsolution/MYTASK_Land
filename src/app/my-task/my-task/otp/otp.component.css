@@ -1,0 +1,117 @@
+.container {
+    text-align: center;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Enhanced box shadow */
+    width: 70%;
+    border: 1px solid rgba(0, 0, 0, 0.1); /* Subtle border */
+    border-radius: 10px; /* Rounded corners */
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+    justify-content: center; /* Center content vertically */
+    height: auto; /* Allow container to expand with content */
+  }
+  
+  /* Optional: Add hover effect for interactive feedback */
+  .container:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Increased shadow on hover */
+  }
+  
+  /* Optional: Add transition for smooth hover effect */
+  .container {
+    transition: box-shadow 0.3s ease; /* Smooth transition for box-shadow */
+  }
+  
+  
+  
+  .otp-inputs {
+    margin-bottom: 20px;
+  }
+  
+  .resend-button {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    margin: 20px auto; /* Increased margin for better spacing */
+    width: 40%; /* Increased width for better visibility */
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .resend-button:hover {
+    background-color: #2980b9;
+  }
+  
+  .otp-label {
+    font-size: larger;
+    color: #000000;
+    margin-bottom: 10px;
+    font-weight: bolder;
+  }
+  
+  .otp-input {
+    width: 40px; /* Adjusted width for better visibility */
+    height: 40px; /* Adjusted height for better visibility */
+    margin: 0 5px;
+    text-align: center;
+    font-size: 1.5rem; /* Increased font size for better readability */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  /* Optional: Add focus style */
+  .otp-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+  
+  .full-page-spinner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+  }
+  
+  .spinner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .spinner {
+    border: 6px solid rgba(0, 0, 0, 0.1);
+    border-left: 6px solid #3498db;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    animation: spin 1s linear infinite;
+  }
+  
+  .loading-text {
+    margin-top: 20px;
+    font-size: 20px;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+  
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  

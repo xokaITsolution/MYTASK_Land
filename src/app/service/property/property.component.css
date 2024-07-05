@@ -2,3 +2,11 @@
     background:  rgb(13, 34, 75) !important;
     color: white;
   }
+  .custom-tree {
+    width: 500px; /* Set your desired width */
+  }
+  
+  .tree-container {
+    width: 500px; /* Set your desired width */
+  }
+  

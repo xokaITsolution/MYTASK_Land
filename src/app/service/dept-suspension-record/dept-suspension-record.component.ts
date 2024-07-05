@@ -13,6 +13,7 @@ import { NgxSmartModalService } from "ngx-smart-modal";
 import { ServiceService } from "../service.service";
 import { DateFormatter } from "ngx-bootstrap";
 import { formatDate } from "@angular/common";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-dept-suspension-record",
@@ -31,6 +32,8 @@ export class DeptSuspensionRecordComponent implements OnChanges {
   customerdata: any;
   Customerdept: boolean;
   isBank: boolean = false;
+  language: string;
+  isdeleted: boolean;
 
   constructor(
     private ngxSmartModalService: NgxSmartModalService,
@@ -47,12 +50,23 @@ export class DeptSuspensionRecordComponent implements OnChanges {
     console.log("hahaha2", this.Selectedcert);
     this.getdeed(this.Selectedcert.version_ID);
     this.deptForm = false;
+    if (environment.Lang_code === "am-et") {
+      this.language = "amharic";
+    } else {
+      this.language = "english";
+    }
   }
   selectOption(e) {
     if (e == "suspended") {
       this.deptSuspensionRecord.is_Suspended = true;
       this.deptSuspensionRecord.is_Released = false;
-    } else {
+    }else if(e == "is_Deleted"){
+      this.serviceService.getUserRole().subscribe((response: any) => {
+      this.deptSuspensionRecord.is_Deleted = true;
+      this.deptSuspensionRecord.deleted_By = response[0].UserId;;
+      })
+    }
+     else {
       this.deptSuspensionRecord.is_Suspended = false;
       this.deptSuspensionRecord.is_Released = true;
     }
@@ -87,7 +101,39 @@ export class DeptSuspensionRecordComponent implements OnChanges {
     this.deptSuspensionRecord.is_Suspended = true;
     this.deptSuspensionRecord.is_Released = false;
   }
+  async getEthiopianToGregorian(date) {
+    if (date) {
+      var datenow = await this.serviceService
+        .getEthiopianToGregorian(date)
+        .toPromise();
+      console.log(datenow);
+      return datenow.nowTime;
+    }
+  }
+  async getgregorianToEthiopianDate(date) {
+    if (date != "0001-01-01T00:00:00") {
+      var datenow = await this.serviceService
+        .getgregorianToEthiopianDate(date)
+        .toPromise();
+      console.log(datenow);
+      return datenow.nowTime;
+    }
+  }
   save() {
+    this.serviceService.getUserRole().subscribe(async (response: any) => {
+      console.log("responseresponseresponse", response, response[0].RoleId);
+      this.deptSuspensionRecord.updated_By = response[0].UserId;
+      this.deptSuspensionRecord.updated_Date = new Date();
+      if (this.language == "amharic") {
+        this.deptSuspensionRecord.letter_Ref_Date =
+          await this.getEthiopianToGregorian(
+            this.deptSuspensionRecord.letter_Ref_Date
+          );
+        this.deptSuspensionRecord.suspend_Start_Date =
+          await this.getEthiopianToGregorian(
+            this.deptSuspensionRecord.suspend_Start_Date
+          );
+      }
     this.deptSuspensionRecordService
       .saveapi(this.deptSuspensionRecord)
       .subscribe(
@@ -114,10 +160,16 @@ export class DeptSuspensionRecordComponent implements OnChanges {
           }
         }
       );
-    console.log("saveing....");
+    })
+   // console.log("saveing....");
   }
 
   add() {
+    this.deptSuspensionRecord.id=this.serviceService.LicenceserviceID 
+    this.serviceService.getUserRole().subscribe((response: any) => {
+      console.log("responseresponseresponse", response, response[0].RoleId);
+      this.deptSuspensionRecord.created_By = response[0].UserId;
+      this.deptSuspensionRecord.created_Date = new Date();
     this.deptSuspensionRecordService
       .Addapi(this.deptSuspensionRecord)
       .subscribe(
@@ -141,7 +193,8 @@ export class DeptSuspensionRecordComponent implements OnChanges {
           }
         }
       );
-    console.log("saveing....");
+    })
+   // console.log("saveing....");
   }
   getcustomer(globvar) {
     console.log(globvar);
@@ -187,9 +240,18 @@ export class DeptSuspensionRecordComponent implements OnChanges {
       "🚀 ~ DeptSuspensionRecordComponent ~ selectdeed ~ deptSuspensionRecord:",
       this.deptSuspensionRecord
     );
+     if(this.deptSuspensionRecord.id == this.serviceService.Licence_Service_ID){
+      this.isdeleted=true
+     }else{
+      this.isdeleted=false
+     }
     if (this.deptSuspensionRecord.suspend_Start_Date != null) {
       this.deptSuspensionRecord.suspend_Start_Date =
         this.deptSuspensionRecord.suspend_Start_Date.split("T")[0];
+    }
+    if (this.deptSuspensionRecord.letter_Ref_Date != null) {
+      this.deptSuspensionRecord.letter_Ref_Date =
+        this.deptSuspensionRecord.letter_Ref_Date.split("T")[0];
     }
     if (this.deptSuspensionRecord.is_Suspended) {
       this.selectOption("suspended");
@@ -218,7 +280,7 @@ export class DeptSuspensionRecordComponent implements OnChanges {
 
   closeModal(customer) {
     if (
-      customer.customer_ID == '00000000-0000-0000-0000-000000000000'
+      customer.customer_ID == '00000000-0000-0000-0000-000000000000' && this.isBank
     ) {
       const toast = this.notificationsService.warn(
         "warn",
@@ -250,5 +312,12 @@ class DeptSuspensionRecord {
   public is_Released: boolean;
   public debt_Suspend_Amount: any;
   public sDP_ID;
-  public title_Deed_No;
+  public title_Deed_No; 
+  public created_Date;
+  public updated_Date ;
+  public created_By ;
+  public updated_By ;
+  public deleted_By ;
+  public is_Deleted ;
+  public grade ;
 }

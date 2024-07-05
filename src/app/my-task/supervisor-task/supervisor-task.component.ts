@@ -87,6 +87,15 @@ export class SupervisorTaskComponent implements OnInit {
   //     }
   //   });
   // }
+  getSupportedInputTypes(task){
+    
+    this.myTaskService.GetSuperviedUsers().subscribe((SuperviedUsers:any) => {
+      this.SuperviedUsers = SuperviedUsers;
+      this.SuperviedUsers = Object.assign([], this.SuperviedUsers);
+      this.SuperviedUsers = this.SuperviedUsers.filter(x=>x.RoleId ==task.user_roles_id );
+    //console.log("🚀 ~ SupervisorTaskComponent ~ this.myTaskService.GetSuperviedUsers ~ SuperviedUsers:", this.SuperviedUsers)
+    })
+  }
   GetSuperviedUsers() {
     this.myTaskService.GetSuperviedUsers().subscribe((SuperviedUsers) => {
       this.SuperviedUsers = SuperviedUsers;

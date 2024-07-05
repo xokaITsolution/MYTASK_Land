@@ -2,7 +2,19 @@
 
 <div class="row m-3">
   <div class="col-md-6" *ngIf="!displayGIS">
-    <p-table [value]="BaseTablefinal" [paginator]="true" [rows]="3">
+    <p-table #cert_tabl [value]="BaseTablefinalALL.flat()" [paginator]="true" [rows]="3" [globalFilterFields]="['Title_Deed_No']">
+      <ng-template pTemplate="caption">
+        <div class="flex">
+          <span class="p-input-icon-left ml-auto">
+            <div style="width: 40%;">
+              <i class="pi pi-search"></i>
+              <input class="form-control" (input)="cert_tabl.filterGlobal($event.target.value, 'contains')"
+                placeholder="Search by property ID " />
+    
+            </div>
+          </span>
+        </div>
+      </ng-template>
       <ng-template pTemplate="header">
         <tr>
           <th scope="col" translate>Title Deed No</th>
@@ -11,7 +23,7 @@
           <th scope="col">
             <div *ngIf="BaseTablefinal">
               <!--<button type="button" *ngIf="BaseTable.length < noadds && !disable" class="btn btn-primary" (click)="AddBase('NewCretafcateBase')">AddNew</button></div>-->
-              <button type="button" *ngIf="!disable" class="btn btn-primary" (click)="AddBase(template)"
+              <button type="button" *ngIf="!disable && !serviceService.itcanntupdate" class="btn btn-primary" (click)="AddBase(template)"
                 translate>AddNew</button>
             </div>
           </th>
@@ -56,7 +68,7 @@
             <!-- <th scope="col" translate>Is printed</th>
             <th scope="col" translate>Is issued</th> -->
             <th scope="col">
-              <button type="button" class="btn btn-primary" *ngIf="!disable" (click)="addversion()" translate>Add New</button>
+              <button type="button" class="btn btn-primary" *ngIf="!disable && curentversion && !serviceService.itcanntupdate" (click)="addversion()" translate>Add New</button>
             </th>
             <th *ngIf="isnews"></th>
           </tr>
@@ -201,9 +213,9 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" [disabled]="!f.valid" (click)="SaveBase(template);"
-      *ngIf="isnewBase" translate>Save</button>
+      *ngIf="isnewBase && !serviceService.itcanntupdate" translate>Save</button>
       <button type="button" class="btn btn-primary" [disabled]="!f.valid" (click)="EditBase(template)"
-      *ngIf="!isnewBase" translate>Update</button>
+      *ngIf="!isnewBase && !serviceService.itcanntupdate" translate>Update</button>
       <button style="float: right; margin: 5px;" type="button" (click)="displayGIS=false" class="btn btn-danger mb-2" translate>Close</button>
   </div>
 

@@ -50,7 +50,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   urlParams: any;
   PropertyTypeLookUP: any;
   CustomerLookUP: any;
-  platformLocation: PlatformLocation;
+  //platformLocation: PlatformLocation;
   geo: any;
   combineArray: [];
   convertedCoordinates: any = [];
@@ -74,6 +74,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   picture_West: any;
   proploceach: any;
   ishavespashal: boolean = false;
+  technicaluser: any;
+  isbuilding: boolean;
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -94,11 +96,11 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   changingValue: Subject<any> = new Subject();
 
   tellChild(aa) {
-    console.log("🚀 ~ PropertyRegisterComponent ~ tellChild ~ aa:", aa);
+    // console.log("🚀 ~ PropertyRegisterComponent ~ tellChild ~ aa:", aa);
     if (aa[0].length > 1) {
       this.convertedCoordinates.push(aa);
       this.geo = this.convertedCoordinates;
-      console.log("value is changingg", this.geo);
+      // console.log("value is changingg", this.geo);
       this.serviceService.check = false;
       this.changingValue.next(aa);
     }
@@ -127,31 +129,25 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     this.pictoShow = null;
     console.log("chang detected");
     if (this.selectedpro !== undefined && this.selectedpro !== null) {
+      this.propertyRegister = new PropertyRegister();
       this.propertyRegister = this.selectedpro;
       this.propertyRegister.plot_ID = this.selectedpro.plot_ID;
       this.propertyRegister.property_Parent_ID =
         this.selectedpro.property_Parent_ID;
-      this.serviceService.insertedProperty = this.selectedpro.property_ID;
-      console.log("selected", this.selectedpro.plot_ID);
+      this.serviceService.insertedProperty = this.selectedpro.property_ID; 
+      this.technicaluser=this.propertyRegister.application_No
+      console.log("selectedddd", this.selectedpro);
       //
       //this.getplotlocbyid(this.propertyRegister.plot_ID);
       this.getproplocbyid(this.propertyRegister.plot_ID);
     }
 
-    if (this.LicenceData !== undefined && this.LicenceData !== null) {
-      if (!this.propertyRegister.property_ID) {
-        this.propertyRegister.property_ID = this.LicenceData.Property_ID;
-        //   if (
-        //     this.propertyRegister.property_Parent_ID != null ||
-        //     this.propertyRegister.property_Parent_ID != 0
-        //   )
-        //     this.propertyRegister.property_Type_ID = 2;
-        // }
-        // else {
-        //   this.propertyRegister.property_Type_ID = 1;
-        // }
-      }
-    }
+    // if (this.LicenceData !== undefined && this.LicenceData !== null) {
+    //   if (!this.propertyRegister.property_ID) {
+    //     this.propertyRegister.property_ID = this.LicenceData.Property_ID;
+      
+    //   }
+    // }
     if (this.propertyRegister.registration_Date) {
       if (this.language != "amharic") {
         this.propertyRegister.registration_Date =
@@ -179,6 +175,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       //this.getproploc(this.propertyRegister.property_ID);
     }
   }
+
 
   ngOnInit() {
     this.routerService.params.subscribe((params) => {
@@ -251,6 +248,179 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       });
   }
   async save() {
+    this.serviceService.getUserRole().subscribe(async (response: any) => {
+      console.log("responseresponseresponse", response, response[0].RoleId);
+      this.propertyRegister.updated_By = response[0].UserId;
+    if (this.serviceService.Licence_Service_ID != this.serviceService.LicenceserviceID){
+      this.serviceService
+      .GetProportyValidationbyURL(this.serviceService.LicenceserviceID)
+      .subscribe(async (message:any) => {
+       
+        if (message.Message == "1" || this.serviceService.Service_ID ==='81F8770B-2C1E-4255-8BE1-341089703FA1'.toLocaleLowerCase() ) {
+            if (this.propertyRegister.property_Parent_ID == 0) {
+              this.serviceService.ishavespashal = true;
+            }
+            if (
+              parseInt(this.propertyRegister.property_Type_ID) == 2 &&
+              parseInt(this.propertyRegister.property_Parent_ID) == 0
+            ) {
+              const toastt = this.notificationsService.warn(
+                "Please note that you cannot add የጋራ መኖርያ ቤቶች/Appartments/Condominiums without first adding a parent building. Kindly ensure that you add the building details before proceeding with adding the apartments"
+              );
+              return;
+            }
+            if (this.serviceService.isproportinal == true) {
+              let totalsize =
+                parseInt(this.propertyRegister.building_Size_M2) +
+                // parseInt(this.propertyRegister.proportional_from_Compound_Size) +
+                // parseInt(this.propertyRegister.parking_Area_M2) +
+                parseInt(this.propertyRegister.size_In_Proportional);
+              console.log("totalsize", totalsize);
+        
+              this.serviceService
+                .getPropertyLists(this.propertyRegister.plot_ID)
+                .subscribe(async (PropertyList: any) => {
+                  let propertylst = PropertyList.procProperty_Registrations;
+                  console.log("propertylst", propertylst);
+                  if (propertylst.length > 0) {
+                    propertylst.forEach((element) => {
+                      if (element.property_ID != "No Parent") {
+                        if (element.property_ID != this.propertyRegister.property_ID) {
+                          let totalsize =
+                            parseInt(element.building_Size_M2) +
+                            // parseInt(element.proportional_from_Compound_Size) +
+                            // parseInt(element.parking_Area_M2) +
+                            parseInt(element.size_In_Proportional);
+                          this.totlaizeproportinal += totalsize;
+                        }
+                      }
+                    });
+                    this.totlaizeproportinal =
+                      parseInt(this.serviceService.Plot_Size_M2) -
+                      this.totlaizeproportinal;
+                  } else {
+                    this.totlaizeproportinal = parseInt(
+                      this.serviceService.Plot_Size_M2
+                    );
+                  }
+        
+                  console.log(
+                    "this.totlaizeproportinal",
+                    this.totlaizeproportinal,
+                    this.serviceService.Plot_Size_M2
+                  );
+                  if (this.totlaizeproportinal < totalsize) {
+                    const toast = this.notificationsService.error(
+                      "error",
+                      "total Compound Size remain is" + this.totlaizeproportinal + "M2"
+                    );
+        
+                    return;
+                  } else {
+                    const prop = { ...this.propertyRegister };
+        
+                    // Exclude the 'parent' property
+                    if ("parent" in prop) {
+                      delete prop.parent;
+                    }
+                    if (prop.children) {
+                      prop.children = null;
+                    }
+                    if (prop.parent) {
+                      if (prop.parent.children) {
+                        prop.parent.children = null;
+                      }
+                    }
+                    if (prop.property_Parent_ID == "No Parent") {
+                      prop.property_Parent_ID = "0";
+                    }
+                    if (this.language == "amharic") {
+                      prop.registration_Date = await this.getEthiopianToGregorian(
+                        prop.registration_Date
+                      );
+                    }
+                    console.log("saveing....", prop);
+                    this.propertyRegisterService.save(prop).subscribe(
+                      (property) => {
+                        console.log("property", property);
+                        this.getPropertyList(prop.plot_ID);
+                        if (!this.Saved) {
+                          this.completed.emit(prop);
+                          this.Saved = true;
+                        }
+                        this.serviceService.frompropertyUpdate = true;
+        
+                        const toast =
+                          this.notificationsService.success("Sucess updated");
+                      },
+                      (error) => {
+                        console.log(error);
+        
+                        const toast = this.notificationsService.error(
+                          "Error",
+                          error.error
+                        );
+                      }
+                    );
+                    console.log("saveing....");
+                  }
+                });
+            } else {
+              const prop = { ...this.propertyRegister };
+        
+              // Exclude the 'parent' property
+              if ("parent" in prop) {
+                delete prop.parent;
+              }
+              if (prop.children) {
+                prop.children = null;
+              }
+              if (prop.parent) {
+                if (prop.parent.children) {
+                  prop.parent.children = null;
+                }
+              }
+              if (prop.property_Parent_ID == "No Parent") {
+                prop.property_Parent_ID = "0";
+              }
+              if (this.language == "amharic") {
+                prop.registration_Date = await this.getEthiopianToGregorian(
+                  prop.registration_Date
+                );
+              }
+              console.log("saveing....", prop);
+              this.propertyRegisterService.save(prop).subscribe(
+                (property) => {
+                  console.log("property", property);
+                  //this.getPropertyList(prop.plot_ID);
+                  if (!this.Saved) {
+                    this.completed.emit(prop);
+                    this.Saved = true;
+                  }
+                  this.serviceService.frompropertyUpdate = true;
+        
+                  const toast = this.notificationsService.success("Sucess updated");
+                },
+                (error) => {
+                  console.log(error);
+        
+                  const toast = this.notificationsService.error("Error", error.error);
+                }
+              );
+              console.log("saveing....");
+            }
+            
+          
+        } else {
+          const toast = this.notificationsService.error("Error", message.Message);
+        }
+        return
+      });
+     
+     
+    }else{
+
+    
     if (this.propertyRegister.property_Parent_ID == 0) {
       this.serviceService.ishavespashal = true;
     }
@@ -403,6 +573,9 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       );
       console.log("saveing....");
     }
+    
+  }
+})
   }
   modalRef: BsModalRef;
   openModall(template: TemplateRef<any>) {
@@ -417,8 +590,12 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       "🚀 ~ file: property-register.component.ts:358 ~ onOptionsSelected ~ e:",
       e
     );
-    if (e == 2 || e == 3) {
+    if (e == 2  || e ==1016) {
       this.isbuildingApartama = true;
+      this.isbuilding=true
+    }else if(e == 3){
+      this.isbuilding=true
+      this.isbuildingApartama = false;
     } else {
       this.isbuildingApartama = false;
     }
@@ -443,26 +620,26 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       this.serviceService.isagriculture = false;
     }
   }
-  getplotlocbyid(Plot_ID) {
-    this.serviceService.getPlotloc(Plot_ID).subscribe((response: any) => {
-      this.plotloc = response.procPlot_Locations;
-      if (this.plotloc.length > 0) {
-        this.platformLocation = this.plotloc[0];
-        console.log(this.plotloc[0]);
+  // getplotlocbyid(Plot_ID) {
+  //   this.serviceService.getPlotloc(Plot_ID).subscribe((response: any) => {
+  //     this.plotloc = response.procPlot_Locations;
+  //     if (this.plotloc.length > 0) {
+  //       this.platformLocation = this.plotloc[0];
+  //       console.log(this.plotloc[0]);
 
-        this.convertPolygonCoordinates(
-          this.plotloc[0].geowithzone,
-          this.plotloc[0]
-        );
-        this.serviceService.fromPropoperty = true;
-        console.log("plotloc:", this.plotloc, this.plotloc[0].geowithzone);
-        //this.isplotllocnew = true;
-      } else {
-        this.platformLocation = new PlatformLocation();
-        //this.isplotllocnew = false;
-      }
-    });
-  }
+  //       this.convertPolygonCoordinates(
+  //         this.plotloc[0].geowithzone,
+  //         this.plotloc[0]
+  //       );
+  //       this.serviceService.fromPropoperty = true;
+  //       console.log("plotloc:", this.plotloc, this.plotloc[0].geowithzone);
+  //       //this.isplotllocnew = true;
+  //     } else {
+  //       this.platformLocation = new PlatformLocation();
+  //       //this.isplotllocnew = false;
+  //     }
+  //   });
+  // }
   // convertPolygonCoordinates(polygonString: string): any[] {
   //   const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
 
@@ -689,11 +866,10 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   }
 
   async add() {
-    console.log(
-      "🚀 ~ add ~ property_Type_ID:",
-      this.propertyRegister.property_Type_ID,
-      this.propertyRegister.property_Parent_ID
-    );
+    this.serviceService.getUserRole().subscribe(async (response: any) => {
+      console.log("responseresponseresponse", response, response[0].RoleId);
+      this.propertyRegister.created_By = response[0].UserId;
+  
     if (
       parseInt(this.propertyRegister.property_Type_ID) == 2 &&
       this.propertyRegister.property_Parent_ID == "No Parent"
@@ -889,6 +1065,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         console.log("saveing....");
       }
     }
+  })
   }
   getcurrentlocationdata() {
     this.serviceService
@@ -1029,17 +1206,13 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
                         console.log("🚀 ~ this.proploc.forEach ~ each:", each);
                         this.convertPolygonCoordinates(each, element);
                       });
-                      // this.convertPolygonCoordinates(
-                      //   elementeach.geowithzone,
-                      //   element
-                      // );
+                      
                     }
                   });
                 } else {
                   if (element.property_ID == this.selectedpro.property_ID) {
                     console.log("this.propformLocationcurrent", element);
                     this.propformLocation = new PropformLocation();
-
                     this.serviceService.ispropoertylocation = false;
                     this.isproplocnew = false;
                   }
@@ -1054,7 +1227,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     const polygons = polygonsString
       .split("),")
       .map((polygon) => `${polygon.trim()})`);
-    console.log("🚀 ~ parsePolygons ~ polygons:", polygons);
+    //console.log("🚀 ~ parsePolygons ~ polygons:", polygons);
     return polygons;
   }
   // convertToMultiPoint(
@@ -1207,13 +1380,13 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   //   return result;
   // }
   convertPolygonCoordinates(polygonString: string, data): any[] {
-    console.log(
-      "🚀 ~ convertPolygonCoordinates ~ polygonString:",
-      polygonString
-    );
+    // console.log(
+    //   "🚀 ~ convertPolygonCoordinates ~ polygonString:",
+    //   polygonString
+    // );
 
     const coordinates = polygonString.match(/([\d.]+\s[\d.]+\s\w\s\d+)/g);
-    console.log("🚀 ~ convertPolygonCoordinates ~ coordinates:", coordinates);
+   // console.log("🚀 ~ convertPolygonCoordinates ~ coordinates:", coordinates);
 
     const result = [];
 
@@ -1286,16 +1459,23 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     // convertedCoordinates.push(proparray);
     // Push the innerArray into arrayOfArrays
     arrayOfArrays.push(convertedCoordinates);
-    console.log("convertedCconvertedCoordinatesoordinates", arrayOfArrays);
+    //console.log("convertedCconvertedCoordinatesoordinates", arrayOfArrays);
     this.tellChild(arrayOfArrays);
   }
 
   updateproploc() {
-    console.log(
-      "coordinatcoordinat",
-      this.serviceService.coordinate,
-      this.selectedpro.property_ID
-    );
+    if (this.serviceService.Licence_Service_ID != this.serviceService.LicenceserviceID){
+      const toast = this.notificationsService.error(
+        "Error",
+        "this property created by other technical officer so you can't update it /ይህ ቤት በሌላ ቴክኒካል ኦፊሰር የተፈጠረ ስለሆነ ማዘመን አይችሉም"
+      );
+      return
+    }
+    // console.log(
+    //   "coordinatcoordinat",
+    //   this.serviceService.coordinate,
+    //   this.selectedpro.property_ID
+    // );
     if (this.serviceService.coordinate) {
       let coordinate = this.convertToMultiPointgeozone(
         this.serviceService.coordinate
@@ -1385,7 +1565,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
           this.serviceService.insertedProperty;
         this.propformLocation.created_By = response[0].RoleId;
         this.propformLocation.created_By = response[0].RoleId;
-        this.propformLocation.created_Date = new Date();
+        //this.propformLocation.created_Date = new Date();
         console.log(
           "🚀 ~ this.serviceService.getUserRole ~ propformLocation:",
           this.propformLocation

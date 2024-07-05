@@ -12,7 +12,8 @@ export class LeaseOwnerShipService {
   private learseownerURLDelete =
     environment.rootPath + "Lease_and_Owned_Land/Delete"; // URL to web api
   Plot_ID: string;
-
+  private learseownerURLapi =
+  environment.rootPathApi + "Lease_and_Owned_Land/procLease_and_Owned_Land"; // URL to web api
   constructor(private http: HttpClient) {
   }
 
@@ -31,5 +32,18 @@ export class LeaseOwnerShipService {
 
   Add(data) {
     return (this.http.post<any[]>(this.learseownerURLAdd, data));
+  }
+
+  getAllapi(plotID) {
+    return (this.http.get<any[]>(this.learseownerURLapi + '/plot_id/' + plotID ));
+  }
+
+
+  saveapi(data) {
+    return (this.http.put<any[]>(this.learseownerURLapi, data));
+  }
+
+  Addapi(data) {
+    return (this.http.post<any[]>(this.learseownerURLapi, data));
   }
 }

@@ -12,7 +12,7 @@
         <div class="form-group row col-md-6">
           <label for="Type" class="col-sm-3 col-form-label" translate>Type</label>
           <div class="col-sm-9">
-            <select class="form-select" [disabled]="disable" #mySelect [(ngModel)]="serviceService.leaseOwnerShip.Type_ID" name="Type"
+            <select class="form-select" [disabled]="disable" #mySelect [(ngModel)]="serviceService.leaseOwnerShip.type_ID" name="Type"
               id="Type" #Type="ngModel" [ngClass]="{ 'is-invalid': Type.invalid }" (change)='onOptionsSelected(mySelect.value)'
               required>
               <option disabled translate>select</option>
@@ -26,7 +26,7 @@
       <label for="FreeHold" class="col-sm-3 col-form-label" translate>Free Hold</label>
       <div class="col-sm-9">
 
-        <input type="text" class="form-control" [disabled]="disable"  [(ngModel)]="serviceService.leaseOwnerShip.Free_Hold_M2"
+        <input type="text" class="form-control" [disabled]="disable"  [(ngModel)]="serviceService.leaseOwnerShip.free_Hold_M2"
           name="FreeHold" id="FreeHold" [placeholder]="'Free Hold' | translate" #FreeHold="ngModel"
           [ngClass]="{ 'is-invalid': FreeHold.invalid }"  appNumberOnly required readonly>
           <span *ngIf="FreeHold.invalid " style="color: red;">accept only numbers and float numbers</span>
@@ -37,7 +37,7 @@
     <div class="form-group row col-md-6">
       <label for="Status" class="col-sm-3 col-form-label" translate>Status</label>
       <div class="col-sm-9">
-        <select class="form-select"  [disabled]="disable" [(ngModel)]="serviceService.leaseOwnerShip.Status" name="Status" id="Status"
+        <select class="form-select"  [disabled]="disable" [(ngModel)]="serviceService.leaseOwnerShip.status" name="Status" id="Status"
           #Status="ngModel" [ngClass]="{ 'is-invalid': Status.invalid }" required>
           <option disabled translate>select</option>
           <option *ngFor="let Status of serviceComponent.Lease_Stuts_Lookup;" [value]="Status.ID">{{Status.Status}}
@@ -48,7 +48,7 @@
     <div class="form-group row col-md-6">
       <label for="SubCity" class="col-sm-3 col-form-label" translate>SubCity</label>
       <div class="col-sm-9">
-        <select class="form-select"  [disabled]="disable" [(ngModel)]="serviceService.leaseOwnerShip.SDP_ID" name="SubCity"
+        <select class="form-select"  [disabled]="disable" [(ngModel)]="serviceService.leaseOwnerShip.sdP_ID" name="SubCity"
           id="SubCity" #SubCity="ngModel" [ngClass]="{ 'is-invalid': SubCity.invalid }" (change)="addLease" disabled>
           <option disabled translate>select</option>
           <option  *ngFor="let SubCity of serviceComponent.ServiceDeliveryUnitLookUP;"
@@ -60,7 +60,7 @@
     <div class="form-group row col-md-6">
       <label for="LandHold" class="col-sm-3 col-form-label" translate>lease hold area</label>
       <div class="col-sm-9">
-    <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="serviceService.leaseOwnerShip.Lease_Hold_M2" name="LandHold"
+    <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="serviceService.leaseOwnerShip.lease_Hold_M2" name="LandHold"
       id="LandHold" [placeholder]="'lease hold area' | translate" #LandHold="ngModel"
       [ngClass]="{ 'is-invalid': LandHold.invalid }" appNumberOnly required  readonly>
        <span *ngIf="LandHold.invalid " style="color: red;">accept only numbers and float numbers</span>
@@ -69,21 +69,21 @@
     <div class="form-group row col-md-6" *ngIf="islease">
       <label for="LeaseContractNo" class="col-sm-3 col-form-label" translate>Lease Contract No</label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="serviceService.leaseOwnerShip.Lease_No"
+        <input type="text" class="form-control" [disabled]="disable" [(ngModel)]="serviceService.leaseOwnerShip.lease_No"
           name="LeaseContractNo" id="LeaseContractNo" [placeholder]="'Lease Contract No' | translate" readonly>
       </div>
     </div>
     <div class="form-group row col-md-6">
       <label for="Customer" class="col-sm-3 col-form-label" translate>Customer</label>
       <div class="col-sm-7">
-        <!-- <select disabled class="form-control" [(ngModel)]="serviceService.leaseOwnerShip.Customer_ID" name="Customert" id="Customert">
+        <!-- <select disabled class="form-control" [(ngModel)]="serviceService.leaseOwnerShip.customer_ID" name="Customert" id="Customert">
           <option disabled translate>select</option>
           <option *ngFor="let Customer of customerdata;" [value]="Customer.Customer_ID">
             {{language === 'amharic' ? Customer.applicant_First_Name_AM  + '  '+ Customer.applicant_Middle_Name_AM  + ' '+ Customer.applicant_Last_Name_AM : Customer.applicant_First_Name_EN  + '  '+ Customer.applicant_Middle_Name_En  + ' '+ Customer.applicant_Last_Name_EN}}
           </option>
         </select> -->
         <input type="text" disabled class="form-control"  [(ngModel)]="Customer_NAME" name="Customer_NAME">
-        <input type="text" [hidden]="true" class="form-control" #Customert="ngModel" [(ngModel)]="serviceService.leaseOwnerShip.Customer_ID"
+        <input type="text" [hidden]="true" class="form-control" #Customert="ngModel" [(ngModel)]="serviceService.leaseOwnerShip.customer_ID"
           name="Photo" id="NumberOfLift" [placeholder]="'Number of Lift' | translate" required>
         <div *ngIf="Customert.invalid">
           <span class="text-danger" translate>REQUIRED</span>
@@ -98,7 +98,7 @@
     <div class="form-group row col-md-6" *ngIf="islease">
       <label for="LeasePrice" class="col-sm-3 col-form-label" translate>Lease Price</label>
       <div class="col-sm-9">
-        <input type="number" class="form-control" [disabled]="disable" [(ngModel)]="serviceService.leaseOwnerShip.Lease_Price"
+        <input type="number" class="form-control" [disabled]="disable" [(ngModel)]="serviceService.leaseOwnerShip.lease_Price"
           #LeasePrice="ngModel" name="LeasePrice" id="LeasePrice" [placeholder]="'Lease Price' | translate"
           [ngClass]="{ 'is-invalid': LeasePrice.invalid }" min="0">
       </div>
@@ -109,7 +109,7 @@
       <label for="Total_lease_amount_to_be_paid" class="col-sm-3 col-form-label" translate>Total lease amount to be paid</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [disabled]="disable"
-          [(ngModel)]="serviceService.leaseOwnerShip.Total_lease_amount_to_be_paid" #Total_lease_amount_to_be_paid="ngModel"
+          [(ngModel)]="serviceService.leaseOwnerShip.total_lease_amount_to_be_paid" #Total_lease_amount_to_be_paid="ngModel"
           name="Total_lease_amount_to_be_paid" id="Total_lease_amount_to_be_paid"
           [placeholder]="'Total lease amount to be paid' | translate"
           [ngClass]="{ 'is-invalid': Total_lease_amount_to_be_paid.invalid }" min="0">
@@ -119,7 +119,7 @@
       <label for="Current_lease_bid_price" class="col-sm-3 col-form-label" translate>Current lease bid price</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [disabled]="disable"
-          [(ngModel)]="serviceService.leaseOwnerShip.Current_lease_bid_price" #Current_lease_bid_price="ngModel"
+          [(ngModel)]="serviceService.leaseOwnerShip.current_lease_bid_price" #Current_lease_bid_price="ngModel"
           name="Current_lease_bid_price" id="Current_lease_bid_price"
           [placeholder]="'Current lease bid price' | translate"
           [ngClass]="{ 'is-invalid': Current_lease_bid_price.invalid }" min="0" >
@@ -129,7 +129,7 @@
       <label for="Remaining_lease_payment" class="col-sm-3 col-form-label" translate>Remaining lease payment</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [disabled]="disable"
-          [(ngModel)]="serviceService.leaseOwnerShip.Remaining_lease_payment" #Remaining_lease_payment="ngModel"
+          [(ngModel)]="serviceService.leaseOwnerShip.remaining_lease_payment" #Remaining_lease_payment="ngModel"
           name="Remaining_lease_payment" id="Remaining_lease_payment"
           [placeholder]="'Current lease bid price' | translate"
           [ngClass]="{ 'is-invalid': Remaining_lease_payment.invalid }" min="0" >
@@ -140,7 +140,7 @@
       <label for="LeasePrice" class="col-sm-3 col-form-label" translate>Amount of down payment</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [disabled]="disable"
-          [(ngModel)]="serviceService.leaseOwnerShip.Amount_of_down_payment" #Amount_of_down_payment="ngModel" name="LeasePrice"
+          [(ngModel)]="serviceService.leaseOwnerShip.amount_of_down_payment" #Amount_of_down_payment="ngModel" name="LeasePrice"
           id="Amount_of_down_payment" [placeholder]="'Amount of down payment' | translate"
           [ngClass]="{ 'is-invalid': Amount_of_down_payment.invalid }" min="0">
       </div>
@@ -149,7 +149,7 @@
       <label for="LeasePrice" class="col-sm-3 col-form-label" translate>Amount of the annual lease payment</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" [disabled]="disable"
-          [(ngModel)]="serviceService.leaseOwnerShip.Amount_of_the_annual_lease_payment" #Amount_of_the_annual_lease_payment="ngModel"
+          [(ngModel)]="serviceService.leaseOwnerShip.amount_of_the_annual_lease_payment" #Amount_of_the_annual_lease_payment="ngModel"
           name="LeasePrice" id="Amount_of_the_annual_lease_payment"
           [placeholder]="'Amount of the annual lease payment' | translate"
           [ngClass]="{ 'is-invalid': Amount_of_the_annual_lease_payment.invalid }" min="0">
@@ -158,7 +158,7 @@
     <div class="form-group row col-md-6" *ngIf="islease">
       <label for="LeasePrice" class="col-sm-3 col-form-label" translate>Lease period in Year</label>
       <div class="col-sm-9">
-        <input type="number" class="form-control" [disabled]="disable" [(ngModel)]="serviceService.leaseOwnerShip.Lease_period_in_Year"
+        <input type="number" class="form-control" [disabled]="disable" [(ngModel)]="serviceService.leaseOwnerShip.lease_period_in_Year"
           #Lease_period_in_Year="ngModel" name="Lease_period_in_Year" id="Lease_period_in_Year"
           [placeholder]="'Lease period in Year' | translate" [ngClass]="{ 'is-invalid': Lease_period_in_Year.invalid }"
           min="0">
@@ -168,7 +168,7 @@
       <label for="Date_of_final_lease_payment" class="col-sm-3 col-form-label" translate>Date of final lease payment</label>
       <div class="col-sm-9">
         <input type="date" class="form-control" [disabled]="disable"
-          [(ngModel)]="serviceService.leaseOwnerShip.Date_of_final_lease_payment" #Date_of_final_lease_payment="ngModel"
+          [(ngModel)]="serviceService.leaseOwnerShip.date_of_final_lease_payment" #Date_of_final_lease_payment="ngModel"
           name="Date_of_final_lease_payment" id="Date_of_final_lease_payment"
           [placeholder]="'Date of final lease payment' | translate"
           [ngClass]="{ 'is-invalid': Date_of_final_lease_payment.invalid }" >
@@ -177,7 +177,7 @@
       <label for="Date_of_final_lease_payment" class="col-sm-3 col-form-label" translate>Date of final lease payment</label>
       <div class="col-sm-9">
         <input type="text" class="form-control" readonly [disabled]="disable"
-          [(ngModel)]="serviceService.leaseOwnerShip.Date_of_final_lease_payment" #Date_of_final_lease_payment="ngModel"
+          [(ngModel)]="serviceService.leaseOwnerShip.date_of_final_lease_payment" #Date_of_final_lease_payment="ngModel"
           name="Date_of_final_lease_payment" id="Date_of_final_lease_payment"
           [placeholder]="'Date of final lease payment' | translate"
           [ngClass]="{ 'is-invalid': Date_of_final_lease_payment.invalid }" appDatepickerEthiopian
@@ -187,18 +187,30 @@
 
 
   </div>
-  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!addnew && !disable" (click)="confirmupdate()" translate>Update</button>
+  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!addnew && !disable && !serviceService.itcanntupdate" (click)="confirmupdate()" translate>Update</button>
 
   <!-- <button type="button" class="btn btn-primary" 
     (click)="Refresh()" translate>Refresh size</button> -->
   <!-- <button type="button" class="btn btn-danger ml-3" [disabled]="!f.valid" *ngIf="!addnew && !disable" (click)="Delete()"
     translate>Delete
   </button> -->
-  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="addnew && !disable" (click)="confirmsave()"
+  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="addnew && !disable && !serviceService.itcanntupdate" (click)="confirmsave()"
     translate>Save</button>
 </form>
 
-<p-table [value]="tasks" [paginator]="true" [rows]="5">
+<p-table  #lease_table [value]="tasks" [paginator]="true" [rows]="5" [globalFilterFields]="['lease_No']">
+  <ng-template pTemplate="caption">
+    <div class="flex">
+      <span class="p-input-icon-left ml-auto">
+        <div style="width: 40%;">
+          <i class="pi pi-search"></i>
+          <input class="form-control" (input)="lease_table.filterGlobal($event.target.value, 'contains')"
+            placeholder="Search by lease No " />
+
+        </div>
+      </span>
+    </div>
+  </ng-template>
   <ng-template pTemplate="header">
     <tr>
       <!-- <th scope="col" translate>Lease ID</th> -->
@@ -209,7 +221,7 @@
       <!--<th scope="col" translate>free hold</th>-->
       <th scope="col" translate>lease hold area</th>
       <th scope="col">
-        <button type="button" class="btn btn-primary" (click)="addLease()" *ngIf="!disable && multipleplotcanbeadd" translate>Add New</button>
+        <button type="button" class="btn btn-primary" (click)="addLease()" *ngIf="!disable && !serviceService.itcanntupdate" translate>Add New</button>
       </th>
     </tr>
   </ng-template>
@@ -217,9 +229,9 @@
   <tr (click)='highlighted = rowData;' class="some-class" tabindex="1"  [class.ui-state-highlight]="rowData === highlighted">
     
       <!-- <td>{{lease.ID}}</td> -->
-      <td>{{lease.Plot_ID}}</td>
+      <td>{{lease.plot_ID}}</td>
       <td>
-      <select class="form-select" disabled #Typeselect [(ngModel)]="lease.Type_ID"
+      <select class="form-select" disabled  [(ngModel)]="lease.type_ID"
         name="Typeselect" id="Typeselect" #Typeselect="ngModel"
         >
         <option disabled translate>select</option>
@@ -228,15 +240,15 @@
         </option>
       </select>
       </td>
-      <td>{{lease.Lease_No}}</td>
-      <td><select class="form-select" disabled [(ngModel)]="lease.Status" name="Status"
+      <td>{{lease.lease_No}}</td>
+      <td><select class="form-select" disabled [(ngModel)]="lease.status" name="Status"
         id="Status">
     
         <option *ngFor="let Status of serviceComponent.Lease_Stuts_Lookup;" [value]="Status.ID">{{Status.Status}}
         </option>
       </select></td>
      <!--<td>{{lease.Free_Hold_M2}}</td>--> 
-      <td>{{lease.Lease_Hold_M2}}</td>
+      <td>{{lease.lease_Hold_M2}}</td>
       <td>
         <button type="button"  class="btn btn-primary" (click)="selectLease(lease)" translate>Edit</button>
       </td>

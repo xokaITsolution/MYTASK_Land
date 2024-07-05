@@ -124,6 +124,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
       this.plotManagment.parcel_No = this.SelectedPlot.Application_No;
       this.plotManagment.plot_Status = 1;
       //this.getplotloc(this.plotManagment.plot_ID);
+      this.serviceService.currentsdpid=this.plotManagment.sdP_ID
       this.regionSelectedd(this.plotManagment.sdP_ID);
     }
 
@@ -500,6 +501,8 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   }
 
   async save() {
+    
+ 
     this.plotManagment.plot_ID = JSON.stringify(this.plotManagment.plot_ID);
     this.platformLocation.ploteId = this.plotManagment.plot_ID;
     if (this.language === "amharic") {
@@ -510,7 +513,10 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
     this.plotManagment.registration_Date = await this.getEthiopianToGregorian(
       this.plotManagment.registration_Date
     );
-
+    this.serviceService.getUserRole().subscribe((response: any) => {
+      console.log("responseresponseresponse", response, response[0].RoleId);
+      this.plotManagment.updated_By = response[0].UserId;
+      this.plotManagment.updated_Date = new Date();
     this.ploatManagmentService.save(this.plotManagment).subscribe(
       (deptSuspension) => {
         console.log("deptSuspension", deptSuspension);
@@ -537,8 +543,8 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
           );
         }
       }
-    );
-    console.log("saveing....");
+    );})
+   // console.log("saveing....");
   }
   filter(e) {
     if (e.target.value) {
@@ -776,6 +782,16 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   }
 
   async Delete() {
+    console.log("🚀 ~ PlotManagmentComponent ~ save ~ Licence_Service_ID:", this.serviceService.LicenceserviceID,
+    this.serviceService.Licence_Service_ID
+    )
+    if (this.serviceService.Licence_Service_ID != this.serviceService.LicenceserviceID){
+      const toast = this.notificationsService.error(
+        "Error",
+        "this plot created by other technical officer so you can't update it /ይህ ፕሎት በሌላ ቴክኒካል ኦፊሰር የተፈጠረ ስለሆነ ማዘመን አይችሉም"
+      );
+      return
+    }
     console.log("this.plotManagment", this.plotManagment);
 
     if (this.language === "amharic") {
@@ -842,6 +858,10 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         this.plotManagment.registration_Date
       );
     }
+    this.serviceService.getUserRole().subscribe((response: any) => {
+      console.log("responseresponseresponse", response, response[0].RoleId);
+      this.plotManagment.created_By = response[0].UserId;
+      this.plotManagment.created_Date = new Date();
     this.ploatManagmentService.Add(this.plotManagment).subscribe(
       async (deptSuspension) => {
         console.log("deptSuspension", deptSuspension);
@@ -904,7 +924,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
         }
       }
     );
-
+  })
     console.log("saving....");
   }
   getCookies() {
@@ -1051,7 +1071,11 @@ export class PlotManagment {
   public application_No;
   public iS1988: any;
   public iS1997: any;
-  public iS2023: any;
+  public iS2023: any; 
+  public created_Date 
+  public updated_Date
+  public updated_By 
+  public created_By
 }
 export class PlatformLocation {
   public ploteId: any;

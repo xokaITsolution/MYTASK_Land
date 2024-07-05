@@ -16,6 +16,7 @@ import { ServiceService } from "../service.service";
 import { environment } from "src/environments/environment";
 import { ActivatedRoute } from "@angular/router";
 import { BsModalRef, BsModalService } from "ngx-bootstrap";
+import { format } from "util";
 
 @Component({
   selector: "app-title-deed-registration",
@@ -194,7 +195,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
       e
     );
 
-    if (e == 2014 || e == 2044 || e == 2015) {
+    if (e == 2014 || e == 2044 || e == 2015 || e== 2048 || e==2050) {
       this.Isshow = true;
     } else {
       this.Isshow = false;
@@ -253,12 +254,43 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
       return datenow.nowTime;
     }
   }
+  async getcurrentdate() {
+    const currentDate = new Date();
+    const currentDatestring = currentDate.toISOString();
+    console.log("currentDate", currentDatestring);
+    let ed = await this.getgregorianToEthiopianDate(currentDatestring);
+    let feedbackDate = await this.getEthiopianToGregorian(
+      ed
+    );
+    this.titleDeedRegistration.updated_Date=feedbackDate
+  }
   async save() {
+   let date = await this.getcurrentdate()
+  //   if ( 
+  //   this.serviceService.errorservices != 'DE4937D8-BDCD-46D6-8749-DC31C9F3ADCF'.toLocaleLowerCase()){
+  //   console.log("🚀 ~ TitleDeedRegistrationComponent ~ this.serviceService.errorservices!='DE4937D8-BDCD-46D6-8749-DC31C9F3ADCF'.toLocaleLowerCase ~ errorservices:", this.serviceService.errorservices)
+
+    
+  //   if (this.serviceService.Licence_Service_ID != this.serviceService.LicenceserviceID 
+      
+  //   ){
+  //     const toast = this.notificationsService.error(
+  //       "Error",
+  //       "this property created by other technical officer so you can't update it /ይህ ቤት በሌላ ቴክኒካል ኦፊሰር የተፈጠረ ስለሆነ ማዘመን አይችሉም"
+  //     );
+  //     return
+  //   }
+  // }
     if (this.language === "amharic") {
       this.titleDeedRegistration.date = await this.getEthiopianToGregorian(
         this.titleDeedRegistration.date
       );
     }
+    this.serviceService.getUserRole().subscribe((response: any) => {
+      console.log("responseresponseresponse", response, response[0].RoleId);
+      this.titleDeedRegistration.updated_By = response[0].UserId;
+      
+   
     this.titleDeedRegistrationService
       .save(this.titleDeedRegistration)
       .subscribe(
@@ -273,7 +305,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
           //   this.completed.emit();
           //   this.Saved = true;
           // }
-          this.adddeed();
+          //.adddeed();
           this.getdeed(this.selectedpro.property_ID);
           //this.serviceService.disablefins = false;
         },
@@ -286,6 +318,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
         }
       );
     console.log("saveing....");
+    })
   }
 
   async add() {
@@ -303,6 +336,11 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
     this.titleDeedRegistration.application_No = this.AppNo;
     this.titleDeedRegistration.service_ID = this.Service_ID;
     this.titleDeedRegistration.ownership_ID = "-1";
+    this.serviceService.getUserRole().subscribe((response: any) => {
+      console.log("responseresponseresponse", response, response[0].RoleId);
+      this.titleDeedRegistration.created_By = response[0].UserId;
+     // this.titleDeedRegistration.created_Date = new Date();
+     
     this.titleDeedRegistrationService.Add(this.titleDeedRegistration).subscribe(
       (deptSuspension) => {
         console.log("deptSuspension", deptSuspension);
@@ -334,13 +372,14 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
       }
     );
     console.log("saveing....");
+  })
   }
 
   Delete() {
     this.confirmationService.confirm({
       message: "Are you sure u want to delete this title deed?",
       accept: () => {
-        this.titleDeedRegistration.Is_Deleted = true;
+        this.titleDeedRegistration.is_Deleted = true;
         this.titleDeedRegistrationService
           .Delete(this.titleDeedRegistration)
           .subscribe(
@@ -492,9 +531,19 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
       this.serviceService.Service_ID ===
         "86997006-53C7-4BBD-9F56-E79721B4561E".toLocaleLowerCase()
     ) {
-      this.titleDeedRegistration.transfer_From_Customer = customer.customer_ID;
-      console.log("closeing.....");
-      this.Transfer_From_CustomerName = customer.applicant_First_Name_AM;
+      
+      if (this.serviceService.Service_ID ===
+        "86997006-53C7-4BBD-9F56-E79721B4561E".toLocaleLowerCase() && this.serviceService.salesFrominformat == true
+      && customer.customer_ID =='00000000-0000-0000-0000-000000000000'){
+        const toast = this.notificationsService.warn(
+          "warn",
+          "this title deed sale after new format change you have to select the exists customer with account"
+        );
+        }else{
+          this.titleDeedRegistration.transfer_From_Customer = customer.customer_ID;
+          console.log("closeing.....");
+          this.Transfer_From_CustomerName = customer.applicant_First_Name_AM;
+        }
     } else {
       if (
         this.titleDeedRegistration.transfer_To_Customer == customer.customer_ID
@@ -560,6 +609,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
     console.log(globvar);
     this.serviceService.getcustomerlease(globvar).subscribe((resp: any) => {
       this.customerdata = resp.procCustomers;
+
       if (this.customerdata.length > 0) {
         this.iscustomerdata = false;
       } else {
@@ -609,7 +659,7 @@ export class TitleDeedRegistration {
   public parent_Deed_ID: string;
   public transfer_Type: string;
   public is_Active: true;
-  public Is_Deleted: boolean;
+  public is_Deleted: boolean;
   public ownership_ID;
   public licence_Service_Id;
   public application_No;
@@ -617,5 +667,11 @@ export class TitleDeedRegistration {
   public estimate_Value;
   public transferd_Value;
   public capital_Gain_Value;
-  public pay_Capital_Gain;
+  public pay_Capital_Gain; 
+  public updated_By
+  public created_By
+  public deleted_By
+  public created_Date
+  public updated_Date
+  public deleted_Date
 }

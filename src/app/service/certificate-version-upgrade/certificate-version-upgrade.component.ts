@@ -217,10 +217,12 @@ export class CertificateVersionUpgradeComponent implements OnChanges {
   upload(event) {
     this.Uploader(event.files[0]);
   }
+  
 
   UploaderPartner(File) {
     let base64file;
     const reader = new FileReader();
+    
     reader.readAsDataURL(File);
     reader.addEventListener("loadend", (e) => {
       base64file = reader.result;
@@ -236,7 +238,8 @@ export class CertificateVersionUpgradeComponent implements OnChanges {
   }
 }
 
-class CertificateVersion {
+export class CertificateVersion {
+  [x: string]: any;
   public Application_No: string;
   public Certificate_ID: number;
   public version_ID: number;

@@ -202,6 +202,14 @@
   </div>
 </div>
 <div class="form-group row col-md-7">
+  <label class="col-sm-3 col-form-label" for="Is1997" translate>none of them</label>
+  <div class="col-sm-9">
+
+      <p-checkbox [(ngModel)]="plotManagment.iS2023" (click)="checkRadioButtons('no')"  name="Isno"
+        id="Isno" binary="true"></p-checkbox>
+  </div>
+</div>
+<div class="form-group row col-md-7">
   <!-- <label class="col-sm-3 col-form-label" for="Is2023" translate>Is 2003</label>
   <div class="col-sm-9">
       <p-checkbox [(ngModel)]="plotManagment.iS2023" (click)="checkRadioButtons('2023')" 
@@ -217,12 +225,12 @@
 
 
   </div>
-  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!isnew && !disable" (click)="checkplothavecertificet()"
+  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="!isnew && !disable && !serviceService.itcanntupdate" (click)="checkplothavecertificet()"
     translate>Update</button>
    
   <!-- <button type="button" class="btn btn-danger ml-3" [disabled]="!f.valid" *ngIf="!isnew && !disable" (click)="Delete()"
     translate>Delete</button> -->
-  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="isnew && !disable" (click)="add()"
+  <button type="button" class="btn btn-primary" [disabled]="!f.valid" *ngIf="isnew && !disable && !serviceService.itcanntupdate" (click)="add()"
     translate>Save</button>
 
 </form>

@@ -1,0 +1,32 @@
+<!-- your-component.component.html -->
+
+<div class="container">
+    <div *ngIf="isLoading" class="full-page-spinner">
+      <div class="spinner-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading...</div>
+      </div>
+    </div>
+  
+    <div class="login-form" *ngIf="!isLoading">
+      <h2 class="login-heading">Welcome!</h2>
+      <p class="sub-heading">Please enter the OTP code sent to your phone that registerd on your national ID.<br>እባክዎ በብሄራዊ መታወቂያዎ ላይ በተመዘገበው ስልክዎ የተላከውን የኦቲፒ ኮድ ያስገቡ</p>
+  
+      <form class="otp-form">
+        <div class="otp-inputs">
+          <input class="otp-input" type="text" maxlength="1" (input)="onInput($event, 0)" #digit1>
+          <input class="otp-input" type="text" maxlength="1" (input)="onInput($event, 1)" #digit2>
+          <input class="otp-input" type="text" maxlength="1" (input)="onInput($event, 2)" #digit3>
+          <input class="otp-input" type="text" maxlength="1" (input)="onInput($event, 3)" #digit4>
+          <input class="otp-input" type="text" maxlength="1" (input)="onInput($event, 4)" #digit5>
+          <input class="otp-input" type="text" maxlength="1" (input)="onInput($event, 5)" #digit6>
+        </div>
+   <p *ngIf="showerror" style="color: red;font-weight: bolder;">The OTP you inserted is invalide or expired please insert valid OTP  resend otp<br>ያስገቡት ኦቲፒ ትክክል አደለም
+     ወይም አብቅቷል እባክዎ ኦቲፒዎን በትክክል ያስገቡ ወይም በድጋሚ ይላኩ</p>
+     <p *ngIf="showerror2" style="color: red;font-weight: bolder;">error occured during send OTP your id is not national id or  their is connection problem <br>የእርስዎ መታዎቂያ ብሔራዊ መታወቂያ አይደለም ወይም የግንኙነት ችግር አለ </p>
+        <button class="resend-button" (click)="sendotp()" type="button">Resend OTP</button>
+      </form>
+    </div>
+  </div>
+  <simple-notifications></simple-notifications>
+  

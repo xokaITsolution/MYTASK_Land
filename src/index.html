@@ -12,20 +12,21 @@
     window["_imagepathuploadfile"] = 'http://ct.addisland.gov.et/datepicker/uploader/ic-upload-file.svg'
     window["_imagepathcheckmark"] = 'http://ct.addisland.gov.et/datepicker/uploader/free-check-mark-icon-3280-thumb.png'
     window["_imagepathdeletefile"] = 'http://ct.addisland.gov.et/datepicker/uploader/ic-delete-file.svg'
+    window['rootPathnational'] = 'https://www.addisland.gov.et:444/Addisland/api/';
    
     window["_imagepath"] = '<button type="button" class="trigger">' +
       '<img src="http://ct.addisland.gov.et/datepicker/img/calendar.gif" alt="Popup"></button>';
     window["iconpath"] = '/DesktopModules/MVC/TASK/Views/Item/assets/assets/marker-icon.png'
-    window['rootPath'] = 'http://10.32.141.15/XOKA.eoffice.bpel_land/api/';
-    window["rootPathApi"] = "http://10.32.141.15/Xoka_land_API/api/";
+    window['rootPath'] = 'https://www.addisland.gov.et:444/XOKA.eoffice.bpel_land/api/';
+    window["rootPathApi"] = "https://www.addisland.gov.et:444/Xoka_land_API/api/";
     // window['local_GIS_server'] = 'http://localhost/geojson';
     window['local_GIS_server'] = './assets/geojson';
     // window['wfs_geoserver'] = 'http://192.168.0.150:8080/geoserver/ows';
     // window['wfs_geoserver'] = 'http://localhost:8082/geoserver/ows';
     window['wfs_geoserver'] = 'http://192.168.0.133:8082/geoserver/ows';
-    window["rootPath2"] = "http://10.32.141.15/XOKA.eoffice.bpel_land/api/";
-    window["rootpath2"] = "http://10.32.141.15/XOKA.eoffice.bpel_Land/api/BPEL/";
-    window["rootPath3"] = "http://10.32.141.15/Xoka_land_API/api/";
+    window["rootPath2"] = "https://www.addisland.gov.et:444/XOKA.eoffice.bpel_land/api/";
+    window["rootpath2"] = "https://www.addisland.gov.et:444/XOKA.eoffice.bpel_Land/api/BPEL/";
+    window["rootPath3"] = "https://www.addisland.gov.et:444/Xoka_land_API/api/";
     //console.log("window['_UserName']", window['_UserName']);
     //console.log(window.location.pathname);
     window['groupLayerName'] = "Ormiya_Miniral_WS:Ormiya_Miniral_Group";
@@ -36,19 +37,19 @@
     window['subcity'] = window.location.pathname.split("/")[1]
     window['SubcityName'] = window.location.pathname.split("/")[1] + "_AddisLand"
     const workspace = window.location.pathname.split("/")[1] + '_AddisLand';
-    window['geoserverUrl'] = `http://10.32.141.15:8080/geoserver/${workspace}/wms`;
-    window['geoserverUrlwfs'] = `http://10.32.141.15:8080/geoserver/${workspace}/ows`;
-    window['geoser'] = "http://ct.addisland.gov.et:8080/geoserver";
+    window['geoserverUrl'] = `https://10.32.141.15:8443/geoserver/${workspace}/wms`;
+    window['geoserverUrlwfs'] = `https://10.32.141.15:8443/geoserver/${workspace}/ows`;
+    window['geoser'] = "https://ct.addisland.gov.et:8443/geoserver";
     window["city"] = window.location.pathname.split("/")[1];
     window["locations"] = "http://ct.addisland.gov.et/";
-    window['PaymentReportPath'] = 'http://ct.addisland.gov.et/en-us/Receipt';
-    window['certReportPath'] = 'http://ct.addisland.gov.et/en-us/certificate';
-    window['LetterReportPath'] = 'http://ct.addisland.gov.et/en-us/Letter';
+    window['PaymentReportPath'] = 'https://ct.addisland.gov.et/en-us/Receipt';
+    window['certReportPath'] = 'https://ct.addisland.gov.et/en-us/certificate';
+    window['LetterReportPath'] = 'https://ct.addisland.gov.et/en-us/Letter';
     window["lang"] = window.location.pathname.split("/")[2];
     window['resourcePath'] = "DesktopModules/MVC/xokamytasks/Views/Item/assets/";
     window['phisicalPath'] = '/DesktopModules/MVC/TASK/Views/Item/assets/assets/i18n/';
     window['overlayLayer'] = "Ethiopia - Admin Level 3.json";
-    window['formPath'] = "http://ct.addisland.gov.et/db/";
+    window['formPath'] = "https://www.addisland.gov.et/db/";
     window['Totalareatolerance'] = 0.05;
     window['parentWorkspace'] = "AddisAbaba_AddisLand"
     window['folderpath'] = "http://10.32.141.15/city/subcity/";
@@ -173,15 +174,15 @@
    
   <app-root></app-root>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  <script src="http://ct.addisland.gov.et/datepicker/jquery.calendars.js"></script>
-  <script src="http://ct.addisland.gov.et/datepicker/jquery.calendars.plus.js"></script>
-  <script src="http://ct.addisland.gov.et/datepicker/jquery.plugin.js"></script>
-  <script src="http://ct.addisland.gov.et/datepicker/jquery.calendars.picker.js"></script>
-  <script src="http://ct.addisland.gov.et/datepicker/jquery.calendars-am.js"></script>
-  <script src="http://ct.addisland.gov.et/datepicker/jquery.calendars.ethiopian-am.js"></script>
-  <script src="http://ct.addisland.gov.et/datepicker/jquery.calendars.ethiopian.js"></script>
-  <script src="http://ct.addisland.gov.et/datepicker/jquery.calendars.picker-am.js"></script>
-  <script src="http://ct.addisland.gov.et/datepicker/leaflet-polygon.fillPattern.js"></script>
+  <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.js"></script>
+  <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.plus.js"></script>
+  <script src="https://ct.addisland.gov.et/datepicker/jquery.plugin.js"></script>
+  <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.picker.js"></script>
+  <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars-am.js"></script>
+  <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.ethiopian-am.js"></script>
+  <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.ethiopian.js"></script>
+  <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.picker-am.js"></script>
+  <script src="https://ct.addisland.gov.et/datepicker/leaflet-polygon.fillPattern.js"></script>
  
 </body>
 
@@ -336,7 +337,7 @@
     <script src="http://job.xokait.com.et/datepicker/jquery.calendars.picker-am.js" defer></script>
   </body>
 
-  </html> -->
+  </html>
 
 
 
