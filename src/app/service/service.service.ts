@@ -239,6 +239,7 @@ export class ServiceService {
   disablebutton: boolean = false;
   latLngs: { lat: number; lng: number }[];
   check: boolean;
+  Parcel_ID: any;
   shapes: any;
   hide: boolean = false;
   toMes: boolean;

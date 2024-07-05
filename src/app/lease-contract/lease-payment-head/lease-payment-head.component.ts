@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { NotificationsService } from "angular2-notifications";
 import { MenuItem } from "primeng/api";
 import { EventEmitter } from "@angular/core";
+import { ServiceService } from "src/app/service/service.service";
 import { LeaseContractService } from "../lease-contract.service";
 
 @Component({
@@ -27,6 +28,7 @@ export class LeasePaymentHeadComponent implements OnInit {
 
     private notificationsService: NotificationsService,
     private _service: LeaseContractService,
+    private ServiceService: ServiceService,
     private activatedRoute: ActivatedRoute,
   ) {}
 
@@ -124,11 +126,13 @@ export class LeasePaymentHeadComponent implements OnInit {
     return result;
   }
   getLeasPaymentHeadData(appNo: any) {
-    debugger
+    
     this._service.getDataById(appNo).subscribe(
       (response) => {
- 
-        let data = response.proc_Lease_Payment_Heads[0];
+        // debugger
+        
+        if (response["proc_Lease_Payment_Heads"].length>0){
+          let data = response.proc_Lease_Payment_Heads[0];
         this.leaserPaymentHead.Lease_code = data.lease_code;
         this._service.lease_code=data.lease_code;
         
@@ -160,6 +164,52 @@ export class LeasePaymentHeadComponent implements OnInit {
         this.getProportyUse(this.leaserPaymentHead.Proporty_Use);
         this.getCustomerType(this.leaserPaymentHead.Customer_Type);
         this._service.lease_payment_advance_per=data.lease_payment_advance_per;
+        }
+        else{
+          // debugger
+          this.ServiceService.getPlotManagementApi(this.ServiceService.Parcel_ID).subscribe(
+            async (res: any) => {
+              debugger
+              let appno= res["procPlot_Registrations"][0].application_No 
+              this._service.getDataById(res["procPlot_Registrations"][0].application_No ).subscribe(
+                (response) => {
+                  debugger
+              let data = response.proc_Lease_Payment_Heads[0];
+              this.leaserPaymentHead.Lease_code = data.lease_code;
+              this._service.lease_code=data.lease_code;
+              
+              this.leaserPaymentHead.Application_No = data.application_No;
+              this.leaserPaymentHead.Application_code = data.application_code;
+              this.leaserPaymentHead.Todolis_ID = data.todolis_ID;
+              this.leaserPaymentHead.Lease_Payment_grace_Period =data.lease_Payment_grace_Period;
+                this._service.Lease_Payment_grace_Period =data.lease_Payment_grace_Period;
+                
+              this.leaserPaymentHead.Total_lease_amount_to_be_paid =
+                data.total_lease_amount_to_be_paid;
+              this.leaserPaymentHead.Amount_of_the_annual_lease_payment =
+                data.amount_of_the_annual_lease_payment;
+              this.leaserPaymentHead.Lease_period_in_Year = data.lease_period_in_Year;
+              this.leaserPaymentHead.Date_of_final_lease_pyment =this.format_date(data.date_of_final_lease_payment)
+                
+              this.leaserPaymentHead.Remaining_lease_Payment =
+                data.remaining_lease_payment;
+              this.leaserPaymentHead.Customer_Type = data.customer_Type;
+              this.leaserPaymentHead.Transfer_type = data.transfer_Type;
+              this.leaserPaymentHead.Proporty_Use = data.proporty_Use;
+              this.leaserPaymentHead.Lease_Period_end_date =this.format_date(data.lease_Period_end_date)
+          //  
+              this.leaserPaymentHead.Lease_Payment_Year = data.lease_Payment_Year;
+              this._service.Lease_Payment_Year=data.lease_Payment_Year;
+              this.leaserPaymentHead.Is_Active = data.is_Active;
+              this.leaserPaymentHead.Parent = data.parent;
+              this.getTransferType(this.leaserPaymentHead.Transfer_type);
+              this.getProportyUse(this.leaserPaymentHead.Proporty_Use);
+              this.getCustomerType(this.leaserPaymentHead.Customer_Type);
+              this._service.lease_payment_advance_per=data.lease_payment_advance_per;
+            })
+          })
+        }
+        
       },
       (error) => {
         this.notificationsService.error("Error", "error geting head data");

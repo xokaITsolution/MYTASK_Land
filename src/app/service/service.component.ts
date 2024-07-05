@@ -3462,6 +3462,7 @@ export class ServiceComponent implements OnInit  {
   public getAll(AppNo) {
     this.serviceService.getAll(AppNo).subscribe(
       (res:any) => {
+        
         if (res.list.length > 0) {
         let licenceServiceeach = res.list[0];
     //   console.log("🚀 ~ getAll ~ licenceService:", licenceServiceeach)
@@ -3477,6 +3478,7 @@ export class ServiceComponent implements OnInit  {
           this.serviceService.errorservices=licenceService.Service_ID
           this.serviceService.getPlotManagementApi(licenceService.Parcel_ID).subscribe(
             async (PlotManagementLists: any) => {
+
               let PlotManagementList = PlotManagementLists.procPlot_Registrations;
               if (PlotManagementList.length > 0) {
                  console.log("🚀 ~ PlotManagementList:", PlotManagementList)
@@ -3642,9 +3644,11 @@ export class ServiceComponent implements OnInit  {
         })
 
     }else{
+      
  this.serviceService
       .GetApplicationNumberByUserInfo(AppNo)
       .subscribe((licenceService) => {
+        
         this.custmerInformation = licenceService[0];
         console.log(
           "🚀 ~ .subscribe ~ custmerInformation:",
@@ -3664,7 +3668,7 @@ export class ServiceComponent implements OnInit  {
           this.SDP_ID = this.licenceData.SDP_ID;
           this.serviceService.currentsdpid = this.SDP_ID;
           this.Service_ID = this.licenceData.Service_ID;
-      
+          this.serviceService.Parcel_ID = this.licenceData.Parcel_ID
           this.serviceService.Service_ID = this.licenceData.Service_ID;
           this.serviceService.serviceDP = this.SDP_ID;
           this.Licence_Service_ID = this.licenceData.Licence_Service_ID;
