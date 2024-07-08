@@ -322,7 +322,7 @@ export class PropertyComponent implements OnChanges {
       "🚀 ~ file: property.component.ts:293 ~ PropertyComponent ~ SelectProprty ~ property:",
       property
     );
-
+    this.serviceService.currentsdpid=property.sdP_ID
     this.getleaseOwnerShip(property.plot_ID);
     if (property.type_Of_Use_ID == 2020) {
       //የእርሻ ይዞታ አገልግሎት/For Agriculture
@@ -1533,7 +1533,11 @@ export class PropertyComponent implements OnChanges {
       );
       console.log("propertylocation", blocation);
 
+
+      if (blocation != undefined || blocation != null ) {
+
       if (blocation != undefined || blocation != null) {
+
         if (element.children.length == 0) {
           if (blocation.length === 0) {
             return false;
@@ -1616,6 +1620,8 @@ export class PropertyComponent implements OnChanges {
 
           return true;
         }
+      }else{
+        return true
       }
     }
   }
@@ -1667,4 +1673,3 @@ interface CustomTreeNode extends TreeNode {
   building_No?: string;
   randomColor?: string;
   styleClass?: string;
-}

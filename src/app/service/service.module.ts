@@ -113,8 +113,10 @@ import { NetworkMonitoringService } from "./network-database-monitoring-tool/net
 import { DatabaseMonitoringService } from "./network-database-monitoring-tool/database-monitoring.service";
 import { FilterPipe } from "./FilterPipe";
 
-import {MyLibModule} from 'my-lib';
+
+import {MyLibModule} from 'my-lib'
 import { WithdrawProposeComponent } from './withdraw-propose/withdraw-propose.component'
+
 
 
 @NgModule({

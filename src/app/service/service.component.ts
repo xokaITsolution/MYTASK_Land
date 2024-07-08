@@ -906,6 +906,13 @@ export class ServiceComponent implements OnInit  {
     } else if (this.formcode == "cc71e78d-ef6f-4b93-8d8e-3996f1043fba") {
       this.serviceService.disablefins = false;
       this.ID = 12;
+
+    } 
+    else if (this.formcode == "cc71e78d-ef6f-4b93-8d8e-3996f1043faa") {
+      //this.serviceService.disablefins = false;
+      this.ID = 20;
+    } else {
+
     } else if (this.formcode == "ee892362-98c4-4321-a3fe-40c5a8205a54") {
       // this.serviceService.disablefins = false;
       this.ID = 13;
@@ -933,6 +940,7 @@ export class ServiceComponent implements OnInit  {
       this.ID = 23;
     } 
     else {
+
       this.ID = 0;
 
       if (this.AppNo != undefined || this.AppNo != null) {
@@ -3033,7 +3041,6 @@ export class ServiceComponent implements OnInit  {
     );
   }
   GetApplicationNumberByUser(username, orgcode) {
-    
     this.serviceService.getCustomerByCols(username).subscribe((user: any) => {
       this.userName = user.procCustomers;
       console.log("this.userName", this.userName);
@@ -3058,16 +3065,21 @@ export class ServiceComponent implements OnInit  {
         this.Customer = [];
       }
     });
-    
+
     this.serviceService
     .getLicencebyid(this.serviceService.LicenceserviceID)
     .subscribe(async (rec: any) => {
     console.log("🚀 ~ .subscribe ~ rec:", rec)
+
+    this.serviceService
+      .GetApplicationNumberByUsers(username, orgcode)
+      .subscribe((ApplicationNumber: any) => {
+
     
     this.serviceService
       .GetApplicationNumberByUsers(username, orgcode)
       .subscribe((ApplicationNumber: any) => {
-        
+
         this.ApplicationNumberlist = ApplicationNumber;
         
         let RID;
@@ -3469,7 +3481,7 @@ export class ServiceComponent implements OnInit  {
   public getAll(AppNo) {
     this.serviceService.getAll(AppNo).subscribe(
       (res:any) => {
-        
+
         if (res.list.length > 0) {
         let licenceServiceeach = res.list[0];
     //   console.log("🚀 ~ getAll ~ licenceService:", licenceServiceeach)
@@ -3484,12 +3496,18 @@ export class ServiceComponent implements OnInit  {
           console.log("🚀 ~ getAll ~ licenceService:", licenceService)
           this.serviceService.errorservices=licenceService.Service_ID
           this.serviceService.getPlotManagementApi(licenceService.Parcel_ID).subscribe(
+
+       
+            async (PlotManagementLists: any) => {
             async (PlotManagementLists: any) => {
 
               let PlotManagementList = PlotManagementLists.procPlot_Registrations;
               if (PlotManagementList.length > 0) {
                  console.log("🚀 ~ PlotManagementList:", PlotManagementList)
                  const AppNolist=PlotManagementList[0].application_No
+
+                 this.serviceService.currentsdpid = PlotManagementList[0].sdP_ID;
+
                  this.serviceService.appnoForRecorderror=AppNolist
                  this.serviceService
                  .GetApplicationNumberByUserInfo(AppNolist)
@@ -3511,6 +3529,7 @@ export class ServiceComponent implements OnInit  {
            
                      this.serviceService.licenceData = this.licenceData;
                      this.SDP_ID = this.licenceData.SDP_ID;
+
                      this.serviceService.currentsdpid = this.SDP_ID;
                      this.Service_ID = this.licenceData.Service_ID;
                      this.getServiceDeliveryUnitLookUP();
@@ -3651,7 +3670,7 @@ export class ServiceComponent implements OnInit  {
         })
 
     }else{
-      
+
  this.serviceService
       .GetApplicationNumberByUserInfo(AppNo)
       .subscribe((licenceService) => {
@@ -3675,7 +3694,9 @@ export class ServiceComponent implements OnInit  {
           this.SDP_ID = this.licenceData.SDP_ID;
           this.serviceService.currentsdpid = this.SDP_ID;
           this.Service_ID = this.licenceData.Service_ID;
+
           this.serviceService.Parcel_ID = this.licenceData.Parcel_ID
+
           this.serviceService.Service_ID = this.licenceData.Service_ID;
           this.serviceService.serviceDP = this.SDP_ID;
           this.Licence_Service_ID = this.licenceData.Licence_Service_ID;

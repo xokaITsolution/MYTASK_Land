@@ -1242,6 +1242,7 @@ export class PlotComponent implements OnChanges {
     this.Parcel_ID= this.serviceService.selectedplotid
     this.serviceService.Totalarea = this.SelectedPlot.plot_Size_M2;
     plot.SDP_ID = this.serviceComponent.licenceData.SDP_ID;
+
     plot.Licence_Service_ID = this.LicenceData.Licence_Service_ID;
     this.serviceService.Licence_Service_ID=this.SelectedPlot.Licence_Service_ID    ;
     plot.Application_No = this.AppNo;

@@ -173,7 +173,7 @@ export class GisMapComponent implements AfterViewInit {
     console.log("value is changing", this.geo);
   }
   ngAfterViewInit() {
-    console.log("subcitycurent", this.subcity);
+    console.log("subcitycurent", this.subcity ,this.ServiceService.currentsdpid);
 
     const subcityToSDPMapping = {
       arada: "6921d772-3a1c-4641-95a0-0ab320bac3e2",
@@ -188,6 +188,7 @@ export class GisMapComponent implements AfterViewInit {
       kirkos: "aaa5094c-8899-4708-9f7b-d8ff634a3540",
       kolfek: "930d1c20-9e0e-4a50-9eb2-e542fafbad68",
       central: "275619f2-69c2-4fb7-a053-938f0b62b088",
+      
     };
 
     const resultArray = Object.keys(subcityToSDPMapping).map((subcity) => ({

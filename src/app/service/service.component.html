@@ -280,6 +280,12 @@
                       </app-property> 
                     
                 </div>
+
+              <div *ngIf="ID==20">
+                <lib-lease-bid [custid]=1></lib-lease-bid>
+                    
+                </div>
+
                 <div *ngIf="ID==20">
                   <!-- <lib-lease-bid [custid]=1></lib-lease-bid> -->
                   <lib-bid-detail (completed)="saveFormm('{}');"></lib-bid-detail>  
@@ -292,6 +298,7 @@
                     <div *ngIf="ID==22">
                       <lib-lease-ready-for-bid (completed)="saveFormm('{}');"></lib-lease-ready-for-bid> 
                       </div>
+
               <div *ngIf="ID==404;" translate>
                 Form not found
               </div>
