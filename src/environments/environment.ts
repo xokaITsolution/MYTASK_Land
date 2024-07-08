@@ -13,11 +13,18 @@ export const environment = {
   imagepathdeletefile: window["_imagepathdeletefile"],
   imagepathcheckmark: window["_imagepathcheckmark"],
   imagepathuploadfile: window["_imagepathuploadfile"],
+  Lease_contract:window['Lease_contract'],
   //username: "BL_Tech_Officer",
   iconpath: window["iconpath"],
   formPath: window["formPath"],
   city: window["city"], 
+
   username: "EteneshSaleyesus", 
+
+  // username: "cn_land_expleader", 
+//   username: "lease_owner", 
+  // username: "lease_officer ",
+
   appbase: window["_app_base"],
   location: window["locations"],
   //username: "city_mgr",

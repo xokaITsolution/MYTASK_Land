@@ -1533,7 +1533,11 @@ export class PropertyComponent implements OnChanges {
       );
       console.log("propertylocation", blocation);
 
+
       if (blocation != undefined || blocation != null ) {
+
+      if (blocation != undefined || blocation != null) {
+
         if (element.children.length == 0) {
           if (blocation.length === 0) {
             return false;
@@ -1669,5 +1673,3 @@ interface CustomTreeNode extends TreeNode {
   building_No?: string;
   randomColor?: string;
   styleClass?: string;
-}
-

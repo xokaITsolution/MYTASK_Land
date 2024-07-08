@@ -1,0 +1,40 @@
+<div>
+
+    <div>
+      <p-table #structure [value]="contractList" [paginator]="true" [rows]="10"
+        >
+  
+        <ng-template pTemplate="header">
+          <tr>
+            <th translate>contact_type</th>
+            <th translate>contract_date</th>
+            <th></th>
+            <th>
+              <button class="btn btn-primary"  type="button"  (click)="Addnew()" translate>
+                Add New
+              </button>
+            </th>
+          </tr>
+        </ng-template>
+        <!-- (click)="IsLockedBy_OtherUser(task)" -->
+        <ng-template pTemplate="body" let-lease_contract>
+          <tr>
+            <td></td>
+            <td></td>
+              <!-- <td>{{lease_contract.contact_Type}}</td>
+              <td>{{lease_contract.contract_date}}</td> -->
+  
+            <td><button class="btn btn-primary" type="button" 
+                (click)="selected(lease_contract)" *ngIf="enable_edit" translate>
+                Edit
+              </button></td>
+            <!-- <td>
+              <button type="button" class="btn btn-primary" (click)="openModal(task)" translate>assign</button>
+            </td> -->
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  
+  
+  </div>

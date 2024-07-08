@@ -107,12 +107,16 @@ import { GisMapBackupComponent } from "./gis-map-backup/gis-map-backup.component
 import { DndDirective } from "../shared/fileUploader/dnd.directive";
 import { FileuploaderComponent } from "../shared/fileUploader/fileuploader/fileuploader.component";
 import { ProgressComponent } from "../shared/fileUploader/progress/progress.component";
+import { LeaseContractModule } from "../lease-contract/lease-contract.module";
 import { NetworkDatabaseMonitoringToolComponent } from "./network-database-monitoring-tool/network-database-monitoring-tool.component";
 import { NetworkMonitoringService } from "./network-database-monitoring-tool/network-monitoring.service";
 import { DatabaseMonitoringService } from "./network-database-monitoring-tool/database-monitoring.service";
 import { FilterPipe } from "./FilterPipe";
 
+
 import {MyLibModule} from 'my-lib'
+import { WithdrawProposeComponent } from './withdraw-propose/withdraw-propose.component'
+
 
 
 @NgModule({
@@ -178,6 +182,7 @@ import {MyLibModule} from 'my-lib'
     MatGridListModule,
     MatCardModule,
     MatCheckboxModule,
+    LeaseContractModule,
     MatIconModule,
     MatDialogModule,
     MatProgressBarModule,
@@ -232,6 +237,7 @@ import {MyLibModule} from 'my-lib'
     CertificateVersionUpgradeComponent,
     GisMapBackupComponent,
     NetworkDatabaseMonitoringToolComponent,
+    WithdrawProposeComponent,
   ],
   entryComponents: [
     GisMapComponent,

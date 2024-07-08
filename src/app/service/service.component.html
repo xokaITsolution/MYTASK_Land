@@ -262,9 +262,17 @@
                
               </div>
               <div *ngIf="ID==12">
-               
                   <app-record [useNamelist]="useNamelist"  (completed)="saveFormm2()"></app-record>
               </div>
+              <div *ngIf="ID==14">
+                <app-land-wizard [AppNo]="AppNo"></app-land-wizard>
+              </div>
+              <div *ngIf="ID==15">
+                <app-withdraw-propose></app-withdraw-propose>
+              </div>
+              <div *ngIf="ID==13">
+               <app-lease-contract (completed)="EnableFinss();plot();saveFormmplot('{}');"></app-lease-contract>
+            </div>
               <div *ngIf="ID==9">
                 <app-property (completed)="saveFormm('{}');" (getpro)="getPropertyTypeLookUP()" [LicenceData]="licenceData"
                         [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="false" [AppNo]="AppNo"
@@ -272,10 +280,25 @@
                       </app-property> 
                     
                 </div>
+
               <div *ngIf="ID==20">
                 <lib-lease-bid [custid]=1></lib-lease-bid>
                     
                 </div>
+
+                <div *ngIf="ID==20">
+                  <!-- <lib-lease-bid [custid]=1></lib-lease-bid> -->
+                  <lib-bid-detail (completed)="saveFormm('{}');"></lib-bid-detail>  
+                      
+                  </div>
+                  <div *ngIf="ID==21">
+                    <lib-lease-yearly-bid-plan (completed)="saveFormm('{}');"></lib-lease-yearly-bid-plan> 
+                       
+                    </div>
+                    <div *ngIf="ID==22">
+                      <lib-lease-ready-for-bid (completed)="saveFormm('{}');"></lib-lease-ready-for-bid> 
+                      </div>
+
               <div *ngIf="ID==404;" translate>
                 Form not found
               </div>

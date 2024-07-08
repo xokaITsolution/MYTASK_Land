@@ -906,11 +906,41 @@ export class ServiceComponent implements OnInit  {
     } else if (this.formcode == "cc71e78d-ef6f-4b93-8d8e-3996f1043fba") {
       this.serviceService.disablefins = false;
       this.ID = 12;
+
     } 
     else if (this.formcode == "cc71e78d-ef6f-4b93-8d8e-3996f1043faa") {
       //this.serviceService.disablefins = false;
       this.ID = 20;
     } else {
+
+    } else if (this.formcode == "ee892362-98c4-4321-a3fe-40c5a8205a54") {
+      // this.serviceService.disablefins = false;
+      this.ID = 13;
+    }else if (this.formcode == "ee892362-98c4-4321-a3fe-40c5a8205a55") {
+      // this.serviceService.disablefins = false;
+      this.ID = 14;
+    }else if (this.formcode == "f449993c-e422-46c9-b74c-fbc81c443071") {
+      // this.serviceService.disablefins = false;
+      this.ID = 15;
+    }
+    else if (this.formcode == "cc71e78d-ef6f-4b93-8d8e-3996f1043faa") {
+      //this.serviceService.disablefins = false;
+      this.ID = 20;
+    } 
+    else if (this.formcode == "2147653b-9b53-4eb9-b4d6-4e5cce749d46") {
+      //this.serviceService.disablefins = false;
+      this.ID = 21;
+    } 
+    else if (this.formcode == "0bb23867-4952-420e-a03b-0badaf02320e") {
+      //this.serviceService.disablefins = false;
+      this.ID = 22;
+    } 
+    else if (this.formcode == "37ad67c7-5c48-4c09-a832-ac397c3fc739") {
+      //this.serviceService.disablefins = false;
+      this.ID = 23;
+    } 
+    else {
+
       this.ID = 0;
 
       if (this.AppNo != undefined || this.AppNo != null) {
@@ -3035,13 +3065,21 @@ export class ServiceComponent implements OnInit  {
         this.Customer = [];
       }
     });
+
     this.serviceService
     .getLicencebyid(this.serviceService.LicenceserviceID)
     .subscribe(async (rec: any) => {
     console.log("🚀 ~ .subscribe ~ rec:", rec)
+
     this.serviceService
       .GetApplicationNumberByUsers(username, orgcode)
       .subscribe((ApplicationNumber: any) => {
+
+    
+    this.serviceService
+      .GetApplicationNumberByUsers(username, orgcode)
+      .subscribe((ApplicationNumber: any) => {
+
         this.ApplicationNumberlist = ApplicationNumber;
         
         let RID;
@@ -3443,6 +3481,7 @@ export class ServiceComponent implements OnInit  {
   public getAll(AppNo) {
     this.serviceService.getAll(AppNo).subscribe(
       (res:any) => {
+
         if (res.list.length > 0) {
         let licenceServiceeach = res.list[0];
     //   console.log("🚀 ~ getAll ~ licenceService:", licenceServiceeach)
@@ -3457,13 +3496,18 @@ export class ServiceComponent implements OnInit  {
           console.log("🚀 ~ getAll ~ licenceService:", licenceService)
           this.serviceService.errorservices=licenceService.Service_ID
           this.serviceService.getPlotManagementApi(licenceService.Parcel_ID).subscribe(
+
        
             async (PlotManagementLists: any) => {
+            async (PlotManagementLists: any) => {
+
               let PlotManagementList = PlotManagementLists.procPlot_Registrations;
               if (PlotManagementList.length > 0) {
                  console.log("🚀 ~ PlotManagementList:", PlotManagementList)
                  const AppNolist=PlotManagementList[0].application_No
+
                  this.serviceService.currentsdpid = PlotManagementList[0].sdP_ID;
+
                  this.serviceService.appnoForRecorderror=AppNolist
                  this.serviceService
                  .GetApplicationNumberByUserInfo(AppNolist)
@@ -3485,7 +3529,8 @@ export class ServiceComponent implements OnInit  {
            
                      this.serviceService.licenceData = this.licenceData;
                      this.SDP_ID = this.licenceData.SDP_ID;
-                    
+
+                     this.serviceService.currentsdpid = this.SDP_ID;
                      this.Service_ID = this.licenceData.Service_ID;
                      this.getServiceDeliveryUnitLookUP();
                      this.serviceService.Service_ID = this.licenceData.Service_ID;
@@ -3625,9 +3670,11 @@ export class ServiceComponent implements OnInit  {
         })
 
     }else{
+
  this.serviceService
       .GetApplicationNumberByUserInfo(AppNo)
       .subscribe((licenceService) => {
+        
         this.custmerInformation = licenceService[0];
         console.log(
           "🚀 ~ .subscribe ~ custmerInformation:",
@@ -3647,7 +3694,9 @@ export class ServiceComponent implements OnInit  {
           this.SDP_ID = this.licenceData.SDP_ID;
           this.serviceService.currentsdpid = this.SDP_ID;
           this.Service_ID = this.licenceData.Service_ID;
-      
+
+          this.serviceService.Parcel_ID = this.licenceData.Parcel_ID
+
           this.serviceService.Service_ID = this.licenceData.Service_ID;
           this.serviceService.serviceDP = this.SDP_ID;
           this.Licence_Service_ID = this.licenceData.Licence_Service_ID;
@@ -3734,7 +3783,9 @@ export class ServiceComponent implements OnInit  {
 })
   }
   getuserName(AppNo) {
+    // 
     this.serviceService.getuserName(AppNo).subscribe((res: any) => {
+      // 
       this.useNamelist = res;
       this.serviceService.currentApplicationUsers = this.useNamelist[0];
       console.log("useNamelist", this.useNamelist[0], AppNo);

@@ -1,0 +1,52 @@
+<!-- <br>
+<div class="card">
+    <p-steps [model]="items" [(activeIndex)]="activeIndex" [readonly]="false"></p-steps>
+</div>
+<div *ngIf="activeIndex == 0 ">
+    <app-lease-payment-head (functionCall)="next()" [AppNo]="AppNo"></app-lease-payment-head>
+</div>
+<div *ngIf="activeIndex == 1 ">
+    <app-lease-payment-head-detail (functionCall)="prv()" [AppNo]="AppNo"></app-lease-payment-head-detail>
+</div> -->
+
+
+<!-- <div class="m-3">
+    <p-tabView (onChange)="tabChanged($event)" [(activeIndex)]="selectedTab1" selected="true">
+        <p-tabPanel [header]="'Lease Payment Head'">
+            <div class="mt-3">
+                <app-lease-payment-head (functionCall)="next()" [AppNo]="AppNo"></app-lease-payment-head>
+                <div style="float: right;"> <button type="button" class="btn btn-primary mr-1"
+                        (click)="selectedTab1 = 1" translate>Next</button></div>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel [header]="'Lease Payment Head Detail'">
+            <div class="mt-3">
+                <app-lease-payment-head-detail (functionCall)="prv()" [AppNo]="AppNo"></app-lease-payment-head-detail>
+                <div style="float: left;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab1 = 0"
+                        translate>previous</button>
+                </div>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
+</div> -->
+<div class="m-3">
+    <p-tabView (onChange)="tabChanged($event)" [(activeIndex)]="selectedTab1" selected="true">
+        <p-tabPanel [header]="'Lease Payment Head'">
+            <div class="mt-3">
+                <app-lease-payment-head (functionCall)="next()" [AppNo]="AppNo"></app-lease-payment-head>
+                <div style="float: right;"> <button type="button" [disabled]="" class="btn btn-primary mr-1"
+                        (click)="selectedTab1 = 1;nextClicked()"  translate>Next</button></div>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel [disabled]="true" [header]="'Lease Payment Head Detail'">
+            <div class="mt-3">
+                <app-lease-payment-head-detail #child (functionCall)="prv()" [AppNo]="AppNo"></app-lease-payment-head-detail>
+                <div style="float: left;"> <button type="button" class="btn btn-primary mr-1" (click)="selectedTab1 = 0"
+                        translate>previous</button>
+                </div>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
+</div>
