@@ -56,6 +56,7 @@ export class LeaseContractComponent implements OnInit {
       console.log("get_license_service", this.licenceData);
 // debugger
       // this.newLeaseContract.sdp = this.licenceData.SDP_ID;
+      debugger
       this._service.get_organizationby_org_code(this.licenceData.SDP_ID).subscribe(data => {
           this.orginizationlookup = data['procorganizationss'][0];
           // debugger
@@ -105,7 +106,7 @@ export class LeaseContractComponent implements OnInit {
   );
   }
   get_lease_contract(lease_code) {
-
+debugger
     this._service.get_Lease_contract_by_Id(lease_code).
       subscribe(data => {
         // debugger
@@ -189,7 +190,8 @@ export class LeaseContractComponent implements OnInit {
     );
   }
   InsertLeaseContract() {
-    this.newLeaseContract.sdp=this.orginizationlookup.organization_code;
+    // debugger
+    // this.newLeaseContract.sdp=this.orginizationlookup.organization_code;
     this.get_contract_type1(this.newLeaseContract.contact_Type);
     // if ((this.newLeaseContract.lease_code != null && this.newLeaseContract.lease_code != "")) {
       debugger

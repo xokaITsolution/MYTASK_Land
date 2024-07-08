@@ -52,11 +52,11 @@ export class LeaseContractService {
       );
   }
   insert_data_proc_Lease_to_Lease( data: any) {
-    // debugger
+    // 
     return this.http.post(this.Lease_To_lease, data);
   }
   insert_data_proc_Freehold_to_Lease( data: any) {
-    // debugger
+    // 
     return this.http.post(this.Freehold_To_lease, data);
   }
   updateleaseTolease(data:any): Observable<any>{
@@ -76,15 +76,15 @@ export class LeaseContractService {
     return this.http.put<any>(this.Freehold_To_lease, data);
   }
   get_all(){
-    // debugger
+    // 
     return this.http.get(this.contract_type);
   }
   get_all_by_contract_type_id(ID){
-    // debugger
+    // 
     return this.http.get(this.contract_type+"/"+ID);
   }
   get_license_service (AppNo){
-    // debugger
+    // 
     return this.http.get(this.License_ServiceURL +
       "?" +
       "sortOrder=test&currentFilter=" +
@@ -92,15 +92,15 @@ export class LeaseContractService {
       "&searchString&pageIndex&pageSize");
   }
   get_by_ID(ID){
-    // debugger
+    // 
     return this.http.get(this.lease_payment_head +ID);
   }
   get_organizationby_org_code(ID){
-    // debugger
+    debugger
     return this.http.get(this.get_organization +ID);
   }
   get_veiw_contract(ID){
-    // debugger
+    // 
     return this.http.get(this.veiw_contract +ID);
   }
   get_worad_from_plot_regstration(ID){
@@ -127,12 +127,12 @@ export class LeaseContractService {
       return this.http.put<any>(url, data);
     }
     getDataById(id: any): Observable<any> {
-      // debugger
+      // 
       const url = `${this.lease_payment_head}${id}`;
       return this.http.get<any>(url);
     }
     getDataByleasecode(id: any): Observable<any> {
-      // debugger
+      // 
       const url = `${this.leaserPaymentHeadDetail}/${id}`;
       return this.http.get<any>(url);
     }

@@ -141,14 +141,14 @@ export class LeasePaymentHeadDetailComponent {
         this.notificationsService.success("Success", "Lease plan Genereted successfully");
       },
         (error) => {
-          this.notificationsService.error("Error", `unable to genetrate!  ${error['status'] == 0 ? error['message'] : JSON.stringify(JSON.stringify(error['error']))}`);
+          // this.notificationsService.error("Error", `unable to genetrate!  ${error['status'] == 0 ? error['message'] : JSON.stringify(JSON.stringify(error['error']))}`);
         }
       )
   }
   getLeasPaymentHeadDataDetail() {
     this._service.getDataByleasecode(this._service.lease_code).subscribe(
       (response) => {
-        
+        debugger
         let data = response.proc_Leas_Payment_Head_Details[0];
         this.leasePaymentHeadDetail.Plot_Size_By_Lease_Bid_Price = data.total_Plot_Size
         const bid_price = data.total_Plot_Size * data.current_lease_Price;

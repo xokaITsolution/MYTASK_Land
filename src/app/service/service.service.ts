@@ -112,9 +112,12 @@ export class ServiceService {
     "Payment_Details?sortOrder=test&currentFilter&searchString&pageIndex&pageSize";
   private getPaymentDetailByID =
     environment.rootPath + "Payment_Details?sortOrder=test&currentFilter=";
+  // private getusernameUrl =
+  //   environment.rootPathApi +
+  //   "view/View_getUserNameForReviewByApplication/application_number?application_number=";
   private getusernameUrl =
     environment.rootPathApi +
-    "view/View_getUserNameForReviewByApplication/application_number?application_number=";
+    "view/View_getUserNameForReviewByApplication/"
   private gettopostgres =
     environment.rootPathApi + "Insert_In_toPostgres/procInsert_In_toPostgres/";
   private PlotManagementUrl = environment.rootPath + "Plot_Registration";
@@ -491,6 +494,7 @@ export class ServiceService {
     return this.http.get(this.woredabysubcity + "/" + col);
   }
   getuserName(Appno) {
+    // debugger
     return this.http.get(this.getusernameUrl + Appno);
   }
   postplotTopostgres(plotid, propertid) {

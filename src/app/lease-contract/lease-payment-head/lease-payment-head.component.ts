@@ -44,6 +44,7 @@ export class LeasePaymentHeadComponent implements OnInit {
       console.log("Observable Params:", p);
       // this.ServiceService.tiltledeed = p["AppNo"];
       this.Application_No = p["AppNo"];
+      // debugger
     });
     // this.getAPPdata();
     this.getLeasPaymentHeadData(this.Application_No);
@@ -126,7 +127,7 @@ export class LeasePaymentHeadComponent implements OnInit {
     return result;
   }
   getLeasPaymentHeadData(appNo: any) {
-    
+    // debugger
     this._service.getDataById(appNo).subscribe(
       (response) => {
         // debugger
@@ -155,7 +156,7 @@ export class LeasePaymentHeadComponent implements OnInit {
         this.leaserPaymentHead.Transfer_type = data.transfer_Type;
         this.leaserPaymentHead.Proporty_Use = data.proporty_Use;
         this.leaserPaymentHead.Lease_Period_end_date =this.format_date(data.lease_Period_end_date)
-    //  
+    debugger
         this.leaserPaymentHead.Lease_Payment_Year = data.lease_Payment_Year;
         this._service.Lease_Payment_Year=data.lease_Payment_Year;
         this.leaserPaymentHead.Is_Active = data.is_Active;
@@ -163,6 +164,7 @@ export class LeasePaymentHeadComponent implements OnInit {
         this.getTransferType(this.leaserPaymentHead.Transfer_type);
         this.getProportyUse(this.leaserPaymentHead.Proporty_Use);
         this.getCustomerType(this.leaserPaymentHead.Customer_Type);
+      // debugger
         this._service.lease_payment_advance_per=data.lease_payment_advance_per;
         }
         else{
@@ -173,7 +175,7 @@ export class LeasePaymentHeadComponent implements OnInit {
               let appno= res["procPlot_Registrations"][0].application_No 
               this._service.getDataById(res["procPlot_Registrations"][0].application_No ).subscribe(
                 (response) => {
-                  debugger
+                  // debugger
               let data = response.proc_Lease_Payment_Heads[0];
               this.leaserPaymentHead.Lease_code = data.lease_code;
               this._service.lease_code=data.lease_code;
@@ -197,7 +199,7 @@ export class LeasePaymentHeadComponent implements OnInit {
               this.leaserPaymentHead.Transfer_type = data.transfer_Type;
               this.leaserPaymentHead.Proporty_Use = data.proporty_Use;
               this.leaserPaymentHead.Lease_Period_end_date =this.format_date(data.lease_Period_end_date)
-          //  
+          debugger
               this.leaserPaymentHead.Lease_Payment_Year = data.lease_Payment_Year;
               this._service.Lease_Payment_Year=data.lease_Payment_Year;
               this.leaserPaymentHead.Is_Active = data.is_Active;

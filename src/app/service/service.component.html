@@ -262,11 +262,13 @@
                
               </div>
               <div *ngIf="ID==12">
-               
                   <app-record [useNamelist]="useNamelist"  (completed)="saveFormm2()"></app-record>
               </div>
               <div *ngIf="ID==14">
                 <app-land-wizard [AppNo]="AppNo"></app-land-wizard>
+              </div>
+              <div *ngIf="ID==15">
+                <app-withdraw-propose></app-withdraw-propose>
               </div>
               <div *ngIf="ID==13">
                <app-lease-contract (completed)="EnableFinss();plot();saveFormmplot('{}');"></app-lease-contract>

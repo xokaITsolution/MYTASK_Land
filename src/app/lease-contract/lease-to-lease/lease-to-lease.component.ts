@@ -35,7 +35,7 @@ export class LeaseToLeaseComponent implements OnInit {
       console.log("Observable Params:", p);
       // this.ServiceService.tiltledeed = p["AppNo"];
       this.AppNo = p["AppNo"];
-      debugger
+      // debugger
     });
     this.newLeaseTolease.ID = Guid.create().toString();
     // this.Get_Lease_contract();
@@ -183,7 +183,6 @@ export class LeaseToLeaseComponent implements OnInit {
   )
   }
   updateleaseTolease() {
-// 
     this._service.updateleaseTolease(this.newLeaseTolease).subscribe(
       (response) => {
         // itHasError = false;
@@ -197,6 +196,7 @@ export class LeaseToLeaseComponent implements OnInit {
     );
   }
   InsertLeaseToLease() {
+    debugger
     this._service.insert_data_proc_Lease_to_Lease(this.newLeaseTolease).subscribe(
       data => { this.ServiceService.disablefins = false;
         this.completed.emit();
