@@ -162,8 +162,7 @@ export class LeasePaymentHeadDetailComponent {
           this._service.lease_payment_advance_per * this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid;
           this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid = roundedAmount.toLocaleString();
         const Amount_of_down_payment = this.leasePaymentHeadDetail.Amount_of_down_payment;
-        const roundedAmount1 = +Amount_of_down_payment.toFixed(3);
-        
+        const roundedAmount1 = +Amount_of_down_payment.toFixed(3);       
         this.leasePaymentHeadDetail.Amount_of_down_payment = roundedAmount1.toLocaleString();
         this.leasePaymentHeadDetail.Lease_code = data.lease_code;
         this.leasePaymentHeadDetail.PlotID = data.plotID;

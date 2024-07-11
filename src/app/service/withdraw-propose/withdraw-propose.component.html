@@ -1,13 +1,14 @@
 <div>
 
     <div>
-      <p-table #structure [value]="contractList" [paginator]="true" [rows]="10"
+      <p-table #structure [value]="proposeList" [paginator]="true" [rows]="10"
         >
   
         <ng-template pTemplate="header">
           <tr>
-            <th translate>contact_type</th>
-            <th translate>contract_date</th>
+            <th translate>title_Deed_No</th>
+            <th translate>full_Name</th>
+            <th translate>suspension_Reason</th>
             <th></th>
             <th>
               <button class="btn btn-primary"  type="button"  (click)="Addnew()" translate>
@@ -19,11 +20,9 @@
         <!-- (click)="IsLockedBy_OtherUser(task)" -->
         <ng-template pTemplate="body" let-lease_contract>
           <tr>
-            <td></td>
-            <td></td>
-              <!-- <td>{{lease_contract.contact_Type}}</td>
-              <td>{{lease_contract.contract_date}}</td> -->
-  
+              <td>{{lease_contract.full_Name}}</td>
+              <td>{{lease_contract.title_Deed_No}}</td>
+              <td>{{lease_contract.suspension_Reason}}</td>
             <td><button class="btn btn-primary" type="button" 
                 (click)="selected(lease_contract)" *ngIf="enable_edit" translate>
                 Edit

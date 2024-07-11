@@ -1,245 +1,61 @@
 
- <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>MyTask</title>
-  <base href="/">
-<script>
-  (function () {
-
-    window['_UserName'] = "@HttpContext.Current.User.Identity.Name";
-    window["_imagepathclock"] = 'http://ct.addisland.gov.et/datepicker/img/clock4800256.gif'
-    window["_imagepathfile"] = 'http://ct.addisland.gov.et/datepicker/uploader/ic-file.svg'
-    window["_imagepathuploadfile"] = 'http://ct.addisland.gov.et/datepicker/uploader/ic-upload-file.svg'
-    window["_imagepathcheckmark"] = 'http://ct.addisland.gov.et/datepicker/uploader/free-check-mark-icon-3280-thumb.png'
-    window["_imagepathdeletefile"] = 'http://ct.addisland.gov.et/datepicker/uploader/ic-delete-file.svg'
-    window['rootPathnational'] = 'https://www.addisland.gov.et:444/Addisland/api/';
-   
-    window["_imagepath"] = '<button type="button" class="trigger">' +
-      '<img src="http://ct.addisland.gov.et/datepicker/img/calendar.gif" alt="Popup"></button>';
-    window["iconpath"] = '/DesktopModules/MVC/TASK/Views/Item/assets/assets/marker-icon.png'
-    window['rootPath'] = 'https://www.addisland.gov.et:444/XOKA.eoffice.bpel_land/api/';
-    window["rootPathApi"] = "https://www.addisland.gov.et:444/Xoka_land_API/api/";
-    // window['local_GIS_server'] = 'http://localhost/geojson';
-    window['local_GIS_server'] = './assets/geojson';
-    // window['wfs_geoserver'] = 'http://192.168.0.150:8080/geoserver/ows';
-    // window['wfs_geoserver'] = 'http://localhost:8082/geoserver/ows';
-    window['wfs_geoserver'] = 'http://192.168.0.133:8082/geoserver/ows';
-    window["rootPath2"] = "https://www.addisland.gov.et:444/XOKA.eoffice.bpel_land/api/";
-    window["rootpath2"] = "https://www.addisland.gov.et:444/XOKA.eoffice.bpel_Land/api/BPEL/";
-    window["rootPath3"] = "https://www.addisland.gov.et:444/Xoka_land_API/api/";
-    //console.log("window['_UserName']", window['_UserName']);
-    //console.log(window.location.pathname);
-    window['groupLayerName'] = "Ormiya_Miniral_WS:Ormiya_Miniral_Group";
-    window['groupName'] = "Ormiya_Miniral_Group";
-    window['groupLayerName'] = "Arada_AddisLand:W1.Arada.Layers";
-    window['parentGroupName'] = "AddisLand"
-    window['groupName'] = "W1.Arada.Layers";
-    window['subcity'] = window.location.pathname.split("/")[1]
-    window['SubcityName'] = window.location.pathname.split("/")[1] + "_AddisLand"
-    const workspace = window.location.pathname.split("/")[1] + '_AddisLand';
-    window['geoserverUrl'] = `https://10.32.141.15:8443/geoserver/${workspace}/wms`;
-    window['geoserverUrlwfs'] = `https://10.32.141.15:8443/geoserver/${workspace}/ows`;
-    window['geoser'] = "https://ct.addisland.gov.et:8443/geoserver";
-    window["city"] = window.location.pathname.split("/")[1];
-    window["locations"] = "http://ct.addisland.gov.et/";
-    window['PaymentReportPath'] = 'https://ct.addisland.gov.et/en-us/Receipt';
-    window['certReportPath'] = 'https://ct.addisland.gov.et/en-us/certificate';
-    window['LetterReportPath'] = 'https://ct.addisland.gov.et/en-us/Letter';
-    window["lang"] = window.location.pathname.split("/")[2];
-    window['resourcePath'] = "DesktopModules/MVC/xokamytasks/Views/Item/assets/";
-    window['phisicalPath'] = '/DesktopModules/MVC/TASK/Views/Item/assets/assets/i18n/';
-    window['overlayLayer'] = "Ethiopia - Admin Level 3.json";
-    window['formPath'] = "https://www.addisland.gov.et/db/";
-    window['Totalareatolerance'] = 0.05;
-    window['parentWorkspace'] = "AddisAbaba_AddisLand"
-    window['folderpath'] = "http://10.32.141.15/city/subcity/";
-    window["propertyvalidetion"]=true
-    window['layerConfig'] = [
-      {
-        'name': "Ethiopia - Admin Level 1.json",
-        'weight': 5
-      }
-    ];
-    window['multipleplotcanbeadd'] = [
-      {
-        'name': "Parcel Splitting Service for Existing Landholdings",
-        'id': '8a8588ae-0267-48b7-88ac-f3f18ac02167'
-      },
-      {
-        'name': "Parcels Merging Service for Lease and Freehold landholdings",
-        'id': '793b8814-f845-429e-a472-dc47e797d3fe'
-      },
-      {
-        'name': "Change of Purpose of Land Use for Freeholdings Service",
-        'id': '0e20d26a-cc20-4dbc-b4da-5ba0ab5448bf'
-      },
-      {
-        'name': "Parcels Merging Service for Freehold landholdings",
-        'id': '5de49606-4dc6-4fb1-8f37-0cfc948fdc83'
-      }
-    ];
-    window['propertytasks'] = [
-      { id: "40AF2821-AD3A-4569-AF57-02931B3FB1CF" },
-      { id: "C5ED0523-2E07-4584-8B4F-0D705A125C38" },
-      { id: "CA8C01C7-5D29-4E2F-9B74-1577051A2B31" },
-      { id: "FDEC6D6E-FAB7-43D3-8D4F-307C4D40FEB0" },
-      { id: "5ABA39CE-494C-420D-8968-34B3A8CFB33F" },
-      { id: "BAABFBF9-DAAB-448A-8679-45CFD8A57CA6" },
-      { id: "3C01627D-962B-4905-A61B-55713EFB6062" },
-      { id: "2B8B1912-BA52-400E-9B6B-5FF6A565C308" },
-      { id: "D3C52EAD-60C6-4432-9086-7180E6B924E4" },
-      { id: "18C84AAB-9981-4340-9699-73DEB4D8814E" },
-      { id: "C5B0BE32-E2EA-4EC1-9E7E-7A3F51D9FD49" },
-      { id: "8FBB99DC-604B-424D-B634-9D0961CCAF93" },
-      { id: "99DD7759-918F-474B-856E-A9D0B58664AB" },
-      { id: "A0316DCF-54D4-4ABC-8236-AA8AE8CA1BDE" },
-      { id: "05EBEF86-F9B9-475D-B67D-BD6399BDF10F" },
-      { id: "5DB32785-131B-4F19-A777-EF58704F57DB" },
-      { id: "CD9672EC-0252-49F8-B8AE-EFFC6CD6E46A" },
-      { id: "F7F7C21F-5F65-40C5-ACAD-F63E36955B83" },
-      { id: "08E18B84-8A06-4741-9AF2-FB70A1D8506A" },
-      { id: "da391d30-6262-4da4-b842-dd06cc5b5839" }
-    ];
-
-    // window['_UserName'] = "@HttpContext.Current.User.Identity.Name";
-    // window["_imagepathclock"] = 'http://ct.addisland.gov.et/datepicker/img/clock4800256.gif'
-    // window["_imagepathfile"] = 'http://ct.addisland.gov.et/datepicker/uploader/ic-file.svg'
-    // window["_imagepathuploadfile"] = 'http://ct.addisland.gov.et/datepicker/uploader/ic-upload-file.svg'
-    // window["_imagepathcheckmark"] = 'http://ct.addisland.gov.et/datepicker/uploader/free-check-mark-icon-3280-thumb.png'
-    // window["_imagepathdeletefile"] = 'http://ct.addisland.gov.et/datepicker/uploader/ic-delete-file.svg'
-    // window['rootPathnational'] = 'https://www.addisland.gov.et:444/Addisland/api/';
-   
-    // window["_imagepath"] = '<button type="button" class="trigger">' +
-    //   '<img src="http://ct.addisland.gov.et/datepicker/img/calendar.gif" alt="Popup"></button>';
-    // window["iconpath"] = '/DesktopModules/MVC/TASK/Views/Item/assets/assets/marker-icon.png'
-    // window['rootPath'] = 'https://www.addisland.gov.et:444/XOKA.eoffice.bpel_land/api/';
-    // window["rootPathApi"] = "https://www.addisland.gov.et:444/Xoka_land_API/api/";
-    // // window['local_GIS_server'] = 'http://localhost/geojson';
-    // window['local_GIS_server'] = './assets/geojson';
-    // // window['wfs_geoserver'] = 'http://192.168.0.150:8080/geoserver/ows';
-    // // window['wfs_geoserver'] = 'http://localhost:8082/geoserver/ows';
-    // window['wfs_geoserver'] = 'http://192.168.0.133:8082/geoserver/ows';
-    // window["rootPath2"] = "https://www.addisland.gov.et:444/XOKA.eoffice.bpel_land/api/";
-    // window["rootpath2"] = "https://www.addisland.gov.et:444/XOKA.eoffice.bpel_Land/api/BPEL/";
-    // window["rootPath3"] = "https://www.addisland.gov.et:444/Xoka_land_API/api/";
-    // //console.log("window['_UserName']", window['_UserName']);
-    // //console.log(window.location.pathname);
-    // window['groupLayerName'] = "Ormiya_Miniral_WS:Ormiya_Miniral_Group";
-    // window['groupName'] = "Ormiya_Miniral_Group";
-    // window['groupLayerName'] = "Arada_AddisLand:W1.Arada.Layers";
-    // window['parentGroupName'] = "AddisLand"
-    // window['groupName'] = "W1.Arada.Layers";
-    // window['subcity'] = window.location.pathname.split("/")[1]
-    // window['SubcityName'] = window.location.pathname.split("/")[1] + "_AddisLand"
-    // const workspace = window.location.pathname.split("/")[1] + '_AddisLand';
-    // window['geoserverUrl'] = `https://10.32.141.15:8443/geoserver/${workspace}/wms`;
-    // window['geoserverUrlwfs'] = `https://10.32.141.15:8443/geoserver/${workspace}/ows`;
-    // window['geoser'] = "https://ct.addisland.gov.et:8443/geoserver";
-    // window["city"] = window.location.pathname.split("/")[1];
-    // window["locations"] = "http://ct.addisland.gov.et/";
-    // window['PaymentReportPath'] = 'https://ct.addisland.gov.et/en-us/Receipt';
-    // window['certReportPath'] = 'https://ct.addisland.gov.et/en-us/certificate';
-    // window['LetterReportPath'] = 'https://ct.addisland.gov.et/en-us/Letter';
-    // window['Lease_contract'] =   'http://land.xokait.com.et/en-us/Lease_Contract'
-    // window["lang"] = window.location.pathname.split("/")[2];
-    // window['resourcePath'] = "DesktopModules/MVC/xokamytasks/Views/Item/assets/";
-    // window['phisicalPath'] = '/DesktopModules/MVC/TASK/Views/Item/assets/assets/i18n/';
-    // window['overlayLayer'] = "Ethiopia - Admin Level 3.json";
-    // window['formPath'] = "https://www.addisland.gov.et/db/";
-    // window['Totalareatolerance'] = 0.05;
-    // window['parentWorkspace'] = "AddisAbaba_AddisLand"
-    // window['folderpath'] = "http://10.32.141.15/city/subcity/";
-    // window["propertyvalidetion"]=true
-    // window['layerConfig'] = [
-    //   {
-    //     'name': "Ethiopia - Admin Level 1.json",
-    //     'weight': 5
-    //   }
-    // ];
-    // window['multipleplotcanbeadd'] = [
-    //   {
-    //     'name': "Parcel Splitting Service for Existing Landholdings",
-    //     'id': '8a8588ae-0267-48b7-88ac-f3f18ac02167'
-    //   },
-    //   {
-    //     'name': "Parcels Merging Service for Lease and Freehold landholdings",
-    //     'id': '793b8814-f845-429e-a472-dc47e797d3fe'
-    //   },
-    //   {
-    //     'name': "Change of Purpose of Land Use for Freeholdings Service",
-    //     'id': '0e20d26a-cc20-4dbc-b4da-5ba0ab5448bf'
-    //   },
-    //   {
-    //     'name': "Parcels Merging Service for Freehold landholdings",
-    //     'id': '5de49606-4dc6-4fb1-8f37-0cfc948fdc83'
-    //   }
-    // ];
-    // window['propertytasks'] = [
-    //   { id: "40AF2821-AD3A-4569-AF57-02931B3FB1CF" },
-    //   { id: "C5ED0523-2E07-4584-8B4F-0D705A125C38" },
-    //   { id: "CA8C01C7-5D29-4E2F-9B74-1577051A2B31" },
-    //   { id: "FDEC6D6E-FAB7-43D3-8D4F-307C4D40FEB0" },
-    //   { id: "5ABA39CE-494C-420D-8968-34B3A8CFB33F" },
-    //   { id: "BAABFBF9-DAAB-448A-8679-45CFD8A57CA6" },
-    //   { id: "3C01627D-962B-4905-A61B-55713EFB6062" },
-    //   { id: "2B8B1912-BA52-400E-9B6B-5FF6A565C308" },
-    //   { id: "D3C52EAD-60C6-4432-9086-7180E6B924E4" },
-    //   { id: "18C84AAB-9981-4340-9699-73DEB4D8814E" },
-    //   { id: "C5B0BE32-E2EA-4EC1-9E7E-7A3F51D9FD49" },
-    //   { id: "8FBB99DC-604B-424D-B634-9D0961CCAF93" },
-    //   { id: "99DD7759-918F-474B-856E-A9D0B58664AB" },
-    //   { id: "A0316DCF-54D4-4ABC-8236-AA8AE8CA1BDE" },
-    //   { id: "05EBEF86-F9B9-475D-B67D-BD6399BDF10F" },
-    //   { id: "5DB32785-131B-4F19-A777-EF58704F57DB" },
-    //   { id: "CD9672EC-0252-49F8-B8AE-EFFC6CD6E46A" },
-    //   { id: "F7F7C21F-5F65-40C5-ACAD-F63E36955B83" },
-    //   { id: "08E18B84-8A06-4741-9AF2-FB70A1D8506A" },
-    //   { id: "da391d30-6262-4da4-b842-dd06cc5b5839" }
-    // ];
-    window['_UserName'] = "@HttpContext.Current.User.Identity.Name";
-      window["_imagepathclock"] = 'http://job.xokait.com.et/datepicker/img/clock4800256.gif'
-      window["_imagepath"] = '<button type="button" class="trigger">' + 
-           '<img src="http://job.xokait.com.et/datepicker/img/calendar.gif" alt="Popup"></button>';
-           window["iconpath"]='/DesktopModules/MVC/TASK/Views/Item/assets/assets/marker-icon.png'
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>MyTask</title>
+    <base href="/">
+  <script>
+    (function () {
+      window['_UserName'] = "@HttpContext.Current.User.Identity.Name";
+      window["_imagepathclock"] = 'http://ct.addisland.gov.et/datepicker/img/clock4800256.gif'
+      window["_imagepathfile"] = 'http://ct.addisland.gov.et/datepicker/uploader/ic-file.svg'
+      window["_imagepathuploadfile"] = 'http://ct.addisland.gov.et/datepicker/uploader/ic-upload-file.svg'
+      window["_imagepathcheckmark"] = 'http://ct.addisland.gov.et/datepicker/uploader/free-check-mark-icon-3280-thumb.png'
+      window["_imagepathdeletefile"] = 'http://ct.addisland.gov.et/datepicker/uploader/ic-delete-file.svg'
+      window['rootPathnational'] = 'https://www.addisland.gov.et:444/Addisland/api/';
+     
+      window["_imagepath"] = '<button type="button" class="trigger">' +
+        '<img src="http://ct.addisland.gov.et/datepicker/img/calendar.gif" alt="Popup"></button>';
+      window["iconpath"] = '/DesktopModules/MVC/TASK/Views/Item/assets/assets/marker-icon.png'
       window['rootPath'] = 'http://197.156.93.110/XOKA.eoffice.bpel_land/api/';
-       window["rootPathApi"] = "http://197.156.93.110/Xoka_land_API/api/";
+      window["rootPathApi"] = "http://197.156.93.110/Xoka_land_api/api/";
       // window['local_GIS_server'] = 'http://localhost/geojson';
       window['local_GIS_server'] = './assets/geojson';
       // window['wfs_geoserver'] = 'http://192.168.0.150:8080/geoserver/ows';
       // window['wfs_geoserver'] = 'http://localhost:8082/geoserver/ows';
       window['wfs_geoserver'] = 'http://192.168.0.133:8082/geoserver/ows';
       window["rootPath2"] = "http://197.156.93.110/XOKA.eoffice.bpel_land/api/";
-     window["rootpath2"] = "http://197.156.93.110/XOKA.eoffice.bpel_Land/api/BPEL/";
-        window["rootPath3"] = "http://197.156.93.110/Xoka_land_API/api/";
+      window["rootpath2"] = "http://197.156.93.110/XOKA.eoffice.bpel_Land/api/BPEL/";
+      window["rootPath3"] = "http://197.156.93.110/Xoka_land_api/api/";
       //console.log("window['_UserName']", window['_UserName']);
       //console.log(window.location.pathname);
       window['groupLayerName'] = "Ormiya_Miniral_WS:Ormiya_Miniral_Group";
-window['subcity'] = window.location.pathname.split("/")[1]
-    window['groupName'] = "Ormiya_Miniral_Group";
+      window['groupName'] = "Ormiya_Miniral_Group";
       window['groupLayerName'] = "Arada_AddisLand:W1.Arada.Layers";
       window['parentGroupName'] = "AddisLand"
-      window['groupName'] = "W1.Arada.Layers";
-        window['SubcityName'] =  window.location.pathname.split("/")[1]+ "_AddisLand"
-     const workspace = window.location.pathname.split("/")[1] + '_AddisLand';
-    window['geoserverUrl'] = `http://land.xokait.com.et:8080/geoserver/${workspace}/wms`;
-      window['geoserverUrlwfs'] = `http://land.xokait.com.et:8080/geoserver/${workspace}/ows`;
-      window['geoser'] = "http://land.xokait.com.et:8080/geoserver";
-     window["city"] = window.location.pathname.split("/")[1];
-     window["locations"]="http://land.xokait.com.et/";
-     window["lang"] = window.location.pathname.split("/")[2];
-      window['PaymentReportPath'] = 'http://land.xokait.com.et/en-us/Receipt';
-      window['certReportPath'] = 'http://land.xokait.com.et/en-us/certificate';
+      window['groupName'] = "W1.Arada.Layers"; 
+      window['subcity'] = window.location.pathname.split("/")[1]
+      window['SubcityName'] = window.location.pathname.split("/")[1] + "_AddisLand"
+      const workspace = window.location.pathname.split("/")[1] + '_AddisLand';
+      window['geoserverUrl'] = `https://10.32.141.15:8443/geoserver/${workspace}/wms`;
+      window['geoserverUrlwfs'] = `https://10.32.141.15:8443/geoserver/${workspace}/ows`;
+      window['geoser'] = "https://ct.addisland.gov.et:8443/geoserver";
+      window["city"] = window.location.pathname.split("/")[1];
+      window["locations"] = "http://ct.addisland.gov.et/";
+      window['PaymentReportPath'] = 'https://ct.addisland.gov.et/en-us/Receipt';
+      window['certReportPath'] = 'https://ct.addisland.gov.et/en-us/certificate';
+      window['LetterReportPath'] = 'https://ct.addisland.gov.et/en-us/Letter';
       window['Lease_contract'] =   'http://land.xokait.com.et/en-us/Lease_Contract'
-      window['LetterReportPath'] = 'http://land.xokait.com.et/en-us/Letter';
+      window["lang"] = window.location.pathname.split("/")[2];
       window['resourcePath'] = "DesktopModules/MVC/xokamytasks/Views/Item/assets/";
       window['phisicalPath'] = '/DesktopModules/MVC/TASK/Views/Item/assets/assets/i18n/';
       window['overlayLayer'] = "Ethiopia - Admin Level 3.json";
-      window['formPath'] = "http://land.xokait.com.et/db/";
+      window['formPath'] = "https://www.addisland.gov.et/db/";
       window['Totalareatolerance'] = 0.05;
-     window['parentWorkspace'] = "AddisAbaba_AddisLand"
-window['folderpath'] = "http://197.156.93.110/city/subcity/";
-      window['layerConfig'] = [ 
+      window['parentWorkspace'] = "AddisAbaba_AddisLand"
+      window['folderpath'] = "http://10.32.141.15/city/subcity/";
+      window["propertyvalidetion"]=true
+      window['layerConfig'] = [
         {
           'name': "Ethiopia - Admin Level 1.json",
           'weight': 5
@@ -250,280 +66,368 @@ window['folderpath'] = "http://197.156.93.110/city/subcity/";
           'name': "Parcel Splitting Service for Existing Landholdings",
           'id': '8a8588ae-0267-48b7-88ac-f3f18ac02167'
         },
-         {
+        {
           'name': "Parcels Merging Service for Lease and Freehold landholdings",
           'id': '793b8814-f845-429e-a472-dc47e797d3fe'
         },
-         {
+        {
           'name': "Change of Purpose of Land Use for Freeholdings Service",
           'id': '0e20d26a-cc20-4dbc-b4da-5ba0ab5448bf'
         },
-         {
+        {
           'name': "Parcels Merging Service for Freehold landholdings",
           'id': '5de49606-4dc6-4fb1-8f37-0cfc948fdc83'
         }
       ];
- window['propertytasks'] = [
-        {id:"40AF2821-AD3A-4569-AF57-02931B3FB1CF"},
-        {id:"C5ED0523-2E07-4584-8B4F-0D705A125C38"},
-        {id:"CA8C01C7-5D29-4E2F-9B74-1577051A2B31"},
-        {id:"FDEC6D6E-FAB7-43D3-8D4F-307C4D40FEB0"},
-        {id:"5ABA39CE-494C-420D-8968-34B3A8CFB33F"},
-        {id:"BAABFBF9-DAAB-448A-8679-45CFD8A57CA6"},
-        {id:"3C01627D-962B-4905-A61B-55713EFB6062"},
-        {id:"2B8B1912-BA52-400E-9B6B-5FF6A565C308"},
-        {id:"D3C52EAD-60C6-4432-9086-7180E6B924E4"},
-        {id:"18C84AAB-9981-4340-9699-73DEB4D8814E"},
-        {id:"C5B0BE32-E2EA-4EC1-9E7E-7A3F51D9FD49"},
-        {id:"8FBB99DC-604B-424D-B634-9D0961CCAF93"},
-        {id:"99DD7759-918F-474B-856E-A9D0B58664AB"},
-        {id:"A0316DCF-54D4-4ABC-8236-AA8AE8CA1BDE"},
-        {id:"05EBEF86-F9B9-475D-B67D-BD6399BDF10F"},
-        {id:"5DB32785-131B-4F19-A777-EF58704F57DB"},
-        {id:"CD9672EC-0252-49F8-B8AE-EFFC6CD6E46A"},
-        {id:"F7F7C21F-5F65-40C5-ACAD-F63E36955B83"},
-        {id:"08E18B84-8A06-4741-9AF2-FB70A1D8506A"},
-        {id:"da391d30-6262-4da4-b842-dd06cc5b5839"}
+      window['propertytasks'] = [
+        { id: "40AF2821-AD3A-4569-AF57-02931B3FB1CF" },
+        { id: "C5ED0523-2E07-4584-8B4F-0D705A125C38" },
+        { id: "CA8C01C7-5D29-4E2F-9B74-1577051A2B31" },
+        { id: "FDEC6D6E-FAB7-43D3-8D4F-307C4D40FEB0" },
+        { id: "5ABA39CE-494C-420D-8968-34B3A8CFB33F" },
+        { id: "BAABFBF9-DAAB-448A-8679-45CFD8A57CA6" },
+        { id: "3C01627D-962B-4905-A61B-55713EFB6062" },
+        { id: "2B8B1912-BA52-400E-9B6B-5FF6A565C308" },
+        { id: "D3C52EAD-60C6-4432-9086-7180E6B924E4" },
+        { id: "18C84AAB-9981-4340-9699-73DEB4D8814E" },
+        { id: "C5B0BE32-E2EA-4EC1-9E7E-7A3F51D9FD49" },
+        { id: "8FBB99DC-604B-424D-B634-9D0961CCAF93" },
+        { id: "99DD7759-918F-474B-856E-A9D0B58664AB" },
+        { id: "A0316DCF-54D4-4ABC-8236-AA8AE8CA1BDE" },
+        { id: "05EBEF86-F9B9-475D-B67D-BD6399BDF10F" },
+        { id: "5DB32785-131B-4F19-A777-EF58704F57DB" },
+        { id: "CD9672EC-0252-49F8-B8AE-EFFC6CD6E46A" },
+        { id: "F7F7C21F-5F65-40C5-ACAD-F63E36955B83" },
+        { id: "08E18B84-8A06-4741-9AF2-FB70A1D8506A" },
+        { id: "da391d30-6262-4da4-b842-dd06cc5b5839" }
       ];
-
-    // if (window.location.pathname !== '/')
-    //   if (
-    //     window.location.pathname.split('/')[1] !== 'task' &&
-    //     window.location.pathname.split('/')[1] !== 'service' &&
-    //     window.location.pathname.split('/')[1] !== 'services') {
-    //     //console.log(window.location.pathname.split('/')[1]);
-    //     let urlSegment = window.location.pathname.split('/');
-    //     let langPrefix = urlSegment[1].toLowerCase()
-    //     if (
-    //       urlSegment[1] != 'MAP-GIS' &&
-    //       urlSegment[2] != 'MAP-GIS'
-    //     ) {
-    //       window['_app_base'] = `/${urlSegment[1]}${langPrefix == 'am-et' || langPrefix == 'en-us' ? '/' + urlSegment[2] : ''}`;
-    //     }
-    //     else {
-    //       window['_app_base'] = `${langPrefix == 'am-et' || langPrefix == 'en-us' ? '/' + urlSegment[1] : '/'}`;
-    //     }
-
-    //console.log('/' + window.location.pathname.split('/')[1] + '/' + window.location.pathname.split('/')[2]);
-    // }
-
-    //if it is still not working comment all the above code, and un comment the below code.
-    // window['_app_base'] ='xokaswcms/my-tasks';
-    // })();
-    if (window.location.pathname !== "/")
-      if (
-        window.location.pathname.split("/")[1] !== "task" &&
-        window.location.pathname.split("/")[1] !== "service" &&
-        window.location.pathname.split("/")[1] !== "services" &&
-        window.location.pathname.split("/")[2] == "language"
-      ) {
-        window["_app_base"] =
-          "/" +
-          window.location.pathname.split("/")[1] +
-          "/" +
-          window.location.pathname.split("/")[2] + "/MY-Task"
-
-      } else if (
-        window.location.pathname.split("/")[1] !== "task" &&
-        window.location.pathname.split("/")[1] !== "service" &&
-        window.location.pathname.split("/")[1] !== "services"
-      ) {
-        window["_app_base"] =
-          "/" +
-          window.location.pathname.split("/")[1] +
-          "/" +
-          window.location.pathname.split("/")[2] + "/MY-Task"
-
-      }
-  })();
-</script>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" />
-
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
-          rel="stylesheet" >
-       
-   
-</head>
- 
-<body>
+  //     window['_UserName'] = "@HttpContext.Current.User.Identity.Name";
+  //       window["_imagepathclock"] = 'http://job.xokait.com.et/datepicker/img/clock4800256.gif'
+  //       window["_imagepath"] = '<button type="button" class="trigger">' + 
+  //            '<img src="http://job.xokait.com.et/datepicker/img/calendar.gif" alt="Popup"></button>';
+  //            window["iconpath"]='/DesktopModules/MVC/TASK/Views/Item/assets/assets/marker-icon.png'
+  //       window['rootPath'] = 'http://197.156.93.110/XOKA.eoffice.bpel_land/api/';
+  //        window["rootPathApi"] = "http://197.156.93.110/Xoka_land_API/api/";
+  //       // window['local_GIS_server'] = 'http://localhost/geojson';
+  //       window['local_GIS_server'] = './assets/geojson';
+  //       // window['wfs_geoserver'] = 'http://192.168.0.150:8080/geoserver/ows';
+  //       // window['wfs_geoserver'] = 'http://localhost:8082/geoserver/ows';
+  //       window['wfs_geoserver'] = 'http://192.168.0.133:8082/geoserver/ows';
+  //       window["rootPath2"] = "http://197.156.93.110/XOKA.eoffice.bpel_land/api/";
+  //      window["rootpath2"] = "http://197.156.93.110/XOKA.eoffice.bpel_Land/api/BPEL/";
+  //         window["rootPath3"] = "http://197.156.93.110/Xoka_land_API/api/";
+  //       //console.log("window['_UserName']", window['_UserName']);
+  //       //console.log(window.location.pathname);
+  //       window['groupLayerName'] = "Ormiya_Miniral_WS:Ormiya_Miniral_Group";
+  // window['subcity'] = window.location.pathname.split("/")[1]
+  //     window['groupName'] = "Ormiya_Miniral_Group";
+  //       window['groupLayerName'] = "Arada_AddisLand:W1.Arada.Layers";
+  //       window['parentGroupName'] = "AddisLand"
+  //       window['groupName'] = "W1.Arada.Layers";
+  //         window['SubcityName'] =  window.location.pathname.split("/")[1]+ "_AddisLand"
+  //     //  const workspace = window.location.pathname.split("/")[1] + '_AddisLand';
+  //     window['geoserverUrl'] = `http://land.xokait.com.et:8080/geoserver/${workspace}/wms`;
+  //       window['geoserverUrlwfs'] = `http://land.xokait.com.et:8080/geoserver/${workspace}/ows`;
+  //       window['geoser'] = "http://land.xokait.com.et:8080/geoserver";
+  //      window["city"] = window.location.pathname.split("/")[1];
+  //      window["locations"]="http://land.xokait.com.et/";
+  //      window["lang"] = window.location.pathname.split("/")[2];
+  //       window['PaymentReportPath'] = 'http://land.xokait.com.et/en-us/Receipt';
+  //       window['certReportPath'] = 'http://land.xokait.com.et/en-us/certificate';
+  //       window['Lease_contract'] =   'http://land.xokait.com.et/en-us/Lease_Contract'
+  //       window['LetterReportPath'] = 'http://land.xokait.com.et/en-us/Letter';
+  //       window['resourcePath'] = "DesktopModules/MVC/xokamytasks/Views/Item/assets/";
+  //       window['phisicalPath'] = '/DesktopModules/MVC/TASK/Views/Item/assets/assets/i18n/';
+  //       window['overlayLayer'] = "Ethiopia - Admin Level 3.json";
+  //       window['formPath'] = "http://land.xokait.com.et/db/";
+  //       window['Totalareatolerance'] = 0.05;
+  //      window['parentWorkspace'] = "AddisAbaba_AddisLand"
+  // window['folderpath'] = "http://197.156.93.110/city/subcity/";
+  //       window['layerConfig'] = [ 
+  //         {
+  //           'name': "Ethiopia - Admin Level 1.json",
+  //           'weight': 5
+  //         }
+  //       ];
+  //       window['multipleplotcanbeadd'] = [
+  //         {
+  //           'name': "Parcel Splitting Service for Existing Landholdings",
+  //           'id': '8a8588ae-0267-48b7-88ac-f3f18ac02167'
+  //         },
+  //          {
+  //           'name': "Parcels Merging Service for Lease and Freehold landholdings",
+  //           'id': '793b8814-f845-429e-a472-dc47e797d3fe'
+  //         },
+  //          {
+  //           'name': "Change of Purpose of Land Use for Freeholdings Service",
+  //           'id': '0e20d26a-cc20-4dbc-b4da-5ba0ab5448bf'
+  //         },
+  //          {
+  //           'name': "Parcels Merging Service for Freehold landholdings",
+  //           'id': '5de49606-4dc6-4fb1-8f37-0cfc948fdc83'
+  //         }
+  //       ];
+  //  window['propertytasks'] = [
+  //         {id:"40AF2821-AD3A-4569-AF57-02931B3FB1CF"},
+  //         {id:"C5ED0523-2E07-4584-8B4F-0D705A125C38"},
+  //         {id:"CA8C01C7-5D29-4E2F-9B74-1577051A2B31"},
+  //         {id:"FDEC6D6E-FAB7-43D3-8D4F-307C4D40FEB0"},
+  //         {id:"5ABA39CE-494C-420D-8968-34B3A8CFB33F"},
+  //         {id:"BAABFBF9-DAAB-448A-8679-45CFD8A57CA6"},
+  //         {id:"3C01627D-962B-4905-A61B-55713EFB6062"},
+  //         {id:"2B8B1912-BA52-400E-9B6B-5FF6A565C308"},
+  //         {id:"D3C52EAD-60C6-4432-9086-7180E6B924E4"},
+  //         {id:"18C84AAB-9981-4340-9699-73DEB4D8814E"},
+  //         {id:"C5B0BE32-E2EA-4EC1-9E7E-7A3F51D9FD49"},
+  //         {id:"8FBB99DC-604B-424D-B634-9D0961CCAF93"},
+  //         {id:"99DD7759-918F-474B-856E-A9D0B58664AB"},
+  //         {id:"A0316DCF-54D4-4ABC-8236-AA8AE8CA1BDE"},
+  //         {id:"05EBEF86-F9B9-475D-B67D-BD6399BDF10F"},
+  //         {id:"5DB32785-131B-4F19-A777-EF58704F57DB"},
+  //         {id:"CD9672EC-0252-49F8-B8AE-EFFC6CD6E46A"},
+  //         {id:"F7F7C21F-5F65-40C5-ACAD-F63E36955B83"},
+  //         {id:"08E18B84-8A06-4741-9AF2-FB70A1D8506A"},
+  //         {id:"da391d30-6262-4da4-b842-dd06cc5b5839"}
+  //       ];
+      // if (window.location.pathname !== '/')
+      //   if (
+      //     window.location.pathname.split('/')[1] !== 'task' &&
+      //     window.location.pathname.split('/')[1] !== 'service' &&
+      //     window.location.pathname.split('/')[1] !== 'services') {
+      //     //console.log(window.location.pathname.split('/')[1]);
+      //     let urlSegment = window.location.pathname.split('/');
+      //     let langPrefix = urlSegment[1].toLowerCase()
+      //     if (
+      //       urlSegment[1] != 'MAP-GIS' &&
+      //       urlSegment[2] != 'MAP-GIS'
+      //     ) {
+      //       window['_app_base'] = `/${urlSegment[1]}${langPrefix == 'am-et' || langPrefix == 'en-us' ? '/' + urlSegment[2] : ''}`;
+      //     }
+      //     else {
+      //       window['_app_base'] = `${langPrefix == 'am-et' || langPrefix == 'en-us' ? '/' + urlSegment[1] : '/'}`;
+      //     }
   
+      //console.log('/' + window.location.pathname.split('/')[1] + '/' + window.location.pathname.split('/')[2]);
+      // }
   
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" ></script>
+      //if it is still not working comment all the above code, and un comment the below code.
+      // window['_app_base'] ='xokaswcms/my-tasks';
+      // })();
+      if (window.location.pathname !== "/")
+        if (
+          window.location.pathname.split("/")[1] !== "task" &&
+          window.location.pathname.split("/")[1] !== "service" &&
+          window.location.pathname.split("/")[1] !== "services" &&
+          window.location.pathname.split("/")[2] == "language"
+        ) {
+          window["_app_base"] =
+            "/" +
+            window.location.pathname.split("/")[1] +
+            "/" +
+            window.location.pathname.split("/")[2] + "/MY-Task"
   
-  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-editable/1.2.0/Leaflet.Editable.js"></script>
-   
-  <app-root></app-root>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.js"></script>
-  <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.plus.js"></script>
-  <script src="https://ct.addisland.gov.et/datepicker/jquery.plugin.js"></script>
-  <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.picker.js"></script>
-  <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars-am.js"></script>
-  <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.ethiopian-am.js"></script>
-  <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.ethiopian.js"></script>
-  <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.picker-am.js"></script>
-  <script src="https://ct.addisland.gov.et/datepicker/leaflet-polygon.fillPattern.js"></script>
- 
-</body>
-
-</html> 
-
-
-  <!-- <!doctype html>
-  <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>MyTask</title>
-    <base href="/">
-    <script>
-      (function () {
-        window['_UserName'] = "@HttpContext.Current.User.Identity.Name";
-        window["_imagepathclock"] = 'http://job.xokait.com.et/datepicker/img/clock4800256.gif'
-        window["_imagepath"] = '<button type="button" class="trigger">' +
-          '<img src="http://job.xokait.com.et/datepicker/img/calendar.gif" alt="Popup"></button>';
-        window["iconpath"] = '/DesktopModules/MVC/TASK/Views/Item/assets/assets/marker-icon.png'
-        window['rootPath'] = 'http://197.156.93.110//XOKA.eoffice.bpel_land/api/';
-        window["rootPathApi"] = "http://197.156.93.110/Xoka_land_API/api/";
-        // window['local_GIS_server'] = 'http://localhost/geojson';
-        window['local_GIS_server'] = './assets/geojson';
-        // window['wfs_geoserver'] = 'http://192.168.0.150:8080/geoserver/ows';
-        // window['wfs_geoserver'] = 'http://localhost:8082/geoserver/ows';
-        window['wfs_geoserver'] = 'http://192.168.0.133:8082/geoserver/ows';
-        window["rootPath2"] = "http://197.156.93.110/XOKA.eoffice.bpel_land/api/";
-        window["rootpath2"] = "http://197.156.93.110/XOKA.eoffice.bpel_Land/api/BPEL/";
-        window["rootPath3"] = "http://197.156.93.110/Xoka_land_API/api/";
-        //console.log("window['_UserName']", window['_UserName']);
-        //console.log(window.location.pathname);
-        window['groupLayerName'] = "Ormiya_Miniral_WS:Ormiya_Miniral_Group";
-        window['groupName'] = "Ormiya_Miniral_Group";
-        window['groupLayerName'] = "Arada_AddisLand:W1.Arada.Layers";
-        window['parentGroupName'] = "AddisLand"
-        window['groupName'] = "W1.Arada.Layers";
-        window['subcity'] = window.location.pathname.split("/")[1]
-        window['SubcityName'] = window.location.pathname.split("/")[1] + "_AddisLand"
-        const workspace = window.location.pathname.split("/")[1] + '_AddisLand';
-        window['geoserverUrl'] = `http://land.xokait.com.et:8080/geoserver/${workspace}/wms`;
-        window['geoserverUrlwfs'] = `http://land.xokait.com.et:8080/geoserver/${workspace}/ows`;
-        window['geoser'] = "http://land.xokait.com.et:8080/geoserver";
-        window["city"] = window.location.pathname.split("/")[1];
-        window["locations"] = "http://land.xokait.com.et/";
-        window['PaymentReportPath'] = 'http://land.xokait.com.et/en-us/Receipt';
-        window['certReportPath'] = 'http://land.xokait.com.et/en-us/certificate';
-        window['LetterReportPath'] = 'http://land.xokait.com.et/en-us/Letter';
-        window["lang"] = window.location.pathname.split("/")[2];
-        window['resourcePath'] = "DesktopModules/MVC/xokamytasks/Views/Item/assets/";
-        window['phisicalPath'] = '/DesktopModules/MVC/TASK/Views/Item/assets/assets/i18n/';
-        window['overlayLayer'] = "Ethiopia - Admin Level 3.json";
-        window['formPath'] = "http://land.xokait.com.et/db/";
-        window['Totalareatolerance'] = 0.05;
-        window['parentWorkspace'] = "AddisAbaba_AddisLand"
-        window['folderpath'] = "http://197.156.93.110/city/subcity/";
-        window['layerConfig'] = [
-          {
-            'name': "Ethiopia - Admin Level 1.json",
-            'weight': 5
-          }
-        ];
-        window['multipleplotcanbeadd'] = [
-          {
-            'name': "Parcel Splitting Service for Existing Landholdings",
-            'id': '8a8588ae-0267-48b7-88ac-f3f18ac02167'
-          },
-          {
-            'name': "Parcels Merging Service for Lease and Freehold landholdings",
-            'id': '793b8814-f845-429e-a472-dc47e797d3fe'
-          },
-          {
-            'name': "Change of Purpose of Land Use for Freeholdings Service",
-            'id': '0e20d26a-cc20-4dbc-b4da-5ba0ab5448bf'
-          },
-          {
-            'name': "Parcels Merging Service for Freehold landholdings",
-            'id': '5de49606-4dc6-4fb1-8f37-0cfc948fdc83'
-          }
-        ];
-        // if (window.location.pathname !== '/')
-        //   if (
-        //     window.location.pathname.split('/')[1] !== 'task' &&
-        //     window.location.pathname.split('/')[1] !== 'service' &&
-        //     window.location.pathname.split('/')[1] !== 'services') {
-        //     //console.log(window.location.pathname.split('/')[1]);
-        //     let urlSegment = window.location.pathname.split('/');
-        //     let langPrefix = urlSegment[1].toLowerCase()
-        //     if (
-        //       urlSegment[1] != 'MAP-GIS' &&
-        //       urlSegment[2] != 'MAP-GIS'
-        //     ) {
-        //       window['_app_base'] = `/${urlSegment[1]}${langPrefix == 'am-et' || langPrefix == 'en-us' ? '/' + urlSegment[2] : ''}`;
-        //     }
-        //     else {
-        //       window['_app_base'] = `${langPrefix == 'am-et' || langPrefix == 'en-us' ? '/' + urlSegment[1] : '/'}`;
-        //     }
-
-        //console.log('/' + window.location.pathname.split('/')[1] + '/' + window.location.pathname.split('/')[2]);
-        // }
-
-        //if it is still not working comment all the above code, and un comment the below code.
-        // window['_app_base'] ='xokaswcms/my-tasks';
-        // })();
-        if (window.location.pathname !== "/")
-          if (
-            window.location.pathname.split("/")[1] !== "task" &&
-            window.location.pathname.split("/")[1] !== "service" &&
-            window.location.pathname.split("/")[1] !== "services" &&
-            window.location.pathname.split("/")[2] == "language"
-          ) {
-            window["_app_base"] =
-              "/" +
-              window.location.pathname.split("/")[1] +
-              "/" +
-              window.location.pathname.split("/")[2] + "/MY-Task"
-
-          } else if (
-            window.location.pathname.split("/")[1] !== "task" &&
-            window.location.pathname.split("/")[1] !== "service" &&
-            window.location.pathname.split("/")[1] !== "services"
-          ) {
-            window["_app_base"] =
-              "/" +
-              window.location.pathname.split("/")[1] +
-              "/" +
-              window.location.pathname.split("/")[2] + "/MY-Task"
-
-          }
-      })();
-    </script>
+        } else if (
+          window.location.pathname.split("/")[1] !== "task" &&
+          window.location.pathname.split("/")[1] !== "service" &&
+          window.location.pathname.split("/")[1] !== "services"
+        ) {
+          window["_app_base"] =
+            "/" +
+            window.location.pathname.split("/")[1] +
+            "/" +
+            window.location.pathname.split("/")[2] + "/MY-Task"
+  
+        }
+    })();
+  </script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" />
+  
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+  
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" </script>
-   
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+            rel="stylesheet" >
+         
+     
   </head>
-
-  <body>
-    <app-root></app-root>
    
-
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" defer></script>
-    <script src="http://job.xokait.com.et/datepicker/jquery.calendars.js" defer></script>
-    <script src="http://job.xokait.com.et/datepicker/jquery.calendars.plus.js" defer></script>
-    <script src="http://job.xokait.com.et/datepicker/jquery.plugin.js" defer></script>
-    <script src="http://job.xokait.com.et/datepicker/jquery.calendars.picker.js" defer></script>
-    <script src="http://job.xokait.com.et/datepicker/jquery.calendars-am.js" defer></script>
-    <script src="http://job.xokait.com.et/datepicker/jquery.calendars.ethiopian-am.js" defer></script>
-    <script src="http://job.xokait.com.et/datepicker/jquery.calendars.ethiopian.js" defer></script>
-    <script src="http://job.xokait.com.et/datepicker/jquery.calendars.picker-am.js" defer></script>
+  <body>
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" ></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-editable/1.2.0/Leaflet.Editable.js"></script>
+     
+    <app-root></app-root>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.js"></script>
+    <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.plus.js"></script>
+    <script src="https://ct.addisland.gov.et/datepicker/jquery.plugin.js"></script>
+    <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.picker.js"></script>
+    <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars-am.js"></script>
+    <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.ethiopian-am.js"></script>
+    <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.ethiopian.js"></script>
+    <script src="https://ct.addisland.gov.et/datepicker/jquery.calendars.picker-am.js"></script>
+    <script src="https://ct.addisland.gov.et/datepicker/leaflet-polygon.fillPattern.js"></script>
+   
   </body>
-
-  </html>
-
-
-
+  
+  </html> 
+  
+  
+    <!-- <!doctype html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <title>MyTask</title>
+      <base href="/">
+      <script>
+        (function () {
+          window['_UserName'] = "@HttpContext.Current.User.Identity.Name";
+          window["_imagepathclock"] = 'http://job.xokait.com.et/datepicker/img/clock4800256.gif'
+          window["_imagepath"] = '<button type="button" class="trigger">' +
+            '<img src="http://job.xokait.com.et/datepicker/img/calendar.gif" alt="Popup"></button>';
+          window["iconpath"] = '/DesktopModules/MVC/TASK/Views/Item/assets/assets/marker-icon.png'
+          window['rootPath'] = 'http://197.156.93.110//XOKA.eoffice.bpel_land/api/';
+          window["rootPathApi"] = "http://197.156.93.110/Xoka_land_API/api/";
+          // window['local_GIS_server'] = 'http://localhost/geojson';
+          window['local_GIS_server'] = './assets/geojson';
+          // window['wfs_geoserver'] = 'http://192.168.0.150:8080/geoserver/ows';
+          // window['wfs_geoserver'] = 'http://localhost:8082/geoserver/ows';
+          window['wfs_geoserver'] = 'http://192.168.0.133:8082/geoserver/ows';
+          window["rootPath2"] = "http://197.156.93.110/XOKA.eoffice.bpel_land/api/";
+          window["rootpath2"] = "http://197.156.93.110/XOKA.eoffice.bpel_Land/api/BPEL/";
+          window["rootPath3"] = "http://197.156.93.110/Xoka_land_API/api/";
+          //console.log("window['_UserName']", window['_UserName']);
+          //console.log(window.location.pathname);
+          window['groupLayerName'] = "Ormiya_Miniral_WS:Ormiya_Miniral_Group";
+          window['groupName'] = "Ormiya_Miniral_Group";
+          window['groupLayerName'] = "Arada_AddisLand:W1.Arada.Layers";
+          window['parentGroupName'] = "AddisLand"
+          window['groupName'] = "W1.Arada.Layers";
+          window['subcity'] = window.location.pathname.split("/")[1]
+          window['SubcityName'] = window.location.pathname.split("/")[1] + "_AddisLand"
+          const workspace = window.location.pathname.split("/")[1] + '_AddisLand';
+          window['geoserverUrl'] = `http://land.xokait.com.et:8080/geoserver/${workspace}/wms`;
+          window['geoserverUrlwfs'] = `http://land.xokait.com.et:8080/geoserver/${workspace}/ows`;
+          window['geoser'] = "http://land.xokait.com.et:8080/geoserver";
+          window["city"] = window.location.pathname.split("/")[1];
+          window["locations"] = "http://land.xokait.com.et/";
+          window['PaymentReportPath'] = 'http://land.xokait.com.et/en-us/Receipt';
+          window['certReportPath'] = 'http://land.xokait.com.et/en-us/certificate';
+          window['LetterReportPath'] = 'http://land.xokait.com.et/en-us/Letter';
+          window["lang"] = window.location.pathname.split("/")[2];
+          window['resourcePath'] = "DesktopModules/MVC/xokamytasks/Views/Item/assets/";
+          window['phisicalPath'] = '/DesktopModules/MVC/TASK/Views/Item/assets/assets/i18n/';
+          window['overlayLayer'] = "Ethiopia - Admin Level 3.json";
+          window['formPath'] = "http://land.xokait.com.et/db/";
+          window['Totalareatolerance'] = 0.05;
+          window['parentWorkspace'] = "AddisAbaba_AddisLand"
+          window['folderpath'] = "http://197.156.93.110/city/subcity/";
+          window['layerConfig'] = [
+            {
+              'name': "Ethiopia - Admin Level 1.json",
+              'weight': 5
+            }
+          ];
+          window['multipleplotcanbeadd'] = [
+            {
+              'name': "Parcel Splitting Service for Existing Landholdings",
+              'id': '8a8588ae-0267-48b7-88ac-f3f18ac02167'
+            },
+            {
+              'name': "Parcels Merging Service for Lease and Freehold landholdings",
+              'id': '793b8814-f845-429e-a472-dc47e797d3fe'
+            },
+            {
+              'name': "Change of Purpose of Land Use for Freeholdings Service",
+              'id': '0e20d26a-cc20-4dbc-b4da-5ba0ab5448bf'
+            },
+            {
+              'name': "Parcels Merging Service for Freehold landholdings",
+              'id': '5de49606-4dc6-4fb1-8f37-0cfc948fdc83'
+            }
+          ];
+          // if (window.location.pathname !== '/')
+          //   if (
+          //     window.location.pathname.split('/')[1] !== 'task' &&
+          //     window.location.pathname.split('/')[1] !== 'service' &&
+          //     window.location.pathname.split('/')[1] !== 'services') {
+          //     //console.log(window.location.pathname.split('/')[1]);
+          //     let urlSegment = window.location.pathname.split('/');
+          //     let langPrefix = urlSegment[1].toLowerCase()
+          //     if (
+          //       urlSegment[1] != 'MAP-GIS' &&
+          //       urlSegment[2] != 'MAP-GIS'
+          //     ) {
+          //       window['_app_base'] = `/${urlSegment[1]}${langPrefix == 'am-et' || langPrefix == 'en-us' ? '/' + urlSegment[2] : ''}`;
+          //     }
+          //     else {
+          //       window['_app_base'] = `${langPrefix == 'am-et' || langPrefix == 'en-us' ? '/' + urlSegment[1] : '/'}`;
+          //     }
+  
+          //console.log('/' + window.location.pathname.split('/')[1] + '/' + window.location.pathname.split('/')[2]);
+          // }
+  
+          //if it is still not working comment all the above code, and un comment the below code.
+          // window['_app_base'] ='xokaswcms/my-tasks';
+          // })();
+          if (window.location.pathname !== "/")
+            if (
+              window.location.pathname.split("/")[1] !== "task" &&
+              window.location.pathname.split("/")[1] !== "service" &&
+              window.location.pathname.split("/")[1] !== "services" &&
+              window.location.pathname.split("/")[2] == "language"
+            ) {
+              window["_app_base"] =
+                "/" +
+                window.location.pathname.split("/")[1] +
+                "/" +
+                window.location.pathname.split("/")[2] + "/MY-Task"
+  
+            } else if (
+              window.location.pathname.split("/")[1] !== "task" &&
+              window.location.pathname.split("/")[1] !== "service" &&
+              window.location.pathname.split("/")[1] !== "services"
+            ) {
+              window["_app_base"] =
+                "/" +
+                window.location.pathname.split("/")[1] +
+                "/" +
+                window.location.pathname.split("/")[2] + "/MY-Task"
+  
+            }
+        })();
+      </script>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="icon" type="image/x-icon" href="favicon.ico">
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" </script>
+     
+  
+    </head>
+  
+    <body>
+      <app-root></app-root>
+     
+  
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" defer></script>
+      <script src="http://job.xokait.com.et/datepicker/jquery.calendars.js" defer></script>
+      <script src="http://job.xokait.com.et/datepicker/jquery.calendars.plus.js" defer></script>
+      <script src="http://job.xokait.com.et/datepicker/jquery.plugin.js" defer></script>
+      <script src="http://job.xokait.com.et/datepicker/jquery.calendars.picker.js" defer></script>
+      <script src="http://job.xokait.com.et/datepicker/jquery.calendars-am.js" defer></script>
+      <script src="http://job.xokait.com.et/datepicker/jquery.calendars.ethiopian-am.js" defer></script>
+      <script src="http://job.xokait.com.et/datepicker/jquery.calendars.ethiopian.js" defer></script>
+      <script src="http://job.xokait.com.et/datepicker/jquery.calendars.picker-am.js" defer></script>
+    </body>
+  
+    </html>
+  
+  
+  
+  

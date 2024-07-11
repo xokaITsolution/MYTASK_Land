@@ -112,11 +112,9 @@ import { NetworkDatabaseMonitoringToolComponent } from "./network-database-monit
 import { NetworkMonitoringService } from "./network-database-monitoring-tool/network-monitoring.service";
 import { DatabaseMonitoringService } from "./network-database-monitoring-tool/database-monitoring.service";
 import { FilterPipe } from "./FilterPipe";
-
+import { WithdrawProposeComponent } from "./withdraw-propose/withdraw-propose.component";
 
 import {MyLibModule} from 'my-lib'
-import { WithdrawProposeComponent } from './withdraw-propose/withdraw-propose.component'
-
 
 
 @NgModule({
@@ -201,6 +199,7 @@ import { WithdrawProposeComponent } from './withdraw-propose/withdraw-propose.co
     ExampleComponent,
     PaymentComponent,
     ServiceComponent,
+    WithdrawProposeComponent,
     SurveyComponent,
     PlotManagmentComponent,
     LeaseOwnerShipComponent,
@@ -237,7 +236,6 @@ import { WithdrawProposeComponent } from './withdraw-propose/withdraw-propose.co
     CertificateVersionUpgradeComponent,
     GisMapBackupComponent,
     NetworkDatabaseMonitoringToolComponent,
-    WithdrawProposeComponent,
   ],
   entryComponents: [
     GisMapComponent,
