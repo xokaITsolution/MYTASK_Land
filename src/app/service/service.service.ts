@@ -35,7 +35,7 @@ export class ServiceService {
     environment.rootPathApi + "Document_Archive/procDocument_Archive";
   private GetApplicationNumberByUserURL =
     environment.rootPathApi +
-    "view/View_getUserNameForReviewByApplication/UserName";
+    "view/View_getUserNameForReviewByApplication/UserName/UserName";
   private GetApplicationNumberBypreviousApplication =
     environment.rootPathApi +
     "view/View_getUserNameForReviewByApplication/previousApplication";
@@ -112,13 +112,11 @@ export class ServiceService {
     "Payment_Details?sortOrder=test&currentFilter&searchString&pageIndex&pageSize";
   private getPaymentDetailByID =
     environment.rootPath + "Payment_Details?sortOrder=test&currentFilter=";
-  // private getusernameUrl =
-  //   environment.rootPathApi +
-  //   "view/View_getUserNameForReviewByApplication/application_number?application_number=";
   private getusernameUrl =
     environment.rootPathApi +
-    "view/View_getUserNameForReviewByApplication/"
-  private gettopostgres =
+    "view/View_getUserNameForReviewByApplication/";
+  //application_number?application_number=
+    private gettopostgres =
     environment.rootPathApi + "Insert_In_toPostgres/procInsert_In_toPostgres/";
   private PlotManagementUrl = environment.rootPath + "Plot_Registration";
   private PlotManagementUrlapi =
@@ -149,6 +147,7 @@ export class ServiceService {
   private getTaskRuleURL = environment.rootPath + "BPEL/TaskRule"; // URL to web api
 
   private nextTaskCompleteURL = environment.rootPath + "BPEL/nextTaskComplete"; // URL to web api
+  staticProperty = environment.rootPath2+'ProprtyData/ProcProportyStaticData'
   private nextTaskAcceptOrRejectURl =
     environment.rootPath + "BPEL/nextTaskAcceptOrReject"; // URL to web api
   private SaveDataURL = environment.rootPath + "BPEL/SaveData"; // URL to web api
@@ -222,6 +221,8 @@ export class ServiceService {
     environment.rootPathApi +
     "view/View_caseworkeruserorganizationcodeapi/UserName?UserName";
   private applicationdelete = environment.rootPathApi + "aplication/";
+  propertyLookupbyid = environment.rootPath2+'ProprtyData/procProportyTypeLockup/'
+  getWithdrawpropose1 = environment.rootPathApi+'view/View_Withdraw_propose'
   // environment.rootPath + "BPEL/GetApplicationNumberByUser"; // URL to web api
   httpOptions = {
     headers: new HttpHeaders({ "Content-Type": "application/json" }),
@@ -235,6 +236,8 @@ export class ServiceService {
   EmployeeTIN: any;
   Parent_Customer_ID: any;
   showcustomerr: boolean;
+  DisableFormb: boolean;
+  Parcel_ID:any;
   taskid: string;
   coordinate: any[] = [];
   geometry: any[];
@@ -242,7 +245,6 @@ export class ServiceService {
   disablebutton: boolean = false;
   latLngs: { lat: number; lng: number }[];
   check: boolean;
-  Parcel_ID: any;
   shapes: any;
   hide: boolean = false;
   toMes: boolean;
@@ -308,6 +310,8 @@ export class ServiceService {
   salesFrominformat: boolean=false
   sellerCustomerId: string;
   currentproprtyID: any;
+  propertyTypeid: any;
+  propertyid: any;
   constructor(private http: HttpClient, private cookieService: CookieService) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -380,6 +384,26 @@ export class ServiceService {
       this.GetApplicationNumberByUserURLsapi + "?UserName=" + username
     );
   }
+  getPropertyTypeId() {
+    console.log(' return this.propertyTypeid: ',this.propertyTypeid);
+    return this.propertyTypeid
+  }
+  getPropertyTypeForm(data) {
+    return this.http.get(this.propertyLookupbyid + data)
+  }
+  getWithdrawpropose() {
+    return this.http.get(this.getWithdrawpropose1)
+  }
+  getPropertyStaticForm() {
+    return this.http.get(this.staticProperty)
+  }
+  getPropertyId() {
+    return this.propertyid
+  }
+  savePropertyStaticForm(data: any) {
+    return this.http.post(this.staticProperty,data)
+  }
+
   getTasks(data) {
     return this.http.get(this.Tasks + "?ServiceCode=" + data);
   }
@@ -494,7 +518,6 @@ export class ServiceService {
     return this.http.get(this.woredabysubcity + "/" + col);
   }
   getuserName(Appno) {
-    // debugger
     return this.http.get(this.getusernameUrl + Appno);
   }
   postplotTopostgres(plotid, propertid) {
@@ -502,9 +525,9 @@ export class ServiceService {
       this.gettopostgres + plotid + "/Proporty_Id?Proporty_Id=" + propertid
     );
   }
-  GetApplicationNumberByUsers(username, orgcod) {
+  GetApplicationNumberByUsers(username, orgcod,AppNo) {
     return this.http.get(
-      this.GetApplicationNumberByUserURL + "/" + username + "/" + orgcod
+      this.GetApplicationNumberByUserURL + "/" + username + "/" + orgcod +"/"+AppNo
     );
   }
   GetApplicationNumberByprevious(Title_Deed_No, Useranem, orgcod) {
