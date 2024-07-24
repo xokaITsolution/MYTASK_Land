@@ -26,6 +26,7 @@ export class LeaseContractComponent implements OnInit {
   tab1;
   tab2;
   contractList = []
+  
   AppNo: any;
   licenceService: any;
   licenceData: any;
@@ -35,6 +36,7 @@ export class LeaseContractComponent implements OnInit {
   isnew :boolean;
   orginizationlookup: any;
   intervalId: NodeJS.Timer;
+  conlevel_List: [];
   constructor(private _toast: MessageService, public _service: LeaseContractService,
     private activatedRoute: ActivatedRoute, public ServiceService: ServiceService,
     private ServiceComponent: ServiceComponent, private notificationsService: NotificationsService
@@ -43,23 +45,22 @@ export class LeaseContractComponent implements OnInit {
     this.activatedRoute.params.subscribe((p) => {
       console.log("Observable Params:", p);
       this.AppNo = p["AppNo"];
+      this._service.App_no = p["AppNo"];
     });
     this.get_license_service();
     this.get_contract_type();
+    this.get_constraction_level();
     this.newLeaseContract.contract_no = Guid.create().toString();
   }
   get_license_service() {
-    debugger
     this._service.get_license_service(this.AppNo).subscribe((data) => {
       this.licenceService = data;
       this.licenceData = this.licenceService.list[0];
       console.log("get_license_service", this.licenceData);
-// debugger
       // this.newLeaseContract.sdp = this.licenceData.SDP_ID;
-      debugger
       this._service.get_organizationby_org_code(this.licenceData.SDP_ID).subscribe(data => {
           this.orginizationlookup = data['procorganizationss'][0];
-          // debugger
+          // 
              this.newLeaseContract.sdp=data['procorganizationss'][0].name_am
         // this.newLeaseContract.worda = data['procWoreda_Lookups'][0].woreda_Name
       },
@@ -72,7 +73,7 @@ export class LeaseContractComponent implements OnInit {
 
       this._service.get_by_ID(this.licenceData.Application_No).subscribe(data => {
         // console.log('lease_p_head:', data['proc_Lease_Payment_Heads'][0]);
-        debugger
+        
         this.newLeaseContract.lease_code = data['proc_Lease_Payment_Heads'][0].lease_code
         this._service.lease_code = data['proc_Lease_Payment_Heads'][0].lease_code;
         
@@ -106,22 +107,28 @@ export class LeaseContractComponent implements OnInit {
   );
   }
   get_lease_contract(lease_code) {
-debugger
+// 
     this._service.get_Lease_contract_by_Id(lease_code).
       subscribe(data => {
         // debugger
-        if (data['proc_Lease_Contracts'].length>0) {
-          // 
+        if (data['proc_Lease_Contracts'].length>0) { 
           this.contractList = [data['proc_Lease_Contracts'][0]];
+          this.newLeaseContract.Con_level=data['proc_Lease_Contracts'][0].con_level
           this._service.contract_NO=data['proc_Lease_Contracts'][0].contract_NO; 
           this.enable_edit=true;
           // console.log("this.newLeaseContract", this.contractList);
         }
         else {
-          // debugger
+          // 
           this.enable_edit=false;
         }
       })
+  }
+  get_constraction_level(){
+    this.ServiceService.get_constraction_level().subscribe(data=>{
+      
+      this.conlevel_List=data["proc_Contraction_Levels"];
+    })
   }
   selected(data){
     this.get_lease_contract(this._service.lease_code);
@@ -134,7 +141,6 @@ debugger
   get_contract_type() {
     this._service.get_all().subscribe(
       (data) => {
-
         const contractTypearray1 = this.json2array(data);
         this.contractTypearray = contractTypearray1[0].proc_Lease_Contract_Types;;
       },
@@ -144,8 +150,12 @@ debugger
     );
   }
   nextClicked() {
-    this.childComponent.Get_Lease_contract();
-    this.childComponent1.Get_Lease_contract();
+    if (this._service.EnambleFreeHold_to_Lease){
+      this.childComponent1.Get_Lease_contract();
+    }
+    else{
+      this.childComponent.Get_Lease_contract();
+    }
   }
   get_contract_type1(contract_type_id) {
 
@@ -172,11 +182,13 @@ debugger
     );
   }
   updatelease_contract() {
+
     this.newLeaseContract.sdp=this.orginizationlookup.organization_code;
     this.get_contract_type1(this.newLeaseContract.contact_Type);
     this._service.updatelease_contract(this.newLeaseContract).subscribe(
       (response) => {
         // this.showToast('success', 'success', 'Success');
+        this.completed.emit();
         this.notificationsService.success("Success", "Successfully Updated");
         this.enablenext = true;
         this.showForm=true;
@@ -190,17 +202,18 @@ debugger
     );
   }
   InsertLeaseContract() {
-    // debugger
-    // this.newLeaseContract.sdp=this.orginizationlookup.organization_code;
+    // 
+    this.newLeaseContract.sdp=this.orginizationlookup.organization_code;
     this.get_contract_type1(this.newLeaseContract.contact_Type);
     // if ((this.newLeaseContract.lease_code != null && this.newLeaseContract.lease_code != "")) {
-      debugger
+      
       this._service.insert_data(this.newLeaseContract).subscribe(
         data => {
           this._service.contract_NO= this.newLeaseContract.contract_no
           this.contractList=[this.newLeaseContract];
           this.enablenext = true;
           this.isnew = false;
+          this.completed.emit();
           this.notificationsService.success("Success", "Success");
           console.log('newLeaseContract :: ', data);
         },
@@ -252,7 +265,6 @@ debugger
   json2array(json) {
     var result = [];
     result.push(json);
-
     return result;
   }
   tabChanged(e) {
@@ -275,4 +287,8 @@ export class LeaseContract {
   public branch_name: string; // Changed to match the naming convention
   public worda: string; // Changed from Worda to match the naming convention
   public phone_no: string;
+  public Con_level: any;
+  public team_leader_approved_by: any;
+  public lease_owner_appreved_by: any;
+
 }

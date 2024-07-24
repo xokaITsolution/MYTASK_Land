@@ -8,6 +8,8 @@ import { LeaseContractService } from "../lease-contract.service";
 import { ServiceService } from "src/app/service/service.service";
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { DomSanitizer } from "@angular/platform-browser";
+import { environment } from "src/environments/environment";
 
 
 @Component({
@@ -21,24 +23,27 @@ export class LeasePaymentHeadDetailComponent {
   @Input() AppNo;
   isNumberInserted: boolean = false;
   disablegen: boolean = true;
+  previousInputValue1: number = 0;
   previousInputValue: number = 0;
+  isCertifcatePrintforConfirmation: boolean;
   // Create a subject to track the input changes
   inputChange = new Subject<string>();
+  ReportPath: any;
+  enablepaymentreport: boolean;
+  Enable: boolean;
+  updated: boolean;
   constructor(
     private router: Router,
     private _service: LeaseContractService,
     private notificationsService: NotificationsService,
     private ServiceService: ServiceService,
-
+    private sanitizer: DomSanitizer,
   ) {
 
   }
 
-
-  Enable = true;
-
   ngOnInit(): void {
-
+     
   }
   personalInformation: any;
   submitted: boolean = false;
@@ -68,24 +73,55 @@ export class LeasePaymentHeadDetailComponent {
     if (difference < 0) {
       // Add the absolute value of the difference back to Plot_Size_By_Lease_Bid_Price
       this.leasePaymentHeadDetail.Plot_Size_By_Lease_Bid_Price += Math.abs(difference);
+      let Plot_Size_By_Lease_Price =numericValue;
+      let lease_price = this.leasePaymentHeadDetail.Current_lease_Price * Plot_Size_By_Lease_Price;
+      let bid_price = this.leasePaymentHeadDetail.Current_lease_bid_price * this.leasePaymentHeadDetail.Plot_Size_By_Lease_Bid_Price
+      const totalLeaseAmount = bid_price+lease_price;
+        const roundedAmount = +totalLeaseAmount.toFixed(3);
+        this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid = roundedAmount;
+
+        const Amount_of_down_payment = this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid*this._service.lease_payment_advance_per;
+        const roundedAmount1 = +Amount_of_down_payment.toFixed(3); 
+        this.leasePaymentHeadDetail.Amount_of_down_payment = roundedAmount1 
+        this.leasePaymentHeadDetail.Amount_of_down_payment_display = roundedAmount1.toLocaleString();
+
+    this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid_display = roundedAmount.toLocaleString();
+
     } else {
-      // If the difference is positive, the user has added a digit
       // Subtract the difference from Plot_Size_By_Lease_Bid_Price
       this.leasePaymentHeadDetail.Plot_Size_By_Lease_Bid_Price -= difference;
+      let Plot_Size_By_Lease_Price =numericValue;
+      let lease_price = this.leasePaymentHeadDetail.Current_lease_Price * Plot_Size_By_Lease_Price;
+      let bid_price = this.leasePaymentHeadDetail.Current_lease_bid_price * this.leasePaymentHeadDetail.Plot_Size_By_Lease_Bid_Price
+      const totalLeaseAmount = bid_price+lease_price;
+        const roundedAmount = +totalLeaseAmount.toFixed(3);
+        this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid = roundedAmount;
+
+
+        const Amount_of_down_payment = this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid*this._service.lease_payment_advance_per;
+        const roundedAmount1 = +Amount_of_down_payment.toFixed(3); 
+        this.leasePaymentHeadDetail.Amount_of_down_payment = roundedAmount1 
+        this.leasePaymentHeadDetail.Amount_of_down_payment_display = roundedAmount1.toLocaleString();
+
+    this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid_display = roundedAmount.toLocaleString();
+
+      // this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid= bid_price+lease_price
     }
     // Update the previousInputValue for the next change
     this.previousInputValue = numericValue;
   }
 
   checkIfNumberInserted1(value: any) {
+    
     // Parse the input value to a float
     let numericValue = parseFloat(value) || 0; // Default to 0 if parsing fails
-   debugger
+  //  
     // Calculate the difference from the previous value
-    let difference = numericValue - this.previousInputValue;
+    let difference = numericValue - this.previousInputValue1;
     let added = this.leasePaymentHeadDetail.Amount_of_down_payment + difference;
     parseInt(added)
     parseInt(this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid)
+// 
     // Check if the difference would result in a negative Plot_Size_By_Lease_Bid_Price
     if (added > this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid) {
       // Show a message to the user
@@ -104,13 +140,24 @@ export class LeasePaymentHeadDetailComponent {
     if (difference < 0) {
       // Add the absolute value of the difference back to Plot_Size_By_Lease_Bid_Price
       this.leasePaymentHeadDetail.Amount_of_down_payment -= Math.abs(difference);
+
+      const Amount_of_down_payment = this.leasePaymentHeadDetail.Amount_of_down_payment;
+      const roundedAmount1 = +Amount_of_down_payment.toFixed(3); 
+      this.leasePaymentHeadDetail.Amount_of_down_payment = roundedAmount1 
+      this.leasePaymentHeadDetail.Amount_of_down_payment_display = roundedAmount1.toLocaleString();
+      
     } else {
-      // If the difference is positive, the user has added a digit
       // Subtract the difference from Plot_Size_By_Lease_Bid_Price
       this.leasePaymentHeadDetail.Amount_of_down_payment += difference;
+
+  const Amount_of_down_payment = this.leasePaymentHeadDetail.Amount_of_down_payment;
+  const roundedAmount1 = +Amount_of_down_payment.toFixed(3); 
+  this.leasePaymentHeadDetail.Amount_of_down_payment = roundedAmount1 
+  this.leasePaymentHeadDetail.Amount_of_down_payment_display = roundedAmount1.toLocaleString();
+  
     }
     // Update the previousInputValue for the next change
-    this.previousInputValue = numericValue;
+    this.previousInputValue1 = numericValue;
   }
 
   updateleaserPaymentHeadDetail() {
@@ -120,7 +167,8 @@ export class LeasePaymentHeadDetailComponent {
         // 
         // itHasError = false;
         this.notificationsService.success("Success", "Successfully Updated");
-        this.ServiceService.disablefins = false;
+        this.updated=true;
+        this.getpayment_plan()
         this.completed.emit();
       },
       (error) => {
@@ -135,40 +183,86 @@ export class LeasePaymentHeadDetailComponent {
       this.leasePaymentHeadDetail.PlotID,
       this._service.Lease_Payment_grace_Period,
       this._service.Lease_Payment_Year,
-      this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid).subscribe(data => {
-        debugger
-        this.Enable = false;
+      this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid,
+    this.leasePaymentHeadDetail.Amount_of_down_payment,
+    this.leasePaymentHeadDetail.contract_date,
+      this._service.transfer_ID).subscribe(data => {
+        
+        this.Enable=false
+        this.updated=true;
+        this.enablepaymentreport= false
+        this.ServiceService.disablefins = false;
         this.notificationsService.success("Success", "Lease plan Genereted successfully");
       },
         (error) => {
-          // this.notificationsService.error("Error", `unable to genetrate!  ${error['status'] == 0 ? error['message'] : JSON.stringify(JSON.stringify(error['error']))}`);
+          this.notificationsService.error("Error", `unable to genetrate!  ${error['status'] == 0 ? error['message'] : JSON.stringify(JSON.stringify(error['error']))}`);
         }
       )
   }
+  getpayment_plan(){
+    // 
+    this.ServiceService.get_payment_plan(this._service.lease_code).subscribe(data=>{
+      // 
+      if(data["proc_Payment_Plans"].length>0){
+        if(this.updated){
+          this.ServiceService.disablefins = false;
+        }
+      this.Enable=false
+      this.enablepaymentreport= false
+      }
+      else{
+        this.Enable=true
+       this.enablepaymentreport= true
+      }
+      // 
+    })
+  }
   getLeasPaymentHeadDataDetail() {
+    this.ReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
+      environment.Lease_contract + 1 + "/" + this._service.lease_code
+    );
+    console.log("ReportPath",this.ReportPath);
+    
+  this.getpayment_plan();
+  this.leasePaymentHeadDetail = new LeasePaymentHeadDetail();
+  this.previousInputValue=0
     this._service.getDataByleasecode(this._service.lease_code).subscribe(
       (response) => {
-        debugger
+        
         let data = response.proc_Leas_Payment_Head_Details[0];
         this.leasePaymentHeadDetail.Plot_Size_By_Lease_Bid_Price = data.total_Plot_Size
-        const bid_price = data.total_Plot_Size * data.current_lease_Price;
+        if(data.plot_size_By_Lease_Price ==0 && data.plot_Size_By_Lease_Bid_Price==0){
+          this.leasePaymentHeadDetail.Plot_Size_By_Lease_Bid_Price = data.total_Plot_Size
+        const bid_price = data.total_Plot_Size * data.current_lease_bid_price;
         const lease_prce = data.plot_size_By_Lease_Price * data.current_lease_Price;
+        
         this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid = bid_price + lease_prce;
-         
+        this.leasePaymentHeadDetail.Amount_of_down_payment =
+          this._service.lease_payment_advance_per * this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid;
+      }
+      else{
+    //  this.leasePaymentHeadDetail.Plot_Size_By_Lease_Bid_Price = data.plot_Size_By_Lease_Bid_Price
+    this.checkIfNumberInserted(data.plot_size_By_Lease_Price)
+          this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid=data.total_lease_amount_to_be_paid
+        this.leasePaymentHeadDetail.Amount_of_down_payment=data.amount_of_down_payment;
+      }
+        // Setting display values
         const totalLeaseAmount = this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid;
         const roundedAmount = +totalLeaseAmount.toFixed(3);
         this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid = roundedAmount;
-        this.leasePaymentHeadDetail.Amount_of_down_payment =
-          this._service.lease_payment_advance_per * this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid;
-          this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid = roundedAmount.toLocaleString();
-        const Amount_of_down_payment = this.leasePaymentHeadDetail.Amount_of_down_payment;
-        const roundedAmount1 = +Amount_of_down_payment.toFixed(3);       
-        this.leasePaymentHeadDetail.Amount_of_down_payment = roundedAmount1.toLocaleString();
+    this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid_display = roundedAmount.toLocaleString();
+    // if(this.leasePaymentHeadDetail.Amount_of_down_payment!=0){
+    const Amount_of_down_payment = this.leasePaymentHeadDetail.Amount_of_down_payment;
+    const roundedAmount1 = +Amount_of_down_payment.toFixed(3); 
+    this.leasePaymentHeadDetail.Amount_of_down_payment = roundedAmount1 
+    this.leasePaymentHeadDetail.Amount_of_down_payment_display = roundedAmount1.toLocaleString();
+    // }
         this.leasePaymentHeadDetail.Lease_code = data.lease_code;
         this.leasePaymentHeadDetail.PlotID = data.plotID;
         this.leasePaymentHeadDetail.Total_Plot_Size = data.total_Plot_Size;
         this.leasePaymentHeadDetail.Current_lease_bid_price =
           data.current_lease_bid_price;
+        
         this.leasePaymentHeadDetail.Current_lease_Price =
           data.current_lease_Price;
         this.leasePaymentHeadDetail.Plot_size_By_Lease_Price =
@@ -177,6 +271,7 @@ export class LeasePaymentHeadDetailComponent {
           data.remaining_lease_payment;
         this.leasePaymentHeadDetail.Updated_By_userid = data.updated_By_userid;
         this.leasePaymentHeadDetail.Updated_date = data.updated_date;
+        this.leasePaymentHeadDetail.contract_date=data.contract_date.split("T")[0]
         // this.leasePaymentHeadDetail.Time = data.Time;
       },
       (error) => {

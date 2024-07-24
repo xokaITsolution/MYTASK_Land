@@ -7,7 +7,7 @@ export class LeaserPaymentHead {
   Total_lease_amount_to_be_paid: any;
   Amount_of_the_annual_lease_payment: any;
   Lease_period_in_Year: any;
-  Date_of_final_lease_pyment: any;
+  Date_of_final_lease_payment: any;
   Remaining_lease_Payment: any;
   Customer_Type: any;
   Transfer_type: any;
@@ -17,4 +17,5 @@ export class LeaserPaymentHead {
   Is_Active: string;
   Parent: string;
   contact_Type: any;
+  lease_payment_advance_per:any;
 }

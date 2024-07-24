@@ -44,8 +44,6 @@ export class ConReviewTransactionDetailComponent implements OnInit {
     this.id = this.id.value
     console.log('Guid.',this.id);
     
-    
-
     // console.log('this.service.getPropertyTypeId',this.service.getPropertyTypeId());
     
      this.service.getPropertyTypeForm( this.service.getPropertyTypeId()).subscribe((res: any) => {

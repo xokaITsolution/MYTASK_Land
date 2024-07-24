@@ -63,13 +63,13 @@
                         <div class="form-group row" *ngIf="language !== 'amharic'">
                           <label for="ContractDate" class="col-sm-4 col-form-label" translate>Contract Date</label>
                           <div class="col-sm-8">
-                            <input type="date" class="form-control" [disabled]="disable"
+                            <input type="date"  class="form-control" [disabled]="disable"
                               [(ngModel)]="newLeaseContract.contract_date" name="ContractDate" id="ContractDate"
                               [placeholder]="'Contract Date'" #ContractDate="ngModel"
                               [ngClass]="{ 'is-invalid': ContractDate.invalid }" required>
                           </div>
                         </div>
-                        <div class="form-group row" *ngIf="language === 'amharic'">
+                        <div class="form-group row"  *ngIf="language === 'amharic'">
                           <label for="ContractDate" class="col-sm-4 col-form-label" translate>Contract Date</label>
                           <div class="col-sm-8">
                             <input type="text" readonly class="form-control" [disabled]="disable"
@@ -102,6 +102,7 @@
                             </select>
                           </div>
                         </div>
+                        
                       </div>
                       <!-- Second Column -->
                       <div class="col-md-6">
@@ -122,11 +123,24 @@
                           </div>
                         </div>
                         <!-- Phone NO -->
-                        <div class="form-group row">
+                        <!-- <div class="form-group row">
                           <label for="PhoneNO" class="col-sm-4 col-form-label" translate>Phone NO</label>
                           <div class="col-sm-8">
                             <input type="text" class="form-control" [(ngModel)]="newLeaseContract.phone_no"
                               name="PhoneNO" id="PhoneNO" [placeholder]="'Phone NO' ">
+                          </div>
+                        </div> -->
+                        <div class="form-group row">
+                          <label for="level" class="col-sm-4 col-form-label" translate>Constraction Level</label>
+                          <div class="col-sm-8">
+                            <select class="form-control" [(ngModel)]="newLeaseContract.Con_level" name="level"
+                              id="level" required>
+                              <option value="" disabled selected>Select Level</option>
+                              <option *ngFor="let level of conlevel_List"
+                                [value]="level.id">
+                                {{ level.name }}
+                              </option>
+                            </select>
                           </div>
                         </div>
                       </div>

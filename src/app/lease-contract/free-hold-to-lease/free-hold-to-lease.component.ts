@@ -114,12 +114,12 @@ export class FreeHoldToLeaseComponent implements OnInit {
   }
   Get_Lease_contract(){
     this.ReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
-      environment.Lease_contract + "/" + this._service.Report_name
+      environment.con_report + "/" + this._service.Report_name +"/" + this._service.App_no
     );
     console.log("ReportPath",this.ReportPath);
     
+    debugger
     this._service.get_freehold_to_Lease_by_Id(this._service.contract_NO).subscribe(async data=>{
-      debugger
       if(data['proc_FreeHold_to_Leases'].length>0){
         let FreeHoldTolease=data['proc_FreeHold_to_Leases'][0];
         
@@ -157,9 +157,10 @@ export class FreeHoldToLeaseComponent implements OnInit {
         console.log("this.newFreeHoldToLease",this.newFreeHoldToLease);
       }
       else{
+        debugger
         this._service.get_veiw_contract(this._service.lease_code).subscribe(async data=>{
           let FreeHoldTolease=data[0];
-          
+          debugger
           this.newFreeHoldToLease.Contract_NO=FreeHoldTolease.contract_NO;
           this.newFreeHoldToLease.Custmer_ID=FreeHoldTolease.customer_ID;
           this.newFreeHoldToLease.Customer_Full_Name=FreeHoldTolease.customer_Full_Name;
@@ -183,6 +184,7 @@ export class FreeHoldToLeaseComponent implements OnInit {
           await this.getgregorianToEthiopianDate(
             this.newFreeHoldToLease.Lease_Period_end_date
           );
+          debugger
           this.newFreeHoldToLease.Lease_Payment_grace_Period=FreeHoldTolease.lease_Payment_grace_Period;
           this.newFreeHoldToLease.Remaining_lease_payment=FreeHoldTolease.remaining_lease_payment;
           this.newFreeHoldToLease.Annual_Payment=FreeHoldTolease.annual_Payment;

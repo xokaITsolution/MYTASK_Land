@@ -88,6 +88,9 @@ export class ServiceService {
   public DocByAppNo =
     environment.rootPathApi +
     "View_RecordAppNoAndDocIdByAppNo/procView_RecordAppNoAndDocIdByAppNo/";
+    public get_payment_plan1 =
+    environment.rootPathApi +
+    "proc_Payment_Plan?Lease_cdoe=";
   public DeedByAPP =
     environment.rootPathApi + "view/View_DeedRegstration/Application_No/";
   public DeedByCustId =
@@ -148,6 +151,7 @@ export class ServiceService {
 
   private nextTaskCompleteURL = environment.rootPath + "BPEL/nextTaskComplete"; // URL to web api
   staticProperty = environment.rootPath2+'ProprtyData/ProcProportyStaticData'
+  private withdrawprop = environment.rootPathApi+'proc_withdraw_propose/proc_withdraw_propose'
   private nextTaskAcceptOrRejectURl =
     environment.rootPath + "BPEL/nextTaskAcceptOrReject"; // URL to web api
   private SaveDataURL = environment.rootPath + "BPEL/SaveData"; // URL to web api
@@ -184,12 +188,17 @@ export class ServiceService {
   private getAllDocumentURLs =
     environment.rootPathApi +
     "view/Vw_AllDocuments/application_number/application_code?";
+    private getwithpropbyId1 =
+    environment.rootPathApi +
+    "proc_withdraw_propose/proc_withdraw_propose?";
+    
   private getDocumentbytasksURL =
     environment.rootPathApi + "view/View_Document_By_Task/task_code";
   private MytasksUrl = environment.rootPath + "BPEL/GetlistofTodo"; // URL to web api
   OrganizationparentUrl =
     environment.rootPath2 + "Job/procOrganization/Organization";
   saveCustomerdata = environment.rootPath3 + "Customer/procCustomer/";
+  get_constraction_level1 = environment.rootPathApi + "proc_Contraction_Level/proc_Contraction_Level";
   saveCustomerdataapi = environment.rootPath3 + "Tax/procTINERCA/system";
   PdfCompressor =
     "http://197.156.93.110/xoka.jobapi/api/compress/DeflateCompression/Compresse";
@@ -392,7 +401,25 @@ export class ServiceService {
     return this.http.get(this.propertyLookupbyid + data)
   }
   getWithdrawpropose() {
-    return this.http.get(this.getWithdrawpropose1)
+   return this.http.get(this.getWithdrawpropose1)
+  }
+  getWithdrawproposebyid(titdeed,cid) {
+    return this.http.get(this.getWithdrawpropose1+"/"+titdeed+"/"+cid)
+   }
+  addwithprop(data){
+    return this.http.post(this.withdrawprop,data)
+  }
+  updatewithprop(data){
+    return this.http.put(this.withdrawprop,data)
+  }
+  getwithpropbyId(cid,titdeed) {
+   return this.http.get<any[]>(
+      this.getwithpropbyId1 +
+        "customer_ID=" +
+        cid +
+        "&Title_Deed_No=" +
+        titdeed
+    );
   }
   getPropertyStaticForm() {
     return this.http.get(this.staticProperty)
@@ -416,6 +443,9 @@ export class ServiceService {
   }
   getDocIdByAppNo(AppNo) {
     return this.http.get(this.DocByAppNo + AppNo);
+  }
+  get_payment_plan(lease_code) {
+    return this.http.get(this.get_payment_plan1 + lease_code);
   }
   getDeedByApp(AppNo) {
     return this.http.get(
@@ -907,6 +937,9 @@ export class ServiceService {
   }
   getcustomerAll(col) {
     return this.http.get(this.saveCustomerdata + "Column/" + col);
+  }
+  get_constraction_level() {
+    return this.http.get(this.get_constraction_level1 );
   }
   getcustomerPdfCompressor(col) {
     return this.http.post(this.PdfCompressor, col);

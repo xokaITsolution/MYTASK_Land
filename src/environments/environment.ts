@@ -14,17 +14,19 @@ export const environment = {
   imagepathcheckmark: window["_imagepathcheckmark"],
   imagepathuploadfile: window["_imagepathuploadfile"],
   Lease_contract:window['Lease_contract'],
-  //username: "BL_Tech_Officer",
+  con_report:window['con_report'],
   iconpath: window["iconpath"],
   formPath: window["formPath"],
   city: window["city"], 
-
+  
+  // username: "AR_Tech_Officer",
   // username: "EteneshSaleyesus", 
 
   // username: "cn_land_expleader",
-  username: "cn_land_bank", 
-  // username: "lease_owner", 
+  // username: "cn_land_bank", 
+  username: "lease_owner", 
   // username: "lease_officer ",
+  // username: "land_dev_team_leader ",
 
   appbase: window["_app_base"],
   location: window["locations"],

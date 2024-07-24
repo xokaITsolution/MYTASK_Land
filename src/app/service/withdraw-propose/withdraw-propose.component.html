@@ -1,39 +1,120 @@
-<div>
+<div *ngIf="!serachplotExists">
 
-    <div>
-      <p-table #structure [value]="proposeList" [paginator]="true" [rows]="10"
-        >
-  
-        <ng-template pTemplate="header">
-          <tr>
-            <th translate>title_Deed_No</th>
-            <th translate>full_Name</th>
-            <th translate>suspension_Reason</th>
-            <th></th>
-            <th>
-              <button class="btn btn-primary"  type="button"  (click)="Addnew()" translate>
-                Add New
-              </button>
-            </th>
-          </tr>
-        </ng-template>
-        <!-- (click)="IsLockedBy_OtherUser(task)" -->
-        <ng-template pTemplate="body" let-lease_contract>
-          <tr>
-              <td>{{lease_contract.full_Name}}</td>
-              <td>{{lease_contract.title_Deed_No}}</td>
-              <td>{{lease_contract.suspension_Reason}}</td>
-            <td><button class="btn btn-primary" type="button" 
-                (click)="selected(lease_contract)" *ngIf="enable_edit" translate>
-                Edit
-              </button></td>
-            <!-- <td>
+  <div>
+    <p-table #structure [value]="proposebyidGridList" [paginator]="true" [rows]="10">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th translate>title_Deed_No</th>
+          <th translate>full_Name</th>
+          <th translate>suspension_Reason</th>
+
+          <th>
+            <button class="btn btn-primary" type="button" (click)="Addnew()" translate>
+              Add New
+            </button>
+          </th>
+        </tr>
+      </ng-template>
+      <!-- (click)="IsLockedBy_OtherUser(task)" -->
+      <ng-template pTemplate="body" let-lease_contract>
+        <tr>
+          <td>{{lease_contract.full_Name}}</td>
+          <td>{{lease_contract.title_Deed_No}}</td>
+          <td>{{lease_contract.suspension_Reason}}</td>
+          <td><button class="btn btn-primary" type="button" (click)="selected(lease_contract)" *ngIf="enable_edit"
+              translate>
+              Edit
+            </button></td>
+          <!-- <td>
               <button type="button" class="btn btn-primary" (click)="openModal(task)" translate>assign</button>
             </td> -->
-          </tr>
-        </ng-template>
-      </p-table>
-    </div>
-  
-  
+        </tr>
+      </ng-template>
+    </p-table>
   </div>
+</div>
+<div class="container" *ngIf="showform">
+  <div class="card">
+    <h2> Withdraw Propose</h2>
+    <div class="form-container">
+      <!-- left column of the form -->
+
+      <section>
+        <div class="p-fluid">
+          <div class="field">
+            <label for="full_Name">Full Name</label>
+            <input class="form-control" #Fu="ngModel" id="full_Name" type="text" required pInputText [disabled]="true"
+              [(ngModel)]="proposebyidList.full_Name"/>
+          </div>
+        </div>
+      </section>
+      <!-- right column of the form -->
+      <section>
+        <div class="p-fluid">
+          <div class="field">
+            <label for="title_Deed_No">Title Deed No</label>
+            <input class="form-control" id="title_Deed_No" type="text" required pInputText [disabled]="true"
+              [(ngModel)]="proposebyidList.title_Deed_No"/>
+          </div>
+        </div>
+      </section>
+    </div>
+    <!-- <div class="card-footer"><button pButton pInputText label="Previous" (click)="PrvPage()"></button> 
+      <button class="btn btn-secondary btn-success" label="Update" (click)="save()">Update</button>-->
+
+    <!-- </div> -->
+
+    <!-- [disabled]="Enable" -->
+    <div class="card-footer">
+      <button *ngIf="!enable" class="btn btn-secondary btn-success" type="button" label="Save" (click)="savewithdrawProp()">save</button>
+      <button *ngIf="enable" class="btn btn-secondary btn-success" type="button" label="Save" (click)="updatewithdrawProp()">Update</button>
+    </div>
+  </div>
+  <br>
+</div>
+<p-dialog [(visible)]="serachplotExists" [responsive]="true"
+  [style]="{'minHeight':'10%','height':'800px','minWidth':'10%','width':'80%' }" [maximizable]="true"
+  [baseZIndex]="10000">
+  <p-table [value]="proposeList" [paginator]="true" [rows]="5">
+    <ng-template pTemplate="header">
+      <tr>
+        <th translate>title_Deed_No</th>
+        <th translate>full_Name</th>
+        <th translate>suspension_Reason</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-propose let-rowData>
+      <tr (click)='highlighted = rowData;selectprop(propose)' class="some-class" tabindex="1"
+        [class.uistatehighlight]="rowData === highlighted">
+
+        <!-- <td>{{Plot.Plot_ID}} </td> -->
+        <!-- <td>
+          <select class="form-control" disabled [(ngModel)]="Plot.Plot_Status" name="Statuss" id="Statuss">
+            <option disabled translate>select</option>
+            <option *ngFor="let Status of serviceService.PlotStutusLook" [value]="Status.Plot_Status_ID">
+              {{Status.Name}}
+            </option>
+          </select>
+        </td> -->
+        <td>{{propose.title_Deed_No}}</td>
+        <td>{{propose.full_Name}}</td>
+        <td>{{propose.suspension_Reason}}</td>
+        <!-- <td>
+          <button type="button" class="btn btn-primary" (click)="SelectPLot(Plot);serachplotExists=false"
+            translate>select</button>
+        </td> -->
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-footer>
+    <!-- *ngIf="toogleSpin" -->
+    <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="8"></p-progressSpinner>
+    <button type="button" class="btn btn-danger" (click)="serachplotExists=false" translate>close
+    </button>
+
+  </p-footer>
+
+
+</p-dialog>

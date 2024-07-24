@@ -15,7 +15,7 @@ export class LeaseContractService {
   veiw_contract = environment.rootPathApi + "view/View_Contract/Lease_Code?Lease_Code="
   contract_type =`${environment.rootPathApi}proc_Lease_Contract_Type`;
   private License_ServiceURL = environment.rootPath + "License_Service";
-  private leaserPaymentHeadDetail = environment.rootPath3 + "proc_Leas_Payment_Head_Detail";
+  private leaserPaymentHeadDetail = environment.rootPathApi + "proc_Leas_Payment_Head_Detail";
   Lease_To_lease =`${environment.rootPathApi}proc_Lease_to_Lease`;
   Freehold_To_lease =`${environment.rootPathApi}Service_fee/proc_FreeHold_to_Lease`;
   Proc_Genereate_Lease_Plan=`${environment.rootPathApi}Proc_Genereate_Lease_Plan`;
@@ -34,6 +34,8 @@ export class LeaseContractService {
  EnambleLease_to_Lease = false;
  Report_name:any;
  contract_NO:any;
+  transfer_ID: any;
+  App_no: any;
   constructor(private http: HttpClient) {}
   insert_data( data: any) {
     return this.http.post(this.Lease_Contract, data);
@@ -44,11 +46,16 @@ export class LeaseContractService {
     Lease_Payment_grace_Period:any,
     Lease_Payment_Year:any,
     Total_lease_amount_to_be_paid:any,
+    Amount_of_down_payment:any,
+    contract_date:any,
+    transfer_ID:any
     ){
       // let ad = this.Proc_Genereate_Lease_Plan+
       // '?Lease_code='+Lease_Code+'&PlotID='+Plot_ID+'&Lease_Payment_grace_Period='+Lease_Payment_grace_Period+'&Lease_Payment_Year='+Lease_Payment_Year+'&Total_lease_amount_to_be_paid='+Total_lease_amount_to_be_paid
       return this.http.get(this.Proc_Genereate_Lease_Plan+
-        '?Lease_code='+Lease_Code+'&PlotID='+Plot_ID+'&Lease_Payment_grace_Period='+Lease_Payment_grace_Period+'&Lease_Payment_Year='+Lease_Payment_Year+'&Total_lease_amount_to_be_paid='+Total_lease_amount_to_be_paid
+        '?Lease_code='+Lease_Code+'&PlotID='+Plot_ID+'&Lease_Payment_grace_Period='+Lease_Payment_grace_Period+
+        '&Lease_Payment_Year='+Lease_Payment_Year+'&Total_lease_amount_to_be_paid='+Total_lease_amount_to_be_paid+
+        '&Amount_of_down_payment='+Amount_of_down_payment+'&contract_date='+contract_date+'&transfer_ID='+transfer_ID
       );
   }
   insert_data_proc_Lease_to_Lease( data: any) {
@@ -96,7 +103,7 @@ export class LeaseContractService {
     return this.http.get(this.lease_payment_head +ID);
   }
   get_organizationby_org_code(ID){
-    debugger
+    
     return this.http.get(this.get_organization +ID);
   }
   get_veiw_contract(ID){
@@ -132,7 +139,7 @@ export class LeaseContractService {
       return this.http.get<any>(url);
     }
     getDataByleasecode(id: any): Observable<any> {
-      // 
+   
       const url = `${this.leaserPaymentHeadDetail}/${id}`;
       return this.http.get<any>(url);
     }

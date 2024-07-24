@@ -113,9 +113,10 @@ export class PlotComponent implements OnChanges {
       this.PlotManagementListfinal,
       this.serviceService.Service_ID
     );
+    debugger
     if (
       this.serviceService.Service_ID ===
-        "de330170-550b-4bf2-9908-dc557f92a7cc" ||
+      "de330170-550b-4bf2-9908-dc557f92a7cc" ||
       this.serviceService.Service_ID === "449a14bd-e0c0-4eda-92f5-68b3fcf83433"
     ) {
       this.serviceService.serviceisundoumneted = true;
@@ -1114,7 +1115,7 @@ export class PlotComponent implements OnChanges {
             this.PlotManagementListfinal
           );
         }
-
+debugger
         console.log("PlotManagementList", this.PlotManagementListfinal);
         // this.isisvalidated(
         //   this.todoid,

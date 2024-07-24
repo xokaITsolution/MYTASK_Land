@@ -32,53 +32,54 @@
             <span for="parcel" translate> Plot ID:</span>
             {{ licenceData.Parcel_ID }}
           </th>
-          <th id="parcel" scope="col" translate  >
+          <th id="parcel" scope="col" translate>
             <span for="parcel" translate> Title deed no:</span>
             {{ licenceData.Property_ID }}
           </th>
-    
+
           <th>
             <button type="button" (click)="moreDetailToggle()" class="btn btn-primary" translate>
-             
+
               {{ moreDetail.toggle === true ? "Less" : "More"}}
             </button>
-          
+
           </th>
-         
+
         </tr>
       </thead>
     </table>
 
   </div>
-      <div class="p-3 bg-success text-white" *ngIf="moreDetail.toggle">
-        <table class="table table-bordered table-responsive header-table">
-          <thead>
-            <tr *ngIf="custmerInformation" >
-              <th translate>Applicant_First_Name_AM</th>
-              <th translate>Applicant_Middle_Name_AM</th>
-              <th translate>ID</th>
-              <th translate>Wereda_ID</th>
-              <!-- <th translate>TIN</th> -->
-              <th translate>Email</th>
-              <th translate>QueueNo</th>
-              <th translate>Message</th>
-              <th  translate>seller</th>
-             
-            </tr>
-            <tr *ngIf="custmerInformation">
-              <td >{{ custmerInformation.applicant_First_Name_AM }}</td>
-              <td >{{ custmerInformation.applicant_Middle_Name_AM }}</td>
-              <td >{{ custmerInformation.tin }}</td>
-              <td >{{ custmerInformation.wereda_ID }}</td>
-              <!-- <td >{{ custmerInformation.tin }}</td> -->
-              <td >{{ custmerInformation.email }}</td>
-              <td >{{ custmerInformation.queueNo }}</td>
-              <td ><button type="button" class="btn btn-primary m-2" (click)="showMessage(licenceData.Application_No)"> Message</button></td>
-              <td  ><button type="button" class="btn btn-primary m-2" (click)="isDialogVisible()"> seller/ሻጭ</button></td>
-            </tr>
-          </thead>
-        </table>
-      </div>
+  <div class="p-3 bg-success text-white" *ngIf="moreDetail.toggle">
+    <table class="table table-bordered table-responsive header-table">
+      <thead>
+        <tr *ngIf="custmerInformation">
+          <th translate>Applicant_First_Name_AM</th>
+          <th translate>Applicant_Middle_Name_AM</th>
+          <th translate>ID</th>
+          <th translate>Wereda_ID</th>
+          <!-- <th translate>TIN</th> -->
+          <th translate>Email</th>
+          <th translate>QueueNo</th>
+          <th translate>Message</th>
+          <th translate>seller</th>
+
+        </tr>
+        <tr *ngIf="custmerInformation">
+          <td>{{ custmerInformation.applicant_First_Name_AM }}</td>
+          <td>{{ custmerInformation.applicant_Middle_Name_AM }}</td>
+          <td>{{ custmerInformation.tin }}</td>
+          <td>{{ custmerInformation.wereda_ID }}</td>
+          <!-- <td >{{ custmerInformation.tin }}</td> -->
+          <td>{{ custmerInformation.email }}</td>
+          <td>{{ custmerInformation.queueNo }}</td>
+          <td><button type="button" class="btn btn-primary m-2" (click)="showMessage(licenceData.Application_No)">
+              Message</button></td>
+          <td><button type="button" class="btn btn-primary m-2" (click)="isDialogVisible()"> seller/ሻጭ</button></td>
+        </tr>
+      </thead>
+    </table>
+  </div>
 
   <div class="m-3 row">
 
@@ -98,7 +99,7 @@
 
                     <form #f="ngForm" novalidate name="proform">
                       <div class="form-group row col-md-12" *ngFor="let RequiredDoc of RequerdDocs; let i = index;">
-                        <label  class="col-md-4 col-form-label">
+                        <label class="col-md-4 col-form-label">
                           {{ language === 'amharic' ? RequiredDoc.description_Local :RequiredDoc.description_en }}
                         </label>
                         <div class="col-md-8">
@@ -107,20 +108,20 @@
                           </div>
                           <div *ngIf="!RequiredDoc.File">
                             <p-fileUpload [hidden]="disable" #fild id="File{{i}}" name="demo[]" customUpload="true"
-                            (uploadHandler)="upload($event,RequiredDoc,fild)" [auto]="true"
-                            [accept]="RequiredDoc.type" [chooseLabel]="'Upload' | translate"
-                           [maxFileSize]="RequiredDoc.size">
-                          </p-fileUpload>
+                              (uploadHandler)="upload($event,RequiredDoc,fild)" [auto]="true"
+                              [accept]="RequiredDoc.type" [chooseLabel]="'Upload' | translate"
+                              [maxFileSize]="RequiredDoc.size">
+                            </p-fileUpload>
                           </div>
-                          <div *ngIf="uploadedDocumnet && RequiredDoc.File" [hidden]="disDocument" >
+                          <div *ngIf="uploadedDocumnet && RequiredDoc.File" [hidden]="disDocument">
                             <div>
-                            <iframe width="100%" [src]="documentupload" alt="FileUPloaded"  class="pdf-ifram"></iframe>
-                            
-                               </div>
-                              </div> 
-                              <div class="alert alert-warning" role="alert" *ngIf="!RequiredDoc.File && !loadingPreDoc">
-                                {{language === 'amharic' ? 'ሰነድ አልገባለትም!' : 'Document not uploaded!'}}
-                              </div>
+                              <iframe width="100%" [src]="documentupload" alt="FileUPloaded" class="pdf-ifram"></iframe>
+
+                            </div>
+                          </div>
+                          <div class="alert alert-warning" role="alert" *ngIf="!RequiredDoc.File && !loadingPreDoc">
+                            {{language === 'amharic' ? 'ሰነድ አልገባለትም!' : 'Document not uploaded!'}}
+                          </div>
                           <div *ngIf="RequiredDoc.File">
                             <button type="button" class="btn btn-primary" (click)="removeUpload(RequiredDoc)"
                               translate>Remove</button>
@@ -162,24 +163,24 @@
               </div>
               <div class="col-md-12">
                 <div *ngIf="!validated">
-                  <span  class="text-primary" translate>Need to save first, to upload files and write post in
+                  <span class="text-primary" translate>Need to save first, to upload files and write post in
                     notes</span>
                 </div>
               </div>
 
               <div class="form-group row col-sm-10 m-0" *ngIf="validated">
                 <label translate>post in note</label>
-                <textarea class="form-control mx-2 mb-2 border-primary" id="note" rows="4" style="background: rgb(202, 236, 255)"
-                  [(ngModel)]="NoteObj.remarks" placeholder="write post in note here ...">
+                <textarea class="form-control mx-2 mb-2 border-primary" id="note" rows="4"
+                  style="background: rgb(202, 236, 255)" [(ngModel)]="NoteObj.remarks"
+                  placeholder="write post in note here ...">
                                 </textarea>
-                <button type="button" class="btn btn-primary mx-2" *ngIf="!issendnote"
-                  (click)="addNote()" translate>Save</button>
-                <button type="button" class="btn btn-primary mx-4" *ngIf="issendnote"
-                  (click)="saveNote()" translate>Edit</button>
-                <button type="button" class="btn btn-danger mx-4" *ngIf="issendnote"
-                  (click)="DeleteNote()" translate>Delete</button>
-                <button type="button" class="btn btn-primary" *ngIf="issendnote"
-                  (click)="sendNote()">
+                <button type="button" class="btn btn-primary mx-2" *ngIf="!issendnote" (click)="addNote()"
+                  translate>Save</button>
+                <button type="button" class="btn btn-primary mx-4" *ngIf="issendnote" (click)="saveNote()"
+                  translate>Edit</button>
+                <button type="button" class="btn btn-danger mx-4" *ngIf="issendnote" (click)="DeleteNote()"
+                  translate>Delete</button>
+                <button type="button" class="btn btn-primary" *ngIf="issendnote" (click)="sendNote()">
                   <span class="fa fa-telegram"></span> <span translate>Send</span>
                 </button>
               </div>
@@ -197,11 +198,12 @@
           <header class="demo-header">
             <button (click)="_toggleOpened()" type="button" class="demo-header__toggle" translate>Toggle
               sidebar</button>
-            <span translate>Upload File</span> 
-            
-            
+            <span translate>Upload File</span>
+
+
           </header>
-          <button style="float: right;" type="button" class="btn btn-primary" (click)="triggerHeaderInitialization()" translate>check network</button>
+          <button style="float: right;" type="button" class="btn btn-primary" (click)="triggerHeaderInitialization()"
+            translate>check network</button>
 
           <section class="demo-contents">
 
@@ -210,7 +212,8 @@
 
               <div *ngIf="ID==1;">
                 <div class="m-3">
-                  <app-servy (completed)="saveFormmjson($event)" [formcode]="formcode" [formData]="FormData"></app-servy>
+                  <app-servy (completed)="saveFormmjson($event)" [formcode]="formcode"
+                    [formData]="FormData"></app-servy>
                 </div>
               </div>
 
@@ -222,7 +225,8 @@
                   </div>
                   <div class="col-md-12">
                     <div *ngIf="CurrentForm === '1'">
-                      <app-plot (completed)="EnableFinss();plot();saveFormmplot('{}');" [Parcel_ID]="licenceData.Parcel_ID" [disable]="false"
+                      <app-plot (completed)="EnableFinss();plot();saveFormmplot('{}');"
+                        [Parcel_ID]="licenceData.Parcel_ID" [disable]="false"
                         [Parcel_mearge1]="licenceData.Plot_Merge_1" [Parcel_mearge2]="licenceData.Plot_Merge_2"
                         [Parcel_mearge3]="licenceData.Plot_Merge_3" [Parcel_mearge4]="licenceData.Plot_Merge_4"
                         [LicenceData]="licenceData" [AppNo]="AppNo" [todoid]="todoID" [DocID]="DocID" [tskID]="tskID"
@@ -230,7 +234,7 @@
                       </app-plot>
                     </div>
                     <div *ngIf="CurrentForm === '1'">
-                     
+
                     </div>
 
                   </div>
@@ -243,7 +247,7 @@
                   [Fields]="prepareCertificateFields">
                 </app-cert>
               </div>
-             
+
 
               <div *ngIf="ID==5;">
                 <app-payment [disable]="false" (completed)="EnableFins();saveFormm2('{}');" (send)="payment()"
@@ -255,49 +259,50 @@
                   
               </div> -->
               <div *ngIf="ID==7">
-              <app-certversionupgrade [disable]="false" (completed)="EnableFins();saveFormm2('{}');" [licenceData]="licenceData" [todoid]="todoID"
-                  [Certificate_Code]="licenceData.Certificate_Code" [disable]="false" [AppNo]="AppNo"
-                  [Fields]="prepareCertificateFields">
-               </app-certversionupgrade>
-               
+                <app-certversionupgrade [disable]="false" (completed)="EnableFins();saveFormm2('{}');"
+                  [licenceData]="licenceData" [todoid]="todoID" [Certificate_Code]="licenceData.Certificate_Code"
+                  [disable]="false" [AppNo]="AppNo" [Fields]="prepareCertificateFields">
+                </app-certversionupgrade>
+
               </div>
               <div *ngIf="ID==12">
-                  <app-record [useNamelist]="useNamelist"  (completed)="saveFormm2()"></app-record>
+                <app-record [useNamelist]="useNamelist" (completed)="saveFormm2()"></app-record>
               </div>
               <div *ngIf="ID==14">
-                <app-land-wizard [AppNo]="AppNo"></app-land-wizard>
+                <app-land-wizard [AppNo]="AppNo"  (completed)="EnableFins();saveFormm2();"></app-land-wizard>
               </div>
               <div *ngIf="ID==15">
-                <app-withdraw-propose></app-withdraw-propose>
+                <app-withdraw-propose [Licence_Service_ID]="licenceData.Licence_Service_ID"  (completed)="EnableFins();saveFormm2();"></app-withdraw-propose>
               </div>
               <div *ngIf="ID==13">
-               <app-lease-contract (completed)="EnableFinss();plot();saveFormmplot('{}');"></app-lease-contract>
-            </div>
+                <app-lease-contract  (completed)="EnableFins();saveFormm2();"></app-lease-contract>
+              </div>
               <div *ngIf="ID==9">
-                <app-property (completed)="saveFormm('{}');" (getpro)="getPropertyTypeLookUP()" [LicenceData]="licenceData"
-                        [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="false" [AppNo]="AppNo"
-                        [Service_ID]="licenceData.Service_ID" [todoid]="todoID" [tskID]="tskID" [DocID]="DocID" >
-                      </app-property> 
-                    
-                </div>
+                <app-property (completed)="saveFormm('{}');" (getpro)="getPropertyTypeLookUP()"
+                  [LicenceData]="licenceData" [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="false"
+                  [AppNo]="AppNo" [Service_ID]="licenceData.Service_ID" [todoid]="todoID" [tskID]="tskID"
+                  [DocID]="DocID">
+                </app-property>
+
+              </div>
+
+              <!-- <div *ngIf="ID==20">
+                <lib-lease-bid [custid]=1></lib-lease-bid>
+
+              </div> -->
 
               <div *ngIf="ID==20">
-                <lib-lease-bid [custid]=1></lib-lease-bid>
-                    
-                </div>
+                <!-- <lib-lease-bid [custid]=1></lib-lease-bid> -->
+                <lib-bid-detail (completed)="saveFormm('{}');"></lib-bid-detail>
 
-                <div *ngIf="ID==20">
-                  <!-- <lib-lease-bid [custid]=1></lib-lease-bid> -->
-                  <lib-bid-detail (completed)="saveFormm('{}');"></lib-bid-detail>  
-                      
-                  </div>
-                  <div *ngIf="ID==21">
-                    <lib-lease-yearly-bid-plan (completed)="saveFormm('{}');"></lib-lease-yearly-bid-plan> 
-                       
-                    </div>
-                    <div *ngIf="ID==22">
-                      <lib-lease-ready-for-bid (completed)="saveFormm('{}');"></lib-lease-ready-for-bid> 
-                      </div>
+              </div>
+              <div *ngIf="ID==21">
+                <lib-lease-yearly-bid-plan (completed)="saveFormm('{}');"></lib-lease-yearly-bid-plan>
+
+              </div>
+              <div *ngIf="ID==22">
+                <lib-lease-ready-for-bid (completed)="saveFormm('{}');"></lib-lease-ready-for-bid>
+              </div>
 
               <div *ngIf="ID==404;" translate>
                 Form not found
@@ -322,49 +327,42 @@
     </div>
 
   </div>
-  
+
   <!--The content below is only a placeholder and can be replaced.-->
   <div class="p-3 border-secondary border-5 bg-secondary text-white h-10 text-center m-10 mt-10">
     <div class="btn-group">
       <!-- <button class="btn btn-primary mr-2" *ngIf="!hideit"  type="button" (click)="showdialogg()" translate>Not Complete</button> -->
 
- <button *ngIf="serviceService.backbuttonviable" type="button" class="btn btn-primary mr-2" (click)="Back()" translate>Back</button>
-   <button type="button" class="btn btn-primary mr-2" (click)="openModal(template)" translate>Review</button>
-   <button type="button" class="btn btn-primary mr-2" *ngIf="isSuperviedUsers" (click)="killtodo()" translate>terminate the process</button>
-   <button type="button" class="btn btn-primary mr-2" *ngIf="isSuperviedUsers" (click)="Reopentodo()" translate>Reopen</button>
+      <button *ngIf="serviceService.backbuttonviable" type="button" class="btn btn-primary mr-2" (click)="Back()"
+        translate>Back</button>
+      <button type="button" class="btn btn-primary mr-2" (click)="openModal(template)" translate>Review</button>
+      <button type="button" class="btn btn-primary mr-2" *ngIf="isSuperviedUsers" (click)="killtodo()"
+        translate>terminate the process</button>
+      <button type="button" class="btn btn-primary mr-2" *ngIf="isSuperviedUsers" (click)="Reopentodo()"
+        translate>Reopen</button>
 
-    <!-- [disabled]="disablefins" -->
+      <!-- [disabled]="disablefins" -->
 
-    <span class="dropdown dropup">
-      <button
-      [disabled]="serviceService.disablefins"
-          type="button"
-          class="btn btn-primary dropdown-toggle mr-2"
-          data-toggle="dropdown"
-          translate
-        
-        >Required Action</button>
+      <span class="dropdown dropup">
+        <button [disabled]="serviceService.disablefins" type="button" class="btn btn-primary dropdown-toggle mr-2"
+          data-toggle="dropdown" translate>Required Action</button>
 
         <span class="dropdown-menu">
-          <a
-            class="dropdown-item"
-            *ngIf="tskTyp != 'c800fb16-f961-e111-95d6-00e04c05559b'"
-            (click)="isconfirmsaveplot=true"
-            >Submit/ላከው</a
-          >
+          <a class="dropdown-item" *ngIf="tskTyp != 'c800fb16-f961-e111-95d6-00e04c05559b'"
+            (click)="isconfirmsaveplot=true">Submit/ላከው</a>
           <span *ngIf="tskTyp == 'c800fb16-f961-e111-95d6-00e04c05559b'">
             <span *ngFor="let DropDownLists of DropDownList">
-            <a class="dropdown-item"
-            (click)="confirm2(DropDownLists.task_rules_code, DropDownLists.rule_Code)">{{ language === 'amharic' ? DropDownLists.decision_rule_Local : DropDownLists.decision_rule_en }}
-            </a>
+              <a class="dropdown-item" (click)="confirm2(DropDownLists.task_rules_code, DropDownLists.rule_Code)">{{
+                language === 'amharic' ? DropDownLists.decision_rule_Local : DropDownLists.decision_rule_en }}
+              </a>
               <li class="divider dropdown-divider"></li>
             </span>
           </span>
         </span>
       </span>
 
-   
-    <!-- <div class="btn-group">
+
+      <!-- <div class="btn-group">
     <span class="btn-group dropup" dropdown [isDisabled]="serviceService.disablefins">
       <button type="button" 
       dropdownToggle id="button-basic" aria-controls="dropdown-basic" 
@@ -381,15 +379,39 @@
         </span>
     </span>
   </div> -->
-  <button class="btn btn-primary mr-2" (click)="Close()" translate>Pend & close</button>
+      <button type="button" class="btn btn-primary mr-2" (click)="Close()" translate>Pend & close</button>
 
+    </div>
   </div>
- </div>
 </div>
 
-<div *ngIf="okdb" _ngcontent-c5="" class="col-md-12" ><!----><div _ngcontent-c5="" class="ng-star-inserted"><div _ngcontent-c5="" class="p-3 bg-success text-white"><table _ngcontent-c5="" class="table"><thead _ngcontent-c5=""><tr _ngcontent-c5=""><th _ngcontent-c5="" scope="col"><span _ngcontent-c5="" translate="">Status: Database</span></th></tr></thead></table></div></div><!----></div>
+<div *ngIf="okdb" _ngcontent-c5="" class="col-md-12"><!---->
+  <div _ngcontent-c5="" class="ng-star-inserted">
+    <div _ngcontent-c5="" class="p-3 bg-success text-white">
+      <table _ngcontent-c5="" class="table">
+        <thead _ngcontent-c5="">
+          <tr _ngcontent-c5="">
+            <th _ngcontent-c5="" scope="col"><span _ngcontent-c5="" translate="">Status: Database</span></th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div><!---->
+</div>
 
-<div *ngIf="!okdb"  _ngcontent-c5="" class="col-md-12"  ><!----><div _ngcontent-c5="" class="ng-star-inserted"><div _ngcontent-c5="" class="p-3 bg-danger text-white"><table _ngcontent-c5="" class="table"><thead _ngcontent-c5=""><tr _ngcontent-c5=""><th _ngcontent-c5="" scope="col"><span _ngcontent-c5="" translate="">Status: Database</span></th></tr></thead></table></div></div><!----></div>
+<div *ngIf="!okdb" _ngcontent-c5="" class="col-md-12"><!---->
+  <div _ngcontent-c5="" class="ng-star-inserted">
+    <div _ngcontent-c5="" class="p-3 bg-danger text-white">
+      <table _ngcontent-c5="" class="table">
+        <thead _ngcontent-c5="">
+          <tr _ngcontent-c5="">
+            <th _ngcontent-c5="" scope="col"><span _ngcontent-c5="" translate="">Status: Database</span></th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div><!---->
+</div>
 
 
 
@@ -416,27 +438,31 @@
       <div class="aa">
         <!-- Add a search input box -->
         <input type="text" [(ngModel)]="searchTextapplication" placeholder="Search...">
-        <select *ngIf="ifAppNo" class="form-control" [(ngModel)]="AppN" (change)="getappdataForeach(AppN)" name="CustomerType" id="ApplicationList">
+        <select *ngIf="ifAppNo" class="form-control" [(ngModel)]="AppN" (change)="getappdataForeach(AppN)"
+          name="CustomerType" id="ApplicationList">
           <option disabled>select</option>
-          <option *ngFor="let AppNo of ApplicationNumberlist | filter: searchTextapplication" [value]="AppNo.application_number">{{AppNo.application_number}} | {{AppNo.title_Deed_No}} | {{AppNo.service_Name}} | {{AppNo.application_Date}}</option>
+          <option *ngFor="let AppNo of ApplicationNumberlist | filter: searchTextapplication"
+            [value]="AppNo.application_number">{{AppNo.application_number}} | {{AppNo.title_Deed_No}} |
+            {{AppNo.service_Name}} | {{AppNo.application_Date}}</option>
         </select>
-        
+
       </div>
     </div>
-    <div *ngIf="ifTask && !showdWhenNoTodo" class="aa" >
+    <div *ngIf="ifTask && !showdWhenNoTodo" class="aa">
       <div class="col-sm-2" translate>Task Name</div>
       <div class="aa">
         <select *ngIf="ifTask" class="form-control" [(ngModel)]="TaskN" (change)="getTaskData(TaskN)"
           name="CustomerType" id="TaskList">
           <option translate>select task</option>
-          <option *ngFor="let Task of PreAppData" [value]="Task.tasks_task_code">{{ language === 'amharic' ? Task.description_local : Task.description_en }}</option>
-          
+          <option *ngFor="let Task of PreAppData" [value]="Task.tasks_task_code">{{ language === 'amharic' ?
+            Task.description_local : Task.description_en }}</option>
+
         </select>
       </div>
     </div>
     <div>
       <div>
-      
+
 
 
         <p-table *ngIf="TaskN" [value]="PreTaskData" [paginator]="true" [rows]="5">
@@ -457,16 +483,16 @@
               <td>{{task.level}}</td>
               <td>
                 <button type="button" class="btn btn-primary" (click)="SelectTask(task)" translate>select</button>
-                
+
               </td>
             </tr>
           </ng-template>
         </p-table>
 
         <div *ngIf="ifTaskDetail">
-         
+
           <p-tabView>
-           
+
             <p-tabPanel [header]="'Form' | translate">
               <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate"></mat-progress-bar>
               <div *ngIf="preAppID==1" id="dform">
@@ -474,52 +500,66 @@
                   [Mode]="'display'" [taskLevel]="taskLevel">
                 </app-form-display>
               </div>
-        
+
               <div *ngIf="preAppID==2">
-              <div *ngIf="CurrentForm === '1'">
-                <app-plot  [Parcel_ID]="licenceData.Parcel_ID" [disable]="true"
-                  [Parcel_mearge1]="licenceData.Plot_Merge_1" [Parcel_mearge2]="licenceData.Plot_Merge_2"
-                  [Parcel_mearge3]="licenceData.Plot_Merge_3" [Parcel_mearge4]="licenceData.Plot_Merge_4"
-                  [LicenceData]="licenceData" [AppNo]="AppNo" [todoid]="todoID" [DocID]="DocID" [tskID]="tskID"
-                  [Fields]="plotRegistrationFields">
-                </app-plot>
-              </div></div>
-           
+                <div *ngIf="CurrentForm === '1'">
+                  <app-plot [Parcel_ID]="licenceData.Parcel_ID" [disable]="true"
+                    [Parcel_mearge1]="licenceData.Plot_Merge_1" [Parcel_mearge2]="licenceData.Plot_Merge_2"
+                    [Parcel_mearge3]="licenceData.Plot_Merge_3" [Parcel_mearge4]="licenceData.Plot_Merge_4"
+                    [LicenceData]="licenceData" [AppNo]="AppNo" [todoid]="todoID" [DocID]="DocID" [tskID]="tskID"
+                    [Fields]="plotRegistrationFields">
+                  </app-plot>
+                </div>
+              </div>
 
-    
-       
 
-        <div *ngIf="preAppID==6">
-          <app-cert [disable]="true"  [licenceData]="licenceData"
-            [todoid]="todoID" [Certificate_Code]="licenceData.Certificate_Code" [disable]="true" [AppNo]="AppNo"
-            [Fields]="prepareCertificateFields">
-          </app-cert>
-        </div>
 
-        <div *ngIf="preAppID==5">
-          <app-payment [disable]="true" (send)="payment()"
-          [tskID]="tskID" [AppNo]="AppNo" [todoid]="todoID"></app-payment>
-        </div>
-        <div *ngIf="preAppID==7">
-          <!-- <app-certletter [disable]="true" (completed)="EnableFins();saveForm(jsonempty);" [AppNo]="AppNo"
+
+
+              <div *ngIf="preAppID==6">
+                <app-cert [disable]="true" [licenceData]="licenceData" [todoid]="todoID"
+                  [Certificate_Code]="licenceData.Certificate_Code" [disable]="true" [AppNo]="AppNo"
+                  [Fields]="prepareCertificateFields">
+                </app-cert>
+              </div>
+
+              <div *ngIf="preAppID==5">
+                <app-payment [disable]="true" (send)="payment()" [tskID]="tskID" [AppNo]="AppNo"
+                  [todoid]="todoID"></app-payment>
+              </div>
+              <div *ngIf="preAppID==7">
+                <!-- <app-certletter [disable]="true" (completed)="EnableFins();saveForm(jsonempty);" [AppNo]="AppNo"
             [certCode]="licenceData.Certificate_Code" [licenceData]="licenceData"></app-certletter> -->
-              <app-certversionupgrade [disable]="false"  [licenceData]="licenceData"
-                [todoid]="todoID" [Certificate_Code]="licenceData.Certificate_Code" [disable]="false" [AppNo]="AppNo"
-                [Fields]="prepareCertificateFields">
-              </app-certversionupgrade>
-          </div>
-        <div *ngIf="preAppID==9">
-          <app-property   [LicenceData]="licenceData"
-                  [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="true" [AppNo]="AppNo"
-                  [Service_ID]="licenceData.Service_ID" [todoid]="todoID" [tskID]="tskID" [DocID]="DocID" [disable]="true" >
+                <app-certversionupgrade [disable]="false" [licenceData]="licenceData" [todoid]="todoID"
+                  [Certificate_Code]="licenceData.Certificate_Code" [disable]="false" [AppNo]="AppNo"
+                  [Fields]="prepareCertificateFields">
+                </app-certversionupgrade>
+              </div>
+              <div *ngIf="preAppID==9">
+                <app-property [LicenceData]="licenceData" [Licence_Service_ID]="licenceData.Licence_Service_ID"
+                  [disable]="true" [AppNo]="AppNo" [Service_ID]="licenceData.Service_ID" [todoid]="todoID"
+                  [tskID]="tskID" [DocID]="DocID" [disable]="true">
 
-           </app-property>  
-              
+                </app-property>
+
               </div>
-        <div *ngIf="preAppID==12">
-        <app-record [useNamelist]="useNamelist"  [disable]="true" ></app-record>
-              
+              <div *ngIf="preAppID==12">
+                <app-record [useNamelist]="useNamelist" [disable]="true"></app-record>
+
               </div>
+              <div *ngIf="preAppID==14">
+                <app-land-wizard [AppNo]="AppNo"></app-land-wizard>
+
+              </div>
+              <div *ngIf="preAppID==13">
+                <app-lease-contract (completed)="EnableFinss();plot();saveFormmplot('{}');"></app-lease-contract>
+
+              </div>
+              <div *ngIf="preAppID==15">
+                <app-withdraw-propose></app-withdraw-propose>
+
+              </div>
+
               <!-- <div *ngIf="preAppID==6" id="dform">
                 < [disable]="true" (completed)="EnableFins()" [licenceData]="licenceData" [todoid]="todoID"
                   [Certificate_Code]="licenceData.Certificate_Code" [AppNo]="AppNo"></app-cert>
@@ -535,83 +575,100 @@
             </p-tabPanel>
             <p-tabPanel [header]="'Document' | translate">
               <div class="mt-3">
-       
 
-          
-          <div *ngIf="RequerdDocspre">
-            <div class="form-group row col-sm-12 m-0" *ngFor="let RequerdDocpre of RequerdDocspre; let i = index">
-              <label class="col-sm-12 col-form-label m-0">
-                {{ language === 'amharic' ? RequerdDocpre.description_Local : RequerdDocpre.description_en }}
-              </label>
-              <div class="col-sm-12 m-0 text-center">
-                <div *ngIf="loadingPreDoc">
-                  <p-progressSpinner [style]="{ width: '50px', height: '50px' }" strokeWidth="4"></p-progressSpinner>
-                </div>
-          
-                <div class="alert alert-warning" role="alert" *ngIf="!RequerdDocpre.File && !loadingPreDoc">
-                  Document not uploaded!
-                </div>
-                <div *ngIf="RequerdDocpre.File">
-                  <div class="alert alert-info">
-                    <a [href]="RequerdDocpre.File"
-                      [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType].extension">Attached -
-                      Please download!</a>
-                  <!-- Add Preview button here -->
-                  </div>
-              
-                   
-                  <div *ngIf="mimeExtension[RequerdDocpre.mimeType].extension == 'pdf'">
-                  
-                    <button type="button" class="btn btn-primary" id="Preview{{i}}" *ngIf="!RequerdDocpre.dar" (click)="PreviewshowdialogeArray[i] = true">Preview</button>
-                    <div class="carddd"  *ngIf="RequerdDocpre.dar">
-                      <p >You can check the document in <b style="color: green;">(PreviewDar)</b> or <b style="color: green;">(PreviewnotDar and MergedDAR)</b>/ሰነዱን በ <b style="color: green;">(PreviewDar)</b> ወይም <b style="color: green;">(PreviewnotDar and MergedDAR)</b> ውስጥ መፈለግ ይችላሉ</p>
-                  </div> <br> <button type="button" class="btn btn-primary sp" id="Preview{{i}}"  *ngIf="RequerdDocpre.dar"    (click)="previewdar(i);PreviewshowdialogeArray[i] = true" style="margin-right: 10px;">PreviewDar</button>
-                    <button type="button" class="btn btn-success" id="Preview{{i}}"  *ngIf="RequerdDocpre.dar"  (click)="previewnotdar(i);PreviewshowdialogeArray[i] = true">PreviewnotDar and MergedDAR</button>
-  
-                 
-                  <p-dialog [(visible)]="PreviewshowdialogeArray[i]"  header="Preview" [responsive]="true" [width]="900" [minY]="70"
-                    [baseZIndex]="10000" [contentStyle]="{ 'overflow-x': 'hidden', 
-                                                'max-height': '80vh','min-height':'400px'}" [closable]="false">
-                  
-                      <div class="modal-body">
-                            <div *ngIf="!RequerdDocpre.File">
-                              <p-progressSpinner [style]="{ width: '50px', height: '50px' }" strokeWidth="4"></p-progressSpinner>
-                            </div>
-                      <iframe width="100%" height="400px" [src]="RequerdDocpre.File" alt="FileUploaded" class="pdf-iframe">
 
-                      </iframe>
-                      <a [href]="RequerdDocpre.File"
-                      [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType].extension">Attached -
-                      Please download!</a>
-                    </div>
-                    <div>
-                    <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = false">close</button>
-                    </div>
-                  </p-dialog>
-                  </div>
-                  <div *ngIf="['jpg', 'png', 'gif'].includes(mimeExtension[RequerdDocpre.mimeType].extension)">
-               
-                    <button  type="button" class="btn btn-primary"  id="Preview{{i}}" (click)="PreviewshowdialogeArray[i] = true">Preview</button>
-                    <p-dialog [(visible)]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
-                      [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
-                        'max-height': '80vh','min-height':'250px'}">
-                  <div class="modal-body">
-                        <div *ngIf="!RequerdDocpre.File">
-                          <p-progressSpinner [style]="{ width: '50px', height: '50px' }" strokeWidth="4"></p-progressSpinner>
+
+                <div *ngIf="RequerdDocspre">
+                  <div class="form-group row col-sm-12 m-0" *ngFor="let RequerdDocpre of RequerdDocspre; let i = index">
+                    <label class="col-sm-12 col-form-label m-0">
+                      {{ language === 'amharic' ? RequerdDocpre.description_Local : RequerdDocpre.description_en }}
+                    </label>
+                    <div class="col-sm-12 m-0 text-center">
+                      <div *ngIf="loadingPreDoc">
+                        <p-progressSpinner [style]="{ width: '50px', height: '50px' }"
+                          strokeWidth="4"></p-progressSpinner>
+                      </div>
+
+                      <div class="alert alert-warning" role="alert" *ngIf="!RequerdDocpre.File && !loadingPreDoc">
+                        Document not uploaded!
+                      </div>
+                      <div *ngIf="RequerdDocpre.File">
+                        <div class="alert alert-info">
+                          <a [href]="RequerdDocpre.File"
+                            [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType].extension">Attached
+                            -
+                            Please download!</a>
+                          <!-- Add Preview button here -->
                         </div>
-                      <img width="50%" [src]="RequerdDocpre.File" alt="FileUploaded" />
-                  </div>
-                 <div>
-                <button type="button" class="btn btn-primary"  id="Preview{{i}}" (click)="PreviewshowdialogeArray[i] = false">close</button>
-                 </div>
-                </p-dialog>
-                   
 
+
+                        <div *ngIf="mimeExtension[RequerdDocpre.mimeType].extension == 'pdf'">
+
+                          <button type="button" class="btn btn-primary" id="Preview{{i}}" *ngIf="!RequerdDocpre.dar"
+                            (click)="PreviewshowdialogeArray[i] = true">Preview</button>
+                          <div class="carddd" *ngIf="RequerdDocpre.dar">
+                            <p>You can check the document in <b style="color: green;">(PreviewDar)</b> or <b
+                                style="color: green;">(PreviewnotDar and MergedDAR)</b>/ሰነዱን በ <b
+                                style="color: green;">(PreviewDar)</b> ወይም <b style="color: green;">(PreviewnotDar and
+                                MergedDAR)</b> ውስጥ መፈለግ ይችላሉ</p>
+                          </div> <br> <button type="button" class="btn btn-primary sp" id="Preview{{i}}"
+                            *ngIf="RequerdDocpre.dar" (click)="previewdar(i);PreviewshowdialogeArray[i] = true"
+                            style="margin-right: 10px;">PreviewDar</button>
+                          <button type="button" class="btn btn-success" id="Preview{{i}}" *ngIf="RequerdDocpre.dar"
+                            (click)="previewnotdar(i);PreviewshowdialogeArray[i] = true">PreviewnotDar and
+                            MergedDAR</button>
+
+
+                          <p-dialog [(visible)]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true"
+                            [width]="900" [minY]="70" [baseZIndex]="10000" [contentStyle]="{ 'overflow-x': 'hidden', 
+                                                'max-height': '80vh','min-height':'400px'}" [closable]="false">
+
+                            <div class="modal-body">
+                              <div *ngIf="!RequerdDocpre.File">
+                                <p-progressSpinner [style]="{ width: '50px', height: '50px' }"
+                                  strokeWidth="4"></p-progressSpinner>
+                              </div>
+                              <iframe width="100%" height="400px" [src]="RequerdDocpre.File" alt="FileUploaded"
+                                class="pdf-iframe">
+
+                              </iframe>
+                              <a [href]="RequerdDocpre.File"
+                                [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType].extension">Attached
+                                -
+                                Please download!</a>
+                            </div>
+                            <div>
+                              <button type="button" class="btn btn-primary"
+                                (click)="PreviewshowdialogeArray[i] = false">close</button>
+                            </div>
+                          </p-dialog>
+                        </div>
+                        <div *ngIf="['jpg', 'png', 'gif'].includes(mimeExtension[RequerdDocpre.mimeType].extension)">
+
+                          <button type="button" class="btn btn-primary" id="Preview{{i}}"
+                            (click)="PreviewshowdialogeArray[i] = true">Preview</button>
+                          <p-dialog [(visible)]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true"
+                            [width]="900" [minY]="70" [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                        'max-height': '80vh','min-height':'250px'}">
+                            <div class="modal-body">
+                              <div *ngIf="!RequerdDocpre.File">
+                                <p-progressSpinner [style]="{ width: '50px', height: '50px' }"
+                                  strokeWidth="4"></p-progressSpinner>
+                              </div>
+                              <img width="50%" [src]="RequerdDocpre.File" alt="FileUploaded" />
+                            </div>
+                            <div>
+                              <button type="button" class="btn btn-primary" id="Preview{{i}}"
+                                (click)="PreviewshowdialogeArray[i] = false">close</button>
+                            </div>
+                          </p-dialog>
+
+
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
 
 
               </div>
@@ -633,16 +690,17 @@
                     <td>{{note.number}}</td>
                     <td>{{note.userName}}</td>
                     <td>
-                      <textarea class="form-control" style="height: 20vh; background-color: rgb(208, 225, 245) ; width: 100%;" disabled
+                      <textarea class="form-control"
+                        style="height: 20vh; background-color: rgb(208, 225, 245) ; width: 100%;" disabled
                         [(ngModel)]="preNoteObj.remarks"></textarea>
                     </td>
-                   
-                 
+
+
 
                   </tr>
                 </ng-template>
               </p-table>
-               
+
             </p-tabPanel>
           </p-tabView>
 
@@ -651,23 +709,23 @@
     </div>
 
   </div>
-    <div class="modal-body" *ngIf="showdWhenNoTodo">
-      <tabset style="margin-right: 30px">
-        <tab [heading]="'Uploded' | translate">
-          <div class="mt-3">
+  <div class="modal-body" *ngIf="showdWhenNoTodo">
+    <tabset style="margin-right: 30px">
+      <tab [heading]="'Uploded' | translate">
+        <div class="mt-3">
+          <div>
             <div>
-              <div>
-                <select class="form-control" name="task" id="task" (change)="getRequiredDocspreeach($event.target.value)">
-                  <option >---select task----</option>
-    
-                  <ng-container *ngFor="let task of taskList">
-                    <option [value]="task.task_code">
-                      {{language === 'amharic' ? task.description_local : task.description_en}}
-                    </option>
-                  </ng-container>
-                </select>
-                <div *ngIf="RequerdDocspreeach">
-                  <!-- <div class="form-group row col-sm-12 m-0" *ngFor="let RequerdDocpre of RequerdDocspreeach; let i = index">
+              <select class="form-control" name="task" id="task" (change)="getRequiredDocspreeach($event.target.value)">
+                <option>---select task----</option>
+
+                <ng-container *ngFor="let task of taskList">
+                  <option [value]="task.task_code">
+                    {{language === 'amharic' ? task.description_local : task.description_en}}
+                  </option>
+                </ng-container>
+              </select>
+              <div *ngIf="RequerdDocspreeach">
+                <!-- <div class="form-group row col-sm-12 m-0" *ngFor="let RequerdDocpre of RequerdDocspreeach; let i = index">
                     <label class="col-sm-12 col-form-label m-0">
                       {{ language === 'amharic' ? RequerdDocpre.description_Local : RequerdDocpre.description_en }}
                     </label>
@@ -769,127 +827,140 @@
                       </div>
                     </div>
                   </div> -->
-                  <p-table [value]="RequerdDocspreeach" [autoLayout]="true" [paginator]="true" [rows]="10">
-                    <ng-template pTemplate="header">
-                      <tr>
-                        <th>No</th>
-                        <th>Document</th>
-                        <th>Attachment</th>
-                      </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-RequerdDocpre let-i="rowIndex">
-                      <tr>
-                        <td>{{ i + 1 }}</td>
-                        <td>
-                          <label>
-                            {{ language === 'amharic' ? RequerdDocpre.description_Local : RequerdDocpre.description_en }}
-                          </label>
-                        </td>
-                        <td>
-                          <div *ngIf="!RequerdDocpre.document_code" class="alert alert-warning" role="alert">
-                            {{ language === 'amharic' ? 'ሰነድ አልገባለትም!' : 'Document not uploaded!' }}
-                          </div>
-                          <div *ngIf="RequerdDocpre.document_code">
-                            <!-- <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = true;getdatadoc(RequerdDocpre.document_code)">Preview</button> -->
-                              <button type="button" 
-                                (click)="PreviewshowdialogeArray[i] = true;getdatadoc(RequerdDocpre.document_code);RequerdDocpre.previewed=true" 
-                                [ngClass]="{'btn btn-primary': !RequerdDocpre.previewed, 'btn btn-success': RequerdDocpre.previewed}" translate="">
-                              
-                                {{ RequerdDocpre.previewed == true ? 'previewed' : 'preview' }}
-                              
-                              </button>
-                            <p-dialog [visible]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900"
-                              [minY]="70" [baseZIndex]="10000"
-                              [contentStyle]="{ 'overflow-x': 'hidden', 'max-height': '80vh','min-height':'400px'}" [closable]="false">
-                              <ng-container *ngIf="documentss">
-                                <ng-container *ngIf="mimeExtension[mimeTypee]?.extension === 'pdf'">
-                                  <iframe width="100%" height="400px" alt="FileUploaded" class="pdf-ifram" [src]="documents"></iframe>
-                                  <a [href]="documents"
-                                    [download]="RequerdDocpre.description_en + '.' + mimeExtension[mimeTypee]?.extension"
-                                    style="font-weight: bolder; font-size: larger;font-style: italic;">Attached - Please download!</a>
-                                    <h3 ><span class="badge badge-warning" style="align-self: right;">Attached BY:{{attachedBY}}</span></h3>
-                                  </ng-container>
-                                <ng-container *ngIf="['jpg', 'png', 'gif'].includes(mimeExtension[mimeTypee]?.extension)">
-                                  <img width="100%" height="400px" [src]="documents" alt="FileUploaded" />
-                                </ng-container>
-                                <div *ngIf="['pdf', 'jpg', 'png', 'gif'].indexOf(mimeExtension[mimeTypee]?.extension) === -1">
-                                  <a [href]="documents"
-                                    [download]="RequerdDocpre.description_en + '.' + mimeExtension[mimeTypee]?.extension"
-                                    style="font-weight: bolder; font-size: larger;font-style: italic;">Attached - Please download!</a>
-                                </div>
-                                <h3 ><span class="badge badge-warning" style="align-self: right;">Attached BY:{{attachedBY}}</span></h3>
+                <p-table [value]="RequerdDocspreeach" [autoLayout]="true" [paginator]="true" [rows]="10">
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th>No</th>
+                      <th>Document</th>
+                      <th>Attachment</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-RequerdDocpre let-i="rowIndex">
+                    <tr>
+                      <td>{{ i + 1 }}</td>
+                      <td>
+                        <label>
+                          {{ language === 'amharic' ? RequerdDocpre.description_Local : RequerdDocpre.description_en }}
+                        </label>
+                      </td>
+                      <td>
+                        <div *ngIf="!RequerdDocpre.document_code" class="alert alert-warning" role="alert">
+                          {{ language === 'amharic' ? 'ሰነድ አልገባለትም!' : 'Document not uploaded!' }}
+                        </div>
+                        <div *ngIf="RequerdDocpre.document_code">
+                          <!-- <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = true;getdatadoc(RequerdDocpre.document_code)">Preview</button> -->
+                          <button type="button"
+                            (click)="PreviewshowdialogeArray[i] = true;getdatadoc(RequerdDocpre.document_code);RequerdDocpre.previewed=true"
+                            [ngClass]="{'btn btn-primary': !RequerdDocpre.previewed, 'btn btn-success': RequerdDocpre.previewed}"
+                            translate="">
+
+                            {{ RequerdDocpre.previewed == true ? 'previewed' : 'preview' }}
+
+                          </button>
+                          <p-dialog [visible]="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true"
+                            [width]="900" [minY]="70" [baseZIndex]="10000"
+                            [contentStyle]="{ 'overflow-x': 'hidden', 'max-height': '80vh','min-height':'400px'}"
+                            [closable]="false">
+                            <ng-container *ngIf="documentss">
+                              <ng-container *ngIf="mimeExtension[mimeTypee]?.extension === 'pdf'">
+                                <iframe width="100%" height="400px" alt="FileUploaded" class="pdf-ifram"
+                                  [src]="documents"></iframe>
+                                <a [href]="documents"
+                                  [download]="RequerdDocpre.description_en + '.' + mimeExtension[mimeTypee]?.extension"
+                                  style="font-weight: bolder; font-size: larger;font-style: italic;">Attached - Please
+                                  download!</a>
+                                <h3><span class="badge badge-warning" style="align-self: right;">Attached
+                                    BY:{{attachedBY}}</span></h3>
                               </ng-container>
-                              <div *ngIf="!documentss">
-                                <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
-                                  animationDuration=".5s"></p-progressSpinner>
+                              <ng-container *ngIf="['jpg', 'png', 'gif'].includes(mimeExtension[mimeTypee]?.extension)">
+                                <img width="100%" height="400px" [src]="documents" alt="FileUploaded" />
+                              </ng-container>
+                              <div
+                                *ngIf="['pdf', 'jpg', 'png', 'gif'].indexOf(mimeExtension[mimeTypee]?.extension) === -1">
+                                <a [href]="documents"
+                                  [download]="RequerdDocpre.description_en + '.' + mimeExtension[mimeTypee]?.extension"
+                                  style="font-weight: bolder; font-size: larger;font-style: italic;">Attached - Please
+                                  download!</a>
                               </div>
-                              <p-footer>
-                                <button type="button" style="align-self: right;" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = false;"
-                                  *ngIf="documentss" translate>Done</button>
-                              </p-footer>
-                            </p-dialog>
-                          </div>
-                          <div *ngIf="RequerdDocpre.File">
-                            <div *ngIf="['pdf', 'xlsx'].includes(mimeExtension[RequerdDocpre.mimeType]?.extension)">
-                              <button type="button"  (click)="PreviewshowdialogeArray[i] = true;RequerdDocpre.previewed=true"
-                              [ngClass]="{'btn btn-primary': !RequerdDocpre.previewed, 'btn btn-success': RequerdDocpre.previewed}">Preview</button>
-                              <p-dialog *ngIf="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
-                                [baseZIndex]="10000" [closable]="false">
-                                <ng-container *ngIf="documentss">
-                                  <div class="modal-body">
-                                    <div class="alert alert-info">
-                                      <a [href]="RequerdDocpre.File"
-                                        [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType]?.extension">Attached
-                                        - Please download!</a>
-                                    </div>
-                                    <h3 ><span class="badge badge-warning" style="align-self: right;">Attached BY:{{attachedBY}}</span></h3>
-                                  </div>
-                                  <div>
-                                    <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = false;">Close</button>
-                                  </div>
-                                </ng-container>
-                              </p-dialog>
+                              <h3><span class="badge badge-warning" style="align-self: right;">Attached
+                                  BY:{{attachedBY}}</span></h3>
+                            </ng-container>
+                            <div *ngIf="!documentss">
+                              <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
+                                animationDuration=".5s"></p-progressSpinner>
                             </div>
-                            <div *ngIf="['jpg', 'png', 'gif'].includes(mimeExtension[RequerdDocpre.mimeType]?.extension)">
-                              <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = true;RequerdDocpre.previewed=true"
+                            <p-footer>
+                              <button type="button" style="align-self: right;" class="btn btn-primary"
+                                (click)="PreviewshowdialogeArray[i] = false;" *ngIf="documentss" translate>Done</button>
+                            </p-footer>
+                          </p-dialog>
+                        </div>
+                        <div *ngIf="RequerdDocpre.File">
+                          <div *ngIf="['pdf', 'xlsx'].includes(mimeExtension[RequerdDocpre.mimeType]?.extension)">
+                            <button type="button"
+                              (click)="PreviewshowdialogeArray[i] = true;RequerdDocpre.previewed=true"
                               [ngClass]="{'btn btn-primary': !RequerdDocpre.previewed, 'btn btn-success': RequerdDocpre.previewed}">Preview</button>
-                              <p-dialog *ngIf="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true" [width]="900" [minY]="70"
-                                [baseZIndex]="10000" [closable]="false">
+                            <p-dialog *ngIf="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true"
+                              [width]="900" [minY]="70" [baseZIndex]="10000" [closable]="false">
+                              <ng-container *ngIf="documentss">
                                 <div class="modal-body">
-                                  <img width="50%" [src]="RequerdDocpre.File" alt="FileUploaded" />
+                                  <div class="alert alert-info">
+                                    <a [href]="RequerdDocpre.File"
+                                      [download]="RequerdDocpre.description_en + '.' + mimeExtension[RequerdDocpre.mimeType]?.extension">Attached
+                                      - Please download!</a>
+                                  </div>
+                                  <h3><span class="badge badge-warning" style="align-self: right;">Attached
+                                      BY:{{attachedBY}}</span></h3>
                                 </div>
                                 <div>
-                                  <button type="button" class="btn btn-primary" (click)="PreviewshowdialogeArray[i] = false;">Close</button>
+                                  <button type="button" class="btn btn-primary"
+                                    (click)="PreviewshowdialogeArray[i] = false;">Close</button>
                                 </div>
-                              </p-dialog>
-                            </div>
+                              </ng-container>
+                            </p-dialog>
                           </div>
-                        </td>
-                      </tr>
-                    </ng-template>
-                  </p-table>
+                          <div *ngIf="['jpg', 'png', 'gif'].includes(mimeExtension[RequerdDocpre.mimeType]?.extension)">
+                            <button type="button" class="btn btn-primary"
+                              (click)="PreviewshowdialogeArray[i] = true;RequerdDocpre.previewed=true"
+                              [ngClass]="{'btn btn-primary': !RequerdDocpre.previewed, 'btn btn-success': RequerdDocpre.previewed}">Preview</button>
+                            <p-dialog *ngIf="PreviewshowdialogeArray[i]" header="Preview" [responsive]="true"
+                              [width]="900" [minY]="70" [baseZIndex]="10000" [closable]="false">
+                              <div class="modal-body">
+                                <img width="50%" [src]="RequerdDocpre.File" alt="FileUploaded" />
+                              </div>
+                              <div>
+                                <button type="button" class="btn btn-primary"
+                                  (click)="PreviewshowdialogeArray[i] = false;">Close</button>
+                              </div>
+                            </p-dialog>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
 
-                </div>
-    
               </div>
+
             </div>
           </div>
-        </tab>
-      </tabset>
-    </div>
+        </div>
+      </tab>
+    </tabset>
+  </div>
   <div class="modal-footer">
-  
- 
-    <button type="button" class="btn btn-success" roNgxSimplePrint [printContentId]="'dform'"  id="printPageButton" 
-    translate (click)="print()"> <i class="fa fa-print"></i>print</button>
+
+
+    <button type="button" class="btn btn-success" roNgxSimplePrint [printContentId]="'dform'" id="printPageButton"
+      translate (click)="print()"> <i class="fa fa-print"></i>print</button>
     <button type="button" class="btn btn-primary" (click)="closeModal(); showdWhenNoTodo=false" translate>Done</button>
   </div>
   <p-dialog *ngIf="postintnot" header="post it note" [responsive]="true" [width]="900" [minY]="70" [baseZIndex]="10000"
     [closable]="false">
     <ng-container>
       <div class="modal-body">
-        <textarea class="form-control" style="height: 20vh; background-color: rgb(208, 225, 245) ; width: 100%;" disabled
-          [(ngModel)]="preNoteObj.remarks"></textarea>
+        <textarea class="form-control" style="height: 20vh; background-color: rgb(208, 225, 245) ; width: 100%;"
+          disabled [(ngModel)]="preNoteObj.remarks"></textarea>
       </div>
       <div>
         <button type="button" class="btn btn-primary" (click)="postintnot=false;">Close</button>
@@ -907,89 +978,77 @@
     </div>
   </ngx-smart-modal>
 </ng-template>
- 
-<p-dialog  [(visible)]="showdialoge"  header="Post it note"  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
- [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+
+<p-dialog [(visible)]="showdialoge" header="Post it note" [responsive]="true" [width]="900" [minY]="70"
+  [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                          'max-height': '80vh','min-height':'250px'}">
-                          <div class="modal-body">
+  <div class="modal-body">
 
-<div class="form-group row col-sm-10 m-0" >
-   <textarea
-   #myInput
-   [maxlength]="200"
-
-   class="form-control mx-2 mb-2 border-primary" 
-  rows="4" style="background: rgb(202, 236, 255)" 
-  [(ngModel)]="NoteObj.remarks"
-  [ngClass]="{ 'is-invalid': myInput.invalid }"
- >
+    <div class="form-group row col-sm-10 m-0">
+      <textarea #myInput [maxlength]="200" class="form-control mx-2 mb-2 border-primary" rows="4"
+        style="background: rgb(202, 236, 255)" [(ngModel)]="NoteObj.remarks"
+        [ngClass]="{ 'is-invalid': myInput.invalid }">
  </textarea>
-<span style="background-color: rgba(250, 240, 222, 0.693);">
-  
-  <span style="font-weight: bolder;" translate>Characters</span>:-<span style="font-weight: bolder; color: green; ">{{myInput.value.length}} </span>/ <span translate style="font-weight: bolder;">no of Characters</span>:-<span style="font-size: larger; font-weight: bolder; color: green;">{{maxChars}}</span>
-</span>
+      <span style="background-color: rgba(250, 240, 222, 0.693);">
 
-  <button type="button" class="btn btn-primary mx-2" 
-  [disabled]="myInput.value.length==0"
-  *ngIf="!issendnote"
-    (click)="addNote()" translate>Save</button>
-  <!-- <button type="button" class="btn btn-primary mx-4" *ngIf="this.NoteObj.postit_note_code"
+        <span style="font-weight: bolder;" translate>Characters</span>:-<span
+          style="font-weight: bolder; color: green; ">{{myInput.value.length}} </span>/ <span translate
+          style="font-weight: bolder;">no of Characters</span>:-<span
+          style="font-size: larger; font-weight: bolder; color: green;">{{maxChars}}</span>
+      </span>
+
+      <button type="button" class="btn btn-primary mx-2" [disabled]="myInput.value.length==0" *ngIf="!issendnote"
+        (click)="addNote()" translate>Save</button>
+      <!-- <button type="button" class="btn btn-primary mx-4" *ngIf="this.NoteObj.postit_note_code"
     (click)="saveNote()" translate>
     Update
   </button> -->
-  <!-- <button type="button" class="btn btn-danger mx-4" *ngIf="this.NoteObj.postit_note_code"
+      <!-- <button type="button" class="btn btn-danger mx-4" *ngIf="this.NoteObj.postit_note_code"
     (click)="DeleteNote()" translate>
     Delete
   </button> -->
-  <button type="button" class="btn btn-primary" *ngIf="issendnote"
-    (click)="sendNotte()" translate>
-    <span class="fa fa-telegram"></span> Send
-  </button>
-</div>
-   </div>
-  </p-dialog>
-   
-<p-dialog  [(visible)]="showdialogee"  header="Post Itt Note"  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
-[baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+      <button type="button" class="btn btn-primary" *ngIf="issendnote" (click)="sendNotte()" translate>
+        <span class="fa fa-telegram"></span> Send
+      </button>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog [(visible)]="showdialogee" header="Post Itt Note" [responsive]="true" [width]="900" [minY]="70"
+  [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                         'max-height': '80vh','min-height':'250px'}">
-                         <div class="modal-body">
+  <div class="modal-body">
 
-<div class="form-group row col-sm-10 m-0" >
-  <textarea
-  #myInput
-  [maxlength]="200"
-
-  class="form-control mx-2 mb-2 border-primary" 
- rows="4" style="background: rgb(202, 236, 255)" 
- [(ngModel)]="NoteObj.remarks"
- [ngClass]="{ 'is-invalid': myInput.invalid }"
->{{aaa}}
+    <div class="form-group row col-sm-10 m-0">
+      <textarea #myInput [maxlength]="200" class="form-control mx-2 mb-2 border-primary" rows="4"
+        style="background: rgb(202, 236, 255)" [(ngModel)]="NoteObj.remarks"
+        [ngClass]="{ 'is-invalid': myInput.invalid }">{{aaa}}
 </textarea>
-<span style="background-color: rgba(250, 240, 222, 0.693);">
- 
- <span style="font-weight: bolder;" translate>Characters</span>:-<span style="font-weight: bolder; color: green; ">{{myInput.value.length}} </span>/ <span translate style="font-weight: bolder;">no of Characters</span>:-<span style="font-size: larger; font-weight: bolder; color: green;">{{maxChars}}</span>
-</span>
+      <span style="background-color: rgba(250, 240, 222, 0.693);">
 
- <button type="button" class="btn btn-primary mx-2" 
- [disabled]="myInput.value.length==0"
- *ngIf="!issendnote"
-   (click)="addNote()" translate>Save</button>
- <!-- <button type="button" class="btn btn-primary mx-4" *ngIf="this.NoteObj.postit_note_code"
+        <span style="font-weight: bolder;" translate>Characters</span>:-<span
+          style="font-weight: bolder; color: green; ">{{myInput.value.length}} </span>/ <span translate
+          style="font-weight: bolder;">no of Characters</span>:-<span
+          style="font-size: larger; font-weight: bolder; color: green;">{{maxChars}}</span>
+      </span>
+
+      <button type="button" class="btn btn-primary mx-2" [disabled]="myInput.value.length==0" *ngIf="!issendnote"
+        (click)="addNote()" translate>Save</button>
+      <!-- <button type="button" class="btn btn-primary mx-4" *ngIf="this.NoteObj.postit_note_code"
    (click)="saveNote()" translate>
    Update
  </button> -->
- <!-- <button type="button" class="btn btn-danger mx-4" *ngIf="this.NoteObj.postit_note_code"
+      <!-- <button type="button" class="btn btn-danger mx-4" *ngIf="this.NoteObj.postit_note_code"
    (click)="DeleteNote()" translate>
    Delete
  </button> -->
- <button type="button" class="btn btn-primary" *ngIf="issendnote"
-   (click)="sendNotttte()" translate>
-   <span class="fa fa-telegram"></span> Send
- </button>
-</div>
+      <button type="button" class="btn btn-primary" *ngIf="issendnote" (click)="sendNotttte()" translate>
+        <span class="fa fa-telegram"></span> Send
+      </button>
+    </div>
   </div>
- </p-dialog>
- 
+</p-dialog>
+
 <!-- <p-dialog  [(visible)]="showdialoge"  header="Post It Note"  [responsive]="true" [width]="900" [minY]="70" [maximizable]="true"
 [positionTop]="1" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                          'max-height': '80vh','min-height':'250px'}">
@@ -1023,6 +1082,7 @@
 </div>
    </div>
   </p-dialog> -->
+
 </html>
 
 <!-- <p-dialog [(visible)]="showdWhenNoTodo" header="Upload Documents" [responsive]="true" [width]="900" [minY]="70"
@@ -1127,54 +1187,55 @@
 
   </p-dialog> -->
 
-  <p-dialog header="network database monitoring tool" [(visible)]="isAccountVisible"  [responsive]="true" [width]="500" [minY]="70"
-                                [baseZIndex]="10000" [closable]="false">
+<p-dialog header="network database monitoring tool" [(visible)]="isAccountVisible" [responsive]="true" [width]="500"
+  [minY]="70" [baseZIndex]="10000" [closable]="false">
 
-    <app-network-database-monitoring-tool ></app-network-database-monitoring-tool>
+  <app-network-database-monitoring-tool></app-network-database-monitoring-tool>
 
-    <button type="button" style="float: right;" class="btn btn-primary" (click)="isAccountVisible=false" translate>Done</button>
-    
-    </p-dialog>
+  <button type="button" style="float: right;" class="btn btn-primary" (click)="isAccountVisible=false"
+    translate>Done</button>
+
+</p-dialog>
 
 
-    <p-dialog header="{{user_name}}" [(visible)]="isAccountVisiblemessage" [style]="{ width: '30vw' }" [draggable]="false"
-      [resizable]="false" [maximizable]="true" [baseZIndex]="10000">
-      <div *ngIf="!loadingMessage">
-        <div *ngIf="!messageObj.messages" class="alert alert-info message-not-available" role="alert" translate>
-          No message available!
-        </div>
-        <div class="messages-container" *ngIf="messageObj.messages">
-          <div class="message-box">
-            <textarea rows="8" class="form-control"
-              disabled>{{ messageObj.messages ? messageObj.currentMessage : null }}</textarea>
-          </div>
-          <div class="message-next-prev">
-            <button type="button" class="btn btn-light" [disabled]="!canGo(direction.PREV)"
-              (click)="navigateMessage(direction.PREV)" translate>
-              <span class="pi pi-angle-left"></span>
-              Previous
-            </button>
-            <button type="button" class="btn btn-light" [disabled]="!canGo(direction.NEXT)"
-              (click)="navigateMessage(direction.NEXT)" translate>
-              Next
-              <span class="pi pi-angle-right"></span>
-            </button>
-          </div>
-        </div>
+<p-dialog header="{{user_name}}" [(visible)]="isAccountVisiblemessage" [style]="{ width: '30vw' }" [draggable]="false"
+  [resizable]="false" [maximizable]="true" [baseZIndex]="10000">
+  <div *ngIf="!loadingMessage">
+    <div *ngIf="!messageObj.messages" class="alert alert-info message-not-available" role="alert" translate>
+      No message available!
+    </div>
+    <div class="messages-container" *ngIf="messageObj.messages">
+      <div class="message-box">
+        <textarea rows="8" class="form-control"
+          disabled>{{ messageObj.messages ? messageObj.currentMessage : null }}</textarea>
       </div>
-    
-      <div *ngIf="loadingMessage" class="loading-spinner-container">
-        <span class="loading-spinner" translate>
-          <span class="pi pi-spin pi-spinner"></span>
-          Loading...
-        </span>
+      <div class="message-next-prev">
+        <button type="button" class="btn btn-light" [disabled]="!canGo(direction.PREV)"
+          (click)="navigateMessage(direction.PREV)" translate>
+          <span class="pi pi-angle-left"></span>
+          Previous
+        </button>
+        <button type="button" class="btn btn-light" [disabled]="!canGo(direction.NEXT)"
+          (click)="navigateMessage(direction.NEXT)" translate>
+          Next
+          <span class="pi pi-angle-right"></span>
+        </button>
       </div>
-      <button type="button" class="btn btn-primary" (click)="closeModalme('messages')" translate>Done</button>
-    
-    </p-dialog>
-  
-   
-    <p-dialog [header]="'Confirmation' | translate" [(visible)]="isconfirmsaveplot" [responsive]="true" [width]="300"
+    </div>
+  </div>
+
+  <div *ngIf="loadingMessage" class="loading-spinner-container">
+    <span class="loading-spinner" translate>
+      <span class="pi pi-spin pi-spinner"></span>
+      Loading...
+    </span>
+  </div>
+  <button type="button" class="btn btn-primary" (click)="closeModalme('messages')" translate>Done</button>
+
+</p-dialog>
+
+
+<p-dialog [header]="'Confirmation' | translate" [(visible)]="isconfirmsaveplot" [responsive]="true" [width]="300"
   [minY]="40" [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
                            'max-height': '80vh','min-height':'50px'}">
   <p translate>
@@ -1188,29 +1249,32 @@
       class="ui-button-secondary"></button>
   </p-footer>
 </p-dialog>
-  
-<p-dialog [header]="'Confirmation' | translate" [(visible)]="isconfirmsaveAR" [responsive]="true" [width]="300"
-[minY]="40" [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
-                         'max-height': '80vh','min-height':'50px'}">
-<p translate>
-  Are you sure that you want to proceed/እርግጠኛ ነዎት መቀጠል ይፈልጋሉ?
-</p>
 
-<p-footer>
-  <button type="button" pButton icon="pi pi-check" (click)="isconfirmsaveAR=false;confirm3()"
-    [label]="'yes' | translate"></button>
-  <button type="button" pButton icon="pi pi-close" (click)="isconfirmsaveAR=false" [label]="'no'| translate "
-    class="ui-button-secondary"></button>
-</p-footer>
+<p-dialog [header]="'Confirmation' | translate" [(visible)]="isconfirmsaveAR" [responsive]="true" [width]="300"
+  [minY]="40" [maximizable]="true" [baseZIndex]="10000" [contentStyle]="{'overflow-y': 'auto', 'overflow-x': 'hidden', 
+                         'max-height': '80vh','min-height':'50px'}">
+  <p translate>
+    Are you sure that you want to proceed/እርግጠኛ ነዎት መቀጠል ይፈልጋሉ?
+  </p>
+
+  <p-footer>
+    <button type="button" pButton icon="pi pi-check" (click)="isconfirmsaveAR=false;confirm3()"
+      [label]="'yes' | translate"></button>
+    <button type="button" pButton icon="pi pi-close" (click)="isconfirmsaveAR=false" [label]="'no'| translate "
+      class="ui-button-secondary"></button>
+  </p-footer>
 </p-dialog>
 
-<p-dialog header="Seller Information" [visible]="isconfirmseller"   [responsive]="true" [width]="400" [baseZIndex]="10000">
+<p-dialog header="Seller Information" [visible]="isconfirmseller" [responsive]="true" [width]="400"
+  [baseZIndex]="10000">
   <div class="id-card" *ngIf="customerdata.length > 0">
     <div class="id-card-header">
-      <img *ngIf="customerdata[0].photo" [src]="'data:image/jpeg;base64,' + customerdata[0].photo" alt="Customer Photo" class="customer-photo">
+      <img *ngIf="customerdata[0].photo" [src]="'data:image/jpeg;base64,' + customerdata[0].photo" alt="Customer Photo"
+        class="customer-photo">
     </div>
     <div class="id-card-body">
-      <h2>{{ customerdata[0].applicant_First_Name_EN }} {{ customerdata[0].applicant_Middle_Name_En }} {{ customerdata[0].applicant_Last_Name_EN }}</h2>
+      <h2>{{ customerdata[0].applicant_First_Name_EN }} {{ customerdata[0].applicant_Middle_Name_En }} {{
+        customerdata[0].applicant_Last_Name_EN }}</h2>
       <p><strong>Address:</strong> {{ customerdata[0].address }}</p>
       <p><strong>Woreda:</strong> {{ customerdata[0].wereda_ID }}</p>
       <p><strong>ID:</strong> {{ sellerkebeleid }}</p>

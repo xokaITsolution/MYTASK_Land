@@ -99,7 +99,7 @@ export class LeaseToLeaseComponent implements OnInit {
   }
   async Get_Lease_contract() {
     this.ReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
-      environment.Lease_contract + "/" + this._service.Report_name
+      environment.con_report + "/" + this._service.Report_name +"/" + this._service.App_no
     );
     console.log("ReportPath", this.ReportPath);
 

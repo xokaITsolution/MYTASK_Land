@@ -18,7 +18,8 @@
         '<img src="http://ct.addisland.gov.et/datepicker/img/calendar.gif" alt="Popup"></button>';
       window["iconpath"] = '/DesktopModules/MVC/TASK/Views/Item/assets/assets/marker-icon.png'
       window['rootPath'] = 'http://197.156.93.110/XOKA.eoffice.bpel_land/api/';
-      window["rootPathApi"] = "http://197.156.93.110/Xoka_land_api/api/";
+      // window["rootPathApi"] = "http://197.156.93.110/Xoka_land_api/api/";
+      window["rootPathApi"] = "https://localhost:44318/api/";
       // window['local_GIS_server'] = 'http://localhost/geojson';
       window['local_GIS_server'] = './assets/geojson';
       // window['wfs_geoserver'] = 'http://192.168.0.150:8080/geoserver/ows';
@@ -46,6 +47,7 @@
       window['certReportPath'] = 'https://ct.addisland.gov.et/en-us/certificate';
       window['LetterReportPath'] = 'https://ct.addisland.gov.et/en-us/Letter';
       window['Lease_contract'] =   'http://land.xokait.com.et/en-us/Lease_Contract'
+      window['con_report'] =   'http://land.xokait.com.et/Lease_Contract'
       window["lang"] = window.location.pathname.split("/")[2];
       window['resourcePath'] = "DesktopModules/MVC/xokamytasks/Views/Item/assets/";
       window['phisicalPath'] = '/DesktopModules/MVC/TASK/Views/Item/assets/assets/i18n/';
@@ -77,6 +79,10 @@
         {
           'name': "Parcels Merging Service for Freehold landholdings",
           'id': '5de49606-4dc6-4fb1-8f37-0cfc948fdc83'
+        },
+        {
+          'name':"Cabina decision and national allocation",
+          'id':"5c0e5d6b-000e-4928-a370-7a5b06b313f8"
         }
       ];
       window['propertytasks'] = [
@@ -250,9 +256,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
             rel="stylesheet" >
          
-     
   </head>
-   
   <body>
     
     

@@ -100,16 +100,15 @@
                     </div>
 
                     <div class="field">
-                        <label for="Date_of_final_lease_pyment">Date of final lease pyment</label>
-                        <input class="form-control" #Date_of_final_lease_pyment="ngModel" [disabled]="true"
-                            id="Date_of_final_lease_pyment" type="date" required pInputText
-                            [(ngModel)]="leaserPaymentHead.Date_of_final_lease_pyment"
-                            [ngClass]="{ 'ng-dirty': (Date_of_final_lease_pyment.invalid && submitted) || (Date_of_final_lease_pyment.dirty && Date_of_final_lease_pyment.invalid) }" />
+                        <label for="Date_of_final_lease_payment">Date of final lease pyment</label>
+                        <input class="form-control" #Date_of_final_lease_payment="ngModel" [disabled]="true"
+                            id="Date_of_final_lease_payment" type="date" required pInputText
+                            [(ngModel)]="leaserPaymentHead.Date_of_final_lease_payment"
+                            [ngClass]="{ 'ng-dirty': (Date_of_final_lease_payment.invalid && submitted) || (Date_of_final_lease_payment.dirty && Date_of_final_lease_payment.invalid) }" />
                         <small
-                            *ngIf="(Date_of_final_lease_pyment.invalid && submitted) || (Date_of_final_lease_pyment.dirty && Date_of_final_lease_pyment.invalid)"
+                            *ngIf="(Date_of_final_lease_payment.invalid && submitted) || (Date_of_final_lease_payment.dirty && Date_of_final_lease_payment.invalid)"
                             class="p-error">Date of final lease pyment is required.</small>
                     </div>
-
                     <div class="field">
                         <label for="Remaining_lease_Payment">Remaining lease Payment</label>
                         <input class="form-control" #Remaining_lease_Payment="ngModel" id="Remaining_lease_Payment"
@@ -120,7 +119,7 @@
                             *ngIf="(Remaining_lease_Payment.invalid && submitted) || (Remaining_lease_Payment.dirty && Remaining_lease_Payment.invalid)"
                             class="p-error">Remaining lease Payment is required.</small>
                     </div>
-                    <div class="form-group row">
+                    <!-- <div class="form-group row">
                         <label for="ContactType" class="col-sm-4 col-form-label" translate>Contact Type</label>
                         <div class="col-sm-8">
                           <select class="form-control" [(ngModel)]="leaserPaymentHead.contact_Type" name="ContactType"
@@ -133,7 +132,7 @@
                             </option>
                           </select>
                         </div>
-                      </div>
+                      </div> -->
                 </div>
             </section>
             <!-- right column of the form -->
@@ -186,7 +185,7 @@
 
                     <div class="field">
                         <label for="Lease_Payment_Year">Lease Payment Year</label>
-                        <input class="form-control" #Lease_Payment_Year="ngModel" id="Lease_Payment_Year" type="number"
+                        <input [disabled]="!edityear" class="form-control" #Lease_Payment_Year="ngModel" id="Lease_Payment_Year" type="number"
                             [disabled]="true" required pInputText [(ngModel)]="leaserPaymentHead.Lease_Payment_Year"
                             [ngClass]="{ 'ng-dirty': (Lease_Payment_Year.invalid && submitted) || (Lease_Payment_Year.dirty && Lease_Payment_Year.invalid) }" />
                         <small

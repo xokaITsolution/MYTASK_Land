@@ -95,7 +95,7 @@
                             <label for="LeasePeriodEndDateET" class="col-sm-4 col-form-label">Lease Period End Date
                                 ET</label>
                             <div class="col-sm-8">
-                                <input type="date" disabled class="form-control"
+                                <input type="text" disabled class="form-control"
                                     [(ngModel)]="newFreeHoldToLease.Lease_Period_end_date_ET"
                                     name="LeasePeriodEndDateET" id="LeasePeriodEndDateET"
                                     placeholder="Lease Period End Date ET">
@@ -246,7 +246,6 @@
                           <button type="button" class="close" (click)="isCertifcatePrintforConfirmation=false">&times;</button>
                           <h5 style="align-items: center;">View Report</h5>
                         </div>
-                  
                         <div class="ngxsmartmodal-body">
                   
                         <iframe class="ng-template" width="100%" height="500px" [src]="ReportPath"></iframe>

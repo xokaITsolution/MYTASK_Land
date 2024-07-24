@@ -15,7 +15,7 @@ import { LeaseContractService } from "../lease-contract.service";
 })
 export class LeasePaymentHeadComponent implements OnInit {
   @Input() AppNo;
-
+  @Output() completed = new EventEmitter();
   @Output() functionCall = new EventEmitter();
   leaserPaymentHead: LeaserPaymentHead = new LeaserPaymentHead();
   Deed_Transfer_Lookup: any;
@@ -23,6 +23,8 @@ export class LeasePaymentHeadComponent implements OnInit {
   Proprty_Use: any;
   Application_No:any;
   contractTypearray: any[];
+  edityear: boolean=false;
+  lease_period_prev: any;
 
   constructor(
 
@@ -44,16 +46,22 @@ export class LeasePaymentHeadComponent implements OnInit {
       console.log("Observable Params:", p);
       // this.ServiceService.tiltledeed = p["AppNo"];
       this.Application_No = p["AppNo"];
-      // debugger
     });
     // this.getAPPdata();
     this.getLeasPaymentHeadData(this.Application_No);
-    this.get_contract_type();
+    // this.get_contract_type();
 
   } 
   getTransferType(id: string) {
     this._service.getTransferType(id).subscribe(
       (response) => {
+        
+          this._service.transfer_ID=response["procDeed_Transfer_Lookups"][0].transfer_ID
+        if(response["procDeed_Transfer_Lookups"][0].transfer_ID=="2015" || response["procDeed_Transfer_Lookups"][0].transfer_ID=="2014"
+         || response["procDeed_Transfer_Lookups"][0].transfer_ID=="2044"
+        ){
+          this.edityear=true;
+        }
         let Transfer_type = response["procDeed_Transfer_Lookups"][0].type;
         this.Deed_Transfer_Lookup = response["procDeed_Transfer_Lookups"][0];
         this.leaserPaymentHead.Transfer_type = Transfer_type;
@@ -92,8 +100,9 @@ export class LeasePaymentHeadComponent implements OnInit {
     );
   }
   format_date(date: any){
+    
     const originalDate = new Date(date);
-
+// de
     // Extract components of the date
     const year = originalDate.getFullYear();
     const month = String(originalDate.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
@@ -108,18 +117,18 @@ export class LeasePaymentHeadComponent implements OnInit {
     return formattedDate;
    
   }
-  get_contract_type() {
-    this._service.get_all().subscribe(
-      (data) => {
-        const contractTypearray1 = this.json2array(data);
-        this.contractTypearray = contractTypearray1[0].proc_Lease_Contract_Types;
-        console.log("contact_Type",this.contractTypearray);
-      },
-      (error) => {
-        this.notificationsService.error('Error fetching contract types:', error);
-      }
-    );
-  }
+  // get_contract_type() {
+  //   this._service.get_all().subscribe(
+  //     (data) => {
+  //       const contractTypearray1 = this.json2array(data);
+  //       this.contractTypearray = contractTypearray1[0].proc_Lease_Contract_Types;
+  //       console.log("contact_Type",this.contractTypearray);
+  //     },
+  //     (error) => {
+  //       this.notificationsService.error('Error fetching contract types:', error);
+  //     }
+  //   );
+  // }
   json2array(json) {
     var result = [];
     result.push(json);
@@ -127,10 +136,10 @@ export class LeasePaymentHeadComponent implements OnInit {
     return result;
   }
   getLeasPaymentHeadData(appNo: any) {
-    // debugger
+    // 
     this._service.getDataById(appNo).subscribe(
       (response) => {
-        // debugger
+        // 
         
         if (response["proc_Lease_Payment_Heads"].length>0){
           let data = response.proc_Lease_Payment_Heads[0];
@@ -148,34 +157,37 @@ export class LeasePaymentHeadComponent implements OnInit {
         this.leaserPaymentHead.Amount_of_the_annual_lease_payment =
           data.amount_of_the_annual_lease_payment;
         this.leaserPaymentHead.Lease_period_in_Year = data.lease_period_in_Year;
-        this.leaserPaymentHead.Date_of_final_lease_pyment =this.format_date(data.date_of_final_lease_payment)
-          
+        this.leaserPaymentHead.Date_of_final_lease_payment = data.date_of_final_lease_payment.split("T")[0]
+        // this.leaserPaymentHead.Date_of_final_lease_pyment =this.format_date(data.date_of_final_lease_payment)
         this.leaserPaymentHead.Remaining_lease_Payment =
           data.remaining_lease_payment;
         this.leaserPaymentHead.Customer_Type = data.customer_Type;
         this.leaserPaymentHead.Transfer_type = data.transfer_Type;
         this.leaserPaymentHead.Proporty_Use = data.proporty_Use;
-        this.leaserPaymentHead.Lease_Period_end_date =this.format_date(data.lease_Period_end_date)
-    debugger
+        this.leaserPaymentHead.Lease_Period_end_date = data.lease_Period_end_date.split("T")[0];
+        // this.leaserPaymentHead.Lease_Period_end_date =this.format_date(data.lease_Period_end_date)
         this.leaserPaymentHead.Lease_Payment_Year = data.lease_Payment_Year;
+        this.lease_period_prev = data.lease_Payment_Year;
         this._service.Lease_Payment_Year=data.lease_Payment_Year;
+        this.lease_period_prev = data.lease_Payment_Year;
         this.leaserPaymentHead.Is_Active = data.is_Active;
         this.leaserPaymentHead.Parent = data.parent;
+        this.leaserPaymentHead.lease_payment_advance_per=data.lease_payment_advance_per;
+        this._service.lease_payment_advance_per=data.lease_payment_advance_per;
         this.getTransferType(this.leaserPaymentHead.Transfer_type);
         this.getProportyUse(this.leaserPaymentHead.Proporty_Use);
         this.getCustomerType(this.leaserPaymentHead.Customer_Type);
-      // debugger
-        this._service.lease_payment_advance_per=data.lease_payment_advance_per;
+        
         }
         else{
-          // debugger
+          // 
           this.ServiceService.getPlotManagementApi(this.ServiceService.Parcel_ID).subscribe(
             async (res: any) => {
-              debugger
+              // 
               let appno= res["procPlot_Registrations"][0].application_No 
               this._service.getDataById(res["procPlot_Registrations"][0].application_No ).subscribe(
                 (response) => {
-                  // debugger
+                  // 
               let data = response.proc_Lease_Payment_Heads[0];
               this.leaserPaymentHead.Lease_code = data.lease_code;
               this._service.lease_code=data.lease_code;
@@ -191,23 +203,28 @@ export class LeasePaymentHeadComponent implements OnInit {
               this.leaserPaymentHead.Amount_of_the_annual_lease_payment =
                 data.amount_of_the_annual_lease_payment;
               this.leaserPaymentHead.Lease_period_in_Year = data.lease_period_in_Year;
-              this.leaserPaymentHead.Date_of_final_lease_pyment =this.format_date(data.date_of_final_lease_payment)
+              this.leaserPaymentHead.Date_of_final_lease_payment = data.date_of_final_lease_payment.split("T")[0]
+              // this.leaserPaymentHead.Date_of_final_lease_pyment =this.format_date(data.date_of_final_lease_payment)
                 
               this.leaserPaymentHead.Remaining_lease_Payment =
                 data.remaining_lease_payment;
               this.leaserPaymentHead.Customer_Type = data.customer_Type;
               this.leaserPaymentHead.Transfer_type = data.transfer_Type;
               this.leaserPaymentHead.Proporty_Use = data.proporty_Use;
-              this.leaserPaymentHead.Lease_Period_end_date =this.format_date(data.lease_Period_end_date)
-          debugger
+              this.leaserPaymentHead.Lease_Period_end_date = data.lease_Period_end_date.split("T")[0];
+              // this.leaserPaymentHead.Lease_Period_end_date =this.format_date(data.lease_Period_end_date)
+          // 
               this.leaserPaymentHead.Lease_Payment_Year = data.lease_Payment_Year;
+              this.lease_period_prev = data.lease_Payment_Year;
               this._service.Lease_Payment_Year=data.lease_Payment_Year;
               this.leaserPaymentHead.Is_Active = data.is_Active;
               this.leaserPaymentHead.Parent = data.parent;
+              this.leaserPaymentHead.lease_payment_advance_per=data.lease_payment_advance_per;
+              this._service.lease_payment_advance_per=data.lease_payment_advance_per;
               this.getTransferType(this.leaserPaymentHead.Transfer_type);
               this.getProportyUse(this.leaserPaymentHead.Proporty_Use);
               this.getCustomerType(this.leaserPaymentHead.Customer_Type);
-              this._service.lease_payment_advance_per=data.lease_payment_advance_per;
+             
             })
           })
         }
@@ -218,17 +235,24 @@ export class LeasePaymentHeadComponent implements OnInit {
       }
     );
   }
-
   updateLeasPaymentHeadData() {
     
+    if(this.lease_period_prev!= this.leaserPaymentHead.Lease_Payment_Year){
+      let subyaer=this.lease_period_prev-this.leaserPaymentHead.Lease_Payment_Year;
+      this.leaserPaymentHead.Lease_period_in_Year=this.leaserPaymentHead.Lease_period_in_Year-subyaer;
+      this._service.Lease_Payment_Year=this.leaserPaymentHead.Lease_Payment_Year;
+    }
+    this._service.Lease_Payment_Year=this.leaserPaymentHead.Lease_Payment_Year;
    this.leaserPaymentHead.Transfer_type=this.Deed_Transfer_Lookup.transfer_ID;
    this.leaserPaymentHead.Customer_Type=this.Customer_Type_Lookup.customer_Type_ID;
    this.leaserPaymentHead.Proporty_Use = this.Proprty_Use.code;
-
+// 
     this._service.updateData(this.leaserPaymentHead).subscribe(
       (response) => {
         // itHasError = false;
+        this.completed.emit();
         this.notificationsService.success("Success", "Successfully Updated");
+        this.getLeasPaymentHeadData(this.leaserPaymentHead.Application_No);
         this.leaserPaymentHead.Transfer_type=this.Deed_Transfer_Lookup.type;
         this.leaserPaymentHead.Customer_Type=this.Customer_Type_Lookup.customer_Type;
         this.leaserPaymentHead.Proporty_Use = this.Proprty_Use.name;

@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, } from "@angular/core";
+import { Component, EventEmitter, Input, Output, ViewChild, } from "@angular/core";
 import { MenuItem, MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import { NotificationsService } from "angular2-notifications";
@@ -13,6 +13,7 @@ import { LeasePaymentHeadDetailComponent } from "../lease-payment-head-detail/le
 export class LandWizardComponent {
   items: MenuItem[];
   @Input() AppNo;
+  @Output() completed = new EventEmitter();
   @ViewChild(LeasePaymentHeadDetailComponent, { static: false }) childComponent: LeasePaymentHeadDetailComponent;
   // @ViewChild(LeasePaymentHeadDetailComponent) childComponent: LeasePaymentHeadDetailComponent;
 
