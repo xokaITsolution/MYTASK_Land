@@ -321,6 +321,7 @@ export class ServiceService {
   currentproprtyID: any;
   propertyTypeid: any;
   propertyid: any;
+  disable: any;
   constructor(private http: HttpClient, private cookieService: CookieService) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);

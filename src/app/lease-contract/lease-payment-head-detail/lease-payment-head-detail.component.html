@@ -55,7 +55,7 @@
                         <div class="plu">+</div>
                         <div class="field">
                             <label for="New_Input_Field"> Additional</label>
-                            <input class="form-control" (input)="checkIfNumberInserted1($event.target.value)"
+                            <input [disabled]="disable" class="form-control" (input)="checkIfNumberInserted1($event.target.value)"
                                 id="New_Input_Field" type="number" required pInputText  />
                         </div>
                     </div>
@@ -68,7 +68,7 @@
                     </div>
                     <div class="field" [ngClass]="{ 'minimized': isNumberInserted }">
                         <label for="Plot_size_By_Lease_Price">Plot size By Lease Price</label>
-                        <input class="form-control" (input)="checkIfNumberInserted($event.target.value)"
+                        <input class="form-control" [disabled]="disable" (input)="checkIfNumberInserted($event.target.value)"
                             #Plot_size_By_Lease_Price="ngModel" id="Plot_size_By_Lease_Price" type="number" required
                             pInputText [(ngModel)]="leasePaymentHeadDetail.Plot_size_By_Lease_Price" />
                         <!-- (change)="checkIfNumberInserted($event.target.value)" -->
@@ -125,7 +125,7 @@
                     <div class="form-group row">
                         <label for="ContractDate" class="col-sm-4 col-form-label" translate>Lease Contract start Date</label>
                         <div class="col-sm-8">
-                          <input type="date"  class="form-control" [disabled]="disable"
+                          <input type="date" [disabled]="disable"  class="form-control"
                             [(ngModel)]="leasePaymentHeadDetail.contract_date" name="ContractDate" id="ContractDate"
                             [placeholder]="'Contract Date'" #ContractDate="ngModel"
                             [ngClass]="{ 'is-invalid': ContractDate.invalid }" required>
@@ -140,10 +140,10 @@
         <!-- </div> -->
 
         <!-- [disabled]="Enable" -->
-        <div class="card-footer"><button class="btn btn-secondary btn-success" type="button" label="Update"
+        <div class="card-footer"><button class="btn btn-secondary btn-success" [disabled]="disable" type="button" label="Update"
                 (click)="updateleaserPaymentHeadDetail()">Update</button>
             <div class="pull-left">
-                <div class="card-footer"><button type="button" [disabled]="!(Enable && updated)" class="btn btn-primary btn-success" label="Update"
+                <div class="card-footer"><button type="button" [disabled]="!(Enable && updated) ||disable" class="btn btn-primary btn-success" label="Update"
                         (click)="Generate_lease_plan()">Generate Lease Plan</button>
                 </div>
             </div>

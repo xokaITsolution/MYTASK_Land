@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild, Input } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { LeaseContractService } from '../lease-contract.service';
 import { Guid } from 'guid-typescript';
@@ -16,6 +16,7 @@ import { NotificationsService } from "angular2-notifications";
 })
 export class LeaseContractComponent implements OnInit {
   @Output() completed = new EventEmitter();
+  @Input() disable;
   @ViewChild(LeaseToLeaseComponent, { static: false }) childComponent: LeaseToLeaseComponent;
   @ViewChild(FreeHoldToLeaseComponent, { static: false }) childComponent1: FreeHoldToLeaseComponent;
   showForm: boolean;
@@ -51,6 +52,7 @@ export class LeaseContractComponent implements OnInit {
     this.get_contract_type();
     this.get_constraction_level();
     this.newLeaseContract.contract_no = Guid.create().toString();
+    this.ServiceService.disable=this.disable
   }
   get_license_service() {
     this._service.get_license_service(this.AppNo).subscribe((data) => {
@@ -187,7 +189,6 @@ export class LeaseContractComponent implements OnInit {
     this.get_contract_type1(this.newLeaseContract.contact_Type);
     this._service.updatelease_contract(this.newLeaseContract).subscribe(
       (response) => {
-        // this.showToast('success', 'success', 'Success');
         this.completed.emit();
         this.notificationsService.success("Success", "Successfully Updated");
         this.enablenext = true;

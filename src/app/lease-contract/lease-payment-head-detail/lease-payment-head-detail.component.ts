@@ -32,6 +32,7 @@ export class LeasePaymentHeadDetailComponent {
   enablepaymentreport: boolean;
   Enable: boolean;
   updated: boolean;
+  disable: any;
   constructor(
     private router: Router,
     private _service: LeaseContractService,
@@ -43,7 +44,7 @@ export class LeasePaymentHeadDetailComponent {
   }
 
   ngOnInit(): void {
-     
+    this.disable=this.ServiceService.disable;
   }
   personalInformation: any;
   submitted: boolean = false;

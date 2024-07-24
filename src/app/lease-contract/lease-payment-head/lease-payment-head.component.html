@@ -185,7 +185,7 @@
 
                     <div class="field">
                         <label for="Lease_Payment_Year">Lease Payment Year</label>
-                        <input [disabled]="!edityear" class="form-control" #Lease_Payment_Year="ngModel" id="Lease_Payment_Year" type="number"
+                        <input [disabled]="!edityear|| disable" class="form-control" #Lease_Payment_Year="ngModel" id="Lease_Payment_Year" type="number"
                             [disabled]="true" required pInputText [(ngModel)]="leaserPaymentHead.Lease_Payment_Year"
                             [ngClass]="{ 'ng-dirty': (Lease_Payment_Year.invalid && submitted) || (Lease_Payment_Year.dirty && Lease_Payment_Year.invalid) }" />
                         <small
@@ -214,7 +214,7 @@
                 </div>
             </section>
         </div>
-        <div class="card-footer"><button class="btn btn-secondary btn-success" label="Update"
+        <div class="card-footer"><button type="button" [disabled]="disable" class="btn btn-secondary btn-success" label="Update"
                 (click)="updateLeasPaymentHeadData()">Update</button>
                 <!-- <button pButton pInputText label="Next" (click)="nextPage()"></button> -->
         </div>

@@ -25,6 +25,7 @@ export class LeasePaymentHeadComponent implements OnInit {
   contractTypearray: any[];
   edityear: boolean=false;
   lease_period_prev: any;
+  disable: any;
 
   constructor(
 
@@ -49,7 +50,7 @@ export class LeasePaymentHeadComponent implements OnInit {
     });
     // this.getAPPdata();
     this.getLeasPaymentHeadData(this.Application_No);
-    // this.get_contract_type();
+    this.disable=this.ServiceService.disable;
 
   } 
   getTransferType(id: string) {

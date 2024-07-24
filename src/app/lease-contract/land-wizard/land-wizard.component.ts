@@ -1,3 +1,4 @@
+import { ServiceService } from './../../service/service.service';
 import { Component, EventEmitter, Input, Output, ViewChild, } from "@angular/core";
 import { MenuItem, MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
@@ -13,6 +14,7 @@ import { LeasePaymentHeadDetailComponent } from "../lease-payment-head-detail/le
 export class LandWizardComponent {
   items: MenuItem[];
   @Input() AppNo;
+  @Input() disable;
   @Output() completed = new EventEmitter();
   @ViewChild(LeasePaymentHeadDetailComponent, { static: false }) childComponent: LeasePaymentHeadDetailComponent;
   // @ViewChild(LeasePaymentHeadDetailComponent) childComponent: LeasePaymentHeadDetailComponent;
@@ -25,7 +27,8 @@ export class LandWizardComponent {
 
   constructor(
     public messageService: MessageService,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    public ServiceService:ServiceService
   ) {}
 
   ngOnInit() {
@@ -43,6 +46,7 @@ export class LandWizardComponent {
         },
       },
     ];
+    this.ServiceService.disable=this.disable
   }
 
   next() {
@@ -51,6 +55,7 @@ export class LandWizardComponent {
   }
   nextClicked(){
     this.childComponent.getLeasPaymentHeadDataDetail();
+    this.completed.emit();
     // debugger
   }
   prv() {
