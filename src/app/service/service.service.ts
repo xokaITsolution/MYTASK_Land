@@ -232,6 +232,7 @@ export class ServiceService {
   private applicationdelete = environment.rootPathApi + "aplication/";
   propertyLookupbyid = environment.rootPath2+'ProprtyData/procProportyTypeLockup/'
   getWithdrawpropose1 = environment.rootPathApi+'view/View_Withdraw_propose'
+  PropertyDynamicDataCollectionTransactionByProperty = environment.rootPathApi+'proc_Con_Review_TransactionDetail/proc_ConReviewTransactionDetail/'
   // environment.rootPath + "BPEL/GetApplicationNumberByUser"; // URL to web api
   httpOptions = {
     headers: new HttpHeaders({ "Content-Type": "application/json" }),
@@ -322,6 +323,7 @@ export class ServiceService {
   propertyTypeid: any;
   propertyid: any;
   disable: any;
+  tskID: any;
   constructor(private http: HttpClient, private cookieService: CookieService) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -1067,6 +1069,12 @@ export class ServiceService {
         "view/Vw_AllDocuments/application_number/doc/doc/document_code/document_code?document_code=" +
         DocID
     );
+  }
+  getPropertyDynamicDataCollectionTransactionByTransId(id) {
+    return this.http.get(this.PropertyDynamicDataCollectionTransactionByProperty + id)
+  }
+  updatePropertyDynamicDataCollectionTransactionByTransId(data) {
+    return this.http.put(this.PropertyDynamicDataCollectionTransactionByProperty, data)
   }
   getDocumentbytaskssURL(ApplicationCode, DocID, taskid) {
     console.log("ApplicationCode, DocID", ApplicationCode, DocID, taskid);

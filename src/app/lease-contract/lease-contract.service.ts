@@ -48,14 +48,15 @@ export class LeaseContractService {
     Total_lease_amount_to_be_paid:any,
     Amount_of_down_payment:any,
     contract_date:any,
-    transfer_ID:any
+    transfer_ID:any,
+    tskID:any
     ){
       // let ad = this.Proc_Genereate_Lease_Plan+
       // '?Lease_code='+Lease_Code+'&PlotID='+Plot_ID+'&Lease_Payment_grace_Period='+Lease_Payment_grace_Period+'&Lease_Payment_Year='+Lease_Payment_Year+'&Total_lease_amount_to_be_paid='+Total_lease_amount_to_be_paid
       return this.http.get(this.Proc_Genereate_Lease_Plan+
         '?Lease_code='+Lease_Code+'&PlotID='+Plot_ID+'&Lease_Payment_grace_Period='+Lease_Payment_grace_Period+
         '&Lease_Payment_Year='+Lease_Payment_Year+'&Total_lease_amount_to_be_paid='+Total_lease_amount_to_be_paid+
-        '&Amount_of_down_payment='+Amount_of_down_payment+'&contract_date='+contract_date+'&transfer_ID='+transfer_ID
+        '&Amount_of_down_payment='+Amount_of_down_payment+'&contract_date='+contract_date+'&transfer_ID='+transfer_ID+'&tskID='+tskID
       );
   }
   insert_data_proc_Lease_to_Lease( data: any) {

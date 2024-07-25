@@ -187,7 +187,8 @@ export class LeasePaymentHeadDetailComponent {
       this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid,
     this.leasePaymentHeadDetail.Amount_of_down_payment,
     this.leasePaymentHeadDetail.contract_date,
-      this._service.transfer_ID).subscribe(data => {
+      this._service.transfer_ID,
+      this.ServiceService.tskID).subscribe(data => {
         
         this.Enable=false
         this.updated=true;

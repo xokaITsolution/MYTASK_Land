@@ -14,6 +14,7 @@ import { LeasePaymentHeadDetailComponent } from "../lease-payment-head-detail/le
 export class LandWizardComponent {
   items: MenuItem[];
   @Input() AppNo;
+  @Input() tskID;
   @Input() disable;
   @Output() completed = new EventEmitter();
   @ViewChild(LeasePaymentHeadDetailComponent, { static: false }) childComponent: LeasePaymentHeadDetailComponent;
@@ -47,6 +48,8 @@ export class LandWizardComponent {
       },
     ];
     this.ServiceService.disable=this.disable
+    this.ServiceService.tskID=this.tskID;
+    console.log("this.tskID",this.tskID);
   }
 
   next() {

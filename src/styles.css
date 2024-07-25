@@ -14,6 +14,10 @@
 .browser-back-button {
   display: none !important;
 }
+.sv_main.sv_default_css .sv_custom_header {
+  background-color: var(--header-background-color, #e7e7e7);
+  height: auto !important;
+}
 tr.green {
   background-color: #09dd50 !important;
   color: rgb(0, 0, 0) !important;

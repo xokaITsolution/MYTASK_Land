@@ -49,6 +49,6 @@ import { ConReviewTransactionDetailComponent } from './con-review-transaction-de
     ConReviewTransactionDetailComponent
   ],
   providers: [LeaseContractService],
-  exports: [LeaseContractComponent,LandWizardComponent,ConReviewTransactionComponent],
+  exports: [LeaseContractComponent,LandWizardComponent,ConReviewTransactionComponent,ConReviewTransactionDetailComponent],
 })
 export class LeaseContractModule {}
