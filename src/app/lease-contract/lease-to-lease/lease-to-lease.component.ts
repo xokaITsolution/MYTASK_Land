@@ -39,6 +39,7 @@ export class LeaseToLeaseComponent implements OnInit {
     });
     this.newLeaseTolease.ID = Guid.create().toString();
     // this.Get_Lease_contract();
+    this.disable=this.ServiceService.disable;
   }
   showToast(type: string, title: string, message: string) {
     let messageConfig = {
@@ -134,13 +135,15 @@ export class LeaseToLeaseComponent implements OnInit {
         this.newLeaseTolease.Annual_Payment = LeaseTolease.annual_Payment;
         this.newLeaseTolease.Building_Max_Hight = 0;
         this.newLeaseTolease.Building_Min_Hight = 0;
+        // debugger
+        this.newLeaseTolease.Active=LeaseTolease.active
         this.isnew = false
         this.notificationsService.success("success", "success");
         console.log("this.newLeaseTolease", this.newLeaseTolease);
       }
       else {
         this._service.get_veiw_contract(this._service.lease_code).subscribe(async data => {
-
+// debugger
           let LeaseTolease = data[0];
           this.newLeaseTolease.Contract_NO = LeaseTolease.contract_NO;
           this.newLeaseTolease.Custmer_ID = LeaseTolease.customer_ID;
@@ -167,6 +170,7 @@ export class LeaseToLeaseComponent implements OnInit {
           this.newLeaseTolease.Annual_Payment = LeaseTolease.annual_Payment;
           this.newLeaseTolease.Building_Max_Hight = 0;
           this.newLeaseTolease.Building_Min_Hight = 0;
+          this.newLeaseTolease.Active=false;
           this.notificationsService.success("success", "success");
           console.log("this.newLeaseTolease", this.newLeaseTolease);
 

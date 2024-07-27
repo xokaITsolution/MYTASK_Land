@@ -53,6 +53,7 @@ export class LeaseContractComponent implements OnInit {
     this.get_constraction_level();
     this.newLeaseContract.contract_no = Guid.create().toString();
     this.ServiceService.disable=this.disable
+    this._service.completed=this.completed
   }
   get_license_service() {
     this._service.get_license_service(this.AppNo).subscribe((data) => {
@@ -72,25 +73,58 @@ export class LeaseContractComponent implements OnInit {
     );
       this._service.ploteId = this.licenceData.Parcel_ID;
         this.get_woreda(this.licenceData.Parcel_ID);
-
-      this._service.get_by_ID(this.licenceData.Application_No).subscribe(data => {
-        // console.log('lease_p_head:', data['proc_Lease_Payment_Heads'][0]);
+this.getLeasPaymentHeadData(this.licenceData.Application_No);
+    //   this._service.get_by_ID(this.licenceData.Application_No).subscribe(data => {
+    //     // console.log('lease_p_head:', data['proc_Lease_Payment_Heads'][0]);
+    //     
+    //     this.newLeaseContract.lease_code = data['proc_Lease_Payment_Heads'][0].lease_code
+    //     this._service.lease_code = data['proc_Lease_Payment_Heads'][0].lease_code;
         
-        this.newLeaseContract.lease_code = data['proc_Lease_Payment_Heads'][0].lease_code
-        this._service.lease_code = data['proc_Lease_Payment_Heads'][0].lease_code;
-        
-        this.get_lease_contract(data['proc_Lease_Payment_Heads'][0].lease_code);
+    //     this.get_lease_contract(data['proc_Lease_Payment_Heads'][0].lease_code);
 
-      },
-      (error) => {
-        this.notificationsService.error('Error fetching Lease payment head:', error);
-      }
-    );
+    //   },
+    //   (error) => {
+    //     this.notificationsService.error('Error fetching Lease payment head:', error);
+    //   }
+    // );
     },
     (error) => {
       this.notificationsService.error('Error fetching License service:', error);
     }
   );
+  }
+  getLeasPaymentHeadData(appNo: any) {
+    this._service.getView_lease_payment_head(appNo).subscribe(
+      (response:any) => {
+        if ([response].length>0){
+          
+          if (Array.isArray(response)) {
+            this.contractList = response;
+          } else {
+            this.contractList = [response];
+          }
+        }
+        // else{
+        //   // 
+        //   this.ServiceService.getPlotManagementApi(this.ServiceService.Parcel_ID).subscribe(
+        //     async (res: any) => {
+              
+        //       let appno= res["procPlot_Registrations"][0].application_No 
+        //       this._service.getDataById(res["procPlot_Registrations"][0].application_No ).subscribe(
+        //         (response) => { 
+        //       let data = response.proc_Lease_Payment_Heads[0];
+        //       this.leaserPaymentHead.Lease_code = data.lease_code;
+        //       this._service.lease_code=data.lease_code;
+         
+        //     })
+        //   })
+        // }
+        
+      },
+      (error) => {
+        this.notificationsService.error("Error", "error geting head data");
+      }
+    );
   }
   get_woreda(ID){
     this._service.get_worad_from_plot_regstration(ID).subscribe(data => {
@@ -109,20 +143,27 @@ export class LeaseContractComponent implements OnInit {
   );
   }
   get_lease_contract(lease_code) {
-// 
     this._service.get_Lease_contract_by_Id(lease_code).
       subscribe(data => {
-        // debugger
+        
         if (data['proc_Lease_Contracts'].length>0) { 
-          this.contractList = [data['proc_Lease_Contracts'][0]];
+          // this.contractList = [data['proc_Lease_Contracts'][0]];
+          this.newLeaseContract=data['proc_Lease_Contracts'][0]
           this.newLeaseContract.Con_level=data['proc_Lease_Contracts'][0].con_level
           this._service.contract_NO=data['proc_Lease_Contracts'][0].contract_NO; 
           this.enable_edit=true;
+          this.isnew = false;
+          this.enablenext=true;
           // console.log("this.newLeaseContract", this.contractList);
         }
         else {
-          // 
-          this.enable_edit=false;
+          this.showForm = true;
+          this.isnew = true;
+          this.enablenext=false;
+          // this.newLeaseContract.contract_date=new LeaseContract().contract_date;
+          this.newLeaseContract.contact_Type= new LeaseContract().contact_Type
+          // this.newLeaseContract = new LeaseContract();
+          this.newLeaseContract.contract_no = Guid.create().toString();
         }
       })
   }
@@ -133,10 +174,13 @@ export class LeaseContractComponent implements OnInit {
     })
   }
   selected(data){
-    this.get_lease_contract(this._service.lease_code);
+    
+    // this.get_lease_contract(this._service.lease_code);
+    this.get_lease_contract(data.lease_code);
+    this._service.lease_code =data.lease_code
     this.showForm = true;
-    this.isnew=false;
-    this.newLeaseContract=data;
+    this.newLeaseContract.contract_date=data.contract_date;
+    this.newLeaseContract.lease_code=data.lease_code;
     this.newLeaseContract.sdp=this.orginizationlookup.name_am;
     // this.newLeaseContract.contract_date =  this.newLeaseContract.contract_date.split("T")[0];
   }
@@ -152,6 +196,7 @@ export class LeaseContractComponent implements OnInit {
     );
   }
   nextClicked() {
+    // debugger
     if (this._service.EnambleFreeHold_to_Lease){
       this.childComponent1.Get_Lease_contract();
     }
@@ -184,12 +229,11 @@ export class LeaseContractComponent implements OnInit {
     );
   }
   updatelease_contract() {
-
     this.newLeaseContract.sdp=this.orginizationlookup.organization_code;
     this.get_contract_type1(this.newLeaseContract.contact_Type);
     this._service.updatelease_contract(this.newLeaseContract).subscribe(
       (response) => {
-        this.completed.emit();
+        // this.completed.emit();
         this.notificationsService.success("Success", "Successfully Updated");
         this.enablenext = true;
         this.showForm=true;
@@ -203,7 +247,7 @@ export class LeaseContractComponent implements OnInit {
     );
   }
   InsertLeaseContract() {
-    // 
+    
     this.newLeaseContract.sdp=this.orginizationlookup.organization_code;
     this.get_contract_type1(this.newLeaseContract.contact_Type);
     // if ((this.newLeaseContract.lease_code != null && this.newLeaseContract.lease_code != "")) {
@@ -214,7 +258,7 @@ export class LeaseContractComponent implements OnInit {
           this.contractList=[this.newLeaseContract];
           this.enablenext = true;
           this.isnew = false;
-          this.completed.emit();
+          // this.completed.emit();
           this.notificationsService.success("Success", "Success");
           console.log('newLeaseContract :: ', data);
         },
@@ -282,7 +326,7 @@ export class LeaseContractComponent implements OnInit {
 export class LeaseContract {
   public contract_no: string;
   public lease_code: any; // Changed to string assuming it's a formatted string
-  // public contract_date: any | null;
+  public contract_date: any | null;
   public contact_Type: number | null; // Assuming it's an integer
   public sdp: string; // Changed from SDP to match the naming convention
   public branch_name: string; // Changed to match the naming convention

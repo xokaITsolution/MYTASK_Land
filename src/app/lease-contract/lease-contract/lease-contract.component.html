@@ -1,4 +1,4 @@
-<div>
+<!-- <div>
 
   <div>
     <p-table #structure [value]="contractList" [paginator]="true" [rows]="10"
@@ -9,14 +9,14 @@
           <th translate>contact_type</th>
           <th translate>contract_date</th>
           <th></th>
-          <th>
+          <!-- <th>
             <button class="btn btn-primary"  type="button"  (click)="Addnew()" translate>
               Add New
             </button>
-          </th>
+          </th> --
         </tr>
       </ng-template>
-      <!-- (click)="IsLockedBy_OtherUser(task)" -->
+      <!-- (click)="IsLockedBy_OtherUser(task)" --
       <ng-template pTemplate="body" let-lease_contract>
         <tr>
             <td>{{lease_contract.contact_Type}}</td>
@@ -28,13 +28,43 @@
             </button></td>
           <!-- <td>
             <button type="button" class="btn btn-primary" (click)="openModal(task)" translate>assign</button>
-          </td> -->
+          </td> --
         </tr>
       </ng-template>
     </p-table>
   </div>
 
 
+</div> -->
+<div>
+  <p-table #structure [value]="contractList" [paginator]="true" [rows]="10">
+    <ng-template pTemplate="header">
+      <tr>
+        <th translate>plot_ID</th>
+        <th translate>property_ID</th>
+        <th translate>plot_Size_M2</th>
+        <!-- <th></th> -->
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-lease_contract let-rowIndex="rowIndex">
+      
+       <!-- [ngClass]="{'selected-row': selectedRowIndex === rowIndex}" 
+        (click)="selected(lease_contract, rowIndex)" 
+        class="some-class" -->
+        <tr 
+       
+        (click)='highlighted = lease_contract;selected(lease_contract, rowIndex)' class="some-class" tabindex="1"
+          [class.uistatehighlight]="lease_contract === highlighted">
+        <td>{{lease_contract.plot_ID}}</td>
+        <td>{{lease_contract.property_ID}}</td>
+        <td>{{lease_contract.plot_Size_M2}}</td>
+        <!-- <td><button class="btn btn-primary" type="button" 
+            (click)="selectRow(rowIndex);selected(lease_contract)"  translate>
+            Edit
+          </button></td> -->
+      </tr>
+    </ng-template>
+  </p-table>
 </div>
 <div class=" m-3" >
   <div>
@@ -71,7 +101,7 @@
                         <div class="form-group row">
                           <label for="ContactType" class="col-sm-4 col-form-label" translate>Contact Type</label>
                           <div class="col-sm-8">
-                            <select class="form-control" [(ngModel)]="newLeaseContract.contact_Type" name="ContactType"
+                            <select class="form-control" [disabled]="disable" [(ngModel)]="newLeaseContract.contact_Type" name="ContactType"
                               id="ContactType" required>
                             
                               <option value="" disabled selected>Select Contract Type</option>
@@ -113,7 +143,7 @@
                         <div class="form-group row">
                           <label for="level" class="col-sm-4 col-form-label" translate>Constraction Level</label>
                           <div class="col-sm-8">
-                            <select class="form-control" [(ngModel)]="newLeaseContract.Con_level" name="level"
+                            <select class="form-control" [disabled]="disable" [(ngModel)]="newLeaseContract.Con_level" name="level"
                               id="level" required>
                               <option value="" disabled selected>Select Level</option>
                               <option *ngFor="let level of conlevel_List"

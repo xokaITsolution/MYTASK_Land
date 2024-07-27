@@ -269,13 +269,13 @@
                 <app-record [useNamelist]="useNamelist" (completed)="saveFormm2()"></app-record>
               </div>
               <div *ngIf="ID==14">
-                <app-land-wizard [AppNo]="AppNo" [tskID]="tskID"  (completed)="EnableFins();saveFormm2();"></app-land-wizard>
+                <app-land-wizard [AppNo]="AppNo" [tskID]="tskID"  (completed)="saveFormm2();"></app-land-wizard>
               </div>
               <div *ngIf="ID==15">
-                <app-withdraw-propose (completed)="EnableFins();saveFormm2();"></app-withdraw-propose>
+                <app-withdraw-propose (completed)="saveFormm2();"></app-withdraw-propose>
               </div>
               <div *ngIf="ID==13">
-                <app-lease-contract (completed)="EnableFins();saveFormm2();"></app-lease-contract>
+                <app-lease-contract (completed)="saveFormm2();"></app-lease-contract>
               </div>
               <div *ngIf="ID==16">
                 <app-con-review-transaction-detail [licenceData]="licenceData"></app-con-review-transaction-detail>

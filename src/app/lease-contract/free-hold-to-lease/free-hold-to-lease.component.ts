@@ -25,6 +25,7 @@ export class FreeHoldToLeaseComponent implements OnInit {
   isCertifcatePrintforConfirmation: boolean;
   ngOnInit() {
     this.newFreeHoldToLease.ID = Guid.create().toString();
+    this.disable=this.ServiceService.disable;
   }
   format_date(date: any){
     if(date!=null && date!=''){
@@ -151,6 +152,7 @@ export class FreeHoldToLeaseComponent implements OnInit {
         this.newFreeHoldToLease.Annual_Payment=FreeHoldTolease.annual_Payment;
         this.newFreeHoldToLease.Building_Max_Hight=0;
         this.newFreeHoldToLease.Building_Min_Hight=0;
+        this.newFreeHoldToLease.Active=FreeHoldTolease.active
         
         this.isnew=false
         this.notificationsService.success("success", "success");
