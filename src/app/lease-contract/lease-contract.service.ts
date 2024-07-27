@@ -25,6 +25,7 @@ export class LeaseContractService {
   proc_freehold_to_Lease_by_Contract_NO=`${environment.rootPathApi}Service_fee/proc_FreeHold_to_Lease/Contract_NO`;
   proc_lease_contract_by_lease_code=`${environment.rootPathApi}proc_Lease_Contract/Lease_code`;
   get_organization=`${environment.rootPathApi}organizations/procorganizations/organizations_code?organization_code=`;
+  View_lease_payment_head=`${environment.rootPathApi}view/View_lease_payment_head/`
   lease_code : any;
   ploteId: any;
   Lease_Payment_Year:any;
@@ -102,6 +103,10 @@ export class LeaseContractService {
   get_by_ID(ID){
     // 
     return this.http.get(this.lease_payment_head +ID);
+  }
+  getView_lease_payment_head(ID){
+    // 
+    return this.http.get(this.View_lease_payment_head +ID);
   }
   get_organizationby_org_code(ID){
     

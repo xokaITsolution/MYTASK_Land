@@ -49,7 +49,7 @@ export class LeasePaymentHeadComponent implements OnInit {
       this.Application_No = p["AppNo"];
     });
     // this.getAPPdata();
-    this.getLeasPaymentHeadData(this.Application_No);
+    // this.getLeasPaymentHeadData(this.Application_No);
     this.disable=this.ServiceService.disable;
 
   } 
@@ -136,17 +136,16 @@ export class LeasePaymentHeadComponent implements OnInit {
 
     return result;
   }
+ 
   getLeasPaymentHeadData(appNo: any) {
-    // 
+    
     this._service.getDataById(appNo).subscribe(
       (response) => {
-        // 
-        
+      debugger
         if (response["proc_Lease_Payment_Heads"].length>0){
           let data = response.proc_Lease_Payment_Heads[0];
         this.leaserPaymentHead.Lease_code = data.lease_code;
         this._service.lease_code=data.lease_code;
-        
         this.leaserPaymentHead.Application_No = data.application_No;
         this.leaserPaymentHead.Application_code = data.application_code;
         this.leaserPaymentHead.Todolis_ID = data.todolis_ID;
