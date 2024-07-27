@@ -26,7 +26,7 @@ export const environment = {
   // username: "cn_land_bank", 
   // username: "lease_serveyor", 
   username: "lease_owner", 
-  // username: "lease_officer ",
+  // username: "lease_cashier",
   // username: "land_dev_team_leader ",
 
   appbase: window["_app_base"],

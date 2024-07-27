@@ -271,8 +271,11 @@
               <div *ngIf="ID==14">
                 <app-land-wizard [AppNo]="AppNo" [tskID]="tskID"  (completed)="EnableFins();saveFormm2();"></app-land-wizard>
               </div>
+              <div *ngIf="ID==15">
+                <app-withdraw-propose (completed)="EnableFins();saveFormm2();"></app-withdraw-propose>
+              </div>
               <div *ngIf="ID==13">
-                <app-lease-contract   (completed)="EnableFins();saveFormm2();"></app-lease-contract>
+                <app-lease-contract (completed)="EnableFins();saveFormm2();"></app-lease-contract>
               </div>
               <div *ngIf="ID==16">
                 <app-con-review-transaction-detail [licenceData]="licenceData"></app-con-review-transaction-detail>
@@ -297,7 +300,7 @@
 
               </div>
               <div *ngIf="ID==21">
-                <lib-lease-yearly-bid-plan (completed)="saveFormm('{}');"></lib-lease-yearly-bid-plan>
+                <lib-lease-yearly-bid-plan (generateApplication)="generateApplication($event)" (completed)="saveFormmLib($event);"></lib-lease-yearly-bid-plan>
 
               </div>
               <div *ngIf="ID==22">

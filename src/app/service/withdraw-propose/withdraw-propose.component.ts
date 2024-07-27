@@ -1,6 +1,8 @@
 import { ServiceService } from 'src/app/service/service.service';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NotificationsService } from 'angular2-notifications';
+import { environment } from 'src/environments/environment';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-withdraw-propose',
@@ -14,20 +16,23 @@ export class WithdrawProposeComponent implements OnInit {
   showform: boolean;
   enable: boolean;
   @Input () Licence_Service_ID:any
+  certReportPath: any;
 
-  constructor(private ServiceService:ServiceService,private notificationsService: NotificationsService) { }
+  constructor(private ServiceService:ServiceService,private notificationsService: NotificationsService,
+    private sanitizer: DomSanitizer,
+  ) { }
 // @Input AppNo 
 newWithdrawPropose :WithdrawPropose ={ } as WithdrawPropose;
 proposeList: any[] = [];
 proposebyidList: any[] = [];
 proposebyidGridList: any[] = [];
+isCertifcatePrintforConfirmation: boolean;
   ngOnInit() {
    this.getWithdrawpropose();
    
    this.Licence_Service_ID
   }
   getWithdrawpropose(){
-    // 
     this.ServiceService.getWithdrawpropose().subscribe(data=>{
       this.enable_edit=true
       this.serachplotExists=true;
@@ -77,7 +82,10 @@ proposebyidGridList: any[] = [];
     })
   }
   selected(data){
-    
+    debugger
+    this.certReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
+      environment.certReportPath + "/" + data.title_Deed_No
+    );
     this.proposebyidList =  data;
     console.log("this.proposebyidList",);
     

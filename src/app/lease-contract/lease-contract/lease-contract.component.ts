@@ -138,7 +138,7 @@ export class LeaseContractComponent implements OnInit {
     this.isnew=false;
     this.newLeaseContract=data;
     this.newLeaseContract.sdp=this.orginizationlookup.name_am;
-    this.newLeaseContract.contract_date =  this.newLeaseContract.contract_date.split("T")[0];
+    // this.newLeaseContract.contract_date =  this.newLeaseContract.contract_date.split("T")[0];
   }
   get_contract_type() {
     this._service.get_all().subscribe(
@@ -258,7 +258,7 @@ export class LeaseContractComponent implements OnInit {
     this.showForm = true;
     this.isnew = true;
     this.enablenext=false;
-    this.newLeaseContract.contract_date=new LeaseContract().contract_date;
+    // this.newLeaseContract.contract_date=new LeaseContract().contract_date;
     this.newLeaseContract.contact_Type= new LeaseContract().contact_Type
     // this.newLeaseContract = new LeaseContract();
     this.newLeaseContract.contract_no = Guid.create().toString();
@@ -282,7 +282,7 @@ export class LeaseContractComponent implements OnInit {
 export class LeaseContract {
   public contract_no: string;
   public lease_code: any; // Changed to string assuming it's a formatted string
-  public contract_date: any | null;
+  // public contract_date: any | null;
   public contact_Type: number | null; // Assuming it's an integer
   public sdp: string; // Changed from SDP to match the naming convention
   public branch_name: string; // Changed to match the naming convention

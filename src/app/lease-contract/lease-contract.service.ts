@@ -26,6 +26,7 @@ export class LeaseContractService {
   proc_lease_contract_by_lease_code=`${environment.rootPathApi}proc_Lease_Contract/Lease_code`;
   get_organization=`${environment.rootPathApi}organizations/procorganizations/organizations_code?organization_code=`;
   View_lease_payment_head=`${environment.rootPathApi}view/View_lease_payment_head/`
+  getDataBy_lease_code1=`${environment.rootPathApi}proc_Lease_Payment_Head/Lease_code/`
   lease_code : any;
   ploteId: any;
   Lease_Payment_Year:any;
@@ -37,6 +38,7 @@ export class LeaseContractService {
  contract_NO:any;
   transfer_ID: any;
   App_no: any;
+  completed: any;
   constructor(private http: HttpClient) {}
   insert_data( data: any) {
     return this.http.post(this.Lease_Contract, data);
@@ -103,6 +105,10 @@ export class LeaseContractService {
   get_by_ID(ID){
     // 
     return this.http.get(this.lease_payment_head +ID);
+  }
+  getDataBy_lease_code(ID){
+    
+    return this.http.get(this.getDataBy_lease_code1 +ID);
   }
   getView_lease_payment_head(ID){
     // 

@@ -18,7 +18,7 @@ import { environment } from "src/environments/environment";
   styleUrls: ["./lease-payment-head-detail.component.css"],
 })
 export class LeasePaymentHeadDetailComponent {
-  @Output() completed = new EventEmitter();
+  // @Output() completed = new EventEmitter();
   leasePaymentHeadDetail: LeasePaymentHeadDetail = new LeasePaymentHeadDetail();
   @Input() AppNo;
   isNumberInserted: boolean = false;
@@ -162,7 +162,6 @@ export class LeasePaymentHeadDetailComponent {
   }
 
   updateleaserPaymentHeadDetail() {
-
     this._service.updateleaserPaymentHeadDetail(this.leasePaymentHeadDetail).subscribe(
       (response) => {
         // 
@@ -170,7 +169,7 @@ export class LeasePaymentHeadDetailComponent {
         this.notificationsService.success("Success", "Successfully Updated");
         this.updated=true;
         this.getpayment_plan()
-        this.completed.emit();
+        // this.completed.emit();
       },
       (error) => {
         this.notificationsService.error("Error", "Something Went Wrong");
@@ -193,6 +192,7 @@ export class LeasePaymentHeadDetailComponent {
         this.Enable=false
         this.updated=true;
         this.enablepaymentreport= false
+        this._service.completed.emit();
         this.ServiceService.disablefins = false;
         this.notificationsService.success("Success", "Lease plan Genereted successfully");
       },
@@ -228,9 +228,10 @@ export class LeasePaymentHeadDetailComponent {
   this.getpayment_plan();
   this.leasePaymentHeadDetail = new LeasePaymentHeadDetail();
   this.previousInputValue=0
+  debugger
     this._service.getDataByleasecode(this._service.lease_code).subscribe(
       (response) => {
-        
+        debugger
         let data = response.proc_Leas_Payment_Head_Details[0];
         this.leasePaymentHeadDetail.Plot_Size_By_Lease_Bid_Price = data.total_Plot_Size
         if(data.plot_size_By_Lease_Price ==0 && data.plot_Size_By_Lease_Bid_Price==0){

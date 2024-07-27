@@ -138,12 +138,13 @@ export class LeasePaymentHeadComponent implements OnInit {
   }
  
   getLeasPaymentHeadData(appNo: any) {
-    
-    this._service.getDataById(appNo).subscribe(
+    debugger
+    this._service.getDataBy_lease_code(appNo).subscribe(
       (response) => {
       debugger
         if (response["proc_Lease_Payment_Heads"].length>0){
-          let data = response.proc_Lease_Payment_Heads[0];
+         
+          let data = response["proc_Lease_Payment_Heads"][0];
         this.leaserPaymentHead.Lease_code = data.lease_code;
         this._service.lease_code=data.lease_code;
         this.leaserPaymentHead.Application_No = data.application_No;
@@ -151,7 +152,6 @@ export class LeasePaymentHeadComponent implements OnInit {
         this.leaserPaymentHead.Todolis_ID = data.todolis_ID;
         this.leaserPaymentHead.Lease_Payment_grace_Period =data.lease_Payment_grace_Period;
           this._service.Lease_Payment_grace_Period =data.lease_Payment_grace_Period;
-          
         this.leaserPaymentHead.Total_lease_amount_to_be_paid =
           data.total_lease_amount_to_be_paid;
         this.leaserPaymentHead.Amount_of_the_annual_lease_payment =
@@ -177,7 +177,6 @@ export class LeasePaymentHeadComponent implements OnInit {
         this.getTransferType(this.leaserPaymentHead.Transfer_type);
         this.getProportyUse(this.leaserPaymentHead.Proporty_Use);
         this.getCustomerType(this.leaserPaymentHead.Customer_Type);
-        
         }
         else{
           // 
@@ -187,11 +186,9 @@ export class LeasePaymentHeadComponent implements OnInit {
               let appno= res["procPlot_Registrations"][0].application_No 
               this._service.getDataById(res["procPlot_Registrations"][0].application_No ).subscribe(
                 (response) => {
-                  // 
               let data = response.proc_Lease_Payment_Heads[0];
               this.leaserPaymentHead.Lease_code = data.lease_code;
               this._service.lease_code=data.lease_code;
-              
               this.leaserPaymentHead.Application_No = data.application_No;
               this.leaserPaymentHead.Application_code = data.application_code;
               this.leaserPaymentHead.Todolis_ID = data.todolis_ID;

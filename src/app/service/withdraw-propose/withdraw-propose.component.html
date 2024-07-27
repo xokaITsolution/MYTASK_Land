@@ -70,6 +70,11 @@
       <button *ngIf="!enable" class="btn btn-secondary btn-success" type="button" label="Save" (click)="savewithdrawProp()">save</button>
       <button *ngIf="enable" class="btn btn-secondary btn-success" type="button" label="Save" (click)="updatewithdrawProp()">Update</button>
     </div>
+    <div class="pull-left">
+      <div > <button  type="button" class="btn btn-primary" (click)="isCertifcatePrintforConfirmation=true">Show Certifcate</button>
+      </div>
+  </div>
+    <!-- <button class="m-3 btn btn-primary" type="button" (click)="isCertifcatePrintforConfirmation=true" translate>Show Certifcate</button> -->
   </div>
   <br>
 </div>
@@ -118,3 +123,30 @@
 
 
 </p-dialog>
+<div class="ngxsmartmodal" *ngIf="isCertifcatePrintforConfirmation">
+  <div class="ngxsmartmodal-dialog" [style.max-width]="maxWidth">
+    <div class="ngxsmartmodal-dialog-content">
+      <div class="ngxsmartmodal-header">
+        <!-- Modal header content -->
+        <button type="button" class="btn-secondary m-2" (click)="openMiniModal()">-</button>
+        <button type="button" class="btn-secondary m-2" (click)="openFullModal()">+</button>
+        <button type="button" class="close" (click)="isCertifcatePrintforConfirmation=false">&times;</button>
+        <h5 style="align-items: center;">Certifcate Print for Confirmation</h5>
+      </div>
+
+      <div class="ngxsmartmodal-body">
+
+      <iframe class="ng-template" width="100%" height="500px" [src]="certReportPath"></iframe>
+
+
+      </div>
+      <div class="ngxsmartmodal-footer">
+        <!-- Modal footer content -->
+        <div class="modal-footer">
+
+          <button type="button" class="btn btn-danger" (click)="isCertifcatePrintforConfirmation=false" translate>Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

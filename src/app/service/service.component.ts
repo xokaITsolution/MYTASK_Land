@@ -29,6 +29,7 @@ import { FilePreviewDialogComponent } from "./file-preview-dialog/file-preview-d
 import { NetworkMonitoringService } from "./network-database-monitoring-tool/network-monitoring.service";
 import { format } from "util";
 import { formatDate } from "@angular/common";
+import { MyLibService } from 'my-lib'; 
 
 export * from "./qrcode.directive";
 type AOA = any[][];
@@ -281,7 +282,8 @@ export class ServiceComponent implements OnInit  {
     private sanitizer: DomSanitizer,
     public ngxModal: NgxSmartModalService,
     private renderer: Renderer2,
-    private el: ElementRef,
+    private el: ElementRef, private myLibService: MyLibService,
+
     private dialogService: DialogService,
     private networkService: NetworkMonitoringService ,
     private confirmationService: ConfirmationService
@@ -731,7 +733,10 @@ export class ServiceComponent implements OnInit  {
     return mimeExtensions[mimeType] || "file";
   }
   ngOnInit() {
-   
+    this.myLibService.setUsername(environment.username);
+    this.myLibService.setSubcity(environment.subcity);
+
+ 
     //console.log("🚀 ~ ngOnInit ~ formattedDate:", formattedDate)
     // setInterval(() => {
     //   this.serviceService
@@ -838,6 +843,7 @@ export class ServiceComponent implements OnInit  {
       this.docid =params["docid"];
       this.formcode = params["formcode"];
       this.AppNo = params["AppNo"];
+      this.myLibService.setLicense(this.AppNo);
       this.SDP_ID = params["SDP_ID"];
       this.Service_ID = this.SDP_ID;
       this.getAll(this.AppNo);
@@ -969,6 +975,50 @@ export class ServiceComponent implements OnInit  {
       this.updated.emit({ docs: this.RequerdDocs });
     }
   }
+  generateApplication(data){
+    this.AppCode = data.appno;
+    this.DocID = data.docid;
+    this.todoID = data.todo_id;
+    this.Service_ID=data.service_id
+    this.Licence_Service_ID=data.appno
+    console.log('datafromlibrary',data,this.Service_ID);
+    this.getAll(data.appno);
+
+    
+  }
+  saveFormmLib(formData){
+    this.serviceService
+    .saveFormm(
+      formData.appno,
+      formData.service_id,
+      this.tskID,
+      this.SDP_ID,
+      JSON.stringify({}),
+      this.DocID || "00000000-0000-0000-0000-000000000000",
+      this.todoID || "00000000-0000-0000-0000-000000000000"
+    )
+    .subscribe(
+      (response) => {
+        console.log("save-from-response", response);
+
+        this.serviceService.disablefins = false;
+        this.AppNo = response[0];
+        this.DocID = response[1];
+        //this.todoID = response[2];
+        this.getAll(this.AppNo);
+        const toast = this.notificationsService.success("Success", "Saved");
+        this.validated = true;
+      },
+      (error) => {
+        console.log("save-form-error", error);
+        const toast = this.notificationsService.error(
+          "Error",
+          "SomeThing Went Wrong"
+        );
+      }
+    );
+  }
+
   openPreviewDialog(RequerdDocpre: any) {
     // Pass the content to the dialog
     const dialogConfig = {

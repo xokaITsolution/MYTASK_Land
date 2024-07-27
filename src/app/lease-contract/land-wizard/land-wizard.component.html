@@ -1,36 +1,35 @@
 <div>
-
-    <div>
-      <p-table #structure [value]="contractList" [paginator]="true" [rows]="10">
+    <p-table #structure [value]="contractList" [paginator]="true" [rows]="10">
+      <ng-template pTemplate="header">
+        <tr>
+          <th translate>plot_ID</th>
+          <th translate>property_ID</th>
+          <th translate>plot_Size_M2</th>
+          <!-- <th></th> -->
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-lease_contract let-rowIndex="rowIndex">
+        
+         <!-- [ngClass]="{'selected-row': selectedRowIndex === rowIndex}" 
+          (click)="selected(lease_contract, rowIndex)" 
+          class="some-class" -->
+          <tr 
+         
+          (click)='highlighted = lease_contract;selected(lease_contract, rowIndex)' class="some-class" tabindex="1"
+            [class.uistatehighlight]="lease_contract === highlighted">
+          <td>{{lease_contract.plot_ID}}</td>
+          <td>{{lease_contract.property_ID}}</td>
+          <td>{{lease_contract.plot_Size_M2}}</td>
+          <!-- <td><button class="btn btn-primary" type="button" 
+              (click)="selectRow(rowIndex);selected(lease_contract)"  translate>
+              Edit
+            </button></td> -->
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
   
-        <ng-template pTemplate="header">
-          <tr>
-            <th translate>plot_ID</th>
-            <th translate>property_ID</th>
-            <th translate>plot_Size_M2</th>
-            <th></th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-lease_contract>
-            <tr (click)='highlighted = rowData;selectprop(propose)' class="some-class" tabindex="1"
-            [class.uistatehighlight]="rowData === highlighted">
-              <td>{{lease_contract.plot_ID}}</td>
-              <td>{{lease_contract.property_ID}}</td>
-              <td>{{lease_contract.plot_Size_M2}}</td>
-            <td><button class="btn btn-primary" type="button" 
-                (click)="selected(lease_contract)"  translate>
-                Edit
-              </button></td>
-            <!-- <td>
-              <button type="button" class="btn btn-primary" (click)="openModal(task)" translate>assign</button>
-            </td> -->
-          </tr>
-        </ng-template>
-      </p-table>
-    </div>
-  
-  
-<div class="m-3">
+<div *ngIf="showform" class="m-3">
     <p-tabView (onChange)="tabChanged($event)" [(activeIndex)]="selectedTab1" selected="true">
         <p-tabPanel [header]="'Lease Payment Head'">
             <div class="mt-3">
