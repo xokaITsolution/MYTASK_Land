@@ -38,6 +38,7 @@ export class LeaseContractComponent implements OnInit {
   orginizationlookup: any;
   intervalId: NodeJS.Timer;
   conlevel_List: [];
+  userid: any;
   constructor(private _toast: MessageService, public _service: LeaseContractService,
     private activatedRoute: ActivatedRoute, public ServiceService: ServiceService,
     private ServiceComponent: ServiceComponent, private notificationsService: NotificationsService
@@ -94,18 +95,23 @@ this.getLeasPaymentHeadData(this.licenceData.Application_No);
   );
   }
   getLeasPaymentHeadData(appNo: any) {
+    // debugger
     this._service.getView_lease_payment_head(appNo).subscribe(
       (response:any) => {
         if ([response].length>0){
-          
+          debugger
           if (Array.isArray(response)) {
             this.contractList = response;
+            // this.newLeaseContract.Con_level=this.contractList.con_level
           } else {
             this.contractList = [response];
+            // this.newLeaseContract.Con_level=this.contractList.con_level
           }
         }
+        else{
+          this.notificationsService.error("Error", "no data exist in head using Application number");
+        }
         // else{
-        //   // 
         //   this.ServiceService.getPlotManagementApi(this.ServiceService.Parcel_ID).subscribe(
         //     async (res: any) => {
               
@@ -145,10 +151,12 @@ this.getLeasPaymentHeadData(this.licenceData.Application_No);
   get_lease_contract(lease_code) {
     this._service.get_Lease_contract_by_Id(lease_code).
       subscribe(data => {
-        
+        // debugger
         if (data['proc_Lease_Contracts'].length>0) { 
           // this.contractList = [data['proc_Lease_Contracts'][0]];
+          this.get_contract_type1(data['proc_Lease_Contracts'][0].contact_Type)
           this.newLeaseContract=data['proc_Lease_Contracts'][0]
+          this.newLeaseContract.sdp=this.orginizationlookup.name_am;
           this.newLeaseContract.Con_level=data['proc_Lease_Contracts'][0].con_level
           this._service.contract_NO=data['proc_Lease_Contracts'][0].contract_NO; 
           this.enable_edit=true;
@@ -177,11 +185,13 @@ this.getLeasPaymentHeadData(this.licenceData.Application_No);
     
     // this.get_lease_contract(this._service.lease_code);
     this.get_lease_contract(data.lease_code);
+    this.newLeaseContract.Con_level=data.con_level
     this._service.lease_code =data.lease_code
     this.showForm = true;
-    this.newLeaseContract.contract_date=data.contract_date;
-    this.newLeaseContract.lease_code=data.lease_code;
     this.newLeaseContract.sdp=this.orginizationlookup.name_am;
+    this.newLeaseContract.lease_code=data.lease_code;
+    // this.newLeaseContract.contract_date=data.contract_date;
+    // this.newLeaseContract.sdp=this.orginizationlookup.name_am;
     // this.newLeaseContract.contract_date =  this.newLeaseContract.contract_date.split("T")[0];
   }
   get_contract_type() {
@@ -196,7 +206,7 @@ this.getLeasPaymentHeadData(this.licenceData.Application_No);
     );
   }
   nextClicked() {
-    // debugger
+    // 
     if (this._service.EnambleFreeHold_to_Lease){
       this.childComponent1.Get_Lease_contract();
     }
@@ -208,7 +218,7 @@ this.getLeasPaymentHeadData(this.licenceData.Application_No);
 
     this._service.get_all_by_contract_type_id(contract_type_id).subscribe(
       (data) => {
-        
+        debugger
         this._service.Report_name = data['proc_Lease_Contract_Types'][0].reportName
         // this._service.contract_type_Tablename = data['proc_Lease_Contract_Types'][0].tableName;
         if (data['proc_Lease_Contract_Types'][0].tableName == "FreeHold_to_Lease") {
@@ -231,6 +241,9 @@ this.getLeasPaymentHeadData(this.licenceData.Application_No);
   updatelease_contract() {
     this.newLeaseContract.sdp=this.orginizationlookup.organization_code;
     this.get_contract_type1(this.newLeaseContract.contact_Type);
+    this.ServiceService.getaspnetuser().subscribe((r) => {
+      // this.userid = r[0].userid;
+      this.newLeaseContract.lease_owner_appreved_by=r[0].userid;
     this._service.updatelease_contract(this.newLeaseContract).subscribe(
       (response) => {
         // this.completed.emit();
@@ -245,17 +258,20 @@ this.getLeasPaymentHeadData(this.licenceData.Application_No);
         // itHasError = false;
       }
     );
+  });
   }
   InsertLeaseContract() {
-    
+    this.newLeaseContract.contract_date=new Date().toISOString().split('T')[0];
     this.newLeaseContract.sdp=this.orginizationlookup.organization_code;
     this.get_contract_type1(this.newLeaseContract.contact_Type);
     // if ((this.newLeaseContract.lease_code != null && this.newLeaseContract.lease_code != "")) {
-      
+      this.ServiceService.getaspnetuser().subscribe((r) => {
+        this.userid = r[0].userid;
+    
       this._service.insert_data(this.newLeaseContract).subscribe(
         data => {
           this._service.contract_NO= this.newLeaseContract.contract_no
-          this.contractList=[this.newLeaseContract];
+          // this.contractList=[this.newLeaseContract];
           this.enablenext = true;
           this.isnew = false;
           // this.completed.emit();
@@ -266,6 +282,7 @@ this.getLeasPaymentHeadData(this.licenceData.Application_No);
           this.notificationsService.error("error", `insert lease contract error! ${error['status'] == 0 ? error['message'] : JSON.stringify(JSON.stringify(error['error']))}`);
         }
       );
+    });
    
   }
   format_date(date: any) {

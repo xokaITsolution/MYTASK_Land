@@ -663,12 +663,14 @@ export class CertComponent implements OnChanges {
           return false;
         });
         this.CertificateVersion = uniqueData;
-        console.log("CertificateVersion", this.CertificateVersion,this.serviceService.Service_ID); 
         
         if (!this.isInIdentifiers(this.serviceService.Service_ID ))
           {
-        if (this.CertificateVersion.length >0){
-          
+            if (this.CertificateVersion.length >0){
+              
+              console.log("CertificateVersion", this.CertificateVersion,
+                this.serviceService.LicenceserviceID 
+              ); 
           if (this.serviceService.LicenceserviceID == this.CertificateVersion[0].version_ID){
             this.curentversion=true
           }else{

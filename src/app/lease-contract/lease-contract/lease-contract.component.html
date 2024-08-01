@@ -143,8 +143,8 @@
                         <div class="form-group row">
                           <label for="level" class="col-sm-4 col-form-label" translate>Constraction Level</label>
                           <div class="col-sm-8">
-                            <select class="form-control" [disabled]="disable" [(ngModel)]="newLeaseContract.Con_level" name="level"
-                              id="level" required>
+                            <select disabled class="form-control" [disabled]="disable" [(ngModel)]="newLeaseContract.Con_level" name="level"
+                              id="level" required >
                               <option value="" disabled selected>Select Level</option>
                               <option *ngFor="let level of conlevel_List"
                                 [value]="level.id">

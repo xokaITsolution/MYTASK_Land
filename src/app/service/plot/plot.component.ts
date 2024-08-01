@@ -113,7 +113,7 @@ export class PlotComponent implements OnChanges {
       this.PlotManagementListfinal,
       this.serviceService.Service_ID
     );
-    debugger
+    
     if (
       this.serviceService.Service_ID ===
       "de330170-550b-4bf2-9908-dc557f92a7cc" ||
@@ -1099,9 +1099,10 @@ export class PlotComponent implements OnChanges {
   }
   getPlotManagement(Licence_Service_ID) {
     let a;
-
+debugger
     this.serviceService.getPlotManagementApi(Licence_Service_ID).subscribe(
       async (PlotManagementLists: any) => {
+        debugger
         let PlotManagementList = PlotManagementLists.procPlot_Registrations;
         if (PlotManagementList.length > 0) {
           this.PlotManagementList = this.removeDuplicates(PlotManagementList);
@@ -1115,7 +1116,7 @@ export class PlotComponent implements OnChanges {
             this.PlotManagementListfinal
           );
         }
-debugger
+
         console.log("PlotManagementList", this.PlotManagementListfinal);
         // this.isisvalidated(
         //   this.todoid,
@@ -1147,11 +1148,13 @@ debugger
           this.PlotManagementList,
           this.serviceService.Service_ID
         );
+        debugger
         if (this.PlotManagementListfinal.length > 0) {
           if (this.serviceService.multipleplotcanbeadd) {
             let filterservice = this.serviceService.multipleplotcanbeadd.filter(
               (x) => x.id === this.serviceService.Service_ID
             );
+            debugger
             if (filterservice.length > 0) {
               this.multipleplotcanbeadd = true;
             } else {

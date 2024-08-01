@@ -19,15 +19,16 @@ export const environment = {
   formPath: window["formPath"],
   city: window["city"], 
   
-  // username: "AR_Tech_Officer",
+  // username: "Tech_Officer",
   // username: "EteneshSaleyesus", 
-
+  // cn_land_expleader
   // username: "cn_land_expleader",
   // username: "cn_land_bank", 
   // username: "lease_serveyor", 
   username: "lease_owner", 
   // username: "lease_cashier",
   // username: "land_dev_team_leader ",
+  // username: "off_mgr",
 
   appbase: window["_app_base"],
   location: window["locations"],

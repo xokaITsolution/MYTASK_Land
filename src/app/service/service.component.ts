@@ -843,7 +843,6 @@ export class ServiceComponent implements OnInit  {
       this.docid =params["docid"];
       this.formcode = params["formcode"];
       this.AppNo = params["AppNo"];
-      this.myLibService.setLicense(this.AppNo);
       this.SDP_ID = params["SDP_ID"];
       this.Service_ID = this.SDP_ID;
       this.getAll(this.AppNo);
@@ -3529,8 +3528,11 @@ export class ServiceComponent implements OnInit  {
   public getAll(AppNo) {
     this.serviceService.getAll(AppNo).subscribe(
       (res:any) => {
+        
         if (res.list.length > 0) {
         let licenceServiceeach = res.list[0];
+        this.myLibService.setLicense(licenceServiceeach.Licence_Service_ID);
+
     //   console.log("🚀 ~ getAll ~ licenceService:", licenceServiceeach)
        this
      console.log("🚀 ~ getAll ~ licenceService:",licenceServiceeach.Service_ID)
@@ -3538,6 +3540,7 @@ export class ServiceComponent implements OnInit  {
     licenceServiceeach.Service_ID === 'DE4937D8-BDCD-46D6-8749-DC31C9F3ADCF'.toLocaleLowerCase()){ 
       this.serviceService.getAll(AppNo).subscribe(
         (re:any) => {
+          
           if (re.list.length > 0) {
           let licenceService = re.list[0];
           console.log("🚀 ~ getAll ~ licenceService:", licenceService)
@@ -3562,11 +3565,12 @@ export class ServiceComponent implements OnInit  {
                
                this.serviceService.getAll(AppNo).subscribe(
                  (licenceService) => {
+                  
                    this.licenceService = licenceService;
                    console.log("Licence Service", this.licenceService);
                    if (this.licenceService.list.length > 0) {
                      this.licenceData = this.licenceService.list[0];
-           
+                     
                      this.serviceService.licenceData = this.licenceData;
                      this.SDP_ID = this.licenceData.SDP_ID;
                      this.serviceService.currentsdpid = this.SDP_ID;
@@ -3722,6 +3726,7 @@ export class ServiceComponent implements OnInit  {
     console.log("appppppp", AppNo);
     this.serviceService.getAll(AppNo).subscribe(
       (licenceService) => {
+        
         this.licenceService = licenceService;
         console.log("Licence Service", this.licenceService);
         if (this.licenceService.list.length > 0) {

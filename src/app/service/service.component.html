@@ -269,10 +269,10 @@
                 <app-record [useNamelist]="useNamelist" (completed)="saveFormm2()"></app-record>
               </div>
               <div *ngIf="ID==14">
-                <app-land-wizard [AppNo]="AppNo" [tskID]="tskID"  (completed)="saveFormm2();"></app-land-wizard>
+                <app-land-wizard [AppNo]="AppNo" [tskID]="tskID" [licenceData]="licenceData" (completed)="saveFormm2();"></app-land-wizard>
               </div>
               <div *ngIf="ID==15">
-                <app-withdraw-propose (completed)="saveFormm2();"></app-withdraw-propose>
+                <app-withdraw-propose [Licence_Service_ID]="Licence_Service_ID" (completed)="saveFormm2();"></app-withdraw-propose>
               </div>
               <div *ngIf="ID==13">
                 <app-lease-contract (completed)="saveFormm2();"></app-lease-contract>
@@ -299,8 +299,10 @@
                 <lib-bid-detail (completed)="saveFormm('{}');"></lib-bid-detail>
 
               </div>
-              <div *ngIf="ID==21">
-                <lib-lease-yearly-bid-plan (generateApplication)="generateApplication($event)" (completed)="saveFormmLib($event);"></lib-lease-yearly-bid-plan>
+                <div *ngIf="ID==21">
+                  <lib-lease-yearly-bid-plan (generateApplication)="generateApplication($event)"
+                  (completed1)="saveFormm('{}');"
+                  (completed)="saveFormmLib($event);"></lib-lease-yearly-bid-plan>
 
               </div>
               <div *ngIf="ID==22">
@@ -558,7 +560,7 @@
                 <app-lease-contract [disable]="true" (completed)="EnableFinss();plot();saveFormmplot('{}');"></app-lease-contract>
               </div>
               <div *ngIf="preAppID==15">
-                <app-withdraw-propose></app-withdraw-propose>
+                <app-withdraw-propose ></app-withdraw-propose>
 
               </div>
 

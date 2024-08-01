@@ -142,6 +142,7 @@ export class LeaseToLeaseComponent implements OnInit {
         console.log("this.newLeaseTolease", this.newLeaseTolease);
       }
       else {
+        debugger
         this._service.get_veiw_contract(this._service.lease_code).subscribe(async data => {
 // debugger
           let LeaseTolease = data[0];

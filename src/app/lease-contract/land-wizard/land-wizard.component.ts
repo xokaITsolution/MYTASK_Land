@@ -18,6 +18,7 @@ import { LeasePaymentHeadComponent } from '../lease-payment-head/lease-payment-h
 export class LandWizardComponent implements AfterViewInit{
   items: MenuItem[];
   @Input() AppNo;
+  @Input() licenceData;
   @Input() tskID;
   @Input() disable;
   @Output() completed = new EventEmitter();
@@ -68,8 +69,10 @@ export class LandWizardComponent implements AfterViewInit{
       this.Application_No = p["AppNo"];
     });
     this.getLeasPaymentHeadData(this.Application_No);
-   
-    this._service.completed=this.completed
+    this._service.completed=this.completed;
+    this._service.Service_ID=this.licenceData.Service_ID;
+debugger
+  
   }
   ngAfterViewInit() {
     // Ensures that child components are available after view initialization
@@ -109,10 +112,11 @@ export class LandWizardComponent implements AfterViewInit{
   }
  
   getLeasPaymentHeadData(appNo: any) {
+    
     this._service.getView_lease_payment_head(appNo).subscribe(
       (response:any) => {
         if ([response].length>0){
-          debugger
+          
           if (Array.isArray(response)) {
             this.contractList = response;
           } else {
@@ -126,16 +130,20 @@ export class LandWizardComponent implements AfterViewInit{
        
         }
         else{
-          // 
-          this.ServiceService.getPlotManagementApi(this.ServiceService.Parcel_ID).subscribe(
+          
+          this.ServiceService.getPlotManagementApi(this.licenceData.Parcel_ID).subscribe(
             async (res: any) => {
               
-              let appno= res["procPlot_Registrations"][0].application_No 
-              this._service.getDataById(res["procPlot_Registrations"][0].application_No ).subscribe(
+              // let appno= res["procPlot_Registrations"][0].application_No 
+              this._service.getView_lease_payment_head(res["procPlot_Registrations"][0].application_No ).subscribe(
                 (response) => { 
-              let data = response.proc_Lease_Payment_Heads[0];
-              this.leaserPaymentHead.Lease_code = data.lease_code;
-              this._service.lease_code=data.lease_code;
+                  if (Array.isArray(response)) {
+                    this.contractList = response;
+                  } else {
+                    this.contractList = [response];
+                  }
+              // this.leaserPaymentHead.Lease_code = data.lease_code;
+              // this._service.lease_code=data.lease_code;
          
             })
           })

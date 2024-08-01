@@ -3,6 +3,7 @@ export class LeaserPaymentHead {
   Application_No: string;
   Application_code: string;
   Todolis_ID: string;
+  Contract_date: any;
   Lease_Payment_grace_Period: any;
   Total_lease_amount_to_be_paid: any;
   Amount_of_the_annual_lease_payment: any;

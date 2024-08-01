@@ -233,7 +233,23 @@
           [ngClass]="{ 'is-invalid': Floor_No.invalid  }" [disabled]="disable" [required]="isbuildingApartama"
           ></div>
     </div>
-  
+    <div class="form-group row col-md-6">
+      <label for="level" class="col-sm-3 col-form-label" translate>Constraction Level</label>
+      <div class="col-sm-9">
+        <select [disabled]="disable" class="form-control" [(ngModel)]="propertyRegister.con_level"
+          name="level" id="level" #PropertyTypeuse="ngModel" #mySelects
+          required>
+          <!-- <option disabled>select</option> -->
+          <!-- <option *ngFor="let Propertyuse of proprty_Use_lookup" [value]="Propertyuse.proprty_Use">
+            {{Propertyuse.name}}</option> -->
+          <option value="" disabled selected>Select Level</option>
+          <option *ngFor="let level of conlevel_List"
+                                [value]="level.id">
+                                {{ level.name }}
+                              </option>
+        </select>
+      </div>
+    </div>
     <!-- <div class="form-group row col-md-6" *ngIf="!serviceService.isagriculture">
       <label  for="is_commerscial"  class="col-sm-3 col-form-label"  translate="">is_commerscial</label>
     <div class="col-sm-9">

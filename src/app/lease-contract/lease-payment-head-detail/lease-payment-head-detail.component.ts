@@ -124,6 +124,8 @@ export class LeasePaymentHeadDetailComponent {
     parseInt(this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid)
 // 
     // Check if the difference would result in a negative Plot_Size_By_Lease_Bid_Price
+    if(this._service.Service_ID!="86997006-53c7-4bbd-9f56-e79721b4561e" && this._service.Service_ID!="05db54fc-e388-4e5e-aaaa-bd6141c8e533"){
+   debugger
     if (added > this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid) {
       // Show a message to the user
       // alert("The value of Plot_size_By_Lease_Price cannot be greater than Plot_Size_By_Lease_Bid_Price");
@@ -137,6 +139,7 @@ export class LeasePaymentHeadDetailComponent {
       this.disablegen = false;
       return;
     }
+  }
     // If the difference is negative, the user has removed a digit
     if (difference < 0) {
       // Add the absolute value of the difference back to Plot_Size_By_Lease_Bid_Price
@@ -164,7 +167,6 @@ export class LeasePaymentHeadDetailComponent {
   updateleaserPaymentHeadDetail() {
     this._service.updateleaserPaymentHeadDetail(this.leasePaymentHeadDetail).subscribe(
       (response) => {
-        // 
         // itHasError = false;
         this.notificationsService.success("Success", "Successfully Updated");
         this.updated=true;
@@ -185,7 +187,7 @@ export class LeasePaymentHeadDetailComponent {
       this._service.Lease_Payment_Year,
       this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid,
     this.leasePaymentHeadDetail.Amount_of_down_payment,
-    this.leasePaymentHeadDetail.contract_date,
+    this._service.contract_date,
       this._service.transfer_ID,
       this.ServiceService.tskID).subscribe(data => {
         
@@ -202,9 +204,7 @@ export class LeasePaymentHeadDetailComponent {
       )
   }
   getpayment_plan(){
-    // 
     this.ServiceService.get_payment_plan(this._service.lease_code).subscribe(data=>{
-      // 
       if(data["proc_Payment_Plans"].length>0){
         if(this.updated){
           this.ServiceService.disablefins = false;
@@ -274,7 +274,7 @@ export class LeasePaymentHeadDetailComponent {
           data.remaining_lease_payment;
         this.leasePaymentHeadDetail.Updated_By_userid = data.updated_By_userid;
         this.leasePaymentHeadDetail.Updated_date = data.updated_date;
-        this.leasePaymentHeadDetail.contract_date=data.contract_date.split("T")[0]
+        
         // this.leasePaymentHeadDetail.Time = data.Time;
       },
       (error) => {

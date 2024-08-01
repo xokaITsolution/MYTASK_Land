@@ -119,6 +119,15 @@
                             *ngIf="(Remaining_lease_Payment.invalid && submitted) || (Remaining_lease_Payment.dirty && Remaining_lease_Payment.invalid)"
                             class="p-error">Remaining lease Payment is required.</small>
                     </div>
+                    <div class="field">
+                        <label for="ContractDate">Lease Contract start Date</label>
+                        <div class="col-sm-8">
+                          <input type="date" [disabled]="disable"  class="form-control"
+                            [(ngModel)]="leaserPaymentHead.Contract_date" name="ContractDate" id="ContractDate"
+                            [placeholder]="'Contract Date'" #ContractDate="ngModel"
+                            [ngClass]="{ 'is-invalid': ContractDate.invalid }" required>
+                        </div>
+                      </div>
                     <!-- <div class="form-group row">
                         <label for="ContactType" class="col-sm-4 col-form-label" translate>Contact Type</label>
                         <div class="col-sm-8">
@@ -201,6 +210,7 @@
                             class="p-error">Is
                             Active is required.</small>
                     </div>
+                   
                     <!-- 
                     <div class="field">
                         <label for="Parent">Parent</label>

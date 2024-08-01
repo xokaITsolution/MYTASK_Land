@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 })
 export class LeaseContractService {
   apiUrl=environment.rootPathApi;
-  private proc_Lease_Payment_Head = environment.rootPath3 + "proc_Lease_Payment_Head";
+  private proc_Lease_Payment_Head = environment.rootPathApi + "proc_Lease_Payment_Head";
   Lease_Contract =`${environment.rootPathApi}proc_Lease_Contract`;
   ConReviewTran =`${environment.rootPathApi}proc_Con_Review_Transaction/proc_ConReviewTransaction`;
   lease_payment_head = environment.rootPathApi + "proc_Lease_Payment_Head/"
@@ -39,6 +39,8 @@ export class LeaseContractService {
   transfer_ID: any;
   App_no: any;
   completed: any;
+  Service_ID: any;
+  contract_date: any;
   constructor(private http: HttpClient) {}
   insert_data( data: any) {
     return this.http.post(this.Lease_Contract, data);

@@ -72,9 +72,12 @@ isCertifcatePrintforConfirmation: boolean;
         this.enable=true;
       }
       else{
+        debugger
         this.proposebyidList =  propose;
         this.newWithdrawPropose.title_Deed_No=propose.title_Deed_No;
         this.newWithdrawPropose.customer_ID=propose.transfer_To_Customer;
+        console.log("this.Licence_Service_ID",this.Licence_Service_ID);
+        
         this.newWithdrawPropose.Licence_Service_Id=this.Licence_Service_ID;
         this.showform=true;
         this.enable=false;

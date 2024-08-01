@@ -123,7 +123,6 @@ export class FreeHoldToLeaseComponent implements OnInit {
     this._service.get_freehold_to_Lease_by_Id(this._service.contract_NO).subscribe(async data=>{
       if(data['proc_FreeHold_to_Leases'].length>0){
         let FreeHoldTolease=data['proc_FreeHold_to_Leases'][0];
-        
         this.newFreeHoldToLease.Contract_NO=FreeHoldTolease.contract_NO;
         this.newFreeHoldToLease.Custmer_ID=FreeHoldTolease.customer_ID;
         this.newFreeHoldToLease.Customer_Full_Name=FreeHoldTolease.customer_Full_Name;
@@ -153,7 +152,6 @@ export class FreeHoldToLeaseComponent implements OnInit {
         this.newFreeHoldToLease.Building_Max_Hight=0;
         this.newFreeHoldToLease.Building_Min_Hight=0;
         this.newFreeHoldToLease.Active=FreeHoldTolease.active
-        
         this.isnew=false
         this.notificationsService.success("success", "success");
         console.log("this.newFreeHoldToLease",this.newFreeHoldToLease);
