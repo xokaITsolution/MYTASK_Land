@@ -29,7 +29,7 @@ import { FilePreviewDialogComponent } from "./file-preview-dialog/file-preview-d
 import { NetworkMonitoringService } from "./network-database-monitoring-tool/network-monitoring.service";
 import { format } from "util";
 import { formatDate } from "@angular/common";
-import { MyLibService } from 'my-lib'; 
+import { MyLibService } from 'my-lib';  
 
 export * from "./qrcode.directive";
 type AOA = any[][];
@@ -273,6 +273,7 @@ export class ServiceComponent implements OnInit  {
   customerdata: Person[] = [];
   iscustomerdata: boolean;
   sellerkebeleid: string = '';
+  userNameForLib: string;
   constructor(
     private modalService: BsModalService,
     private activatedRoute: ActivatedRoute,
@@ -282,11 +283,10 @@ export class ServiceComponent implements OnInit  {
     private sanitizer: DomSanitizer,
     public ngxModal: NgxSmartModalService,
     private renderer: Renderer2,
-    private el: ElementRef, private myLibService: MyLibService,
-
+    private el: ElementRef,
     private dialogService: DialogService,
     private networkService: NetworkMonitoringService ,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService ,private myLibService: MyLibService,
   ) {
   
   }
@@ -299,6 +299,10 @@ export class ServiceComponent implements OnInit  {
       "2145F90D-E911-42F2-9AD7-C2455A4D9DCD".toLocaleLowerCase()  == this.SDP_ID ||
       "1b30e6d6-0ade-443e-be18-22de948bfd1e".toLocaleLowerCase()  == this.SDP_ID
     ) {
+
+      this.serviceService.getcertbytitledeedall(formData.Title).subscribe(data=>{
+        // data.length >0
+         if(1==1){
       if (environment.subcity == "arada") {
         this.AppNo = "6921d772-3a1c-4641-95a0-0ab320bac3e2";
       } else if (environment.subcity == "bole") {
@@ -372,6 +376,21 @@ export class ServiceComponent implements OnInit  {
             }
           }
         );
+      }else{
+        const toast = this.notificationsService.error(
+          "Error",
+          "Title deed you insert not correct/ያስገቡት የባለቤትነት ሰነድ ትክክል አይደለም"
+        );
+        return
+      }
+      }, error => {
+        // Optionally handle the error case if the request fails
+        console.error('Error fetching certificate by title deed', error);
+        this.notificationsService.error(
+          "Error",
+          "An error occurred while fetching the data/መረጃውን በመግኘት ጊዜ ስህተት አጋጥሟል"
+        );
+      })
     } else {
       console.log("save-form", JSON.stringify(formData));
       this.serviceService
@@ -733,10 +752,11 @@ export class ServiceComponent implements OnInit  {
     return mimeExtensions[mimeType] || "file";
   }
   ngOnInit() {
+    
+    this.userNameForLib=environment.username
     this.myLibService.setUsername(environment.username);
     this.myLibService.setSubcity(environment.subcity);
 
- 
     //console.log("🚀 ~ ngOnInit ~ formattedDate:", formattedDate)
     // setInterval(() => {
     //   this.serviceService
@@ -911,7 +931,8 @@ export class ServiceComponent implements OnInit  {
     } else if (this.formcode == "cc71e78d-ef6f-4b93-8d8e-3996f1043fba") {
       this.serviceService.disablefins = false;
       this.ID = 12;
-    } else if (this.formcode == "ee892362-98c4-4321-a3fe-40c5a8205a54") {
+    } 
+    else if (this.formcode == "ee892362-98c4-4321-a3fe-40c5a8205a54") {
       // this.serviceService.disablefins = false;
       this.ID = 13;
     }else if (this.formcode == "ee892362-98c4-4321-a3fe-40c5a8205a55") {
@@ -919,12 +940,19 @@ export class ServiceComponent implements OnInit  {
       this.ID = 14;
     }
     else if (this.formcode == "f449993c-e422-46c9-b74c-fbc81c443071") {
-      // this.serviceService.disablefins = false;
+ 
       this.ID = 15;
     }
     else if (this.formcode == "2e7cedd2-3d65-440a-9418-71943297c52b") {
       // this.serviceService.disablefins = false;
       this.ID = 16;
+    }
+    else if (this.formcode == "ee892362-98c4-4321-a3fe-40c5a8205a54") {
+      // this.serviceService.disablefins = false;
+      this.ID = 13;
+    }else if (this.formcode == "ee892362-98c4-4321-a3fe-40c5a8205a55") {
+      // this.serviceService.disablefins = false;
+      this.ID = 14;
     }
     else if (this.formcode == "cc71e78d-ef6f-4b93-8d8e-3996f1043faa") {
       //this.serviceService.disablefins = false;
@@ -942,6 +970,10 @@ export class ServiceComponent implements OnInit  {
       //this.serviceService.disablefins = false;
       this.ID = 23;
     } 
+    else if (this.formcode == "ef941f1f-0adc-42ce-9cfe-161795bc70e7") {
+      //this.serviceService.disablefins = false;
+      this.ID = 24;
+    }
     else {
       this.ID = 0;
 
@@ -974,50 +1006,6 @@ export class ServiceComponent implements OnInit  {
       this.updated.emit({ docs: this.RequerdDocs });
     }
   }
-  generateApplication(data){
-    this.AppCode = data.appno;
-    this.DocID = data.docid;
-    this.todoID = data.todo_id;
-    this.Service_ID=data.service_id
-    this.Licence_Service_ID=data.appno
-    console.log('datafromlibrary',data,this.Service_ID);
-    this.getAll(data.appno);
-
-    
-  }
-  saveFormmLib(formData){
-    this.serviceService
-    .saveFormm(
-      formData.appno,
-      formData.service_id,
-      this.tskID,
-      this.SDP_ID,
-      JSON.stringify({}),
-      this.DocID || "00000000-0000-0000-0000-000000000000",
-      this.todoID || "00000000-0000-0000-0000-000000000000"
-    )
-    .subscribe(
-      (response) => {
-        console.log("save-from-response", response);
-
-        this.serviceService.disablefins = false;
-        this.AppNo = response[0];
-        this.DocID = response[1];
-        //this.todoID = response[2];
-        this.getAll(this.AppNo);
-        const toast = this.notificationsService.success("Success", "Saved");
-        this.validated = true;
-      },
-      (error) => {
-        console.log("save-form-error", error);
-        const toast = this.notificationsService.error(
-          "Error",
-          "SomeThing Went Wrong"
-        );
-      }
-    );
-  }
-
   openPreviewDialog(RequerdDocpre: any) {
     // Pass the content to the dialog
     const dialogConfig = {
@@ -1049,6 +1037,49 @@ export class ServiceComponent implements OnInit  {
       // Handle other file types if needed
       return "Unsupported file type";
     }
+  }
+  generateApplication(data){
+    this.AppCode = data.appno;
+    this.DocID = data.docid;
+    this.todoID = data.todo_id;
+    this.Service_ID=data.service_id
+    this.Licence_Service_ID=data.appno
+    console.log('datafromlibrary',data,this.Service_ID);
+    this.getAll(data.appno);
+
+    
+  }
+  saveFormmLib(formData){
+    this.serviceService
+    .saveFormm(
+      formData.appno,
+      formData.service_id,
+      this.tskID,
+      formData.SDP_ID,
+      JSON.stringify({}),
+      this.DocID || "00000000-0000-0000-0000-000000000000",
+      this.todoID || "00000000-0000-0000-0000-000000000000"
+    )
+    .subscribe(
+      (response) => {
+        console.log("save-from-response", response);
+
+        this.serviceService.disablefins = false;
+        this.AppNo = response[0];
+        this.DocID = response[1];
+        //this.todoID = response[2];
+        this.getAll(this.AppNo);
+        const toast = this.notificationsService.success("Success", "Saved");
+        this.validated = true;
+      },
+      (error) => {
+        console.log("save-form-error", error);
+        const toast = this.notificationsService.error(
+          "Error",
+          "SomeThing Went Wrong"
+        );
+      }
+    );
   }
 
   countDown(seconds: number) {
@@ -2427,7 +2458,8 @@ export class ServiceComponent implements OnInit  {
     }
     else if (task.form_code == "f449993c-e422-46c9-b74c-fbc81c443071") {
       this.preAppID = 15;
-    }else if (task.form_code == "") {
+    }
+    else if (task.form_code == "") {
       this.preAppID = 10;
     } else {
       this.preAppID = 1;
@@ -2649,6 +2681,7 @@ export class ServiceComponent implements OnInit  {
           //   `This folder does  have any files.`
           // );
         } else {
+          this.SubmitAR(data);
           const toast = this.notificationsService.error(
             `This folder does not have any files.`
           );
@@ -2850,11 +2883,58 @@ export class ServiceComponent implements OnInit  {
     //   }
     // }
   }
+  getSDPID(plotId: string): string | null {
+    const letters = plotId.match(/^[A-Za-z_-]+/g)[0] || '';
+    console.log("🚀 ~ getSDPID ~ letters:", letters)
+    
+
+    switch (letters) {
+      case 'AR':
+        return '6921D772-3A1C-4641-95A0-0AB320BAC3E2'.toLocaleLowerCase();
+      case 'BL':
+        return '89EB1AEC-C875-4A08-AAF6-2C36C0864979'.toLocaleLowerCase();
+      case 'MCIT-NDC':
+        return '1809E356-D00F-42F9-8425-41A149DFD60F'.toLocaleLowerCase();
+      case 'NL':
+        return 'F8EA62DB-05BC-4F1A-AB30-4E926D43E3FB'.toLocaleLowerCase();
+      case 'GU':
+        return '6A8C042F-A3E1-4375-9769-54D94C2312C6'.toLocaleLowerCase();
+      case 'CN_01':
+        return '5EF1475C-2B66-4087-B1B7-63E6C6CD7CA1'.toLocaleLowerCase();
+      case 'AD':
+        return '7101D44D-97D5-41AA-957D-82F36D928C07'.toLocaleLowerCase();
+      case 'LD':
+        return 'E4D8219E-51F9-40CB-9D53-883C6CA9AAA3'.toLocaleLowerCase();
+      case 'AACALDMBTPSP':
+        return '1EFB0336-26C6-4BF1-AEB8-8DA0D4F7DBBB'.toLocaleLowerCase();
+      case 'AACA':
+        return '275619F2-69C2-4FB7-A053-938F0B62B088'.toLocaleLowerCase();
+      case 'LMK':
+        return 'F02E9467-1B7D-4350-BEE7-9844D4F56DA0'.toLocaleLowerCase();
+      case 'MCIT':
+        return '3D26A10C-9BE9-4261-BF97-AB6F39455ED3'.toLocaleLowerCase();
+      case 'YK':
+        return '8222F028-5FE3-4047-9A50-B52BFA64C851'.toLocaleLowerCase();
+      case 'AK':
+        return '08F9C927-6366-467A-BA99-C837C5ADD427'.toLocaleLowerCase();
+      case 'KS':
+        return 'AAA5094C-8899-4708-9F7B-D8FF634A3540'.toLocaleLowerCase();
+      case 'KK':
+        return '930D1C20-9E0E-4A50-9EB2-E542FAFBAD68'.toLocaleLowerCase();
+      default:
+        return this.serviceService.currentsdpid
+    }
+  }
+
   getplotlist(plotid) {
     this.serviceService.getPlotManagementApi(plotid).subscribe(
       async (PlotManagementLists: any) => {
         let PlotManagementList = PlotManagementLists.procPlot_Registrations;
+        console.log("🚀 ~ PlotManagementList:", PlotManagementList)
+       
         if (PlotManagementList.length > 0) {
+          let ploteid=PlotManagementList[0].plot_ID
+          this.serviceService.plotSdpid=this.getSDPID(ploteid)
           this.serviceService
             .getPropertyLists(PlotManagementList[0].plot_ID)
             .subscribe((res: any) => {
@@ -2868,7 +2948,7 @@ export class ServiceComponent implements OnInit  {
                   this.serviceService
                     .getPropertyListsfromcenteral(element.property_ID)
                     .subscribe((ress: any) => {
-                      if (ress.procProporty_Locations) {
+                      if (ress.procProporty_Locations ) {
                         this.serviceService
                           .postplotTopostgres(
                             this.licenceData.Parcel_ID,
@@ -2880,7 +2960,10 @@ export class ServiceComponent implements OnInit  {
                 });
               }
             });
+        }else{
+          this.serviceService.plotSdpid=this.serviceService.currentsdpid
         }
+
       },
       (error) => {
         console.log("error");
@@ -3528,11 +3611,9 @@ export class ServiceComponent implements OnInit  {
   public getAll(AppNo) {
     this.serviceService.getAll(AppNo).subscribe(
       (res:any) => {
-        
         if (res.list.length > 0) {
         let licenceServiceeach = res.list[0];
         this.myLibService.setLicense(licenceServiceeach.Licence_Service_ID);
-
     //   console.log("🚀 ~ getAll ~ licenceService:", licenceServiceeach)
        this
      console.log("🚀 ~ getAll ~ licenceService:",licenceServiceeach.Service_ID)
@@ -3540,7 +3621,6 @@ export class ServiceComponent implements OnInit  {
     licenceServiceeach.Service_ID === 'DE4937D8-BDCD-46D6-8749-DC31C9F3ADCF'.toLocaleLowerCase()){ 
       this.serviceService.getAll(AppNo).subscribe(
         (re:any) => {
-          
           if (re.list.length > 0) {
           let licenceService = re.list[0];
           console.log("🚀 ~ getAll ~ licenceService:", licenceService)
@@ -3565,14 +3645,14 @@ export class ServiceComponent implements OnInit  {
                
                this.serviceService.getAll(AppNo).subscribe(
                  (licenceService) => {
-                  
                    this.licenceService = licenceService;
                    console.log("Licence Service", this.licenceService);
                    if (this.licenceService.list.length > 0) {
                      this.licenceData = this.licenceService.list[0];
-                     
+           
                      this.serviceService.licenceData = this.licenceData;
                      this.SDP_ID = this.licenceData.SDP_ID;
+                     this.getplotlist(this.licenceData.Parcel_ID);
                      this.serviceService.currentsdpid = this.SDP_ID;
                      this.Service_ID = this.licenceData.Service_ID;
                      this.getServiceDeliveryUnitLookUP();
@@ -3726,7 +3806,6 @@ export class ServiceComponent implements OnInit  {
     console.log("appppppp", AppNo);
     this.serviceService.getAll(AppNo).subscribe(
       (licenceService) => {
-        
         this.licenceService = licenceService;
         console.log("Licence Service", this.licenceService);
         if (this.licenceService.list.length > 0) {
@@ -3736,7 +3815,7 @@ export class ServiceComponent implements OnInit  {
           this.SDP_ID = this.licenceData.SDP_ID;
           this.serviceService.currentsdpid = this.SDP_ID;
           this.Service_ID = this.licenceData.Service_ID;
-      
+          this.getplotlist(this.licenceData.Parcel_ID);
           this.serviceService.Service_ID = this.licenceData.Service_ID;
           this.serviceService.serviceDP = this.SDP_ID;
           this.Licence_Service_ID = this.licenceData.Licence_Service_ID;
@@ -3835,7 +3914,7 @@ export class ServiceComponent implements OnInit  {
         );
       }
     });
-  }
+  } 
   onFileChange(evt: any) {
     /* wire up file reader */
     const target: DataTransfer = <DataTransfer>evt.target;

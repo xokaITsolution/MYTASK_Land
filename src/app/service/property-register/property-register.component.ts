@@ -66,7 +66,6 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   proprty_Use_lookup: Object;
   maxheight: string;
   messagefortoast: string;
-  conlevel_List: [];
   isconfirmsaveplot: boolean;
   plan_Document: any;
   picture_North: any;
@@ -138,7 +137,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       this.serviceService.insertedProperty = this.selectedpro.property_ID; 
       this.technicaluser=this.propertyRegister.application_No
       console.log("selectedddd", this.selectedpro);
-      
+      //
       //this.getplotlocbyid(this.propertyRegister.plot_ID);
       this.getproplocbyid(this.propertyRegister.plot_ID);
     }
@@ -190,7 +189,6 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     console.log("is new :: ", this.isnew);
     console.log("is disable :: ", this.disable);
     this.GetpropertyUselookup();
-    this.get_constraction_level();
   }
 
   selectedDateTime(dates: any, selecter) {
@@ -230,12 +228,6 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
         console.log("error");
       }
     );
-  }
-  get_constraction_level(){
-    this.serviceService.get_constraction_level().subscribe(data=>{
-      // debugger
-      this.conlevel_List=data["proc_Contraction_Levels"];
-    })
   }
   checkplothavecertificet() {
     this.serviceService
@@ -1472,13 +1464,13 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   }
 
   updateproploc() {
-    if (this.serviceService.Licence_Service_ID != this.serviceService.LicenceserviceID){
-      const toast = this.notificationsService.error(
-        "Error",
-        "this property created by other technical officer so you can't update it /ይህ ቤት በሌላ ቴክኒካል ኦፊሰር የተፈጠረ ስለሆነ ማዘመን አይችሉም"
-      );
-      return
-    }
+    // if (this.serviceService.Licence_Service_ID != this.serviceService.LicenceserviceID){
+    //   const toast = this.notificationsService.error(
+    //     "Error",
+    //     "this property created by other technical officer so you can't update it /ይህ ቤት በሌላ ቴክኒካል ኦፊሰር የተፈጠረ ስለሆነ ማዘመን አይችሉም"
+    //   );
+    //   return
+    // }
     // console.log(
     //   "coordinatcoordinat",
     //   this.serviceService.coordinate,
@@ -1817,7 +1809,6 @@ export class PropertyRegister {
   public is_commerscial;
   public room_No;
   public proprty_Use;
-  public con_level: any;
 }
 export class PropformLocation {
   public proporty_Id: any;
@@ -1843,5 +1834,4 @@ export class PropformLocation {
   public imageType: any;
   public hight_Meter: any;
   public geoForwgs84: any;
-  
 }

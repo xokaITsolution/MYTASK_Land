@@ -1,0 +1,22 @@
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .card {
+    margin-bottom: 20px;
+  }
+  
+  .bg-success {
+    background-color: #25e756;
+    color: #000000;
+  }
+  
+  .bg-danger {
+    background-color: #ec5360;
+    color: #000000;
+  }
+  
+  
+  

@@ -10,13 +10,26 @@
 <ng-template #taskTable>
 
 
-<p-table [value]="taskList" [paginator]="true" [rows]="10" sortField="taskList.start_date" sortOrder="-1">
+<p-table #structure [value]="taskList" [paginator]="true" [rows]="10" sortField="taskList.start_date" sortOrder="-1" [globalFilterFields]="['todo_comment','Status']">
   <ng-template pTemplate="caption">
+    <div class="flex" *ngIf="isRecordDes">
+      <span class="p-input-icon-left ml-auto">
+        <div style="width: 40%;">
+          <i class="pi pi-search"></i>
+          <input type="text" class="form-control" (input)="structure.filterGlobal($event.target.value, 'contains')"
+            placeholder="Search by Application number" />
+  
+        </div>
+      </span>
+    </div>
     <div class="form-check form-switch">
       <input class="form-check-input" style="width: 60px; height: 30px;" type="checkbox" id="flexSwitchCheckChecked" (change)="filterByUserId($event.target.checked)">
       <label class="form-check-label" style="margin-left: 5px;" for="flexSwitchCheckChecked">my tasks only for me(ተግባሮቼ ለእኔ ብቻ)</label>&nbsp;&nbsp;&nbsp;&nbsp;
     </div>
   </ng-template>
+  <!-- <ng-template pTemplate="caption">
+    
+  </ng-template> -->
   <ng-template pTemplate="header">
     <tr>
       <th translate>#</th>
@@ -41,13 +54,14 @@
       <td *ngIf="task.status !== 'O' && task.status !== 'A  ' && task.status !== 'R  ' ||  isInIdentifiers(task.tasks_id)">
         {{ task.todo_comment }}
       </td>
-      <td>{{task.start_date | date :"M/d/yy" }}</td>
+      <td *ngIf="task.status == 'S'">{{task.start_date | date :"M/d/yy" }}</td>
+      <td *ngIf="task.status != 'S'">**********</td>
       <td>{{task.description}}</td>
       <td>{{task.status}}</td>
       <td>{{task.TaskType}}</td>
       <td>{{task.Estimated_minute_To_Finsh_This_Tasks}}</td>
       <td *ngIf="task.Estimated_minute_To_Finsh_This_Tasks !=0">
-        <button *ngIf="i < 5 || task.status == 'S' || task.status == 'B' || task.status == 'E' || (task.status == 'O' || task.status == 'A  ' || task.status == 'R  ' || task.status == 'AS') && task.userId !== '00000000-0000-0000-0000-000000000000'"
+        <button *ngIf="i < numberOfpick || task.status == 'S' || task.status == 'B' || task.status == 'E' || (task.status == 'O' || task.status == 'A  ' || task.status == 'R  ' || task.status == 'AS') && task.userId !== '00000000-0000-0000-0000-000000000000'"
           class="btn btn-primary" type="button" (click)="IsLockedBy_OtherUser(task)" translate>Pick</button>
       </td>
       <td *ngIf="task.Estimated_minute_To_Finsh_This_Tasks ==0" >

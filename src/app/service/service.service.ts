@@ -88,9 +88,6 @@ export class ServiceService {
   public DocByAppNo =
     environment.rootPathApi +
     "View_RecordAppNoAndDocIdByAppNo/procView_RecordAppNoAndDocIdByAppNo/";
-    public get_payment_plan1 =
-    environment.rootPathApi +
-    "proc_Payment_Plan?Lease_cdoe=";
   public DeedByAPP =
     environment.rootPathApi + "view/View_DeedRegstration/Application_No/";
   public DeedByCustId =
@@ -150,8 +147,6 @@ export class ServiceService {
   private getTaskRuleURL = environment.rootPath + "BPEL/TaskRule"; // URL to web api
 
   private nextTaskCompleteURL = environment.rootPath + "BPEL/nextTaskComplete"; // URL to web api
-  staticProperty = environment.rootPath2+'ProprtyData/ProcProportyStaticData'
-  private withdrawprop = environment.rootPathApi+'proc_withdraw_propose/proc_withdraw_propose'
   private nextTaskAcceptOrRejectURl =
     environment.rootPath + "BPEL/nextTaskAcceptOrReject"; // URL to web api
   private SaveDataURL = environment.rootPath + "BPEL/SaveData"; // URL to web api
@@ -188,24 +183,23 @@ export class ServiceService {
   private getAllDocumentURLs =
     environment.rootPathApi +
     "view/Vw_AllDocuments/application_number/application_code?";
-    private getwithpropbyId1 =
-    environment.rootPathApi +
-    "proc_withdraw_propose/proc_withdraw_propose?";
-    
   private getDocumentbytasksURL =
     environment.rootPathApi + "view/View_Document_By_Task/task_code";
   private MytasksUrl = environment.rootPath + "BPEL/GetlistofTodo"; // URL to web api
   OrganizationparentUrl =
     environment.rootPath2 + "Job/procOrganization/Organization";
   saveCustomerdata = environment.rootPath3 + "Customer/procCustomer/";
-  get_constraction_level1 = environment.rootPathApi + "proc_Contraction_Level/proc_Contraction_Level";
   saveCustomerdataapi = environment.rootPath3 + "Tax/procTINERCA/system";
   PdfCompressor =
     "http://197.156.93.110/xoka.jobapi/api/compress/DeflateCompression/Compresse";
   saveplotlocdata = environment.rootPath3 + "Plot_Location/procPlot_Location/";
+  getdraftedplot = environment.rootPath3 + "getplotbyapplication/getplotbyapplication/Application_No?Application_No=";
   saveproplocdata =
     environment.rootPath3 + "Proporty_Location/procProporty_Location/";
+getcertbytitledeed =
+    environment.rootPath3 + "view/View_DeedRegstration/Title_Deed_No?Title_Deed_No=";
 
+    private PaymentDetailUrlsget = environment.rootPathApi + "ViewPaymentWithUser/GetPaymentById?PID=";
   private propertreg =
     environment.rootPath3 + "Property_Registration/procProperty_Registration";
   private propertregis =
@@ -229,15 +223,14 @@ export class ServiceService {
   private ViewUserInfo =
     environment.rootPathApi +
     "view/View_caseworkeruserorganizationcodeapi/UserName?UserName";
+    private PaymentDetailUrls = environment.rootPathApi + "Payment_Details/procPayment_Details";
   private applicationdelete = environment.rootPathApi + "aplication/";
-  propertyLookupbyid = environment.rootPath2+'ProprtyData/procProportyTypeLockup/'
-  getWithdrawpropose1 = environment.rootPathApi+'view/View_Withdraw_propose'
-  PropertyDynamicDataCollectionTransactionByProperty = environment.rootPathApi+'proc_Con_Review_TransactionDetail/proc_ConReviewTransactionDetail/'
   // environment.rootPath + "BPEL/GetApplicationNumberByUser"; // URL to web api
   httpOptions = {
     headers: new HttpHeaders({ "Content-Type": "application/json" }),
     params: {},
   };
+
   ApplicationNo: any;
   todo: any;
   servID: any;
@@ -246,8 +239,6 @@ export class ServiceService {
   EmployeeTIN: any;
   Parent_Customer_ID: any;
   showcustomerr: boolean;
-  DisableFormb: boolean;
-  Parcel_ID:any;
   taskid: string;
   coordinate: any[] = [];
   geometry: any[];
@@ -320,11 +311,11 @@ export class ServiceService {
   salesFrominformat: boolean=false
   sellerCustomerId: string;
   currentproprtyID: any;
-  propertyTypeid: any;
-  propertyid: any;
+  plotSdpid: string;
+  Updated_By: any;
   disable: any;
   tskID: any;
-  // completed: void;
+  Parcel_ID: any;
   constructor(private http: HttpClient, private cookieService: CookieService) {}
   getdbstatus(orgid) {
     return this.http.get(this.dbstatus + "GetDBServerStatus?orgid=" + orgid);
@@ -347,6 +338,10 @@ export class ServiceService {
   postapplicationdelete(data) {
     // User_ID = this.removeSlash(User_ID);
     return this.http.get<any>(this.applicationdelete + data);
+  }
+  getcertbytitledeedall(data) {
+    // User_ID = this.removeSlash(User_ID);
+    return this.http.get<any>(this.getcertbytitledeed + data);
   }
   setCookies(area: number) {
     // Setting cookies using cookieService
@@ -397,44 +392,6 @@ export class ServiceService {
       this.GetApplicationNumberByUserURLsapi + "?UserName=" + username
     );
   }
-  getPropertyTypeId() {
-    console.log(' return this.propertyTypeid: ',this.propertyTypeid);
-    return this.propertyTypeid
-  }
-  getPropertyTypeForm(data) {
-    return this.http.get(this.propertyLookupbyid + data)
-  }
-  getWithdrawpropose() {
-   return this.http.get(this.getWithdrawpropose1)
-  }
-  getWithdrawproposebyid(titdeed,cid) {
-    return this.http.get(this.getWithdrawpropose1+"/"+titdeed+"/"+cid)
-   }
-  addwithprop(data){
-    return this.http.post(this.withdrawprop,data)
-  }
-  updatewithprop(data){
-    return this.http.put(this.withdrawprop,data)
-  }
-  getwithpropbyId(cid,titdeed) {
-   return this.http.get<any[]>(
-      this.getwithpropbyId1 +
-        "customer_ID=" +
-        cid +
-        "&Title_Deed_No=" +
-        titdeed
-    );
-  }
-  getPropertyStaticForm() {
-    return this.http.get(this.staticProperty)
-  }
-  getPropertyId() {
-    return this.propertyid
-  }
-  savePropertyStaticForm(data: any) {
-    return this.http.post(this.staticProperty,data)
-  }
-
   getTasks(data) {
     return this.http.get(this.Tasks + "?ServiceCode=" + data);
   }
@@ -447,9 +404,6 @@ export class ServiceService {
   }
   getDocIdByAppNo(AppNo) {
     return this.http.get(this.DocByAppNo + AppNo);
-  }
-  get_payment_plan(lease_code) {
-    return this.http.get(this.get_payment_plan1 + lease_code);
   }
   getDeedByApp(AppNo) {
     return this.http.get(
@@ -915,6 +869,9 @@ export class ServiceService {
     console.log("saveing", data);
     return this.http.get(this.saveplotlocdata + data);
   }
+  getplotregisttionlistderaft(data) {
+    return this.http.get(this.getdraftedplot + data);
+  }
   getProploc(data) {
     console.log("saveing", data);
     return this.http.get(this.saveproplocdata + data);
@@ -941,9 +898,6 @@ export class ServiceService {
   }
   getcustomerAll(col) {
     return this.http.get(this.saveCustomerdata + "Column/" + col);
-  }
-  get_constraction_level() {
-    return this.http.get(this.get_constraction_level1 );
   }
   getcustomerPdfCompressor(col) {
     return this.http.post(this.PdfCompressor, col);
@@ -1070,12 +1024,6 @@ export class ServiceService {
         "view/Vw_AllDocuments/application_number/doc/doc/document_code/document_code?document_code=" +
         DocID
     );
-  }
-  getPropertyDynamicDataCollectionTransactionByTransId(id) {
-    return this.http.get(this.PropertyDynamicDataCollectionTransactionByProperty + id)
-  }
-  updatePropertyDynamicDataCollectionTransactionByTransId(data) {
-    return this.http.put(this.PropertyDynamicDataCollectionTransactionByProperty, data)
   }
   getDocumentbytaskssURL(ApplicationCode, DocID, taskid) {
     console.log("ApplicationCode, DocID", ApplicationCode, DocID, taskid);
@@ -1383,17 +1331,36 @@ export class ServiceService {
     );
   }
 
+  // getPaymentDetail(pID) {
+  //   return this.http.get(
+  //     this.PaymentDetailUrl +
+  //       "?" +
+  //       "sortOrder=test&currentFilter=" +
+  //       pID +
+  //       "&searchString&pageIndex&pageSize"
+  //   );
+  // }
   getPaymentDetail(pID) {
     return this.http.get(
-      this.PaymentDetailUrl +
-        "?" +
-        "sortOrder=test&currentFilter=" +
+      this.PaymentDetailUrlsget +
         pID +
-        "&searchString&pageIndex&pageSize"
+        "&pageIndex=1&pageSize=20"
     );
   }
   savePaymentDetail(data) {
-    return this.http.put<any[]>(this.PaymentDetailUrl, data);
+    const transformKeys = (obj) => {
+      let transformedData = {};
+      for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          let newKey = key.charAt(0).toLowerCase() + key.slice(1);
+          transformedData[newKey] = obj[key];
+        }
+      }
+      return transformedData;
+    };
+  
+    const transformedData = transformKeys(data);
+    return this.http.put<any[]>(this.PaymentDetailUrls, transformedData);
   }
 
   addPaymentDetail(data) {

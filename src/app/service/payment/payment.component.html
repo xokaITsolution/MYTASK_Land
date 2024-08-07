@@ -1,3 +1,5 @@
+
+
 <div>
   <div class="m-3">
     <p-table [value]="PaymentList" [paginator]="true" [rows]="5">
@@ -43,6 +45,7 @@
             <th scope="col" translate>Price Amount</th>
             <th scope="col" translate>Remarks</th>
             <th scope="col" translate>is Paid</th>
+            <th scope="col" translate>Updated By </th>
             <th scope="col">
               <button type="button" *ngIf="!disable" class="btn btn-primary" (click)="AddPaymentDetail()" translate>Add New</button>
             </th>
@@ -56,8 +59,9 @@
             <td>{{paymentDetail2.Remark}}</td>
             <td>
               <p-checkbox [(ngModel)]="paymentDetail2.Is_Paid" [disabled]="true" name="Is_Paid" id="Is_Paid"
-                          binary="true"></p-checkbox>
+              binary="true"></p-checkbox>
             </td>
+            <td>{{paymentDetail2.Updated_By}}</td>
             <td>
               <!--<button type="button" class="btn btn-primary" (click)="SelectPayment(paymentDetail)"
                       *ngIf="environmenter.username==paymentDetail.Updated_By" translate>Edit

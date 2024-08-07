@@ -57,6 +57,8 @@ export class PaymentComponent implements OnChanges {
     "de4937d8-bdcd-46d6-8749-dc31c9f3adcf"
   ];
   iscasher: boolean;
+  rolesToCheck = ['4728621A-4E75-4E81-8C92-012E9EF19A45', '4AA43499-05F3-49CC-86FD-D9D2A15F8328'];
+  userRoles: UserRole[] = [];
   constructor(
     private sanitizer: DomSanitizer,
     private serviceService: ServiceService,
@@ -70,7 +72,7 @@ export class PaymentComponent implements OnChanges {
   ngOnChanges() {
     console.log("disable", this.disable);
    
-    this.getPaymentManagement();
+    this.getPaymentManagement(this.AppNo);
     this.yourQRCodeDataPayment =
       environment.PaymentReportPath + "/" + this.AppNo;
     this.PaymentProcessPath = this.sanitizer.bypassSecurityTrustResourceUrl(
@@ -81,7 +83,7 @@ export class PaymentComponent implements OnChanges {
   isInIdentifiers(taskId: string): boolean {
     return this.identifiers.includes(taskId);
   }
-  getPaymentManagement() {
+  getPaymentManagement(AppNo) {
     console.log("AAppNo", this.AppNo);
     if (this.isInIdentifiers(this.serviceService.Service_ID) ){
       this.serviceService.disablefins=false
@@ -167,6 +169,7 @@ export class PaymentComponent implements OnChanges {
   AddnewPaymentDetail(PaymentDetail) { 
     PaymentDetail.Is_Paid=false
     console.log("PaymentDetail", PaymentDetail);
+    
     this.serviceService.addPaymentDetail(PaymentDetail).subscribe(
       (message) => {
         const toast = this.notificationsService.success("Sucess", message);
@@ -175,7 +178,7 @@ export class PaymentComponent implements OnChanges {
         if (this.isNew && this.PaymentDetail.Is_Paid) {
           this.Amount = this.Amount + this.PaymentDetail.Price;
         }
-        this.getPaymentManagement();
+        this.getPaymentManagement(this.AppNo);
         this.SaveePaymentDetail(PaymentDetail);
         if (!this.Saved) {
           this.completed.emit();
@@ -215,61 +218,56 @@ export class PaymentComponent implements OnChanges {
     // Payment.Date_Paid = Payment.Date_Paid.split('T')[0];
   }
   SavePaymentDetail(PaymentDetail) {
-    this.serviceService.getUserRole().subscribe((response: any) => {
-      if (response) {
-        for (let index = 0; index < response.length; index++) {
-          const element = response[index];
+    this.serviceService.getUserRole().subscribe((response: UserRole[]) => {
+      this.userRoles = response;
 
-          if (
-            element.RoleId ===
-            "4728621A-4E75-4E81-8C92-012E9EF19A45".toLocaleLowerCase() ||
-            element.RoleId ===
-            "4AA43499-05F3-49CC-86FD-D9D2A15F8328".toLocaleLowerCase()
-          ) {
-          
-            this.iscasher = true;
-            this.serviceService.savePaymentDetail(PaymentDetail).subscribe(
-              (message) => {
-                const toast = this.notificationsService.success("Sucess", message);
-                this.getPaymentManagement();
-        
-                if (!this.Saved) {
-                  this.completed.emit();
-                  this.serviceService.disablefins = false;
-                  this.Saved = true;
-                }
-              },
-              (error) => {
-                console.log("error");
-                const toast = this.notificationsService.error(
-                  "Error",
-                  "SomeThing Went Wrong"
-                );
-              }
-            );
-            break;
-          } else {
-            
-            this.iscasher = false;
-          }
+      const hasRequiredRoles = this.userRoles.some(userRole => 
+        this.rolesToCheck.includes(userRole.RoleId.toUpperCase())
+      );
+      if (hasRequiredRoles) {
+    if(PaymentDetail.Is_Paid==true){
+     
+      
+      PaymentDetail.Updated_By= this.userRoles[0].UserId
+  
+    }
+    this.serviceService.savePaymentDetail(PaymentDetail).subscribe(
+      (message) => {
+       
+        const toast = this.notificationsService.success("Sucess", message);
+        this.payedit = false;
+        this.getPaymentManagement(this.AppNo)
+        if (!this.Saved) {
+          //this.completed.emit();
+          this.Saved = true;
         }
-        if(!this.iscasher){
-          const toast = this.notificationsService.error(
-            "Error",
-            "you don't have cashier role"
-          );
-        }
+      },
+      (error) => {
+        console.log("error");
+        const toast = this.notificationsService.error(
+           "Error",
+           "SomeThing Went Wrong"
+        );
       }
-    
-   
+    );
+      
+  }
+    else {
+      const toast = this.notificationsService.error(
+        "Error",
+        "you don't have cashier role"
+      );
+    }
   })
     // Payment.Date_Paid = Payment.Date_Paid.split('T')[0];
   }
+
+  
   SaveePaymentDetail(PaymentDetail) {
     this.serviceService.savePaymentDetail(PaymentDetail).subscribe(
       (message) => {
         const toast = this.notificationsService;
-        this.getPaymentManagement();
+        this.getPaymentManagement(this.AppNo);
         if (!this.Saved) {
           this.completed.emit();
           this.Saved = true;
@@ -325,4 +323,9 @@ class GnewGuid {
       }
     );
   }
+}
+
+interface UserRole {
+  UserId: string;
+  RoleId: string;
 }

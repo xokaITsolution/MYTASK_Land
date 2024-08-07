@@ -475,7 +475,9 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
         if (
           parseInt(this.titleDeedRegistration.transfer_Type) == 2014 ||
           parseInt(this.titleDeedRegistration.transfer_Type) == 2044 ||
-          parseInt(this.titleDeedRegistration.transfer_Type) == 2015
+          parseInt(this.titleDeedRegistration.transfer_Type) == 2015 ||
+          parseInt(this.titleDeedRegistration.transfer_Type) == 2050 ||
+          parseInt(this.titleDeedRegistration.transfer_Type) == 2048
         ) {
           this.Isshow = true;
         } else {

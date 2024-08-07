@@ -689,6 +689,7 @@ export class CertversionupgradeComponent implements OnChanges {
           this.LetterReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
             environment.LetterReportPath + "/" + this.AppNonumber
           );
+          // + "/"+this.Selectedcert.title_Deed_No
           this.printenable = true;
         }
       });

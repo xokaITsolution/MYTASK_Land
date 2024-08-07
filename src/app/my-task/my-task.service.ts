@@ -16,6 +16,8 @@ export class MyTaskService {
   private SupervisertasksUrl = environment.rootPath + "BPEL/GetlistofTodo"; // URL to web api
   private ViewAspNetUsersWorkInfoDetail =
     environment.rootPathApi + "view/View_postit_note_user";
+  private apiUrlCertificate =
+    environment.rootPathApi + "getplotbyapplication/getplotbyapplication/getplotlocation/Title_Deed_No/Title_Deed_No?Title_Deed_No=";
   private getSendPaymentReminder =
     environment.rootPathApi + "finance/SendPaymentReminder";
   private IsLockedBy_OtherUserUrl =
@@ -93,7 +95,10 @@ export class MyTaskService {
         "&orgid=00000000-0000-0000-0000-000000000000&lanid=2C2EBBEA-3361-E111-95D5-00E04C05559B"
     );
   }
-
+  getCertificateStatus(titleDeedNo: string): Observable<any> {
+   
+    return this.http.get<any>(this.apiUrlCertificate +titleDeedNo);
+  }
   AssignToUser(ApplicationNo, EmpID, todoid, username, status, taskid) {
     return this.http.post(
       this.AssignToUserUrl +

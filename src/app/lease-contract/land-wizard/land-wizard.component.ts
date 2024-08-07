@@ -18,7 +18,7 @@ import { LeasePaymentHeadComponent } from '../lease-payment-head/lease-payment-h
 export class LandWizardComponent implements AfterViewInit{
   items: MenuItem[];
   @Input() AppNo;
-  @Input() licenceData;
+  @Input() licenceData:any;
   @Input() tskID;
   @Input() disable;
   @Output() completed = new EventEmitter();
@@ -63,16 +63,10 @@ export class LandWizardComponent implements AfterViewInit{
     this.ServiceService.disable=this.disable
     this.ServiceService.tskID=this.tskID;
     console.log("this.tskID",this.tskID);
-    this.activatedRoute.params.subscribe((p) => {
-      console.log("Observable Params:", p);
-      // this.ServiceService.tiltledeed = p["AppNo"];
-      this.Application_No = p["AppNo"];
-    });
-    this.getLeasPaymentHeadData(this.Application_No);
+    this.getLeasPaymentHeadData(this.AppNo);
     this._service.completed=this.completed;
     this._service.Service_ID=this.licenceData.Service_ID;
-debugger
-  
+    this._service.ploteId=this.licenceData.Parcel_ID;
   }
   ngAfterViewInit() {
     // Ensures that child components are available after view initialization
@@ -103,18 +97,21 @@ debugger
     this.showform = true;
     this.cdr.detectChanges();  // Ensure change detection is triggered
     // Use setTimeout to ensure the component is fully initialized before calling the method
+    debugger
+    this._service.lease_code = lease_contract.lease_code
     setTimeout(() => {
       if (this.childComponent1) {
         this.childComponent1.getLeasPaymentHeadData(lease_contract.lease_code);
-        // this.nextClicked();
+        
       }
     }, 0);
   }
- 
-  getLeasPaymentHeadData(appNo: any) {
-    
-    this._service.getView_lease_payment_head(appNo).subscribe(
+
+  getLeasPaymentHeadData(ID: any) {
+    // debugger
+    this._service.getView_lease_payment_head(ID).subscribe(
       (response:any) => {
+       
         if ([response].length>0){
           
           if (Array.isArray(response)) {
@@ -122,18 +119,10 @@ debugger
           } else {
             this.contractList = [response];
           }
-      
-        // this.contractList=[response]
-        // let data = [response]
-        // this.leaserPaymentHead.Lease_code = data.lease_code;
-        // this._service.lease_code=data.lease_code;
-       
         }
-        else{
-          
+        else{ 
           this.ServiceService.getPlotManagementApi(this.licenceData.Parcel_ID).subscribe(
             async (res: any) => {
-              
               // let appno= res["procPlot_Registrations"][0].application_No 
               this._service.getView_lease_payment_head(res["procPlot_Registrations"][0].application_No ).subscribe(
                 (response) => { 
@@ -156,6 +145,7 @@ debugger
     );
   }
 }
+
 
 
 export class leaserPaymentHead {

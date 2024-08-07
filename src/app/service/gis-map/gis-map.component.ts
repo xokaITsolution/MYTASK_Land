@@ -173,7 +173,7 @@ export class GisMapComponent implements AfterViewInit {
     console.log("value is changing", this.geo);
   }
   ngAfterViewInit() {
-    console.log("subcitycurent", this.subcity ,this.ServiceService.currentsdpid);
+    console.log("subcitycurent", this.subcity,this.ServiceService.plotSdpid);
 
     const subcityToSDPMapping = {
       arada: "6921d772-3a1c-4641-95a0-0ab320bac3e2",
@@ -188,7 +188,6 @@ export class GisMapComponent implements AfterViewInit {
       kirkos: "aaa5094c-8899-4708-9f7b-d8ff634a3540",
       kolfek: "930d1c20-9e0e-4a50-9eb2-e542fafbad68",
       central: "275619f2-69c2-4fb7-a053-938f0b62b088",
-      
     };
 
     const resultArray = Object.keys(subcityToSDPMapping).map((subcity) => ({
@@ -198,15 +197,21 @@ export class GisMapComponent implements AfterViewInit {
     console.log("🚀 ~ resultArray ~ resultArray:", resultArray);
 
     if (this.subcity == "central_AddisLand") {
-      const filtedsdp = resultArray.filter(
-        (x) => x.id === this.ServiceService.currentsdpid
+      let filtedsdp = resultArray.filter(
+        (x) => x.id === this.ServiceService.plotSdpid
       );
-      this.subcity = filtedsdp[0].name;
+      console.log("🚀 ~ GisMapComponent ~ ngAfterViewInit ~ filtedsdp:", filtedsdp ,this.ServiceService.plotSdpid)
+      if( filtedsdp.length >1){
+        this.subcity = filtedsdp[0].name;
+
+      }else{
+        this.subcity=filtedsdp[0].name;
+      }
     }
 
     //L.Marker.prototype.options.icon = iconDefault;
+    console.log("🚀 ~ resultArray ~ resultArray:", this.subcity);
     this.initMap();
-
     this.getGroupLayers();
     if (this.geo) {
       this.ondataloaded = true;
@@ -1481,46 +1486,82 @@ export class GisMapComponent implements AfterViewInit {
       }
     });
   }
-
   Bind_Features(geojson, layerName) {
     if (layerName === "Plot_Locations") {
-      //;
-      this.plot_locations_gejon = geojson;
-
+      // ;
       // Filter out features where Is_Active is false or null
-      geojson.features = geojson.features.filter(
-        (feature) =>
-          feature.properties.Is_Active === true ||
-          feature.properties.Is_Active == null
+      // 
+      this.plot_locations_gejon = geojson;
+      geojson.features = geojson.features.filter(feature =>
+        feature.properties.Is_Active === true 
       );
+      // 
 
-      let isNorthernHemisphere: any = "N";
+      let isNorthernHemisphere: any = 'N';
+      let geometryCollectionCount = 0;
 
       // Loop through each filtered feature
       for (let i = 0; i < geojson.features.length; i++) {
-        const coordinates = geojson.features[i].geometry.coordinates[0];
+        if(geojson.features[i].geometry.type =="GeometryCollection"){
+          geometryCollectionCount++;
+          
 
-        // Convert coordinates from UTM to LatLng
-        let coordinate = coordinates.map((coord) =>
-          coord.map((row) =>
-            this.conveUTMToLatLngforshapefilep(
-              row[1],
-              row[0],
-              37,
-              isNorthernHemisphere
+          for(let j=0; j < geojson.features[i].geometry.geometries.length;j++){
+            if(geojson.features[i].geometry.geometries[j].type =="LineString"){
+              continue
+            }
+            else{
+              // 
+              const coordinates = geojson.features[i].geometry.geometries[j].coordinates;
+             
+              
+            // 
+              // Convert coordinates from UTM to LatLng
+              let coordinate = coordinates.map(coord =>
+                coord.map(row =>
+                  this.conveUTMToLatLngforshapefilep(row[1], row[0], 37, isNorthernHemisphere)
+                )
+              );
+              // 
+              // Convert LatLng coordinates back to UTM
+              let coordinateutm = coordinate.map(coord =>
+                coord.map(row =>
+                  this.ConveLatLngToUTM(row[1], row[0])
+                )
+              );
+              //  
+              // console.log("dan",geojson.features[i].geometry.geometries[j].coordinates);
+              // Update the geometry coordinates with the converted UTM coordinates
+              geojson.features[i].geometry.geometries[j].coordinates = coordinateutm;  
+            }
+          }
+          continue;
+        }else{
+          
+          const coordinates = geojson.features[i].geometry.coordinates[0];
+          
+          // Convert coordinates from UTM to LatLng
+          let coordinate = coordinates.map(coord =>
+            coord.map(row =>
+              this.conveUTMToLatLngforshapefilep(row[1], row[0], 37, isNorthernHemisphere)
             )
-          )
-        );
-
-        // Convert LatLng coordinates back to UTM
-        let coordinateutm = coordinate.map((coord) =>
-          coord.map((row) => this.ConveLatLngToUTM(row[1], row[0]))
-        );
-
-        // Update the geometry coordinates with the converted UTM coordinates
-        geojson.features[i].geometry.coordinates[0] = coordinateutm;
+          );
+          
+          // Convert LatLng coordinates back to UTM
+          let coordinateutm = coordinate.map(coord =>
+            coord.map(row =>
+              this.ConveLatLngToUTM(row[1], row[0])
+            )
+          );
+          if(i==5)
+            console.log("dan",geojson.features[i].geometry.coordinates[0]);
+          // Update the geometry coordinates with the converted UTM coordinates
+          geojson.features[i].geometry.coordinates[0] = coordinateutm;
+        }
       }
-
+      console.log("dan",geometryCollectionCount);
+      
+      console.log("coordinatecoordinate", geojson.features);
       // Debugging output
       console.log("Modified GeoJSON features:", geojson.features);
 
@@ -1533,37 +1574,155 @@ export class GisMapComponent implements AfterViewInit {
           };
         },
       };
+
       // Create a leaflet vector layer with the modified GeoJSON and styling options
       this.vectorLayer = L.Proj.geoJson(geojson, {
         style: { color: randomColor },
       });
-    } else if (layerName === "Property_locations") {
+    }
+
+    else if (layerName === "Property_locations") {
+      let geometryCollection = 0;
       // Filter out features where Is_Active is false or null
-      geojson.features = geojson.features.filter(
-        (feature) => feature.properties.Is_Active === true
+      geojson.features = geojson.features.filter(feature =>
+        feature.properties.Is_Active === true
       );
-      let isNorthernHemisphere: any = "N";
-      console.log("ddd", geojson.features);
-      for (let i = 0; i < geojson.features.length; i++) {
-        const coordinates = geojson.features[i].geometry.coordinates[0];
-        //
-        let coordinate = coordinates.map((coord) =>
-          coord.map((row) =>
-            this.conveUTMToLatLngforshapefilep(
-              row[1],
-              row[0],
-              37,
-              isNorthernHemisphere
-            )
-          )
-        );
-        let coordinateutm = coordinate.map((coord) =>
-          coord.map((row) => this.ConveLatLngToUTM(row[1], row[0]))
-        );
-        console.log("coordinatecoordinate", coordinateutm);
-        geojson.features[i].geometry.coordinates[0] = coordinateutm;
+      let isNorthernHemisphere: any = 'N'
+      // console.log("ddd", geojson.features);
+      
+    for (let i = 0; i < geojson.features.length; i++) {
+      // if(i==1247){
+
+      // }
+
+
+      try {
+        // console.log(`Processing feature index: ${i}`);
+        if(geojson.features[i].geometry!=null  &&
+          geojson.features[i].geometry.type !="MultiPoint" && geojson.features[i].geometry.type !="MultiPolygon"){ 
+            // 
+            if(geojson.features[i].geometry.type =="GeometryCollection" || geojson.features[i].geometry.type =="MultiLineString"){
+              geometryCollection++
+              continue
+            }
+            try {
+              
+              const coordinates = geojson.features[i].geometry.coordinates[0];
+              geojson.features[i].geometry.coordinates[0]
+            // Convert coordinates from UTM to LatLng
+            let coordinate = coordinates.map(coord => 
+              coord.map(row => {
+                let latLng = this.conveUTMToLatLngforshapefilep(row[1], row[0], 37, isNorthernHemisphere);
+                return latLng;
+              })
+            );
+            
+            // Convert LatLng coordinates back to UTM
+            let coordinateutm = coordinate.map(coord => 
+              coord.map(row => {
+                let utm = this.ConveLatLngToUTM(row[1], row[0]);
+                return utm;
+              })
+            );
+            
+            // Update the geometry coordinates with the converted UTM coordinates
+            geojson.features[i].geometry.coordinates[0] = coordinateutm;
+            // console.log(`Successfully processed feature index: ${i}`);
+          } catch (error) {
+            console.error(`Error processing feature index: ${i}`, error);
+            // Optionally, break the loop or handle the error accordingly
+            break;
+          }
+           
       }
+      else{
+       if(geojson.features[i].geometry ==null){
+            console.log("ddd",  geojson.features[i].properties.Proporty_Ids);
+            console.log("ddd",  geojson.features[2397]);
+      }
+      // else if(geojson.features[i].geometry.type =="GeometryCollection"){
+      //   // 
+      //   continue
+      //   // for(let j=0; j < geojson.features[i].geometry.geometries.length;j++){
+      //   //   if(geojson.features[i].geometry.geometries[j].type =="LineString"){
+      //   //     continue
+      //   //   }
+      //   //   else{
+      //   //     // 
+      //   //     const coordinates = geojson.features[i].geometry.geometries[j].coordinates;
+      //   //   // 
+      //   //   if(coordinates.length>1){
+      //   //     continue
+      //   //     //  for(let k=0;k<coordinates.length;k++){
+      //   //     //   
+      //   //     //      // Convert coordinates from UTM to LatLng
+      //   //     // let coordinate = coordinates[k].map(row =>
+      //   //     //     this.conveUTMToLatLngforshapefile(row[1], row[0], 37, isNorthernHemisphere)
+      //   //     //   )
+            
+      //   //     // // 
+      //   //     // // Convert LatLng coordinates back to UTM
+      //   //     // let coordinateutm = coordinate.map(row =>
+      //   //     //     this.ConveLatLngToUTM(row[1], row[0])
+      //   //     //   )
+            
+      //   //     // //  
+      //   //     // // console.log("dan",geojson.features[i].geometry.geometries[j].coordinates);
+      //   //     // // Update the geometry coordinates with the converted UTM coordinates
+      //   //     // geojson.features[i].geometry.geometries[j].coordinates[k] = coordinateutm; 
+      //   //     //  }
+      //   //   }
+      //   //   else{
+      //   //     // Convert coordinates from UTM to LatLng
+      //   //     let coordinate = coordinates.map(coord =>
+      //   //       coord.map(row =>
+      //   //         this.conveUTMToLatLngforshapefile(row[1], row[0], 37, isNorthernHemisphere)
+      //   //       )
+      //   //     );
+      //   //     // 
+      //   //     // Convert LatLng coordinates back to UTM
+      //   //     let coordinateutm = coordinate.map(coord =>
+      //   //       coord.map(row =>
+      //   //         this.ConveLatLngToUTM(row[1], row[0])
+      //   //       )
+      //   //     );
+      //   //     //
+
+      //   //     // console.log("dan",geojson.features[i].geometry.geometries[j].coordinates);
+      //   //     // Update the geometry coordinates with the converted UTM coordinates
+      //   // 
+      //   //     geojson.features[i].geometry.geometries[j].coordinates = coordinateutm;  
+      //   //   }
+      //   // }
+      //   // }
+      //   // continue;
+      // }
+      else if(geojson.features[i].geometry.type == "MultiPoint"){
+       
+        console.log("MultiPoint",  geojson.features[i].geometry.coordinates);
+  //  
+      }
+      else if(geojson.features[i].geometry.type == "MultiPolygon"){
+        // console.log("ddd",  geojson.features[2397]);
+      
+        // console.log("MultiPolygon",  geojson.features[i]);
+  //  
+      }
+      else {
+        
+        console.log("ddd",  geojson.features[i]);
+      }
+    }
+      } catch (error) {
+        console.error(`Error processing feature index: ${i}`, error);
+        // Optionally, break the loop or handle the error accordingly
+        break;
+      }
+    }
+    console.log("MultiPolygon",  geometryCollection);
+      console.log("coordinatecoordinate", geojson.features);
       const randomColor = "#ffcc41";
+
       const options = {
         style: function (feature) {
           return {
@@ -1584,7 +1743,8 @@ export class GisMapComponent implements AfterViewInit {
       //   this.vectorLayer,
       //   layerName
       // );
-    } else if (layerName === "Relocation") {
+    }
+     else if (layerName === "Relocation") {
       const randomColor = "#ff0000";
       const options = {
         style: function (feature) {
@@ -1611,31 +1771,38 @@ export class GisMapComponent implements AfterViewInit {
         style: { color: randomColor },
       });
     }
+
+    else if (layerName === "W1_1988_AR_lines") {
+      const options = {
+        style: function (feature) {
+          return {
+            color: null
+          };
+        }
+      };
+      // 
+      this.vectorLayer = L.Proj.geoJson(geojson, options)
+    }
     // if (pointslayer && pointslayer.geometry.type === "point") {
     else {
-      //
-      const defaultColor = "";
-      const multiLineStringLayer = geojson.features.find(
-        (feature) => feature.geometry.type === "MultiLineString"
-      );
-      const LineStringLayer = geojson.features.find(
-        (feature) => feature.geometry.type === "LineString"
-      );
-      const Points = geojson.features.find(
-        (feature) => feature.geometry.type === "Point"
-      );
 
-      if (
-        (multiLineStringLayer &&
-          multiLineStringLayer.geometry.type === "MultiLineString") ||
-        (LineStringLayer && LineStringLayer.geometry.type === "LineString")
-      ) {
+      const defaultColor = "";
+      const multiLineStringLayer = geojson.features.find(feature => feature.geometry.type === "MultiLineString");
+      const LineStringLayer = geojson.features.find(feature => feature.geometry.type === "LineString");
+      const Points = geojson.features.find(feature => feature.geometry.type === "Point");
+
+      if ((multiLineStringLayer && multiLineStringLayer.geometry.type === "MultiLineString") ||
+        (LineStringLayer && LineStringLayer.geometry.type === "LineString")) {
         // console.log("gg", geojson);
+        // if (layerName==="W1_1988_AR_lines")
+        // 
         this.vectorLayer = L.Proj.geoJson(geojson, {
           style: { color: this.generateRandomColor() },
         });
-        console.log("gg", this.vectorLayer, layerName);
-      } else if (Points && Points.geometry.type === "Point") {
+        // console.log("gg", this.vectorLayer, layerName);
+      }
+      else if (Points && Points.geometry.type === "Point") {
+
         this.newpointLayer = layerName;
         const colorMap = {}; // Map to store generated colors for each layer
         let fillColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
@@ -1643,6 +1810,8 @@ export class GisMapComponent implements AfterViewInit {
         const options = {
           style: { color: fillColor },
           pointToLayer: function (feature, latlng) {
+
+
             // Generate dynamic color for other point type layers
             //fillColor =  "#" + Math.floor(Math.random() * 16777215).toString(16);
             if (colorMap[layerName]) {
@@ -1659,7 +1828,7 @@ export class GisMapComponent implements AfterViewInit {
               color: fillColor, // Set your desired border color
               weight: 1, // Set your desired border weight
               opacity: 1, // Set your desired opacity
-              fillOpacity: 0.8, // Set your desired fill opacity
+              fillOpacity: 0.8 // Set your desired fill opacity
             });
           },
 
@@ -1667,12 +1836,14 @@ export class GisMapComponent implements AfterViewInit {
           //   return { color: feature.properties.fillColor };
           // },
         };
-        (this.vectorLayer = L.Proj.geoJson(geojson, options)), {};
-      } else {
+        this.vectorLayer = L.Proj.geoJson(geojson, options), {
+        }
+      }
+      else {
         const options = {
           style: function (feature) {
             return {
-              color: null,
+              color: null
             };
           },
         };
@@ -1680,10 +1851,241 @@ export class GisMapComponent implements AfterViewInit {
         //
         this.vectorLayer = L.Proj.geoJson(geojson, {
           style: { color: this.generateRandomColor() },
+          //     onEachFeature: (feature, layer) => {
+          //       const properties = feature.properties; // Access the properties of the feature
+          //       let popupContent = `Layer: ${layerName}<br>Feature ID: ${feature.id}<br>`;
+
+
+          //       // Dynamically add the properties to the popup content                  
+          //       for (const propertyName in properties) {
+          //         if (properties.hasOwnProperty(propertyName)) {
+          //           popupContent += `${propertyName}: ${properties[propertyName]}<br>`;
+          //         }
+          //       }
+
+          //       // Bind the customized popup content to the layer
+          //       layer.bindPopup(popupContent);
+          //     },
+
+          //     coordsToLatLng: (coords: [number, number] | [number, number, number]) => {
+          //       if (coords.length >= 2) {
+          //         // Ignore the z-coordinate and use only the x and y coordinates for LatLng
+          //         return L.CRS.EPSG4326.unproject(L.point(coords[0], coords[1]));
+          //       }
+          //       throw new Error('Invalid coordinate format');
+          //     },
+          //     attribution: layerName
         });
+        // console.log("other", layerName);
       }
     }
+
   }
+
+ 
+
+  // Bind_Features(geojson, layerName) {
+  //   if (layerName === "Plot_Locations") {
+  //     //;
+  //     this.plot_locations_gejon = geojson;
+
+  //     // Filter out features where Is_Active is false or null
+  //     geojson.features = geojson.features.filter(
+  //       (feature) =>
+  //         feature.properties.Is_Active === true ||
+  //         feature.properties.Is_Active == null
+  //     );
+
+  //     let isNorthernHemisphere: any = "N";
+
+  //     // Loop through each filtered feature
+  //     for (let i = 0; i < geojson.features.length; i++) {
+  //       const coordinates = geojson.features[i].geometry.coordinates[0];
+
+  //       // Convert coordinates from UTM to LatLng
+  //       let coordinate = coordinates.map((coord) =>
+  //         coord.map((row) =>
+  //           this.conveUTMToLatLngforshapefilep(
+  //             row[1],
+  //             row[0],
+  //             37,
+  //             isNorthernHemisphere
+  //           )
+  //         )
+  //       );
+
+  //       // Convert LatLng coordinates back to UTM
+  //       let coordinateutm = coordinate.map((coord) =>
+  //         coord.map((row) => this.ConveLatLngToUTM(row[1], row[0]))
+  //       );
+
+  //       // Update the geometry coordinates with the converted UTM coordinates
+  //       geojson.features[i].geometry.coordinates[0] = coordinateutm;
+  //     }
+
+  //     // Debugging output
+  //     console.log("Modified GeoJSON features:", geojson.features);
+
+  //     const randomColor = "#490000";
+  //     const options = {
+  //       style: function (feature) {
+  //         return {
+  //           color: randomColor,
+  //           fillColor: randomColor,
+  //         };
+  //       },
+  //     };
+  //     // Create a leaflet vector layer with the modified GeoJSON and styling options
+  //     this.vectorLayer = L.Proj.geoJson(geojson, {
+  //       style: { color: randomColor },
+  //     });
+  //   } else if (layerName === "Property_locations") {
+  //     // Filter out features where Is_Active is false or null
+  //     geojson.features = geojson.features.filter(
+  //       (feature) => feature.properties.Is_Active === true
+  //     );
+  //     let isNorthernHemisphere: any = "N";
+  //     console.log("ddd", geojson.features);
+  //     for (let i = 0; i < geojson.features.length; i++) {
+  //       const coordinates = geojson.features[i].geometry.coordinates[0];
+  //       //
+  //       let coordinate = coordinates.map((coord) =>
+  //         coord.map((row) =>
+  //           this.conveUTMToLatLngforshapefilep(
+  //             row[1],
+  //             row[0],
+  //             37,
+  //             isNorthernHemisphere
+  //           )
+  //         )
+  //       );
+  //       let coordinateutm = coordinate.map((coord) =>
+  //         coord.map((row) => this.ConveLatLngToUTM(row[1], row[0]))
+  //       );
+  //       console.log("coordinatecoordinate", coordinateutm);
+  //       geojson.features[i].geometry.coordinates[0] = coordinateutm;
+  //     }
+  //     const randomColor = "#ffcc41";
+  //     const options = {
+  //       style: function (feature) {
+  //         return {
+  //           color: null,
+  //           fillColor: randomColor,
+  //         };
+  //       },
+  //     };
+  //     // Debugging output
+  //     console.log("Modified GeoJSON featuresp:", geojson.features);
+  //     this.vectorLayer = L.Proj.geoJson(geojson, {
+  //       style: { color: randomColor },
+  //     });
+  //     // console.log("hhh", geojson)
+  //     // (this.vectorLayer = L.Proj.geoJson(geojson, options)), {};
+  //     // console.log(
+  //     //   "The fetched layer is a multipolygon.",
+  //     //   this.vectorLayer,
+  //     //   layerName
+  //     // );
+  //   } else if (layerName === "Relocation") {
+  //     const randomColor = "#ff0000";
+  //     const options = {
+  //       style: function (feature) {
+  //         return {
+  //           color: null,
+  //         };
+  //       },
+  //     };
+
+  //     this.vectorLayer = L.Proj.geoJson(geojson, {
+  //       style: { color: randomColor },
+  //     });
+  //   } else if (layerName === "Greenary") {
+  //     const randomColor = "#53DA0D";
+  //     const options = {
+  //       style: function (feature) {
+  //         return {
+  //           color: null,
+  //         };
+  //       },
+  //     };
+
+  //     this.vectorLayer = L.Proj.geoJson(geojson, {
+  //       style: { color: randomColor },
+  //     });
+  //   }
+  //   // if (pointslayer && pointslayer.geometry.type === "point") {
+  //   else {
+  //     //
+  //     const defaultColor = "";
+  //     const multiLineStringLayer = geojson.features.find(
+  //       (feature) => feature.geometry.type === "MultiLineString"
+  //     );
+  //     const LineStringLayer = geojson.features.find(
+  //       (feature) => feature.geometry.type === "LineString"
+  //     );
+  //     const Points = geojson.features.find(
+  //       (feature) => feature.geometry.type === "Point"
+  //     );
+
+  //     if (
+  //       (multiLineStringLayer &&
+  //         multiLineStringLayer.geometry.type === "MultiLineString") ||
+  //       (LineStringLayer && LineStringLayer.geometry.type === "LineString")
+  //     ) {
+  //       // console.log("gg", geojson);
+  //       this.vectorLayer = L.Proj.geoJson(geojson, {
+  //         style: { color: this.generateRandomColor() },
+  //       });
+  //       console.log("gg", this.vectorLayer, layerName);
+  //     } else if (Points && Points.geometry.type === "Point") {
+  //       this.newpointLayer = layerName;
+  //       const colorMap = {}; // Map to store generated colors for each layer
+  //       let fillColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+  //       // let labelfill:any //default fill color
+  //       const options = {
+  //         style: { color: fillColor },
+  //         pointToLayer: function (feature, latlng) {
+  //           // Generate dynamic color for other point type layers
+  //           //fillColor =  "#" + Math.floor(Math.random() * 16777215).toString(16);
+  //           if (colorMap[layerName]) {
+  //             fillColor = colorMap[layerName];
+  //             // this.fill = colorMap[layerName];
+  //           } else {
+  //             // Generate a new color for the layer
+  //             // fillColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+  //             colorMap[layerName] = fillColor;
+  //           }
+  //           return L.circleMarker(latlng, {
+  //             radius: 5, // Set your desired radius
+  //             fillColor: fillColor, // Set your desired fill color
+  //             color: fillColor, // Set your desired border color
+  //             weight: 1, // Set your desired border weight
+  //             opacity: 1, // Set your desired opacity
+  //             fillOpacity: 0.8, // Set your desired fill opacity
+  //           });
+  //         },
+
+  //         // style: function (feature) {
+  //         //   return { color: feature.properties.fillColor };
+  //         // },
+  //       };
+  //       (this.vectorLayer = L.Proj.geoJson(geojson, options)), {};
+  //     } else {
+  //       const options = {
+  //         style: function (feature) {
+  //           return {
+  //             color: null,
+  //           };
+  //         },
+  //       };
+
+  //       //
+  //       this.vectorLayer = L.Proj.geoJson(geojson, {
+  //         style: { color: this.generateRandomColor() },
+  //       });
+  //     }
+  //   }
+  // }
   ConveLatLngToUTM(latitude: number, longitude: number): [number, number] {
     // Determine the hemisphere (northern or southern)
     const hemisphere = latitude >= 0 ? "N" : "S";
@@ -3969,7 +4371,9 @@ export class GisMapComponent implements AfterViewInit {
       const polygonOptionss = {
         color: randomColor,
       };
-
+      const utmCoordinates = this.convertCoordinatesToUTM(latslng);
+      const area = this.calculateUTMPolygonArea(utmCoordinates);
+      console.log("🚀 ~ this.alllatlong.forEach ~ area:", area)
       const polygonOptions = {
         weight: 3,
         dashArray: "5, 10",
@@ -3984,12 +4388,12 @@ export class GisMapComponent implements AfterViewInit {
           : polygonOptionss;
       this.drawnShape = L.polygon(latslng, slectedpro).addTo(this.map);
       this.drawnShape
-        .bindPopup(
-          dataofproperty.ploteId == undefined
-            ? dataofproperty.ploteId
-            : dataofproperty.ploteId
-        )
-        .openPopup();
+      .bindPopup(`
+        Plot ID: ${dataofproperty.ploteId !== undefined ? dataofproperty.ploteId : 'N/A'}<br>
+        Plot Area: ${area}
+      `)
+      .openPopup();
+    
       this.editableLayers.addLayer(this.drawnShape);
       // this.arrayFoPolygonarea.push(this.calculatePolygonArea(L.polygon(shape)));
       // console.log("this.alllatlong", this.arrayFoPolygonarea);
@@ -4140,6 +4544,7 @@ export class GisMapComponent implements AfterViewInit {
       this.plot_locations_gejon,
       latLngss
     );
+    console.log("🚀 ~ checktheshapeexistans ~ nodes:", this.nodes)
     if (this.nodes) {
       let selectednode = await this.findNode(this.nodes[0], "Plot_Locations");
       console.log(
@@ -5410,7 +5815,7 @@ export class GisMapComponent implements AfterViewInit {
     zone: number,
     hemisphere: boolean
   ): [number, number, number] {
-    console.log("ggggg", easting, northing, zone, hemisphere);
+    // console.log("ggggg", easting, northing, zone, hemisphere);
 
     const latLngCoords = utm.toLatLon(easting, northing, zone, hemisphere);
     // console.log(
@@ -5418,11 +5823,11 @@ export class GisMapComponent implements AfterViewInit {
     //   latLngCoords.longitude,
     //   latLngCoords.latitude
     // );
-    console.log(
-      "Latitude, Longitude:",
-      latLngCoords.longitude - 0.0008668,
-      latLngCoords.latitude - 0.001876
-    );
+    // console.log(
+    //   "Latitude, Longitude:",
+    //   latLngCoords.longitude - 0.0008668,
+    //   latLngCoords.latitude - 0.001876
+    // );
 
     return [latLngCoords.longitude, latLngCoords.latitude, 0];
   }
@@ -5536,6 +5941,102 @@ export class GisMapComponent implements AfterViewInit {
     // Ensure the GeoJSON has features
     if (geoJSON && geoJSON.features && geoJSON.features.length > 0) {
       for (const feature of geoJSON.features) {
+
+        if(feature.geometry.type =="GeometryCollection"){
+          const polygonCoordinates = feature.geometry.geometries
+          
+
+          for(let j=0; j < polygonCoordinates.length;j++){
+            if(polygonCoordinates[j].type =="LineString"){
+              continue
+            }
+            else{
+              // 
+              const coordinates =polygonCoordinates[j].coordinates;
+             
+             
+              // 
+              
+              const isNorthernHemisphere: any = "N";
+
+              const latLngs = coordinates.map((row) =>
+                row.map((coordinate) =>
+                  this.conveUTMToLatLng(
+                    coordinate[1],
+                    coordinate[0],
+                    37,
+                    isNorthernHemisphere
+                  )
+                )
+              );
+              const limitedAreaBounds = L.latLngBounds(coordinates);
+              console.log(
+                "🚀 ~ file: gis-map.component.ts:3460 ~ findShapeFromGeoJSON ~ limitedAreaBounds:",
+                limitedAreaBounds
+              );
+      
+              const featurelatlong = L.latLngBounds(latLngs);
+              console.log(
+                "🚀 ~ file: gis-map.component.ts:3463 ~ findShapeFromGeoJSON ~ featurelatlong:",
+                featurelatlong
+              );
+      
+              const intersection = this.intersect(limitedAreaBounds, featurelatlong);
+              const unionResult = this.union(limitedAreaBounds, featurelatlong);
+      
+              console.log("Intersection:", intersection);
+              console.log("Union:", unionResult);
+      
+              // Calculate intersection area
+              const intersectionArea = intersection
+                ? this.calculateArea(intersection)
+                : 0;
+              console.log("intersectionArea:", intersectionArea);
+              // Calculate union area
+              const unionArea = this.calculateArea(unionResult);
+              console.log("unionArea:", unionArea);
+              // Calculate Jaccard similarity index
+              // const jaccardSimilarity =
+              //   unionArea === 0 ? 0 : intersectionArea / unionArea;
+              // Calculate Jaccard similarity index
+              const jaccardSimilarity = intersectionArea / unionArea;
+              console.log("jaccardSimilarity:", jaccardSimilarity);
+              const limitedAreaPolygon = L.polygon([
+                limitedAreaBounds.getSouthWest(),
+                limitedAreaBounds.getSouthEast(),
+                limitedAreaBounds.getNorthEast(),
+                limitedAreaBounds.getNorthWest(),
+              ]);
+              console.log("Limited Area Polygon:", limitedAreaPolygon);
+      
+              const featurePolygon = L.polygon([
+                featurelatlong.getSouthWest(),
+                featurelatlong.getSouthEast(),
+                featurelatlong.getNorthEast(),
+                featurelatlong.getNorthWest(),
+              ]);
+              let isconten = featurePolygon
+                .getBounds()
+                .contains(limitedAreaPolygon.getBounds());
+              console.log("Feature Polygon:", featurePolygon, isconten);
+      
+              // Check if the polygons are at least 80% similar
+              // if (
+              //   limitedAreaPolygon.getBounds().contains(featurePolygon.getBounds())
+              // ) {
+              if (jaccardSimilarity >= 0.8) {
+                console.log("Polygons are at least 80% similar.");
+                // Return the feature or perform further actions as needed
+                return feature;
+              }
+             
+            }
+          }
+          continue;
+        }
+        else{
+
+        
         const polygonCoordinates = feature.geometry.coordinates[0];
 
         const isNorthernHemisphere: any = "N";
@@ -5610,6 +6111,7 @@ export class GisMapComponent implements AfterViewInit {
           // Return the feature or perform further actions as needed
           return feature;
         }
+      }
       }
     }
     return null;

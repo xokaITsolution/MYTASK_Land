@@ -37,7 +37,8 @@ export class MyTaskComponent implements OnInit {
     "ec23ceaf-b6f7-4d99-82cc-e23ee23f0425",
     "fad61b19-b6a5-4c58-a399-eb548cedb1d2",
     "23bd7067-3a8b-43fa-a2fb-f703bc51e90e",
-    "045976fa-123f-4b38-aad7-f9ec37cd11f4"
+    "045976fa-123f-4b38-aad7-f9ec37cd11f4",
+    "1d146595-11ba-4a27-bb93-e59a79d23eba"
   ];
   loadingMessage = false;
   user: any;
@@ -46,8 +47,10 @@ export class MyTaskComponent implements OnInit {
   AppNumber: any;
   caseUser: any;
   orgID: any;
+  numberOfpick:any
   myTaskHasNoData:boolean=false;
   myTaskLoading:boolean=false;
+  isRecordDes: boolean;
   constructor(
     private myTaskService: MyTaskService,
     private router: Router,
@@ -62,6 +65,26 @@ export class MyTaskComponent implements OnInit {
     } else {
       this.lanid = "2C2EBBEA-3361-E111-95D5-00E04C05559B";
     }
+    this.numberOfpick=environment.numberOfpick
+    this.seice.getUserRole().subscribe((response: any) => {
+      if (response) {
+        for (let index = 0; index < response.length; index++) {
+          const element = response[index];
+
+          if (
+            element.RoleId == "B59EA343-65EF-4C41-95A8-02D9AD81BFCD".toLocaleLowerCase() ||
+            element.RoleId == "F07A844C-E107-44AB-AA18-9D462BC7CDA3".toLocaleLowerCase()
+          ) {
+           
+            this.isRecordDes = true;
+            break;
+          } else {
+           
+            this.isRecordDes = false;
+          }
+        }
+      }
+    });
     this.getMyTask();
     
   }

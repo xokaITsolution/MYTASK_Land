@@ -55,6 +55,7 @@ import { ConfirmationService } from "primeng/api";
 import { PaymentComponent } from "./payment/payment.component";
 import { TabViewModule } from "primeng/tabview";
 import { CertletterComponent } from "./certletter/certletter.component";
+import { WithdrawProposeComponent } from "./withdraw-propose/withdraw-propose.component";
 
 //import { BackButtonDisableModule } from 'angular-disable-browser-back-button';
 //material
@@ -112,7 +113,6 @@ import { NetworkDatabaseMonitoringToolComponent } from "./network-database-monit
 import { NetworkMonitoringService } from "./network-database-monitoring-tool/network-monitoring.service";
 import { DatabaseMonitoringService } from "./network-database-monitoring-tool/database-monitoring.service";
 import { FilterPipe } from "./FilterPipe";
-import { WithdrawProposeComponent } from "./withdraw-propose/withdraw-propose.component";
 
 import {MyLibModule} from 'my-lib'
 
@@ -194,12 +194,12 @@ import {MyLibModule} from 'my-lib'
     FileuploaderComponent,
     DndDirective,
     FilesComponent,
+    WithdrawProposeComponent,
     RecordComponent,
     QrCodeDirective,
     ExampleComponent,
     PaymentComponent,
     ServiceComponent,
-    WithdrawProposeComponent,
     SurveyComponent,
     PlotManagmentComponent,
     LeaseOwnerShipComponent,

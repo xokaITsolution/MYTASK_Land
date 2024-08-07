@@ -9,6 +9,14 @@
                name="CertificateVersionID" id="CertificateVersionID" placeholder="Certificate Version ID">
       </div>
     </div>
+    <div class="form-group row col-md-7">
+      <label for="title_Deed_No" class="col-sm-3 col-form-label" translate>title_Deed_No</label>
+      <div class="col-sm-9">
+        <input disabled type="text" class="form-control" [disabled]="disable"
+               [(ngModel)]="themCertificateVersion.title_Deed_No"
+               name="title_Deed_No" id="title_Deed_No" placeholder="title_Deed_No">
+      </div>
+    </div>
 
 
     <div class="form-group row col-md-7">

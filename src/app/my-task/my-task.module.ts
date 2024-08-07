@@ -29,6 +29,7 @@ import { PersonComponent } from './person/person.component';
 import { ArchiveComponent } from './archive/archive.component';
 import { NgxDocViewerModule } from 'ngx-doc-viewer';
 import { OtpComponent } from './my-task/otp/otp.component';
+import { CertificateCheckStatusComponent } from './certificate-check-status/certificate-check-status.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -60,7 +61,7 @@ import { OtpComponent } from './my-task/otp/otp.component';
     TranslateModule.forChild({}),
     NgxSmartModalModule.forChild(),
   ],
-  declarations: [TaskComponent, MyTaskComponent, PersonComponent,SupervisorTaskComponent, ArchiveComponent, OtpComponent,],
+  declarations: [TaskComponent, MyTaskComponent, PersonComponent,SupervisorTaskComponent, ArchiveComponent, OtpComponent, CertificateCheckStatusComponent,],
   providers: [MyTaskService, MessageService, NgxSmartModalService]
 })
 export class MyTaskModule {

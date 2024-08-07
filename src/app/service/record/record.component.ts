@@ -1986,7 +1986,7 @@ export class RecordComponent implements OnChanges {
     }
   }
   async checkDocumentIsAvailable() {
-    console.log("🚀 ~ RecordComponent ~ .subscribe ~ ApplicationNumberlist:", this.ApplicationNumberlist)
+    console.log("🚀 ~ RecordComponent ~ .subscribe ~ ApplicationNumberlist:", this.ApplicationNumberlist ,this.service.appnoForRecord)
     this.appLoading=true
     return new Promise<boolean>((resolve, reject) => {
       let counter = 0;

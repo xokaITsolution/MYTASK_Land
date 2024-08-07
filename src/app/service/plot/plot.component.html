@@ -1,14 +1,17 @@
 <div class="m-3">
+  <label  >Description plot_Status</label>
+  <button type="button" id="legender" class="btn btn-success m-2">Splited/Merged plot</button>
+<button type="button" class="btn btn-warning m-2">Active plot</button>
   <p-table [value]="PlotManagementListfinal" [paginator]="true" [rows]="5">
     <ng-template pTemplate="header">
-      <tr>
+      <tr >
         <th scope="col" translate>{{Fields.FIELD_ONE}}</th>
         <th scope="col" translate>Status</th>
         <th scope="col" translate>Area_M2</th>
         <th scope="col" translate>Registration Date</th>
         <th scope="col" *ngIf="multipleplotcanbeadd">
         
-          <button type="button" class="btn btn-primary" (click)="getAllplotLocationafter();ischeckPlotaev=true;ismodaEnable=true;serviceService.check = true;calculettotal()"
+          <button type="button" class="btn btn-primary" (click)="getAllplotLocationafter();ischeckPlotaev=true;ismodaEnable=true;serviceService.check = true;calculettotal();"
             *ngIf="!disable && PlotManagementListfinal.length < 5" translate>Add New</button>
         </th>
         <th scope="col" *ngIf="isInclusion">
@@ -19,7 +22,13 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-Plot  let-rowData>
-      <tr (click)='highlighted = rowData;SelectPLot(Plot);showform()' class="some-class" tabindex="1"  [class.uistatehighlight]="rowData === highlighted">
+      <tr 
+      [ngClass]="{
+        'green': Plot.plot_Status =='2017' || Plot.plot_Status =='2',
+        'yelow':Plot.plot_Status =='1'
+     
+    }"
+      (click)='highlighted = rowData;SelectPLot(Plot);showform()' class="some-class" tabindex="1"  [class.uistatehighlight]="rowData === highlighted">
         
         <td class="fit-content-cell">{{Plot.plot_ID}} </td>
         <td class="fit-content-cell">
@@ -33,8 +42,39 @@
         <td class="fit-content-cell">{{Plot.plot_Size_M2}}</td>
         <td class="fit-content-cell">{{Plot.registration_Date}}</td>
         <td>
-          <button type="button" class="btn btn-primary" (click)="SelectPLot(Plot);showform()" *ngIf="disable" translate>select</button>
-          <button type="button" class="btn btn-primary" (click)="SelectPLot(Plot);showform()" *ngIf="!disable" translate>select</button>
+          <button type="button" class="btn btn-primary m-2" (click)="SelectPLot(Plot);showform()" *ngIf="disable" translate>select</button>
+          <button type="button" class="btn btn-primary m-2" (click)="SelectPLot(Plot);showform()" *ngIf="!disable" translate>select</button>
+          
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+  <button type="button" class="btn btn-danger m-2" (click)="getdrafted()">Drafted Plot List</button>
+<h5 *ngIf="is_draftednotfound" style="color: blue;">no data found</h5>
+</div>
+
+<div class="m-3" *ngIf="is_drafted">
+  <p-table [value]="PlotManagementListfinaldraft" [paginator]="true" [rows]="5">
+    <ng-template pTemplate="header">
+      <tr>
+        <th scope="col" translate>No.</th>
+        <th scope="col" translate>{{Fields.FIELD_ONE}}</th>
+        <th scope="col" translate>Area_M2</th>
+        <th scope="col" translate>Action</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-Plot  let-rowData  let-i="rowIndex">
+      <tr (click)='highlighted = rowData;' class="some-class" tabindex="1"  [class.uistatehighlight]="rowData === highlighted">
+        
+        <td class="fit-content-cell">
+        {{i + 1}}
+        </td>
+        <td class="fit-content-cell">{{Plot.plot_ID}} </td>
+        <td class="fit-content-cell">{{Plot.plot_Size_M2}}</td>
+        <td>
+          <button type="button" class="btn btn-primary m-2" (click)="Selectdelete(Plot)" *ngIf="!disable" translate>delete</button>
+          <button type="button" class="btn btn-success m-2" (click)="ListfinaldraftAll(Plot)" *ngIf="!disable" translate>continue</button>
+       
         </td>
       </tr>
     </ng-template>

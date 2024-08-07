@@ -33,6 +33,7 @@ export class LeasePaymentHeadDetailComponent {
   Enable: boolean;
   updated: boolean;
   disable: any;
+  forcheck_0_payment: number;
   constructor(
     private router: Router,
     private _service: LeaseContractService,
@@ -116,13 +117,13 @@ export class LeasePaymentHeadDetailComponent {
     
     // Parse the input value to a float
     let numericValue = parseFloat(value) || 0; // Default to 0 if parsing fails
-  //  
+    this.forcheck_0_payment=numericValue;
     // Calculate the difference from the previous value
     let difference = numericValue - this.previousInputValue1;
     let added = this.leasePaymentHeadDetail.Amount_of_down_payment + difference;
     parseInt(added)
     parseInt(this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid)
-// 
+
     // Check if the difference would result in a negative Plot_Size_By_Lease_Bid_Price
     if(this._service.Service_ID!="86997006-53c7-4bbd-9f56-e79721b4561e" && this._service.Service_ID!="05db54fc-e388-4e5e-aaaa-bd6141c8e533"){
    debugger
@@ -165,12 +166,17 @@ export class LeasePaymentHeadDetailComponent {
   }
 
   updateleaserPaymentHeadDetail() {
+    debugger
+    if ( this.forcheck_0_payment==0){
+      this.leasePaymentHeadDetail.Amount_of_down_payment= this.forcheck_0_payment;
+    }
     this._service.updateleaserPaymentHeadDetail(this.leasePaymentHeadDetail).subscribe(
       (response) => {
         // itHasError = false;
         this.notificationsService.success("Success", "Successfully Updated");
         this.updated=true;
         this.getpayment_plan()
+        this.getLeasPaymentHeadDataDetail()
         // this.completed.emit();
       },
       (error) => {
@@ -188,7 +194,7 @@ export class LeasePaymentHeadDetailComponent {
       this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid,
     this.leasePaymentHeadDetail.Amount_of_down_payment,
     this._service.contract_date,
-      this._service.transfer_ID,
+    this._service.Service_ID,
       this.ServiceService.tskID).subscribe(data => {
         
         this.Enable=false
@@ -204,7 +210,7 @@ export class LeasePaymentHeadDetailComponent {
       )
   }
   getpayment_plan(){
-    this.ServiceService.get_payment_plan(this._service.lease_code).subscribe(data=>{
+    this._service.get_payment_plan(this._service.lease_code).subscribe(data=>{
       if(data["proc_Payment_Plans"].length>0){
         if(this.updated){
           this.ServiceService.disablefins = false;

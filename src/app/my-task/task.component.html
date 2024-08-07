@@ -26,6 +26,16 @@
         >Customer</a
       >
     </li> 
+      <li
+      class="nav-item"
+      (click)="tab = 'Certificate'"
+      [class.active]="tab == 'Certificate'" 
+      [hidden]="showcustomer"
+    >
+      <a class="nav-link"   [routerLink]="['/task/Certificate']" translate
+        >check Certificate status</a
+      >
+    </li> 
     <!-- <li
       class="nav-item"
       (click)="tab = 'Archive'"

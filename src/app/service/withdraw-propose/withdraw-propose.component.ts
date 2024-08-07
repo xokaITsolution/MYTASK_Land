@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NotificationsService } from 'angular2-notifications';
 import { environment } from 'src/environments/environment';
 import { DomSanitizer } from '@angular/platform-browser';
+import { LeaseContractService } from 'src/app/lease-contract/lease-contract.service';
 
 @Component({
   selector: 'app-withdraw-propose',
@@ -18,7 +19,7 @@ export class WithdrawProposeComponent implements OnInit {
   @Input () Licence_Service_ID:any
   certReportPath: any;
 
-  constructor(private ServiceService:ServiceService,private notificationsService: NotificationsService,
+  constructor(private ServiceService:LeaseContractService,private notificationsService: NotificationsService,
     private sanitizer: DomSanitizer,
   ) { }
 // @Input AppNo 

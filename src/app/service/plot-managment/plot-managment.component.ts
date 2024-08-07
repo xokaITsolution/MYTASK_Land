@@ -122,7 +122,12 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
 
       this.plotManagment = this.SelectedPlot;
       this.plotManagment.parcel_No = this.SelectedPlot.Application_No;
-      this.plotManagment.plot_Status = 1;
+      if (this.SelectedPlot.plot_Status ==2017 || this.SelectedPlot.plot_Status ==2){
+       
+      }else{
+
+        this.plotManagment.plot_Status = 1;
+      }
       //this.getplotloc(this.plotManagment.plot_ID);
       this.serviceService.currentsdpid=this.plotManagment.sdP_ID
       this.regionSelectedd(this.plotManagment.sdP_ID);
@@ -501,6 +506,7 @@ export class PlotManagmentComponent implements OnInit, OnChanges {
   }
 
   async save() {
+     
     
  
     this.plotManagment.plot_ID = JSON.stringify(this.plotManagment.plot_ID);

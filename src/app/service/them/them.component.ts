@@ -53,7 +53,7 @@ export class ThemComponent implements OnChanges {
     }
     this.themform = false;
     console.log("hahaha22", this.Selectedcert, this.licenceData);
-    this.getThem(this.Selectedcert.version_ID);
+    this.getThem(this.Selectedcert.title_Deed_No);
   }
   getcustomer(globvar) {
     console.log(globvar);
@@ -61,8 +61,8 @@ export class ThemComponent implements OnChanges {
       this.customerdata = resp.procCustomers;
     });
   }
-  getThem(Version_ID) {
-    this.themService.getAllapi(Version_ID).subscribe(
+  getThem(title_Deed_No) {
+    this.themService.getAllapiby(title_Deed_No).subscribe(
       (themCertificateVersionList) => {
         let a;
         a = themCertificateVersionList;
@@ -72,7 +72,6 @@ export class ThemComponent implements OnChanges {
           this.themCertificateVersionList
         );
 
-        // this.themCertificateVersionList.forEach((element) => {
         //   this.serviceService
         //     .getcustomerbyid(element.them_Customer_ID)
         //     .subscribe((resp: any) => {
@@ -252,6 +251,8 @@ export class ThemComponent implements OnChanges {
     this.themCertificateVersion = new ThemCertificateVersion();
     this.themCertificateVersion.certificate_Version_ID =
       this.Selectedcert.version_ID;
+    this.themCertificateVersion.title_Deed_No =
+      this.Selectedcert.title_Deed_No;
   }
 
   selectThem(them) {
@@ -344,4 +345,5 @@ class ThemCertificateVersion {
   public updated_Date ;
   public created_By ;
   public updated_By ;
+  public title_Deed_No
 }

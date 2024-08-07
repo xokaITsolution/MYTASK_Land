@@ -17,6 +17,8 @@ import { Subject } from "rxjs";
 import { LeaseOwnerShipService } from "../lease-owner-ship/lease-owner-ship.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CookieService } from "ngx-cookie-service/cookie-service/cookie.service";
+import { PloatManagmentService } from "../plot-managment/ploat-managment.service";
+import { error } from "console";
 
 @Component({
   selector: "app-plot",
@@ -82,6 +84,14 @@ export class PlotComponent implements OnChanges {
   showdialogee: boolean;
   ishaveplotlocation: boolean=false;
   isInclusion: boolean;
+  PlotManagementListfinaldraft: any;
+  is_drafted: boolean;
+  is_draftednotfound: boolean;
+  identifierssplit = [
+    '5DE49606-4DC6-4FB1-8F37-0CFC948FDC83'.toLocaleLowerCase(),
+    '793B8814-F845-429E-A472-DC47E797D3FE'.toLocaleLowerCase()
+    
+  ];
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -89,6 +99,7 @@ export class PlotComponent implements OnChanges {
     private modalService: BsModalService,
     private modalsService: NgbModal,
     private cookieService: CookieService,
+    private ploatManagmentService: PloatManagmentService,
 
     private leaseOwnerShipService: LeaseOwnerShipService
   ) {}
@@ -113,17 +124,16 @@ export class PlotComponent implements OnChanges {
       this.PlotManagementListfinal,
       this.serviceService.Service_ID
     );
-    
     if (
       this.serviceService.Service_ID ===
-      "de330170-550b-4bf2-9908-dc557f92a7cc" ||
+        "de330170-550b-4bf2-9908-dc557f92a7cc" ||
       this.serviceService.Service_ID === "449a14bd-e0c0-4eda-92f5-68b3fcf83433"
     ) {
       this.serviceService.serviceisundoumneted = true;
     } else {
       this.serviceService.serviceisundoumneted = false;
     }
-    if (this.serviceService.Service_ID==='81F8770B-2C1E-4255-8BE1-341089703FA1'){
+    if (this.serviceService.Service_ID==='81F8770B-2C1E-4255-8BE1-341089703FA1'.toLocaleLowerCase()){
       this.isInclusion=true
     }
     this.PlotManagementListfinal = [];
@@ -152,7 +162,9 @@ export class PlotComponent implements OnChanges {
       Object.assign({}, { class: "gray modal-lg" })
     );
   }
-
+  isInIdentifiers(taskId: string): boolean {
+    return this.identifierssplit.includes(taskId);
+  }
   // tellChild(aa) {
   //   console.log("value is changing", aa);
   //   const coordinatesarea = this.convertCoordinatesformatd(aa);
@@ -993,7 +1005,7 @@ export class PlotComponent implements OnChanges {
       console.log("geting ploat this.Parcel_ID", this.Parcel_ID);
       this.getPlotManagement(this.Parcel_ID);
     }
-    if (this.Parcel_mearge1) {
+    if (this.Parcel_mearge1 ) {
       console.log("geting ploat this.Parcel_mearge1", this.Parcel_mearge1);
       this.getPlotManagement(this.Parcel_mearge1);
     }
@@ -1028,6 +1040,8 @@ export class PlotComponent implements OnChanges {
       return datenow.nowTime;
     }
   }
+
+  
   Savetempora() {
     console.log(
       "ischeckPlotaev",
@@ -1038,6 +1052,7 @@ export class PlotComponent implements OnChanges {
     if (this.serviceService.coordinate) {
       this.storeData();
       this.setCookies(this.serviceService.coordinate);
+      
       this.AddPLot();
       this.ischeckPlotaev = false;
       this.ismodaEnable = false;
@@ -1099,10 +1114,9 @@ export class PlotComponent implements OnChanges {
   }
   getPlotManagement(Licence_Service_ID) {
     let a;
-debugger
+
     this.serviceService.getPlotManagementApi(Licence_Service_ID).subscribe(
       async (PlotManagementLists: any) => {
-        debugger
         let PlotManagementList = PlotManagementLists.procPlot_Registrations;
         if (PlotManagementList.length > 0) {
           this.PlotManagementList = this.removeDuplicates(PlotManagementList);
@@ -1132,14 +1146,14 @@ debugger
           index++
         ) {
           const element = this.PlotManagementListfinal[index];
-          if (element.plot_Status == 1) {
+          if (element.plot_Status == 1 || element.plot_Status == 2017 || element.plot_Status == 2) {
             this.PlotManagementListfinal = this.PlotManagementListfinal.filter(
-              (x) => x.plot_Status == 1
+              (x) => x.plot_Status == 1   || x.plot_Status == 2017 || x.plot_Status == 2 
             );
           }
         }
         this.PlotManagementListfinal = this.PlotManagementListfinal.filter(
-          (x) => x.plot_Status != 2019
+          (x) => x.plot_Status != 2019 || x.plot_Status!='ErrorPlot'
         );
 
         console.log("PlotManagementList", this.PlotManagementListfinal);
@@ -1148,19 +1162,20 @@ debugger
           this.PlotManagementList,
           this.serviceService.Service_ID
         );
-        debugger
+       
         if (this.PlotManagementListfinal.length > 0) {
           if (this.serviceService.multipleplotcanbeadd) {
             let filterservice = this.serviceService.multipleplotcanbeadd.filter(
               (x) => x.id === this.serviceService.Service_ID
             );
-            debugger
             if (filterservice.length > 0) {
               this.multipleplotcanbeadd = true;
             } else {
               this.multipleplotcanbeadd = false;
             }
           }
+        }else{
+          //this.getdrafted()
         }
       },
       (error) => {
@@ -1245,8 +1260,13 @@ debugger
     this.serviceService.selectedplotid = this.plot_ID;
     this.Parcel_ID= this.serviceService.selectedplotid
     this.serviceService.Totalarea = this.SelectedPlot.plot_Size_M2;
-    plot.SDP_ID = this.serviceComponent.licenceData.SDP_ID;
 
+    if(this.LicenceData.Parcel_ID != null){
+      plot.sdP_ID=this.getSDPID(this.LicenceData.Parcel_ID);
+    }
+    else{
+      plot.SDP_ID = this.serviceComponent.licenceData.SDP_ID;
+    }
     plot.Licence_Service_ID = this.LicenceData.Licence_Service_ID;
     this.serviceService.Licence_Service_ID=this.SelectedPlot.Licence_Service_ID    ;
     plot.Application_No = this.AppNo;
@@ -1278,6 +1298,7 @@ debugger
         this.getplotlocbyid(element.plot_ID);
         // Add the plot_ID to the set of processed plot IDs
         this.processedPlotIDs.add(element.plot_ID);
+   
       }
     });
   }
@@ -1305,138 +1326,324 @@ debugger
     this.isnew = false;
     this.serviceService.isleaseForm = false;
   }
+  // AddPLot() {
+  //   this.serviceService.toMes = true;
+  //   this.isnew = true;
+  //   this.plotForm = true;
+  //   const plot = new PlotManagment();
+  //   plot.sdP_ID = this.LicenceData.SDP_ID;
+  //   console.log(this.Parcel_ID);
+  //   plot.licence_Service_ID = this.LicenceData.Licence_Service_ID;
+
+  //   plot.application_No = this.AppNo;
+  //   if (this.Parcel_ID) {
+  //     if (this.PlotManagementListfinal.length == 0) {
+  //       plot.plot_ID = this.Parcel_ID;
+  //       if (!this.Parcel_ID) {
+  //         this.OnParcle = 0;
+  //       }
+  //       this.SelectedPlot = plot;
+  //     } else if (this.PlotManagementListfinal.length == 1) {
+  //       plot.plot_ID = this.Parcel_mearge1;
+  //       if (!this.Parcel_mearge1) {
+  //         this.OnParcle = 1;
+  //       }
+  //       this.SelectedPlot = plot;
+  //     } else if (this.PlotManagementListfinal.length == 2) {
+  //       plot.plot_ID = this.Parcel_mearge2;
+  //       if (!this.Parcel_mearge2) {
+  //         this.OnParcle = 2;
+  //       }
+  //       this.SelectedPlot = plot;
+  //     } else if (this.PlotManagementListfinal.length == 3) {
+  //       plot.plot_ID = this.Parcel_mearge3;
+  //       if (!this.Parcel_mearge3) {
+  //         this.OnParcle = 3;
+  //       }
+  //       this.SelectedPlot = plot;
+  //     } else if (this.PlotManagementListfinal.length == 4) {
+  //       plot.plot_ID = this.Parcel_mearge4;
+  //       if (!this.Parcel_mearge4) {
+  //         this.OnParcle = 4;
+  //       }
+  //       this.SelectedPlot = plot;
+  //     } else {
+  //     }
+  //   } else if (this.Parcel_mearge1) {
+  //     if (this.PlotManagementListfinal.length == 0) {
+  //       plot.plot_ID = this.Parcel_mearge1;
+  //       this.SelectedPlot = plot;
+  //       if (!this.Parcel_mearge1) {
+  //         this.OnParcle = 1;
+  //       }
+  //     } else if (this.PlotManagementListfinal.length == 1) {
+  //       plot.plot_ID = this.Parcel_mearge2;
+  //       if (!this.Parcel_mearge2) {
+  //         this.OnParcle = 2;
+  //       }
+  //       this.SelectedPlot = plot;
+  //     } else if (this.PlotManagementListfinal.length == 2) {
+  //       plot.plot_ID = this.Parcel_mearge3;
+  //       if (!this.Parcel_mearge3) {
+  //         this.OnParcle = 3;
+  //       }
+  //       this.SelectedPlot = plot;
+  //     } else if (this.PlotManagementListfinal.length == 3) {
+  //       plot.plot_ID = this.Parcel_mearge4;
+  //       if (!this.Parcel_mearge4) {
+  //         this.OnParcle = 4;
+  //       }
+  //       this.SelectedPlot = plot;
+  //     } else if (this.PlotManagementListfinal.length == 4) {
+  //       plot.plot_ID = this.Parcel_ID;
+  //       if (!this.Parcel_ID) {
+  //         this.OnParcle = 0;
+  //       }
+  //       this.SelectedPlot = plot;
+  //     }
+  //   } else {
+  //     this.SelectedPlot = plot;
+  //   }
+  // }
   AddPLot() {
+  
     this.serviceService.toMes = true;
     this.isnew = true;
     this.plotForm = true;
     const plot = new PlotManagment();
-    plot.sdP_ID = this.LicenceData.SDP_ID;
-    console.log(this.Parcel_ID);
+    if(this.LicenceData.Parcel_ID != null){
+      plot.sdP_ID=this.getSDPID(this.LicenceData.Parcel_ID);
+    }
+    else{
+
+      plot.sdP_ID = this.LicenceData.SDP_ID;
+    }
     plot.licence_Service_ID = this.LicenceData.Licence_Service_ID;
-
     plot.application_No = this.AppNo;
-    if (this.Parcel_ID) {
-      if (this.PlotManagementListfinal.length == 0) {
-        plot.plot_ID = this.Parcel_ID;
-        if (!this.Parcel_ID) {
-          this.OnParcle = 0;
+  
+    const parcelIds = [
+      this.Parcel_ID,
+      this.Parcel_mearge1,
+      this.Parcel_mearge2,
+      this.Parcel_mearge3,
+      this.Parcel_mearge4,
+    ].filter(id => id !== null && id !== undefined);
+    let plotfilter=this.PlotManagementListfinal.filter(x=>x.plot_Status==1)
+    // console.log("🚀 ~ PlotComponent ~ AddPLot ~ parcelIds:", parcelIds ,
+    //   plotfilter.length
+    // )
+    
+    for (let i = 0; i <= parcelIds.length; i++) {
+      let count=plotfilter.length
+      // console.log("🚀 ~ PlotComponent ~ AddPLot ~ i:",
+      //   count,
+      //    i)
+      if (count == i) {
+        // console.log("🚀 ~ PlotComponent ~ AddPLot ~ i:", parcelIds[i])
+            
+        plot.plot_ID = parcelIds[i];
+        if (this.isInIdentifiers(this.serviceService.Service_ID ))
+          {
+          this.OnParcle = -1
+        }else{
+
+          this.OnParcle = i;
+          console.log("🚀 ~ PlotComponent ~ AddPLot ~ OnParcle:", this.OnParcle)
+          
         }
+    
         this.SelectedPlot = plot;
-      } else if (this.PlotManagementListfinal.length == 1) {
-        plot.plot_ID = this.Parcel_mearge1;
-        if (!this.Parcel_mearge1) {
-          this.OnParcle = 1;
-        }
-        this.SelectedPlot = plot;
-      } else if (this.PlotManagementListfinal.length == 2) {
-        plot.plot_ID = this.Parcel_mearge2;
-        if (!this.Parcel_mearge2) {
-          this.OnParcle = 2;
-        }
-        this.SelectedPlot = plot;
-      } else if (this.PlotManagementListfinal.length == 3) {
-        plot.plot_ID = this.Parcel_mearge3;
-        if (!this.Parcel_mearge3) {
-          this.OnParcle = 3;
-        }
-        this.SelectedPlot = plot;
-      } else if (this.PlotManagementListfinal.length == 4) {
-        plot.plot_ID = this.Parcel_mearge4;
-        if (!this.Parcel_mearge4) {
-          this.OnParcle = 4;
-        }
-        this.SelectedPlot = plot;
-      } else {
+        return;
       }
-    } else if (this.Parcel_mearge1) {
-      if (this.PlotManagementListfinal.length == 0) {
-        plot.plot_ID = this.Parcel_mearge1;
-        this.SelectedPlot = plot;
-        if (!this.Parcel_mearge1) {
-          this.OnParcle = 1;
-        }
-      } else if (this.PlotManagementListfinal.length == 1) {
-        plot.plot_ID = this.Parcel_mearge2;
-        if (!this.Parcel_mearge2) {
-          this.OnParcle = 2;
-        }
-        this.SelectedPlot = plot;
-      } else if (this.PlotManagementListfinal.length == 2) {
-        plot.plot_ID = this.Parcel_mearge3;
-        if (!this.Parcel_mearge3) {
-          this.OnParcle = 3;
-        }
-        this.SelectedPlot = plot;
-      } else if (this.PlotManagementListfinal.length == 3) {
-        plot.plot_ID = this.Parcel_mearge4;
-        if (!this.Parcel_mearge4) {
-          this.OnParcle = 4;
-        }
-        this.SelectedPlot = plot;
-      } else if (this.PlotManagementListfinal.length == 4) {
-        plot.plot_ID = this.Parcel_ID;
-        if (!this.Parcel_ID) {
-          this.OnParcle = 0;
-        }
-        this.SelectedPlot = plot;
-      }
-    } else {
-      this.SelectedPlot = plot;
     }
+  
+    this.SelectedPlot = plot;
+  }
+  isvalidated() {
+    const parcelIds = [
+      this.Parcel_ID,
+      this.Parcel_mearge1,
+      this.Parcel_mearge2,
+      this.Parcel_mearge3,
+      this.Parcel_mearge4,
+    ];
+  
+    parcelIds.forEach((parcelId, index) => {
+      if (parcelId) {
+        console.log(`validating plot parcelId ${parcelId}`);
+        this.isisvalidated(
+          this.todoid,
+          this.tskID,
+          parcelId,
+          "00000000-0000-0000-0000-000000000000",
+          this.DocID
+        );
+      }
+    });
+  }
+  getSDPID(plotId: string): string | null {
+    const letters = plotId.match(/^[A-Za-z_-]+/g)[0] || '';
+    console.log("🚀 ~ getSDPID ~ letters:", letters)
+    
+
+    switch (letters) {
+      case 'AR':
+        return '6921D772-3A1C-4641-95A0-0AB320BAC3E2'.toLocaleLowerCase();
+      case 'BL':
+        return '89EB1AEC-C875-4A08-AAF6-2C36C0864979'.toLocaleLowerCase();
+      case 'MCIT-NDC':
+        return '1809E356-D00F-42F9-8425-41A149DFD60F'.toLocaleLowerCase();
+      case 'NL':
+        return 'F8EA62DB-05BC-4F1A-AB30-4E926D43E3FB'.toLocaleLowerCase();
+      case 'GU':
+        return '6A8C042F-A3E1-4375-9769-54D94C2312C6'.toLocaleLowerCase();
+      case 'CN_01':
+        return '5EF1475C-2B66-4087-B1B7-63E6C6CD7CA1'.toLocaleLowerCase();
+      case 'AD':
+        return '7101D44D-97D5-41AA-957D-82F36D928C07'.toLocaleLowerCase();
+      case 'LD':
+        return 'E4D8219E-51F9-40CB-9D53-883C6CA9AAA3'.toLocaleLowerCase();
+      case 'AACALDMBTPSP':
+        return '1EFB0336-26C6-4BF1-AEB8-8DA0D4F7DBBB'.toLocaleLowerCase();
+      case 'AACA':
+        return '275619F2-69C2-4FB7-A053-938F0B62B088'.toLocaleLowerCase();
+      case 'LMK':
+        return 'F02E9467-1B7D-4350-BEE7-9844D4F56DA0'.toLocaleLowerCase();
+      case 'MCIT':
+        return '3D26A10C-9BE9-4261-BF97-AB6F39455ED3'.toLocaleLowerCase();
+      case 'YK':
+        return '8222F028-5FE3-4047-9A50-B52BFA64C851'.toLocaleLowerCase();
+      case 'AK':
+        return '08F9C927-6366-467A-BA99-C837C5ADD427'.toLocaleLowerCase();
+      case 'KS':
+        return 'AAA5094C-8899-4708-9F7B-D8FF634A3540'.toLocaleLowerCase();
+      case 'KK':
+        return '930D1C20-9E0E-4A50-9EB2-E542FAFBAD68'.toLocaleLowerCase();
+      default:
+        return this.serviceService.currentsdpid
+    }
+  }
+  Selectdelete(plot){
+  
+    plot.plot_Status=2019
+    const mappedPlot = plot
+    console.log("🚀 ~ PlotComponent ~ Selectdelete ~ plot:", mappedPlot)
+    this.ploatManagmentService.save(plot).subscribe(
+      (deptSuspension) => {
+    
+        const toast = this.notificationsService.success(
+          "Sucess drafted delete"
+        );
+        // this.serviceService.disablefins=false
+       this.getdrafted()
+      },
+      (error) => {
+        console.log(error);
+
+        if (error.status == "400") {
+          const toast = this.notificationsService.error("Error", error.error);
+        } else {
+          const toast = this.notificationsService.error(
+            "Error",
+            "SomeThing Went Wrong"
+          );
+        }
+      }
+    )
+  }
+  getdrafted(){
+    this.serviceService.getplotregisttionlistderaft(this.AppNo).subscribe((response: any) => {
+      this.PlotManagementListfinaldraft = response.procPlot_Registrations;
+      this.PlotManagementListfinaldraft = this.PlotManagementListfinaldraft.filter(
+        (item) => !this.PlotManagementListfinal.some(finalItem => finalItem.plot_ID === item.plot_ID)
+      );
+      
+      if( this.PlotManagementListfinaldraft.length > 0 ){
+      this.is_drafted=true
+      this.is_draftednotfound=false
+     }else{
+      this.is_drafted=false
+      this.is_draftednotfound=true
+     }
+    },error=>{
+      this.is_draftednotfound=true
+    })
   }
 
-  isvalidated() {
-    if (this.Parcel_ID) {
-      console.log("validating ploat this.Parcel_ID", this.Parcel_ID);
-      this.isisvalidated(
-        this.todoid,
-        this.tskID,
-        "00000000-0000-0000-0000-000000000000",
-        "00000000-0000-0000-0000-000000000000",
-        this.DocID
-      );
-    }
-    if (this.Parcel_mearge1) {
-      console.log("validating ploat this.Parcel_mearge1", this.Parcel_mearge1);
-      this.isisvalidated(
-        this.todoid,
-        this.tskID,
-        this.Parcel_mearge1,
-        "00000000-0000-0000-0000-000000000000",
-        this.DocID
-      );
-    }
-    if (this.Parcel_mearge2) {
-      console.log("validating ploat this.Parcel_mearge2", this.Parcel_mearge2);
-      this.isisvalidated(
-        this.todoid,
-        this.tskID,
-        this.Parcel_mearge2,
-        "00000000-0000-0000-0000-000000000000",
-        this.DocID
-      );
-    }
-    if (this.Parcel_mearge3) {
-      console.log("validating ploat this.Parcel_mearge3", this.Parcel_mearge3);
-      this.isisvalidated(
-        this.todoid,
-        this.tskID,
-        this.Parcel_mearge3,
-        "00000000-0000-0000-0000-000000000000",
-        this.DocID
-      );
-    }
-    if (this.Parcel_mearge4) {
-      console.log("validating ploat this.Parcel_mearge4", this.Parcel_mearge4);
-      this.isisvalidated(
-        this.todoid,
-        this.tskID,
-        this.Parcel_mearge4,
-        "00000000-0000-0000-0000-000000000000",
-        this.DocID
-      );
-    }
-  }
+  // isvalidated() {
+  //   if (this.Parcel_ID) {
+  //     console.log("validating ploat this.Parcel_ID", this.Parcel_ID);
+  //     this.isisvalidated(
+  //       this.todoid,
+  //       this.tskID,
+  //       "00000000-0000-0000-0000-000000000000",
+  //       "00000000-0000-0000-0000-000000000000",
+  //       this.DocID
+  //     );
+  //   }
+  //   if (this.Parcel_mearge1) {
+  //     console.log("validating ploat this.Parcel_mearge1", this.Parcel_mearge1);
+  //     this.isisvalidated(
+  //       this.todoid,
+  //       this.tskID,
+  //       this.Parcel_mearge1,
+  //       "00000000-0000-0000-0000-000000000000",
+  //       this.DocID
+  //     );
+  //   }
+  //   if (this.Parcel_mearge2) {
+  //     console.log("validating ploat this.Parcel_mearge2", this.Parcel_mearge2);
+  //     this.isisvalidated(
+  //       this.todoid,
+  //       this.tskID,
+  //       this.Parcel_mearge2,
+  //       "00000000-0000-0000-0000-000000000000",
+  //       this.DocID
+  //     );
+  //   }
+  //   if (this.Parcel_mearge3) {
+  //     console.log("validating ploat this.Parcel_mearge3", this.Parcel_mearge3);
+  //     this.isisvalidated(
+  //       this.todoid,
+  //       this.tskID,
+  //       this.Parcel_mearge3,
+  //       "00000000-0000-0000-0000-000000000000",
+  //       this.DocID
+  //     );
+  //   }
+  //   if (this.Parcel_mearge4) {
+  //     console.log("validating ploat this.Parcel_mearge4", this.Parcel_mearge4);
+  //     this.isisvalidated(
+  //       this.todoid,
+  //       this.tskID,
+  //       this.Parcel_mearge4,
+  //       "00000000-0000-0000-0000-000000000000",
+  //       this.DocID
+  //     );
+  //   }
+  // }
+// isvalidated() {
+//   const parcelIds = [
+//     this.Parcel_ID,
+//     this.Parcel_mearge1,
+//     this.Parcel_mearge2,
+//     this.Parcel_mearge3,
+//     this.Parcel_mearge4,
+//   ];
+
+//   parcelIds.forEach((parcelId, index) => {
+//     if (parcelId) {
+//       console.log(`validating plot parcelId ${parcelId}`);
+//       this.isisvalidated(
+//         this.todoid,
+//         this.tskID,
+//         parcelId,
+//         "00000000-0000-0000-0000-000000000000",
+//         this.DocID
+//       );
+//     }
+//   });
+// }
 
   getPlotStutusLookUP() {
     this.serviceService.getPlotStutusLookUP().subscribe(
@@ -1462,6 +1669,38 @@ debugger
     );
   }
 
+  // isisvalidated(todoID, tskID, plotid, proid, DocID) {
+  //   this.serviceService
+  //     .isvalidated(todoID, tskID, plotid, proid, DocID)
+  //     .subscribe(
+  //       (Validated) => {
+  //         if (Validated == "Validated") {
+  //           this.noinvalidplot = this.noinvalidplot - 1;
+  //           console.log("noinvalidplot", this.noinvalidplot);
+
+  //           if (this.noinvalidplot == 0) {
+  //             if (!this.Saved) {
+  //               //this.completed.emit();
+  //               this.Saved = true;
+  //               this.CanDone = true;
+  //             }
+  //             // this.CanDone = true;
+  //           }
+  //         } else {
+  //           // this.validated = false;
+  //           // const toast = this.notificationsService.warn("Warning", Validated);
+  //           console.log("Warning=>>> " + Validated);
+  //         }
+  //         // this.RequerdDocs = RequerdDocs;
+
+  //         // this.getAllDocument();
+  //         // console.log('RequerdDocs', this.RequerdDocs);
+  //       },
+  //       (error) => {
+  //         console.log("error");
+  //       }
+  //     );
+  // }
   isisvalidated(todoID, tskID, plotid, proid, DocID) {
     this.serviceService
       .isvalidated(todoID, tskID, plotid, proid, DocID)
@@ -1470,31 +1709,23 @@ debugger
           if (Validated == "Validated") {
             this.noinvalidplot = this.noinvalidplot - 1;
             console.log("noinvalidplot", this.noinvalidplot);
-
+  
             if (this.noinvalidplot == 0) {
               if (!this.Saved) {
-                //this.completed.emit();
                 this.Saved = true;
                 this.CanDone = true;
               }
-              // this.CanDone = true;
             }
           } else {
-            // this.validated = false;
-            // const toast = this.notificationsService.warn("Warning", Validated);
             console.log("Warning=>>> " + Validated);
           }
-          // this.RequerdDocs = RequerdDocs;
-
-          // this.getAllDocument();
-          // console.log('RequerdDocs', this.RequerdDocs);
         },
         (error) => {
           console.log("error");
         }
       );
   }
-
+  
   EnableFins() {
     this.getPloat();
     this.isvalidated();
@@ -1505,44 +1736,88 @@ debugger
     this.getPloat();
   }
 
+  // EnableFinsPloat(Parcel) {
+  //   console.log("FinalPLoat", Parcel);
+  //   //console.log("FinalPLoat ID", Parcel.plot_ID);
+  //   // this.plotForm = false;
+  //   this.plotId = Parcel.plot_ID;
+
+  //   if (this.OnParcle !== -1) {
+  //     if (this.OnParcle == 0) {
+  //       this.Parcel_ID = Parcel.plot_ID;
+  //       this.LicenceData.Parcel_ID = Parcel.plot_ID;
+  //     }
+  //     if (this.OnParcle == 1) {
+  //       this.Parcel_mearge1 = Parcel.plot_ID;
+  //       this.LicenceData.Plot_Merge_1 = Parcel.plot_ID;
+  //     }
+  //     if (this.OnParcle == 2) {
+  //       this.Parcel_mearge2 = Parcel.plot_ID;
+  //       this.LicenceData.Plot_Merge_2 = Parcel.plot_ID;
+  //     }
+  //     if (this.OnParcle == 3) {
+  //       this.Parcel_mearge3 = Parcel.plot_ID;
+  //       this.LicenceData.Plot_Merge_3 = Parcel.plot_ID;
+  //     }
+  //     if (this.OnParcle == 4) {
+  //       this.Parcel_mearge4 = Parcel.plot_ID;
+  //       this.LicenceData.Plot_Merge_4 = Parcel.plot_ID;
+  //     }
+  //   } else {
+  //     this.Parcel_ID = Parcel.plot_ID;
+  //     this.LicenceData.Parcel_ID = Parcel.plot_ID;
+  //   }
+
+  //   console.log("Licence", this.LicenceData);
+  //   this.serviceService.UpdateLicence(this.LicenceData).subscribe(
+  //     (Licence) => {
+  //       if (this.isnew) {
+  //         this.SelectedPlot = Parcel;
+  //         // this.SelectedPlot.Parcel_ID = Parcel_ID;
+  //         this.toLease = true;
+  //       } else {
+  //         this.isvalidated();
+  //       }
+  //     },
+  //     (error) => {
+  //       const toast = this.notificationsService.error("Error", error.error);
+  //     }
+  //   );
+  //   this.PlotManagementListfinal = [];
+  //   // this.getPloat();
+  // }
+  
   EnableFinsPloat(Parcel) {
     console.log("FinalPLoat", Parcel);
-    //console.log("FinalPLoat ID", Parcel.plot_ID);
-    // this.plotForm = false;
     this.plotId = Parcel.plot_ID;
-
-    if (this.OnParcle !== -1) {
-      if (this.OnParcle == 0) {
-        this.Parcel_ID = Parcel.plot_ID;
-        this.LicenceData.Parcel_ID = Parcel.plot_ID;
-      }
-      if (this.OnParcle == 1) {
-        this.Parcel_mearge1 = Parcel.plot_ID;
-        this.LicenceData.Plot_Merge_1 = Parcel.plot_ID;
-      }
-      if (this.OnParcle == 2) {
-        this.Parcel_mearge2 = Parcel.plot_ID;
-        this.LicenceData.Plot_Merge_2 = Parcel.plot_ID;
-      }
-      if (this.OnParcle == 3) {
-        this.Parcel_mearge3 = Parcel.plot_ID;
-        this.LicenceData.Plot_Merge_3 = Parcel.plot_ID;
-      }
-      if (this.OnParcle == 4) {
-        this.Parcel_mearge4 = Parcel.plot_ID;
-        this.LicenceData.Plot_Merge_4 = Parcel.plot_ID;
-      }
+  
+    const parcelProperties = [
+      'Parcel_ID',
+      'Plot_Merge_1',
+      'Plot_Merge_2',
+      'Plot_Merge_3',
+      'Plot_Merge_4',
+    ];
+  
+    if (this.OnParcle !== -1 ) {
+      this[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
+      this.LicenceData[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
     } else {
-      this.Parcel_ID = Parcel.plot_ID;
-      this.LicenceData.Parcel_ID = Parcel.plot_ID;
-    }
+        if(this.serviceService.Service_ID=='8A8588AE-0267-48B7-88AC-F3F18AC02167'.toLocaleLowerCase()){
 
+          this[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
+          this.LicenceData[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
+        }else{
+          this.Parcel_ID = Parcel.plot_ID;
+          this.LicenceData.Parcel_ID = Parcel.plot_ID;
+        }
+    }
+  
     console.log("Licence", this.LicenceData);
     this.serviceService.UpdateLicence(this.LicenceData).subscribe(
       (Licence) => {
         if (this.isnew) {
           this.SelectedPlot = Parcel;
-          // this.SelectedPlot.Parcel_ID = Parcel_ID;
           this.toLease = true;
         } else {
           this.isvalidated();
@@ -1553,9 +1828,8 @@ debugger
       }
     );
     this.PlotManagementListfinal = [];
-    // this.getPloat();
   }
-
+  
   EnableFinsPloatuupdate(Parcel) {
     // console.log("FinalPLoat", Parcel);
     // //console.log("FinalPLoat ID", Parcel.plot_ID);
@@ -1811,4 +2085,84 @@ debugger
     this.getPloat();
     this.CanDone = true;
   }
+  ListfinaldraftAll(Parcel){
+    const parcelIds = [
+      this.Parcel_ID,
+      this.Parcel_mearge1,
+      this.Parcel_mearge2,
+      this.Parcel_mearge3,
+      this.Parcel_mearge4,
+    ].filter(id => id !== null && id !== undefined);
+    let plotfilter=this.PlotManagementListfinal.filter(x=>x.plot_Status==1)
+    for (let i = 0; i <= parcelIds.length; i++) {
+      let count=plotfilter.length
+      // console.log("🚀 ~ PlotComponent ~ AddPLot ~ i:",
+      //   count,
+      //    i)
+      if (count == i) {
+        // console.log("🚀 ~ PlotComponent ~ AddPLot ~ i:", parcelIds[i])
+            
+        
+        if (this.isInIdentifiers(this.serviceService.Service_ID ))
+          {
+          this.OnParcle = -1
+        }else{
+
+          this.OnParcle = i;
+          console.log("🚀 ~ PlotComponent ~ AddPLot ~ OnParcle:", this.OnParcle)
+          
+        }
+    
+         this.Listfinaldraft(Parcel)
+        return;
+      }
+    }
+  }
+  Listfinaldraft(Parcel) {
+    console.log("FinalPLoat", Parcel ,this.OnParcle);
+    this.plotId = Parcel.plot_ID;
+  
+    const parcelProperties = [
+      'Parcel_ID',
+      'Plot_Merge_1',
+      'Plot_Merge_2',
+      'Plot_Merge_3',
+      'Plot_Merge_4',
+    ];
+  
+    if (this.OnParcle !== -1 ) {
+      this[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
+      this.LicenceData[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
+    } else {
+        if(this.serviceService.Service_ID=='8A8588AE-0267-48B7-88AC-F3F18AC02167'.toLocaleLowerCase()){
+
+          this[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
+          this.LicenceData[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
+        }else{
+          this.Parcel_ID = Parcel.plot_ID;
+          this.LicenceData.Parcel_ID = Parcel.plot_ID;
+        }
+    }
+  
+    console.log("Licence", this.LicenceData);
+    this.serviceService.UpdateLicence(this.LicenceData).subscribe(
+      (Licence) => {
+        const toast = this.notificationsService.success(
+          "Sucess drafted continue"
+        );
+         this.getdrafted()
+        if (this.isnew) {
+          this.SelectedPlot = Parcel;
+          this.toLease = true;
+        } else {
+          this.isvalidated();
+        }
+      },
+      (error) => {
+        const toast = this.notificationsService.error("Error", error.error);
+      }
+    );
+    this.PlotManagementListfinal = [];
+  }
 }
+ 

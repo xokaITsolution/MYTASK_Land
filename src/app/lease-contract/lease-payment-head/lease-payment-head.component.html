@@ -122,7 +122,7 @@
                     <div class="field">
                         <label for="ContractDate">Lease Contract start Date</label>
                         <div class="col-sm-8">
-                          <input type="date" [disabled]="disable"  class="form-control"
+                          <input type="date" [disabled]="disable || disabledate"  class="form-control"
                             [(ngModel)]="leaserPaymentHead.Contract_date" name="ContractDate" id="ContractDate"
                             [placeholder]="'Contract Date'" #ContractDate="ngModel"
                             [ngClass]="{ 'is-invalid': ContractDate.invalid }" required>

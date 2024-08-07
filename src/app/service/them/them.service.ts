@@ -9,6 +9,8 @@ export class ThemService {
   private ThemURL = environment.rootPath + "Them_Certificate_Version"; // URL to web api
   private ThemURLApi =
     environment.rootPathApi + "Actions/proc_Them_Certificate_Version";
+  private ThemURLApiby =
+    environment.rootPathApi + "getproc_Them_Certificate_VersionLoadByPrimaryKeytitledeedno/getproc_Them_Certificate_VersionLoadByPrimaryKeytitledeedno/Title_Deed_No?Title_Deed_No";
   constructor(private http: HttpClient) {}
 
   getAll(certefcatversionID) {
@@ -30,6 +32,9 @@ export class ThemService {
   }
   getAllapi(certefcatversionID) {
     return this.http.get<any[]>(this.ThemURLApi + "/" + certefcatversionID);
+  }
+  getAllapiby(Title_Deed_No) {
+    return this.http.get<any[]>(this.ThemURLApiby + "=" + Title_Deed_No);
   }
 
   saveapi(data) {

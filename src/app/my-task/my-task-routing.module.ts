@@ -12,6 +12,7 @@ import { TestgismapComponent } from "../service/testgismap/testgismap.component"
 import { GisMapComponent } from "../service/gis-map/gis-map.component";
 
 import { NetworkDatabaseMonitoringToolComponent } from "../service/network-database-monitoring-tool/network-database-monitoring-tool.component";
+import { CertificateCheckStatusComponent } from "./certificate-check-status/certificate-check-status.component";
 
 const routes: Routes = [
   {
@@ -42,6 +43,11 @@ const routes: Routes = [
       {
         path: "Customer",
         component: PersonComponent,
+        pathMatch: "prefix",
+      },
+      {
+        path: "Certificate",
+        component: CertificateCheckStatusComponent,
         pathMatch: "prefix",
       },
       {

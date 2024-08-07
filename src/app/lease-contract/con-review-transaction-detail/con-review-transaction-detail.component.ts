@@ -7,6 +7,7 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import { environment } from 'src/environments/environment';
 import { v4 as uuidv4 } from 'uuid';
 import { Guid } from 'guid-typescript';
+import { LeaseContractService } from '../lease-contract.service';
 
 @Component({
   selector: 'app-con-review-transaction-detail',
@@ -34,7 +35,7 @@ export class ConReviewTransactionDetailComponent implements OnInit {
 
   constructor(
     private notificationsService: NotificationsService,
-    private service: ServiceService
+    private service: LeaseContractService
   ) { }
 
    coords

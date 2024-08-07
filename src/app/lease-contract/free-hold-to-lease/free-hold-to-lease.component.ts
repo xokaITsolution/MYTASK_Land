@@ -118,7 +118,6 @@ export class FreeHoldToLeaseComponent implements OnInit {
       environment.con_report + "/" + this._service.Report_name +"/" + this._service.App_no
     );
     console.log("ReportPath",this.ReportPath);
-    
     debugger
     this._service.get_freehold_to_Lease_by_Id(this._service.contract_NO).subscribe(async data=>{
       if(data['proc_FreeHold_to_Leases'].length>0){

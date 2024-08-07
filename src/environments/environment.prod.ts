@@ -9,6 +9,7 @@ export const environment = {
   city: window["city"],
   appbase: window["_app_base"],
   location: window["locations"],
+  numberOfpick: window["numberOfpick"],
   Lease_contract:window['Lease_contract'],
   con_report:window['con_report'],
   localGisServer: window["local_GIS_server"],

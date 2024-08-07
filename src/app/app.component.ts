@@ -45,6 +45,12 @@ export class AppComponent {
   }
   ngOnInit() {
     this.location.forward();
+    // document.addEventListener('contextmenu', (event) => event.preventDefault());
+    // document.addEventListener('keydown', (event) => {
+    //   if (event.ctrlKey && (event.shiftKey && event.key === 'I' || event.key === 'C' || event.key === 'J') || event.key === 'F12') {
+    //     event.preventDefault();
+    //   }
+    // });
   }
 
   @HostListener("window:popstate", ["$event"])
