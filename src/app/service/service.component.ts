@@ -3387,6 +3387,7 @@ export class ServiceComponent implements OnInit  {
   getServiceDeliveryUnitLookUP() {
     this.serviceService.getServiceDeliveryUnitLookUP().subscribe(
       (ServiceDeliveryUnitLookUP) => {
+        
         this.ServiceDeliveryUnitLookUP = ServiceDeliveryUnitLookUP;
         console.log("appnoooo", this.SDP_ID);
         let counter = 0;
@@ -3396,11 +3397,15 @@ export class ServiceComponent implements OnInit  {
               this.ServiceDeliveryUnitLookUP &&
               this.ServiceDeliveryUnitLookUP.length > 0
             ) {
+              
               this.ServiceDeliveryUnitLookUP = Object.assign(
                 [],
                 this.ServiceDeliveryUnitLookUP
               );
-               if (this.serviceService.currentsdpid == '1efb0336-26c6-4bf1-aeb8-8da0d4f7dbbb'){
+               if (this.serviceService.currentsdpid == '1efb0336-26c6-4bf1-aeb8-8da0d4f7dbbb' || 
+                this.serviceService.currentsdpid == 'aedfabde-b0b3-466a-92f0-913bde031bbf'
+               ){
+                
                 this.ServiceDeliveryUnitLookUP =
                 this.ServiceDeliveryUnitLookUP.filter(
                   (value) => value.organization_code 
@@ -3654,6 +3659,7 @@ export class ServiceComponent implements OnInit  {
                      this.SDP_ID = this.licenceData.SDP_ID;
                      this.getplotlist(this.licenceData.Parcel_ID);
                      this.serviceService.currentsdpid = this.SDP_ID;
+                    //  
                      this.Service_ID = this.licenceData.Service_ID;
                      this.getServiceDeliveryUnitLookUP();
                      this.serviceService.Service_ID = this.licenceData.Service_ID;

@@ -27,7 +27,7 @@ export class LeasePaymentHeadComponent implements OnInit {
   lease_period_prev: any;
   disable: any;
   contract_date_prev: any;
-  disabledate: boolean=false;
+  disabledate: boolean = false;
 
   constructor(
 
@@ -143,85 +143,81 @@ export class LeasePaymentHeadComponent implements OnInit {
     return result;
   }
 
- async getLeasPaymentHeadData(appNo: any) {
+  async getLeasPaymentHeadData(appNo: any) {
     // debugger
-    if (this._service.Service_ID = "e9a61e6a-d580-4cfa-921d-36e751d87a05") {
+    if (this._service.Service_ID == "e9a61e6a-d580-4cfa-921d-36e751d87a05") {
       this._service.get_View_cert_for_get_appby_plot_Id(this._service.ploteId).subscribe(data => {
         this._service.getDataById(data[0].application_No).subscribe(async data1 => {
           let data = data1["proc_Lease_Payment_Heads"][0];
-         
+
           data.date_of_final_lease_payment
           data.lease_period_in_Year
           data.lease_Period_end_date
           data.lease_Payment_Year
           var datenow = await this.ServiceService
-          .getgregorianToEthiopianDate(new Date().toISOString().split('T')[0])
-          .toPromise();
+            .getgregorianToEthiopianDate(new Date().toISOString().split('T')[0])
+            .toPromise();
 
-          this.disabledate=true;
+          this.disabledate = true;
           debugger
-        console.log('Ethiopian Date:',datenow);
-        const [day, month, year] = datenow.nowTime.split('/');
-        const isoDate = `${year}-${month}-${day}`;
-        const ethiopianDateObj = new Date(isoDate);
-         const contractDateObj = new Date( data.contract_date);
-        const contractYear = contractDateObj.getFullYear();
-        const currentyear = ethiopianDateObj.getFullYear();
-        const difference = currentyear-contractYear;
-        // Check if the contract date has passed
-if (ethiopianDateObj > contractDateObj) {
-  console.log('The contract date has passed.');
-} else {
-  console.log('The contract date has not passed.');
-}
-        // let data = response["proc_Lease_Payment_Heads"][0];
+          console.log('Ethiopian Date:', datenow);
+          const [day, month, year] = datenow.nowTime.split('/');
+          const isoDate = `${year}-${month}-${day}`;
+          const ethiopianDateObj = new Date(isoDate);
+          const contractDateObj = new Date(data.contract_date);
+          const contractYear = contractDateObj.getFullYear();
+          const currentyear = ethiopianDateObj.getFullYear();
+          const difference = currentyear - contractYear;
+          // Check if the contract date has passed
+          if (ethiopianDateObj > contractDateObj) {
+            console.log('The contract date has passed.');
+          } else {
+            console.log('The contract date has not passed.');
+          }
+          this._service.getDataBy_lease_code(appNo).subscribe(
+            (response) => {
+              // let data = response["proc_Lease_Payment_Heads"][0];
+              //  let data= 
+              this.leaserPaymentHead.Lease_code = data.lease_code;
 
-        this.leaserPaymentHead.Lease_code = data.lease_code;
-        
-        this.leaserPaymentHead.Application_No = data.application_No;
-        this.leaserPaymentHead.Application_code = data.application_code;
-        this.leaserPaymentHead.Todolis_ID = data.todolis_ID;
-        this.leaserPaymentHead.Lease_Payment_grace_Period = data.lease_Payment_grace_Period;
-        this._service.Lease_Payment_grace_Period = data.lease_Payment_grace_Period;
-        this.leaserPaymentHead.Total_lease_amount_to_be_paid =
-          data.total_lease_amount_to_be_paid;
-        this.leaserPaymentHead.Amount_of_the_annual_lease_payment =
-          data.amount_of_the_annual_lease_payment;
-        this.leaserPaymentHead.Lease_period_in_Year = data.lease_period_in_Year-difference;
-        // if (data.date_of_final_lease_payment != null) {
+              this.leaserPaymentHead.Application_No = data.application_No;
+              this.leaserPaymentHead.Application_code = data.application_code;
+              this.leaserPaymentHead.Todolis_ID = data.todolis_ID;
+              this.leaserPaymentHead.Lease_Payment_grace_Period = data.lease_Payment_grace_Period;
+              this._service.Lease_Payment_grace_Period = data.lease_Payment_grace_Period;
+              this.leaserPaymentHead.Total_lease_amount_to_be_paid =
+                data.total_lease_amount_to_be_paid;
+              this.leaserPaymentHead.Amount_of_the_annual_lease_payment =
+                data.amount_of_the_annual_lease_payment;
+              this.leaserPaymentHead.Lease_period_in_Year = data.lease_period_in_Year - difference;
+              // if (data.date_of_final_lease_payment != null) {
 
-          this.leaserPaymentHead.Date_of_final_lease_payment = data.date_of_final_lease_payment.split("T")[0]
-          this.leaserPaymentHead.Lease_Period_end_date = data.lease_Period_end_date.split("T")[0];
-          this.leaserPaymentHead.Contract_date = data.contract_date.split("T")[0];
-          this.contract_date_prev = data.contract_date.split("T")[0];
-          this._service.contract_date = this.leaserPaymentHead.Contract_date
-        // }
-        // else {
-        //   this.leaserPaymentHead.Date_of_final_lease_payment = data.date_of_final_lease_payment;
-        //   this.leaserPaymentHead.Lease_Period_end_date = data.lease_Period_end_date;
-        //   this.leaserPaymentHead.Contract_date = null;
-        //   // this.leaserPaymentHead.Contract_date=data.contract_date;
-        // }
-        // this.leaserPaymentHead.Date_of_final_lease_pyment =this.format_date(data.date_of_final_lease_payment)
-        this.leaserPaymentHead.Remaining_lease_Payment =
-          data.remaining_lease_payment;
-        this.leaserPaymentHead.Customer_Type = data.customer_Type;
-        this.leaserPaymentHead.Transfer_type = data.transfer_Type;
-        this.leaserPaymentHead.Proporty_Use = data.proporty_Use;
+              this.leaserPaymentHead.Date_of_final_lease_payment = data.date_of_final_lease_payment.split("T")[0]
+              this.leaserPaymentHead.Lease_Period_end_date = data.lease_Period_end_date.split("T")[0];
+              this.leaserPaymentHead.Contract_date = data.contract_date.split("T")[0];
+              this.contract_date_prev = data.contract_date.split("T")[0];
+              this._service.contract_date = this.leaserPaymentHead.Contract_date
 
-        // this.leaserPaymentHead.Lease_Period_end_date =this.format_date(data.lease_Period_end_date)
-        this.leaserPaymentHead.Lease_Payment_Year = data.lease_Payment_Year-difference;
-        this.lease_period_prev = data.lease_Payment_Year + data.lease_Payment_grace_Period;
-        this._service.Lease_Payment_Year = data.lease_Payment_Year;
-        // this.lease_period_prev = data.lease_Payment_Year;
-        this.leaserPaymentHead.Is_Active = data.is_Active;
-        this.leaserPaymentHead.Parent = data.parent;
-        this.leaserPaymentHead.lease_payment_advance_per = data.lease_payment_advance_per;
-        this._service.lease_payment_advance_per = data.lease_payment_advance_per;
-        this.getTransferType(this.leaserPaymentHead.Transfer_type);
-        this.getProportyUse(this.leaserPaymentHead.Proporty_Use);
-        this.getCustomerType(this.leaserPaymentHead.Customer_Type);
-        this.leaserPaymentHead.Contract_date = data.contract_date.split("T")[0];
+              this.leaserPaymentHead.Remaining_lease_Payment =
+                data.remaining_lease_payment;
+              this.leaserPaymentHead.Customer_Type = data.customer_Type;
+              this.leaserPaymentHead.Transfer_type = data.transfer_Type;
+              this.leaserPaymentHead.Proporty_Use = data.proporty_Use;
+
+              // this.leaserPaymentHead.Lease_Period_end_date =this.format_date(data.lease_Period_end_date)
+              this.leaserPaymentHead.Lease_Payment_Year = data.lease_Payment_Year - difference;
+              this.lease_period_prev = data.lease_Payment_Year + data.lease_Payment_grace_Period;
+              this._service.Lease_Payment_Year = data.lease_Payment_Year;
+              // this.lease_period_prev = data.lease_Payment_Year;
+              this.leaserPaymentHead.Is_Active = data.is_Active;
+              this.leaserPaymentHead.Parent = data.parent;
+              this.leaserPaymentHead.lease_payment_advance_per = data.lease_payment_advance_per;
+              this._service.lease_payment_advance_per = data.lease_payment_advance_per;
+              this.getTransferType(this.leaserPaymentHead.Transfer_type);
+              this.getProportyUse(this.leaserPaymentHead.Proporty_Use);
+              this.getCustomerType(this.leaserPaymentHead.Customer_Type);
+              this.leaserPaymentHead.Contract_date = data.contract_date.split("T")[0];
+            })
         })
       })
     }

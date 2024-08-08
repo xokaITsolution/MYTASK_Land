@@ -1124,7 +1124,7 @@ export class PropertyComponent implements OnChanges {
 
   async DoneNew() {
     let treedibth = await this.getTreeDepth(this.serviceService.files);
-
+// 
     console.log("EnableFinstitlefiles", this.serviceService.files.length);
     const sumOfPropertiess: any = this.serviceService.files.filter(
       (node: ExtendedTreeNode) => node.level === 0 && node.label != "No Parent"
@@ -1165,9 +1165,9 @@ export class PropertyComponent implements OnChanges {
 
         if (element.property_ID !== "No Parent") {
           const isdeedchildren = await this.checkProperty(element);
-
           if (!isdeedchildren) {
             //this.checkPropertylocationAll();
+            // 
 
             const toast = this.notificationsService.warn(
               `Must add title deed For this property: ${element.property_ID}`
@@ -1200,6 +1200,7 @@ export class PropertyComponent implements OnChanges {
 
             return;
           } else {
+            // 
             if (
               parseFloat(sumOfPropertiesfinal) ===
               parseFloat(sumOfPropertiesfinal)
@@ -1235,6 +1236,7 @@ export class PropertyComponent implements OnChanges {
         );
         return;
       } else {
+        
         this.serviceService
             .GetProportyValidationURL(this.serviceService.LicenceserviceID)
             .subscribe((message:any) => {
@@ -1439,6 +1441,7 @@ export class PropertyComponent implements OnChanges {
   //   }
   // }
   checkPropertylocationAll() {
+    
     console.log(
       "🚀 ~ file: property.component.ts:1273 ~ PropertyComponent ~ checkPropertylocationAll ~ PlotManagementListfinal:",
       this.PlotManagementListfinal
@@ -1454,6 +1457,7 @@ export class PropertyComponent implements OnChanges {
       this.serviceService
         .getPropertyLists(element.plot_ID)
         .subscribe(async (PropertyList: any) => {
+          
           console.log("🚀 ~ PropertyComponent ~ .subscribe ~ PropertyList:", PropertyList)
           let PropertyLists = PropertyList.procProperty_Registrations
           PropertyLists = Object.assign([], PropertyLists);
@@ -1499,7 +1503,9 @@ export class PropertyComponent implements OnChanges {
                   // const toast = this.notificationsService.warn(
                   //   `this property have location : ${element.property_ID}`
                   // );
+
                   if (!isnullplot) {
+                    debugger
                     this.serviceService
             .GetProportyValidationURL(this.serviceService.LicenceserviceID)
             .subscribe((message:any) => {

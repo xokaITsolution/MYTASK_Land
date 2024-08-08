@@ -108,7 +108,7 @@
           [SelectedBase]="SelectedBase" [disable]="disable"></app-certificate-version>
       </div>
     </tab>
-    <tab [heading]="'Them' | translate"  [disabled]="!isThem && isnotprint" >
+    <tab [heading]="'Them' | translate"  [disabled]="!isdept && isnotprint" >
       <div class="mt-3">
         <app-them (completed)="EnableFins()" [Selectedcert]='Selectedcert' [disable]="disable" [licenceData]="licenceData"></app-them>
       </div>

@@ -143,7 +143,10 @@ export class CertversionupgradeComponent implements OnChanges {
             element.RoleId ==
               "5B3B5DD4-3CEF-4696-AC19-442BA531A7DD".toLocaleLowerCase() ||
             element.RoleId ==
-              "C8E6C4E6-564F-40B9-B672-B8B6D2049777".toLocaleLowerCase()
+              "C8E6C4E6-564F-40B9-B672-B8B6D2049777".toLocaleLowerCase() ||
+              element.RoleId ==
+              "4E10B26B-B722-444F-90B2-1E138A1C9ECA".toLocaleLowerCase() 
+          
           ) {
             if (
               this.serviceService.Service_ID ==
@@ -332,7 +335,9 @@ export class CertversionupgradeComponent implements OnChanges {
     }
   }
   getDeed(plotID) {
+    // debugger
     this.DeedTable = [];
+  
     this.certificateVersionService.getDeedTable(plotID).subscribe(
       (DeedTable: any) => {
         this.DeedTable = DeedTable;

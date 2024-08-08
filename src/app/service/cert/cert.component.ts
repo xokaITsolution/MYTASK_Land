@@ -108,6 +108,7 @@ export class CertComponent implements OnChanges {
           "🚀 ~ CertComponent ~ this.serviceService.getUserRole ~ response:",
           response
         );
+        debugger
         for (let index = 0; index < response.length; index++) {
           const element = response[index];
 
@@ -115,7 +116,8 @@ export class CertComponent implements OnChanges {
             element.RoleId ==
               "5B3B5DD4-3CEF-4696-AC19-442BA531A7DD".toLocaleLowerCase() ||
             element.RoleId ==
-              "C8E6C4E6-564F-40B9-B672-B8B6D2049777".toLocaleLowerCase()
+              "C8E6C4E6-564F-40B9-B672-B8B6D2049777".toLocaleLowerCase() 
+
           ) {
             this.isnotprint = false;
             break;
@@ -301,7 +303,12 @@ export class CertComponent implements OnChanges {
     }
   }
   getDeed(plotID) {
+    debugger
     this.DeedTable = [];
+    if(this.serviceService.currentsdpid=='aedfabde-b0b3-466a-92f0-913bde031bbf'){
+
+      this.Base.SDP_ID = this.serviceComponent.getSDPID(plotID)
+    }
     this.certificateVersionService.getDeedTable(plotID).subscribe(
       (DeedTable: any) => {
         this.DeedTable = DeedTable;

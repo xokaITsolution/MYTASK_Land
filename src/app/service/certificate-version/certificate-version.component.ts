@@ -73,6 +73,7 @@ export class CertificateVersionComponent implements OnChanges {
         this.pictoShow
       );
     }
+    debugger
     this.getDeed();
     if (!this.certificateVersion.version_ID) {
       this.isnew = true;
@@ -98,9 +99,10 @@ export class CertificateVersionComponent implements OnChanges {
 
   getDeed() {
     this.certificateVersionService
-      .getDeedTable(this.SelectedBase.Plot_ID)
-      .subscribe(
-        (DeedTable) => {
+    .getDeedTable(this.SelectedBase.Plot_ID)
+    .subscribe(
+      (DeedTable) => {
+          // debugger
           this.DeedTable = DeedTable;
           // this.DeedTable = (Object.assign([], this.DeedTable));
           console.log("DeedTable", DeedTable);
@@ -164,7 +166,9 @@ export class CertificateVersionComponent implements OnChanges {
   }
 
   add() {
+    
     this.serviceService.getUserRole().subscribe((response: any) => {
+      debugger
       console.log("responseresponseresponse", response, response[0].RoleId);
       this.certificateVersion.created_By = response[0].UserId;
       this.certificateVersion.created_Date = new Date();
@@ -172,6 +176,7 @@ export class CertificateVersionComponent implements OnChanges {
       .AddCertificate(this.certificateVersion)
       .subscribe(
         (message) => {
+          debugger
           console.log("message", message);
           this.CertComponent.disableTab = true;
           const toast = this.notificationsService.success("Sucess saved");
@@ -182,6 +187,7 @@ export class CertificateVersionComponent implements OnChanges {
               this.serviceService.Service_ID
             )
             .subscribe((message: any) => {
+              debugger
               if (message.Message == "1") {
                 // this.serviceService.disablefins = false;
 
