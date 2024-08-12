@@ -15,4 +15,5 @@ export class LeasePaymentHeadDetail {
   Updated_By_userid: any;
   Updated_date: any;
   Time: any;
+  Is_old:any
 }

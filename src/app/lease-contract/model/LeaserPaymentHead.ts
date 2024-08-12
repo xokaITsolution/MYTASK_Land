@@ -19,4 +19,5 @@ export class LeaserPaymentHead {
   Parent: string;
   contact_Type: any;
   lease_payment_advance_per:any;
+  
 }

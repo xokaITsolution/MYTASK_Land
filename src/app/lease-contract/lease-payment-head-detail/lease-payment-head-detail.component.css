@@ -44,3 +44,9 @@ h2 {
   /* For example: 
   display: none;
 } */
+.field input[type="checkbox"] {
+  width: 40px;
+  height: 40px;
+  margin-top: 5px; /* Adjust as needed for spacing */
+  margin-left: 5px; /* Align the checkbox with the label */
+}

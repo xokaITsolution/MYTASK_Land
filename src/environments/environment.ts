@@ -19,14 +19,14 @@ export const environment = {
   formPath: window["formPath"],
   city: window["city"], 
   
-  username: "ar_Tech_leader",
+  // username: "ar_Tech_leader",
   // username: "EteneshSaleyesus", 
   // cn_land_expleader
   // username: "cn_land_expleader",
   // username: "cn_land_bank", 
   // username: "lease_serveyor", 
-  // username: "lease_owner",
-  // username: "cn_land_basemap",  
+  username: "lease_owner",
+  // username: "ar_basemap",  
   numberOfpick: window["numberOfpick"],
   // username: "lease_cashier",
   // username: "cn_land_expleader ",
