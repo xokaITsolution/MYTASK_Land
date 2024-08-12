@@ -294,10 +294,12 @@ export class ServiceComponent implements OnInit  {
   
   hide = true;
   saveFormmjson(formData) {
+    
     this.validated = true;
     if ("de4937d8-bdcd-46d6-8749-dc31c9f3adcf" == this.SDP_ID ||
       "2145F90D-E911-42F2-9AD7-C2455A4D9DCD".toLocaleLowerCase()  == this.SDP_ID ||
-      "1b30e6d6-0ade-443e-be18-22de948bfd1e".toLocaleLowerCase()  == this.SDP_ID
+      "1b30e6d6-0ade-443e-be18-22de948bfd1e".toLocaleLowerCase()  == this.SDP_ID  ||
+      "14b073b2-27b0-441c-ade0-1cd1eb49e42c".toLocaleLowerCase() == this.SDP_ID
     ) {
 
       this.serviceService.getcertbytitledeedall(formData.Title).subscribe(data=>{
@@ -860,6 +862,7 @@ export class ServiceComponent implements OnInit  {
     this.activatedRoute.params.subscribe((params: Params) => {
       console.log("leaseappppppp", params);
       // this.ID = params['id'];
+      
       this.docid =params["docid"];
       this.formcode = params["formcode"];
       this.AppNo = params["AppNo"];
@@ -1515,6 +1518,10 @@ export class ServiceComponent implements OnInit  {
         (message) => {
           const toast = this.notificationsService.success("Sucess", "Saved");
           this.issendnote = true;
+          if(this.ID=12){
+            this.saveFormm('{}')
+          }
+         
           this.GetNote(message);
         },
         (error) => {
@@ -2664,6 +2671,7 @@ export class ServiceComponent implements OnInit  {
     );
   }
   async showdialog(data, name) {
+   
     console.log("vvvvvv", data);
     this.NoteObj = { remarks: "", postit_note_code: "" };
     let to_to_code;
@@ -2672,21 +2680,29 @@ export class ServiceComponent implements OnInit  {
       this.showdialoge = true;
     } else {
       if (this.ID == 12) {
-        let isuploaded = await this.checkDocumentIsAvailable();
+        this.serviceService.CheckFileUpload(this.AppNo).subscribe(r=>{
+          console.log('rrrrrrrr',r);
+          
+       if(r!=undefined){
+        let isuploaded = r
+        // await this.checkDocumentIsAvailable();
         console.log("🚀 ~ showdialog ~ isuploaded:", isuploaded);
 
-        if (!isuploaded == true) {
+        if (isuploaded == true) {
+         
           this.SubmitAR(data);
           // const toast = this.notificationsService.success(
           //   `This folder does  have any files.`
           // );
         } else {
-          this.SubmitAR(data);
+console.log('2222222222222222');
+
+          //this.SubmitAR(data);
           const toast = this.notificationsService.error(
             `This folder does not have any files.`
           );
           return;
-        }
+        }} }) 
       } else {
         this.SubmitAR(data);
       }
@@ -2737,6 +2753,7 @@ export class ServiceComponent implements OnInit  {
       });
     }
   }
+
   showdialogee;
   showdialogg() {
     this.showdialogee = true;

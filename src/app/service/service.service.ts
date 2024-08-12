@@ -358,6 +358,15 @@ getcertbytitledeed =
   getUserInfoByUserName(userName) {
     return this.http.get<any>(this.ViewUserInfo + "=" + userName);
   }
+  getoldtitledeed(appno) {
+    return this.http.get(environment.rootPathApi + "getLicense_ServiceLoadByapno/getLicense_ServiceLoadByapno/Application_no?Application_no=" + appno);
+  }
+  gettaskupload(taskid) {
+    return this.http.get(environment.rootPathApi + "CheckFileUpload/gettaskupload/taskId?taskId=" + taskid);
+  }
+  CheckFileUpload(appno) {
+    return this.http.get(environment.rootPathApi + "CheckFileUpload/checkfileupload?applicationNumber=" + appno);
+  }
   getCookies() {
     // Getting cookie values using cookieService
     this.polygonAreaname =

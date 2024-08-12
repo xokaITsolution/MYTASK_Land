@@ -35,6 +35,7 @@ isCertifcatePrintforConfirmation: boolean;
   }
   getWithdrawpropose(){
     this.ServiceService.getWithdrawpropose().subscribe(data=>{
+      debugger
       this.enable_edit=true
       this.serachplotExists=true;
       

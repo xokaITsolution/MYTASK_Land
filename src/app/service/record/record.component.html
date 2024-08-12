@@ -238,6 +238,13 @@
             [(ngModel)]="recordDocumnet.title_Deed_No" [placeholder]="'Title Deed No' | translate" />
         </div>
       </div>
+      <div class="form-group row col-12">
+        <label class="col-sm-4 col-form-label" translate>Old Title Deed No/የቀድሞ ካርታ ቁጥር</label>
+        <div class="col-sm-8">
+          <input type="text" class="form-control" [disabled]="disable" name="old_title_deed_no" id="old_title_deed_no"
+            [(ngModel)]="recordDocumnet.old_title_deed_no" placeholder="Old Title Deed No/የቀድሞ ካርታ ቁጥር" />
+        </div>
+      </div>
       <div class="form-group row col-12" *ngIf="Isshow">
         <label class="col-sm-4 col-form-label" translate>Shelf Column</label>
         <div class="col-sm-8">

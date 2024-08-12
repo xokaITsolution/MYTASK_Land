@@ -145,6 +145,8 @@ export class RecordComponent implements OnChanges {
   uploadedDocumnet: boolean;
   uploadcontract: boolean;
   documentupload: any;
+  rolesToCheck = ["AEE24EEB-09B6-4F70-B924-D10CFCF757BA","270F762A-5393-4971-83BA-C7FF7D560BDA","F07A844C-E107-44AB-AA18-9D462BC7CDA3","8C133397-587E-456F-AB31-9CF5358BE8D2", "B59EA343-65EF-4C41-95A8-02D9AD81BFCD"];
+  userRoles: UserRole[] = [];
   selectedTask: any;
   SavedFiles: any;
   recordDocumnet: RecordDocumnet;
@@ -200,6 +202,7 @@ export class RecordComponent implements OnChanges {
   itcanaddfolder: boolean;
   appLoading: boolean;
   isrecordofficer: boolean;
+  oldtitledeed: any;
   switchTab(tab: string) {
     this.activeTab = tab;
   }
@@ -234,6 +237,7 @@ export class RecordComponent implements OnChanges {
     selectedService: new FormControl(),
   });
   async ngOnChanges() {
+    this.getoldtitledeed()
     this.service.getaspnetuser().subscribe((r) => {
       this.Attacheduserid = r[0].userid;
    
@@ -337,6 +341,7 @@ export class RecordComponent implements OnChanges {
       updated_Date: "",
       deleted_Date: "",
       is_all_hardcopy_uploaded: true,
+      old_title_deed_no:this.oldtitledeed
     };
     console.log("ADD NEW button clicked!");
     this.addnew = false;
@@ -414,6 +419,7 @@ export class RecordComponent implements OnChanges {
       updated_Date: "",
       deleted_Date: "",
       is_all_hardcopy_uploaded: true,
+      old_title_deed_no:this.oldtitledeed,
     };
     console.log("ADD NEW button clicked!");
     // this.addnew=false
@@ -485,6 +491,7 @@ export class RecordComponent implements OnChanges {
       updated_Date: "",
       deleted_Date: "",
       is_all_hardcopy_uploaded: true,
+      old_title_deed_no:this.oldtitledeed,
     };
     console.log("ADD NEW button clicked!");
     // this.addnew=false
@@ -1197,6 +1204,8 @@ export class RecordComponent implements OnChanges {
     }
 
     this.recordDocumnet.application_No = this.service.appnoForRecord;
+    this.recordDocumnet.created_By=response[0].RoleId
+    this.recordDocumnet.created_Date=new Date()
    if(this.isrecordofficer){
     this.service.CreateDocmentArcive(this.recordDocumnet).subscribe(
       async (message) => {
@@ -1343,6 +1352,7 @@ export class RecordComponent implements OnChanges {
             updated_Date: "",
             deleted_Date: "",
             is_all_hardcopy_uploaded: true,
+            old_title_deed_no:this.oldtitledeed
           };
         }
         // if (this.language == "amharic") {
@@ -1387,6 +1397,13 @@ export class RecordComponent implements OnChanges {
       }
     );
   }
+   getoldtitledeed() {
+    this.service
+    .getoldtitledeed(this.service.licenceData.Application_No)
+    .subscribe(async (rec: any) => {
+this.oldtitledeed=rec[0].old_titie_deed_no
+console.log('old_titie_deed_no',this.oldtitledeed)
+    })}
   async save() {
     this.service
     .getLicencebyid(this.service.licenceData.Licence_Service_ID)
@@ -1536,6 +1553,13 @@ export class RecordComponent implements OnChanges {
     // this.Upload(Attachments.File);
   }
   async update() {
+    this.service.getUserRole().subscribe(async (response: UserRole[]) => {
+      this.userRoles = response;
+
+      const hasRequiredRoles = this.userRoles.some(userRole => 
+        this.rolesToCheck.includes(userRole.RoleId.toUpperCase())
+      );
+      if (hasRequiredRoles) {
     if (
       this.recordDocumnet.document_Number === null ||
       this.recordDocumnet.document_Number == ""
@@ -1552,6 +1576,10 @@ export class RecordComponent implements OnChanges {
       );
     }
     this.recordDocumnet.application_No = this.service.appnoForRecord;
+    
+this.recordDocumnet.updated_By=response[0].UserId
+this.recordDocumnet.updated_Date=new Date()
+    
     this.documentAddress = false;
     this.service.UpdateDocmentArcive(this.recordDocumnet).subscribe(
       async (message) => {
@@ -1623,7 +1651,15 @@ export class RecordComponent implements OnChanges {
           );
         }
       }
-    );
+    );}
+    else{
+      const toast = this.notificationsService.error(
+        "Error",
+        "you don't have record officer role"
+      );
+      return
+    }
+  })
   }
   async getEthiopianToGregorian(date) {
     console.log("checkingdate", date);
@@ -2184,6 +2220,7 @@ export class RecordDocumnet {
   public updated_Date;
   public deleted_Date;
   public is_all_hardcopy_uploaded;
+  public old_title_deed_no
 }
 export class AddRecord {
   public task;
@@ -2238,4 +2275,8 @@ export interface ApplicationData {
   Updated_Date: string | null; // Assuming this is always present and in ISO date format
   Wereda_ID: number;
  
+}
+interface UserRole {
+  UserId: string;
+  RoleId: string;
 }

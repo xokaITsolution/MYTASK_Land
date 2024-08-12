@@ -36,6 +36,7 @@ export class LeaseContractService {
    environment.rootPathApi +
    "proc_Payment_Plan?Lease_cdoe=";
     getWithdrawpropose1 = environment.rootPathApi+'view/View_Withdraw_propose'
+    get_withdraw1 = environment.rootPathApi+'view/View_withdraw_prop_active/Lease_Code?Licence_Service_Id='
     private getwithpropbyId1 =
     environment.rootPathApi +
     "proc_withdraw_propose/proc_withdraw_propose?";
@@ -108,6 +109,9 @@ export class LeaseContractService {
    }
   getWithdrawpropose() {
     return this.http.get(this.getWithdrawpropose1)
+   }
+   get_withdraw(id) {
+    return this.http.get(this.get_withdraw1+id)
    }
   insert_data_proc_Lease_to_Lease( data: any) {
     // debugger

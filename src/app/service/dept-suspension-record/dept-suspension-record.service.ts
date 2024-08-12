@@ -10,7 +10,10 @@ export class DeptSuspensionRecordService {
   private DeptSuspensionURLapi =
     environment.rootPathApi +
     "Debt_Suspension_Record/procDebt_Suspension_Record"; // URL to web api
-
+    private DeptSuspensionURLapi1 =
+    environment.rootPathApi +
+    "Debt_Suspension_Record/procDebt_Suspension_Record/Title_Deed_No/"; // URL to web api
+   
   constructor(private http: HttpClient) {}
 
   getAll(certefcatversionID) {
@@ -39,5 +42,8 @@ export class DeptSuspensionRecordService {
   }
   getAllapi(data) {
     return this.http.get<any[]>(this.DeptSuspensionURLapi + "/" + data);
+  }
+  getAllapi1(data,titledeed) {
+    return this.http.get<any[]>(this.DeptSuspensionURLapi1 + titledeed + "?ID="+ data);
   }
 }

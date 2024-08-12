@@ -76,8 +76,28 @@ export class DeptSuspensionRecordComponent implements OnChanges {
     );
   }
   getdeed(Version_ID) {
+debugger
+    if (this.serviceService.Service_ID=="5c0e5d6b-000e-4928-a370-7a5b06b313f8"){
+      this.deptSuspensionRecordService.getAllapi1(Version_ID,this.Selectedcert.title_Deed_No).subscribe(
+        (deptSuspension) => {
+          debugger
+          let a;
+          a = deptSuspension;
+          this.deptSuspensionRecordList = Object.assign(
+            [],
+            a.procDebt_Suspension_Records
+          );
+          console.log("this.deptSuspensionRecord", this.deptSuspensionRecordList);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    }
+    else{
     this.deptSuspensionRecordService.getAllapi(Version_ID).subscribe(
       (deptSuspension) => {
+        debugger
         let a;
         a = deptSuspension;
         this.deptSuspensionRecordList = Object.assign(
@@ -90,6 +110,7 @@ export class DeptSuspensionRecordComponent implements OnChanges {
         console.log(error);
       }
     );
+  }
   }
 
   checkRelease() {

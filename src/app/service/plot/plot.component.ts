@@ -7,7 +7,7 @@ import {
   TemplateRef,
 } from "@angular/core";
 import { ServiceService } from "../service.service";
-import {PlatformLocation, PlotManagment} from "../plot-managment/plot-managment.component";
+import { PlatformLocation, PlotManagment } from "../plot-managment/plot-managment.component";
 import { ServiceComponent } from "../service.component";
 import { NotificationsService } from "angular2-notifications";
 import { environment } from "src/environments/environment";
@@ -19,6 +19,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CookieService } from "ngx-cookie-service/cookie-service/cookie.service";
 import { PloatManagmentService } from "../plot-managment/ploat-managment.service";
 import { error } from "console";
+import { LeaseContractService } from "src/app/lease-contract/lease-contract.service";
 
 @Component({
   selector: "app-plot",
@@ -81,8 +82,9 @@ export class PlotComponent implements OnChanges {
   plotlocshow: any;
   leaseholdGIs: any[];
   freeholdGIs: any[];
+  proposeList: any[] = [];
   showdialogee: boolean;
-  ishaveplotlocation: boolean=false;
+  ishaveplotlocation: boolean = false;
   isInclusion: boolean;
   PlotManagementListfinaldraft: any;
   is_drafted: boolean;
@@ -90,7 +92,7 @@ export class PlotComponent implements OnChanges {
   identifierssplit = [
     '5DE49606-4DC6-4FB1-8F37-0CFC948FDC83'.toLocaleLowerCase(),
     '793B8814-F845-429E-A472-DC47E797D3FE'.toLocaleLowerCase()
-    
+
   ];
   constructor(
     public serviceService: ServiceService,
@@ -100,9 +102,9 @@ export class PlotComponent implements OnChanges {
     private modalsService: NgbModal,
     private cookieService: CookieService,
     private ploatManagmentService: PloatManagmentService,
-
+    private _service: LeaseContractService,
     private leaseOwnerShipService: LeaseOwnerShipService
-  ) {}
+  ) { }
   changingValue: Subject<boolean> = new Subject();
   ngOnChanges() {
     this.serviceService.allLicenceData = this.LicenceData;
@@ -126,15 +128,15 @@ export class PlotComponent implements OnChanges {
     );
     if (
       this.serviceService.Service_ID ===
-        "de330170-550b-4bf2-9908-dc557f92a7cc" ||
+      "de330170-550b-4bf2-9908-dc557f92a7cc" ||
       this.serviceService.Service_ID === "449a14bd-e0c0-4eda-92f5-68b3fcf83433"
     ) {
       this.serviceService.serviceisundoumneted = true;
     } else {
       this.serviceService.serviceisundoumneted = false;
     }
-    if (this.serviceService.Service_ID==='81F8770B-2C1E-4255-8BE1-341089703FA1'.toLocaleLowerCase()){
-      this.isInclusion=true
+    if (this.serviceService.Service_ID === '81F8770B-2C1E-4255-8BE1-341089703FA1'.toLocaleLowerCase()) {
+      this.isInclusion = true
     }
     this.PlotManagementListfinal = [];
     this.noinvalidplot = 0;
@@ -244,15 +246,15 @@ export class PlotComponent implements OnChanges {
       if (this.plotloc.length == 0) {
         console.log("plotloc:", this.plotloc);
         this.isfinished = false;
-        this.ishaveplotlocation=false
+        this.ishaveplotlocation = false
         this.platformLocation = new PlatformLocation();
-        this.platformLocation.ploteId=this.serviceService.selectedplotid
+        this.platformLocation.ploteId = this.serviceService.selectedplotid
         this.isplotllocnew = true;
       } else {
-      
+
         this.platformLocation = this.plotloc[0];
         console.log("plotloc:plotloc:", this.plotloc[0]);
-        this.ishaveplotlocation=true
+        this.ishaveplotlocation = true
         // Check if the plot_ID has already been processed before calling the method
         if (!this.processedPlotIDsCoordinates.has(plot_ID)) {
           this.convertPolygonCoordinates(
@@ -566,7 +568,7 @@ export class PlotComponent implements OnChanges {
     window.URL.revokeObjectURL(url);
   }
   updateplotloc() {
-    if (this.serviceService.Licence_Service_ID != this.serviceService.LicenceserviceID){
+    if (this.serviceService.Licence_Service_ID != this.serviceService.LicenceserviceID) {
       const toast = this.notificationsService.error(
         "Error",
         "this plot created by other technical officer so you can't update it /ይህ ፕሎት በሌላ ቴክኒካል ኦፊሰር የተፈጠረ ስለሆነ ማዘመን አይችሉም"
@@ -634,7 +636,7 @@ export class PlotComponent implements OnChanges {
 
             const areaDifferences = Math.abs(
               this.SelectedPlot.plot_Size_M2 -
-                (leaseHoldM2Valuesize + freeHoldM2Valuesize)
+              (leaseHoldM2Valuesize + freeHoldM2Valuesize)
             );
 
             if (areaDifferences <= maxAreaDifferences) {
@@ -645,9 +647,9 @@ export class PlotComponent implements OnChanges {
                 `the plot location size on the map different from the sum lease hold and free hold so you have to update lease ownership\
           በካርታው ላይ ያለው የቦታ መጠን ከድምሩ የሊዝ ይዞታ እና ነፃ መያዣ የተለየ ስለሆነ የሊዝ ባለቤትነትን ማዘመን አለብዎት
            ${Math.abs(
-             this.SelectedPlot.plot_Size_M2 -
-               (leaseHoldM2Valuesize + freeHoldM2Valuesize)
-           )}`
+                  this.SelectedPlot.plot_Size_M2 -
+                  (leaseHoldM2Valuesize + freeHoldM2Valuesize)
+                )}`
               );
             }
             this.ismodaEnable = false;
@@ -658,10 +660,9 @@ export class PlotComponent implements OnChanges {
             console.log("error");
             const toast = this.notificationsService.error(
               "error",
-              `unable to Update ${
-                error["status"] == 0
-                  ? error["message"]
-                  : JSON.stringify(JSON.stringify(error["error"]))
+              `unable to Update ${error["status"] == 0
+                ? error["message"]
+                : JSON.stringify(JSON.stringify(error["error"]))
               }`
             );
           }
@@ -731,10 +732,9 @@ export class PlotComponent implements OnChanges {
             console.log("error");
             const toast = this.notificationsService.error(
               "error",
-              `unable to Update ${
-                error["status"] == 0
-                  ? error["message"]
-                  : JSON.stringify(JSON.stringify(error["error"]))
+              `unable to Update ${error["status"] == 0
+                ? error["message"]
+                : JSON.stringify(JSON.stringify(error["error"]))
               }`
             );
           }
@@ -765,7 +765,7 @@ export class PlotComponent implements OnChanges {
               } else if (
                 element.roleId == "3ba734c5-d75a-44c7-8c47-5233431372ba" ||
                 element.roleId ==
-                  "1A4A2E38-E6A2-45CE-9BFB-B44B7541618C".toLocaleLowerCase()
+                "1A4A2E38-E6A2-45CE-9BFB-B44B7541618C".toLocaleLowerCase()
               ) {
                 console.log(
                   "🚀 ~ file: plot-managment.component.ts:822 ~ response.forEach ~ element:",
@@ -810,10 +810,9 @@ export class PlotComponent implements OnChanges {
             console.log("error");
             const toast = this.notificationsService.error(
               "error",
-              `unable to Save ${
-                error["status"] == 0
-                  ? error["message"]
-                  : JSON.stringify(JSON.stringify(error["error"]))
+              `unable to Save ${error["status"] == 0
+                ? error["message"]
+                : JSON.stringify(JSON.stringify(error["error"]))
               }`
             );
           }
@@ -935,7 +934,7 @@ export class PlotComponent implements OnChanges {
         polygonPoints[0][2] !== polygonPoints[polygonPoints.length - 1][2]
       ) {
         // Indicate an invalid polygon
-        const toast = this.notificationsService.error( "Invalid polygon: The first and last points must be the same.")
+        const toast = this.notificationsService.error("Invalid polygon: The first and last points must be the same.")
       }
 
       // Remove the last point if it's identical to the first point
@@ -1000,26 +999,52 @@ export class PlotComponent implements OnChanges {
   }
 
   getPloat() {
+    // debugger
     this.PlotManagementListfinal = [];
-    if (this.LicenceData.Licence_Service_ID) {
-      console.log("geting ploat this.Parcel_ID", this.Parcel_ID);
-      this.getPlotManagement(this.Parcel_ID);
+    if (this.serviceService.Service_ID = '5C0E5D6B-000E-4928-A370-7A5B06B313F8') {
+      if (this.LicenceData.Licence_Service_ID) {
+        this._service.get_withdraw(this.LicenceData.Licence_Service_ID).subscribe(data => {
+          debugger; // Check what data is here
+          if (data) {
+              if (Array.isArray(data)) {
+                  debugger; // Check if we enter this block
+                  for (let i = 0; i < data.length; i++) {
+                      debugger; // Check if we enter the loop
+                      this.getPlotManagement(data[i].plot_ID);
+                  }
+              } else {
+                  debugger; // Check if data is not an array
+                  this.proposeList = [data];
+                  this.notificationsService.error(
+                      "No plot is proposed"
+                  );
+              }
+          }
+      });
+      
+      }
     }
-    if (this.Parcel_mearge1 ) {
-      console.log("geting ploat this.Parcel_mearge1", this.Parcel_mearge1);
-      this.getPlotManagement(this.Parcel_mearge1);
-    }
-    if (this.Parcel_mearge2) {
-      console.log("geting ploat this.Parcel_mearge2", this.Parcel_mearge2);
-      this.getPlotManagement(this.Parcel_mearge2);
-    }
-    if (this.Parcel_mearge3) {
-      console.log("geting ploat this.Parcel_mearge3", this.Parcel_mearge3);
-      this.getPlotManagement(this.Parcel_mearge3);
-    }
-    if (this.Parcel_mearge4) {
-      console.log("geting ploat this.Parcel_mearge4", this.Parcel_mearge4);
-      this.getPlotManagement(this.Parcel_mearge4);
+    else {
+      if (this.LicenceData.Licence_Service_ID) {
+        console.log("geting ploat this.Parcel_ID", this.Parcel_ID);
+        this.getPlotManagement(this.Parcel_ID);
+      }
+      if (this.Parcel_mearge1) {
+        console.log("geting ploat this.Parcel_mearge1", this.Parcel_mearge1);
+        this.getPlotManagement(this.Parcel_mearge1);
+      }
+      if (this.Parcel_mearge2) {
+        console.log("geting ploat this.Parcel_mearge2", this.Parcel_mearge2);
+        this.getPlotManagement(this.Parcel_mearge2);
+      }
+      if (this.Parcel_mearge3) {
+        console.log("geting ploat this.Parcel_mearge3", this.Parcel_mearge3);
+        this.getPlotManagement(this.Parcel_mearge3);
+      }
+      if (this.Parcel_mearge4) {
+        console.log("geting ploat this.Parcel_mearge4", this.Parcel_mearge4);
+        this.getPlotManagement(this.Parcel_mearge4);
+      }
     }
   }
   async getEthiopianToGregorian(date) {
@@ -1030,6 +1055,7 @@ export class PlotComponent implements OnChanges {
       console.log(datenow);
       return datenow.nowTime;
     }
+
   }
   async getgregorianToEthiopianDate(date) {
     if (date != "0001-01-01T00:00:00") {
@@ -1041,7 +1067,7 @@ export class PlotComponent implements OnChanges {
     }
   }
 
-  
+
   Savetempora() {
     console.log(
       "ischeckPlotaev",
@@ -1052,7 +1078,7 @@ export class PlotComponent implements OnChanges {
     if (this.serviceService.coordinate) {
       this.storeData();
       this.setCookies(this.serviceService.coordinate);
-      
+
       this.AddPLot();
       this.ischeckPlotaev = false;
       this.ismodaEnable = false;
@@ -1097,6 +1123,7 @@ export class PlotComponent implements OnChanges {
     return this.serviceService.coordinatetemp;
   }
   calculettotal() {
+    debugger
     if (this.PlotManagementListfinal.length > 0) {
       this.serviceService.totalsizeformerage =
         this.PlotManagementListfinal.reduce((sum, node) => {
@@ -1117,6 +1144,7 @@ export class PlotComponent implements OnChanges {
 
     this.serviceService.getPlotManagementApi(Licence_Service_ID).subscribe(
       async (PlotManagementLists: any) => {
+        debugger
         let PlotManagementList = PlotManagementLists.procPlot_Registrations;
         if (PlotManagementList.length > 0) {
           this.PlotManagementList = this.removeDuplicates(PlotManagementList);
@@ -1148,12 +1176,12 @@ export class PlotComponent implements OnChanges {
           const element = this.PlotManagementListfinal[index];
           if (element.plot_Status == 1 || element.plot_Status == 2017 || element.plot_Status == 2) {
             this.PlotManagementListfinal = this.PlotManagementListfinal.filter(
-              (x) => x.plot_Status == 1   || x.plot_Status == 2017 || x.plot_Status == 2 
+              (x) => x.plot_Status == 1 || x.plot_Status == 2017 || x.plot_Status == 2
             );
           }
         }
         this.PlotManagementListfinal = this.PlotManagementListfinal.filter(
-          (x) => x.plot_Status != 2019 || x.plot_Status!='ErrorPlot'
+          (x) => x.plot_Status != 2019 || x.plot_Status != 'ErrorPlot'
         );
 
         console.log("PlotManagementList", this.PlotManagementListfinal);
@@ -1162,7 +1190,7 @@ export class PlotComponent implements OnChanges {
           this.PlotManagementList,
           this.serviceService.Service_ID
         );
-       
+
         if (this.PlotManagementListfinal.length > 0) {
           if (this.serviceService.multipleplotcanbeadd) {
             let filterservice = this.serviceService.multipleplotcanbeadd.filter(
@@ -1174,7 +1202,7 @@ export class PlotComponent implements OnChanges {
               this.multipleplotcanbeadd = false;
             }
           }
-        }else{
+        } else {
           //this.getdrafted()
         }
       },
@@ -1252,23 +1280,23 @@ export class PlotComponent implements OnChanges {
     return uniqueArray;
   }
   async SelectPLot(plot) {
-    this.ishaveplotlocation=false
+    this.ishaveplotlocation = false
     this.SelectedPlot = plot;
     this.serviceService.fornewplotinsert = false;
     console.log("dfghgfd", plot);
     this.plot_ID = this.SelectedPlot.plot_ID;
     this.serviceService.selectedplotid = this.plot_ID;
-    this.Parcel_ID= this.serviceService.selectedplotid
+    this.Parcel_ID = this.serviceService.selectedplotid
     this.serviceService.Totalarea = this.SelectedPlot.plot_Size_M2;
 
-    if(this.LicenceData.Parcel_ID != null){
-      plot.sdP_ID=this.getSDPID(this.LicenceData.Parcel_ID);
+    if (this.LicenceData.Parcel_ID != null) {
+      plot.sdP_ID = this.getSDPID(this.LicenceData.Parcel_ID);
     }
-    else{
+    else {
       plot.SDP_ID = this.serviceComponent.licenceData.SDP_ID;
     }
     plot.Licence_Service_ID = this.LicenceData.Licence_Service_ID;
-    this.serviceService.Licence_Service_ID=this.SelectedPlot.Licence_Service_ID    ;
+    this.serviceService.Licence_Service_ID = this.SelectedPlot.Licence_Service_ID;
     plot.Application_No = this.AppNo;
     if (this.language != "amharic") {
       plot.registration_Date = plot.registration_Date.split("T")[0];
@@ -1298,7 +1326,7 @@ export class PlotComponent implements OnChanges {
         this.getplotlocbyid(element.plot_ID);
         // Add the plot_ID to the set of processed plot IDs
         this.processedPlotIDs.add(element.plot_ID);
-   
+
       }
     });
   }
@@ -1406,21 +1434,21 @@ export class PlotComponent implements OnChanges {
   //   }
   // }
   AddPLot() {
-  
+
     this.serviceService.toMes = true;
     this.isnew = true;
     this.plotForm = true;
     const plot = new PlotManagment();
-    if(this.LicenceData.Parcel_ID != null){
-      plot.sdP_ID=this.getSDPID(this.LicenceData.Parcel_ID);
+    if (this.LicenceData.Parcel_ID != null) {
+      plot.sdP_ID = this.getSDPID(this.LicenceData.Parcel_ID);
     }
-    else{
+    else {
 
       plot.sdP_ID = this.LicenceData.SDP_ID;
     }
     plot.licence_Service_ID = this.LicenceData.Licence_Service_ID;
     plot.application_No = this.AppNo;
-  
+
     const parcelIds = [
       this.Parcel_ID,
       this.Parcel_mearge1,
@@ -1428,35 +1456,34 @@ export class PlotComponent implements OnChanges {
       this.Parcel_mearge3,
       this.Parcel_mearge4,
     ].filter(id => id !== null && id !== undefined);
-    let plotfilter=this.PlotManagementListfinal.filter(x=>x.plot_Status==1)
+    let plotfilter = this.PlotManagementListfinal.filter(x => x.plot_Status == 1)
     // console.log("🚀 ~ PlotComponent ~ AddPLot ~ parcelIds:", parcelIds ,
     //   plotfilter.length
     // )
-    
+
     for (let i = 0; i <= parcelIds.length; i++) {
-      let count=plotfilter.length
+      let count = plotfilter.length
       // console.log("🚀 ~ PlotComponent ~ AddPLot ~ i:",
       //   count,
       //    i)
       if (count == i) {
         // console.log("🚀 ~ PlotComponent ~ AddPLot ~ i:", parcelIds[i])
-            
+
         plot.plot_ID = parcelIds[i];
-        if (this.isInIdentifiers(this.serviceService.Service_ID ))
-          {
+        if (this.isInIdentifiers(this.serviceService.Service_ID)) {
           this.OnParcle = -1
-        }else{
+        } else {
 
           this.OnParcle = i;
           console.log("🚀 ~ PlotComponent ~ AddPLot ~ OnParcle:", this.OnParcle)
-          
+
         }
-    
+
         this.SelectedPlot = plot;
         return;
       }
     }
-  
+
     this.SelectedPlot = plot;
   }
   isvalidated() {
@@ -1467,7 +1494,7 @@ export class PlotComponent implements OnChanges {
       this.Parcel_mearge3,
       this.Parcel_mearge4,
     ];
-  
+
     parcelIds.forEach((parcelId, index) => {
       if (parcelId) {
         console.log(`validating plot parcelId ${parcelId}`);
@@ -1484,7 +1511,7 @@ export class PlotComponent implements OnChanges {
   getSDPID(plotId: string): string | null {
     const letters = plotId.match(/^[A-Za-z_-]+/g)[0] || '';
     console.log("🚀 ~ getSDPID ~ letters:", letters)
-    
+
 
     switch (letters) {
       case 'AR':
@@ -1523,19 +1550,19 @@ export class PlotComponent implements OnChanges {
         return this.serviceService.currentsdpid
     }
   }
-  Selectdelete(plot){
-  
-    plot.plot_Status=2019
+  Selectdelete(plot) {
+
+    plot.plot_Status = 2019
     const mappedPlot = plot
     console.log("🚀 ~ PlotComponent ~ Selectdelete ~ plot:", mappedPlot)
     this.ploatManagmentService.save(plot).subscribe(
       (deptSuspension) => {
-    
+
         const toast = this.notificationsService.success(
           "Sucess drafted delete"
         );
         // this.serviceService.disablefins=false
-       this.getdrafted()
+        this.getdrafted()
       },
       (error) => {
         console.log(error);
@@ -1551,22 +1578,22 @@ export class PlotComponent implements OnChanges {
       }
     )
   }
-  getdrafted(){
+  getdrafted() {
     this.serviceService.getplotregisttionlistderaft(this.AppNo).subscribe((response: any) => {
       this.PlotManagementListfinaldraft = response.procPlot_Registrations;
       this.PlotManagementListfinaldraft = this.PlotManagementListfinaldraft.filter(
         (item) => !this.PlotManagementListfinal.some(finalItem => finalItem.plot_ID === item.plot_ID)
       );
-      
-      if( this.PlotManagementListfinaldraft.length > 0 ){
-      this.is_drafted=true
-      this.is_draftednotfound=false
-     }else{
-      this.is_drafted=false
-      this.is_draftednotfound=true
-     }
-    },error=>{
-      this.is_draftednotfound=true
+
+      if (this.PlotManagementListfinaldraft.length > 0) {
+        this.is_drafted = true
+        this.is_draftednotfound = false
+      } else {
+        this.is_drafted = false
+        this.is_draftednotfound = true
+      }
+    }, error => {
+      this.is_draftednotfound = true
     })
   }
 
@@ -1622,28 +1649,28 @@ export class PlotComponent implements OnChanges {
   //     );
   //   }
   // }
-// isvalidated() {
-//   const parcelIds = [
-//     this.Parcel_ID,
-//     this.Parcel_mearge1,
-//     this.Parcel_mearge2,
-//     this.Parcel_mearge3,
-//     this.Parcel_mearge4,
-//   ];
+  // isvalidated() {
+  //   const parcelIds = [
+  //     this.Parcel_ID,
+  //     this.Parcel_mearge1,
+  //     this.Parcel_mearge2,
+  //     this.Parcel_mearge3,
+  //     this.Parcel_mearge4,
+  //   ];
 
-//   parcelIds.forEach((parcelId, index) => {
-//     if (parcelId) {
-//       console.log(`validating plot parcelId ${parcelId}`);
-//       this.isisvalidated(
-//         this.todoid,
-//         this.tskID,
-//         parcelId,
-//         "00000000-0000-0000-0000-000000000000",
-//         this.DocID
-//       );
-//     }
-//   });
-// }
+  //   parcelIds.forEach((parcelId, index) => {
+  //     if (parcelId) {
+  //       console.log(`validating plot parcelId ${parcelId}`);
+  //       this.isisvalidated(
+  //         this.todoid,
+  //         this.tskID,
+  //         parcelId,
+  //         "00000000-0000-0000-0000-000000000000",
+  //         this.DocID
+  //       );
+  //     }
+  //   });
+  // }
 
   getPlotStutusLookUP() {
     this.serviceService.getPlotStutusLookUP().subscribe(
@@ -1709,7 +1736,7 @@ export class PlotComponent implements OnChanges {
           if (Validated == "Validated") {
             this.noinvalidplot = this.noinvalidplot - 1;
             console.log("noinvalidplot", this.noinvalidplot);
-  
+
             if (this.noinvalidplot == 0) {
               if (!this.Saved) {
                 this.Saved = true;
@@ -1725,7 +1752,7 @@ export class PlotComponent implements OnChanges {
         }
       );
   }
-  
+
   EnableFins() {
     this.getPloat();
     this.isvalidated();
@@ -1786,11 +1813,11 @@ export class PlotComponent implements OnChanges {
   //   this.PlotManagementListfinal = [];
   //   // this.getPloat();
   // }
-  
+
   EnableFinsPloat(Parcel) {
     console.log("FinalPLoat", Parcel);
     this.plotId = Parcel.plot_ID;
-  
+
     const parcelProperties = [
       'Parcel_ID',
       'Plot_Merge_1',
@@ -1798,21 +1825,21 @@ export class PlotComponent implements OnChanges {
       'Plot_Merge_3',
       'Plot_Merge_4',
     ];
-  
-    if (this.OnParcle !== -1 ) {
+
+    if (this.OnParcle !== -1) {
       this[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
       this.LicenceData[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
     } else {
-        if(this.serviceService.Service_ID=='8A8588AE-0267-48B7-88AC-F3F18AC02167'.toLocaleLowerCase()){
+      if (this.serviceService.Service_ID == '8A8588AE-0267-48B7-88AC-F3F18AC02167'.toLocaleLowerCase()) {
 
-          this[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
-          this.LicenceData[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
-        }else{
-          this.Parcel_ID = Parcel.plot_ID;
-          this.LicenceData.Parcel_ID = Parcel.plot_ID;
-        }
+        this[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
+        this.LicenceData[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
+      } else {
+        this.Parcel_ID = Parcel.plot_ID;
+        this.LicenceData.Parcel_ID = Parcel.plot_ID;
+      }
     }
-  
+
     console.log("Licence", this.LicenceData);
     this.serviceService.UpdateLicence(this.LicenceData).subscribe(
       (Licence) => {
@@ -1829,7 +1856,7 @@ export class PlotComponent implements OnChanges {
     );
     this.PlotManagementListfinal = [];
   }
-  
+
   EnableFinsPloatuupdate(Parcel) {
     // console.log("FinalPLoat", Parcel);
     // //console.log("FinalPLoat ID", Parcel.plot_ID);
@@ -1904,15 +1931,16 @@ export class PlotComponent implements OnChanges {
       } else {
         if (
           "47BA2A09-33F8-4553-A1A1-3D11A031B056".toLocaleLowerCase() !=
-            this.serviceService.Service_ID ||
+          this.serviceService.Service_ID ||
           "2B1FC99A-9705-4799-96B9-164BD3B1077E".toLocaleLowerCase() !=
-            this.serviceService.Service_ID
+          this.serviceService.Service_ID
         ) {
           this.leaseOwnerShipService
             .getAllapi(this.plot_ID)
             .subscribe((CertificateVersion: any) => {
               let tasks = CertificateVersion;
               tasks = Object.assign([], tasks.procLease_and_Owned_Lands);
+
               const uniquePlotIDs = new Set();
               const totalsize = tasks
                 .filter((x) => parseInt(x.status) === 1)
@@ -1934,7 +1962,10 @@ export class PlotComponent implements OnChanges {
               );
 
               if (tasks.length > 0) {
+                debugger
                 if (this.serviceService.Totalarea == this.serviceService.Totalarea) {
+                  console.log("ggggg", this.serviceService.LicenceserviceID);
+
                   this.serviceService
                     .GetPlotValidationURL(
                       this.serviceService.LicenceserviceID,
@@ -2038,8 +2069,8 @@ export class PlotComponent implements OnChanges {
       }
     }
 
- 
-    return  result 
+
+    return result
   }
 
   getplotlocbyidcheck(plot_ID) {
@@ -2047,14 +2078,14 @@ export class PlotComponent implements OnChanges {
     this.serviceService.getPlotloc(plot_ID).subscribe(async (response: any) => {
       this.plotlocshow = response.procPlot_Locations;
 
-      if ( this.plotlocshow.length == 0) {
-       
+      if (this.plotlocshow.length == 0) {
+
       } else {
-       
-        
+
+
         // Check if the plot_ID has already been processed before calling the method
         if (!this.processedPlotIDsCoordinatess.has(plot_ID)) {
-        this.leaseholdGIs= await this.getconvertPolygonCoordinates(
+          this.leaseholdGIs = await this.getconvertPolygonCoordinates(
             this.plotlocshow[0].geowithzone
           );
 
@@ -2062,19 +2093,19 @@ export class PlotComponent implements OnChanges {
             this.plotlocshow[0].geoForwgs84 != null &&
             this.plotlocshow[0].freholdgis
           ) {
-           this.freeholdGIs=await this.getconvertPolygonCoordinates(
+            this.freeholdGIs = await this.getconvertPolygonCoordinates(
               this.plotlocshow[0].geoForwgs84
             );
           }
 
-          console.log("plotloc:plotloc:show", this.plotlocshow[0] ,this.leaseholdGIs ,this.freeholdGIs);
+          console.log("plotloc:plotloc:show", this.plotlocshow[0], this.leaseholdGIs, this.freeholdGIs);
           // Add the plot_ID to the set of processed plot IDs
-          if(this.leaseholdGIs != undefined){
-            this.showdialogee=true
+          if (this.leaseholdGIs != undefined) {
+            this.showdialogee = true
           }
           this.processedPlotIDsCoordinatess.add(plot_ID);
         }
-       
+
       }
     });
   }
@@ -2085,7 +2116,7 @@ export class PlotComponent implements OnChanges {
     this.getPloat();
     this.CanDone = true;
   }
-  ListfinaldraftAll(Parcel){
+  ListfinaldraftAll(Parcel) {
     const parcelIds = [
       this.Parcel_ID,
       this.Parcel_mearge1,
@@ -2093,35 +2124,34 @@ export class PlotComponent implements OnChanges {
       this.Parcel_mearge3,
       this.Parcel_mearge4,
     ].filter(id => id !== null && id !== undefined);
-    let plotfilter=this.PlotManagementListfinal.filter(x=>x.plot_Status==1)
+    let plotfilter = this.PlotManagementListfinal.filter(x => x.plot_Status == 1)
     for (let i = 0; i <= parcelIds.length; i++) {
-      let count=plotfilter.length
+      let count = plotfilter.length
       // console.log("🚀 ~ PlotComponent ~ AddPLot ~ i:",
       //   count,
       //    i)
       if (count == i) {
         // console.log("🚀 ~ PlotComponent ~ AddPLot ~ i:", parcelIds[i])
-            
-        
-        if (this.isInIdentifiers(this.serviceService.Service_ID ))
-          {
+
+
+        if (this.isInIdentifiers(this.serviceService.Service_ID)) {
           this.OnParcle = -1
-        }else{
+        } else {
 
           this.OnParcle = i;
           console.log("🚀 ~ PlotComponent ~ AddPLot ~ OnParcle:", this.OnParcle)
-          
+
         }
-    
-         this.Listfinaldraft(Parcel)
+
+        this.Listfinaldraft(Parcel)
         return;
       }
     }
   }
   Listfinaldraft(Parcel) {
-    console.log("FinalPLoat", Parcel ,this.OnParcle);
+    console.log("FinalPLoat", Parcel, this.OnParcle);
     this.plotId = Parcel.plot_ID;
-  
+
     const parcelProperties = [
       'Parcel_ID',
       'Plot_Merge_1',
@@ -2129,28 +2159,28 @@ export class PlotComponent implements OnChanges {
       'Plot_Merge_3',
       'Plot_Merge_4',
     ];
-  
-    if (this.OnParcle !== -1 ) {
+
+    if (this.OnParcle !== -1) {
       this[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
       this.LicenceData[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
     } else {
-        if(this.serviceService.Service_ID=='8A8588AE-0267-48B7-88AC-F3F18AC02167'.toLocaleLowerCase()){
+      if (this.serviceService.Service_ID == '8A8588AE-0267-48B7-88AC-F3F18AC02167'.toLocaleLowerCase()) {
 
-          this[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
-          this.LicenceData[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
-        }else{
-          this.Parcel_ID = Parcel.plot_ID;
-          this.LicenceData.Parcel_ID = Parcel.plot_ID;
-        }
+        this[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
+        this.LicenceData[parcelProperties[this.OnParcle]] = Parcel.plot_ID;
+      } else {
+        this.Parcel_ID = Parcel.plot_ID;
+        this.LicenceData.Parcel_ID = Parcel.plot_ID;
+      }
     }
-  
+
     console.log("Licence", this.LicenceData);
     this.serviceService.UpdateLicence(this.LicenceData).subscribe(
       (Licence) => {
         const toast = this.notificationsService.success(
           "Sucess drafted continue"
         );
-         this.getdrafted()
+        this.getdrafted()
         if (this.isnew) {
           this.SelectedPlot = Parcel;
           this.toLease = true;
@@ -2165,4 +2195,3 @@ export class PlotComponent implements OnChanges {
     this.PlotManagementListfinal = [];
   }
 }
- 
