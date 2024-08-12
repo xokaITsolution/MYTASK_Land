@@ -85,7 +85,7 @@ export class PropertyComponent implements OnChanges {
   ) {}
 
   ngOnChanges() {
-    // debugger
+    // 
     if (environment.Lang_code === "am-et") {
       this.language = "amharic";
     } else {
@@ -165,19 +165,19 @@ export class PropertyComponent implements OnChanges {
   }
   getPloat() {
     this.PlotManagementListfinal = [];
-    if (this.serviceService.Service_ID = '5C0E5D6B-000E-4928-A370-7A5B06B313F8') {
+    if (this.serviceService.Service_ID == '5C0E5D6B-000E-4928-A370-7A5B06B313F8') {
       if (this.LicenceData.Licence_Service_ID) {
         this._service.get_withdraw(this.LicenceData.Licence_Service_ID).subscribe(data => {
-          debugger; // Check what data is here
+          ; // Check what data is here
           if (data) {
               if (Array.isArray(data)) {
-                  debugger; // Check if we enter this block
+                  ; // Check if we enter this block
                   for (let i = 0; i < data.length; i++) {
-                      debugger; // Check if we enter the loop
+                      ; // Check if we enter the loop
                       this.getPlotManagement(data[i].plot_ID);
                   }
               } else {
-                  debugger; // Check if data is not an array
+                  ; // Check if data is not an array
                   this.proposeList = [data];
                   this.notificationsService.error(
                       "No plot is proposed"
@@ -244,10 +244,10 @@ export class PropertyComponent implements OnChanges {
   }
   getPlotManagement(Licence_Service_ID) {
     let a;
-// debugger
+// 
     this.serviceService.getPlotManagementApi(Licence_Service_ID).subscribe(
       async (PlotManagementLists: any) => {
-        // debugger
+        // 
         let PlotManagementList = PlotManagementLists.procPlot_Registrations;
         if (PlotManagementList.length > 0) {
           this.PlotManagementList = this.removeDuplicates(PlotManagementList);
@@ -1535,7 +1535,7 @@ export class PropertyComponent implements OnChanges {
                   // );
 
                   if (!isnullplot) {
-                    // debugger
+                    // 
                     this.serviceService
             .GetProportyValidationURL(this.serviceService.LicenceserviceID)
             .subscribe((message:any) => {

@@ -999,9 +999,9 @@ export class PlotComponent implements OnChanges {
   }
 
   getPloat() {
-    // debugger
+    debugger
     this.PlotManagementListfinal = [];
-    if (this.serviceService.Service_ID = '5C0E5D6B-000E-4928-A370-7A5B06B313F8') {
+    if (this.serviceService.Service_ID == '5C0E5D6B-000E-4928-A370-7A5B06B313F8') {
       if (this.LicenceData.Licence_Service_ID) {
         this._service.get_withdraw(this.LicenceData.Licence_Service_ID).subscribe(data => {
           debugger; // Check what data is here

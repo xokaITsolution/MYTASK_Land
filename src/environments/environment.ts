@@ -19,7 +19,7 @@ export const environment = {
   formPath: window["formPath"],
   city: window["city"], 
   
-  // username: "Tech_Officer",
+  username: "ar_Tech_leader",
   // username: "EteneshSaleyesus", 
   // cn_land_expleader
   // username: "cn_land_expleader",
@@ -30,7 +30,7 @@ export const environment = {
   numberOfpick: window["numberOfpick"],
   // username: "lease_cashier",
   // username: "cn_land_expleader ",
-  username: "cn_Tech_officer",
+  // username: "cn_Tech_officer",
   // username: "cn_land_exp",
   appbase: window["_app_base"],
   location: window["locations"],
