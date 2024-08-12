@@ -118,6 +118,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     return mappedArray;
   }
   async ngOnChanges() {
+    // debugger
     this.routerService.params.subscribe((params) => {
       this.urlParams = params;
     });

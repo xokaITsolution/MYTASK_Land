@@ -21,6 +21,7 @@ import {
   PropformLocation,
 } from "../property-register/property-register.component";
 import { truncate } from "fs";
+import { LeaseContractService } from "src/app/lease-contract/lease-contract.service";
 @Component({
   selector: "app-property",
   templateUrl: "./property.component.html",
@@ -72,17 +73,19 @@ export class PropertyComponent implements OnChanges {
     "de4937d8-bdcd-46d6-8749-dc31c9f3adcf" ,
     "81F8770B-2C1E-4255-8BE1-341089703FA1".toLocaleLowerCase()
   ];
+  proposeList: any[];
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
     private notificationsService: NotificationsService,
-
+    private _service: LeaseContractService,
     private leaseOwnerShipService: LeaseOwnerShipService,
     private measurmentService: MeasurmentService,
     private titleDeedRegistrationService: TitleDeedRegistrationService
   ) {}
 
   ngOnChanges() {
+    // debugger
     if (environment.Lang_code === "am-et") {
       this.language = "amharic";
     } else {
@@ -161,6 +164,31 @@ export class PropertyComponent implements OnChanges {
     }
   }
   getPloat() {
+    this.PlotManagementListfinal = [];
+    if (this.serviceService.Service_ID = '5C0E5D6B-000E-4928-A370-7A5B06B313F8') {
+      if (this.LicenceData.Licence_Service_ID) {
+        this._service.get_withdraw(this.LicenceData.Licence_Service_ID).subscribe(data => {
+          debugger; // Check what data is here
+          if (data) {
+              if (Array.isArray(data)) {
+                  debugger; // Check if we enter this block
+                  for (let i = 0; i < data.length; i++) {
+                      debugger; // Check if we enter the loop
+                      this.getPlotManagement(data[i].plot_ID);
+                  }
+              } else {
+                  debugger; // Check if data is not an array
+                  this.proposeList = [data];
+                  this.notificationsService.error(
+                      "No plot is proposed"
+                  );
+              }
+          }
+      });
+      
+      }
+    }
+    else {
     if (this.LicenceData.Parcel_ID) {
       //this.completed.emit();
       console.log("geting ploat this.Parcel_ID", this.LicenceData.Parcel_ID);
@@ -193,7 +221,8 @@ export class PropertyComponent implements OnChanges {
         this.LicenceData.Plot_Merge_4
       );
       this.getPlotManagement(this.LicenceData.Plot_Merge_4);
-    }
+    }}
+    
   }
   async getEthiopianToGregorian(date) {
     if (date) {
@@ -215,9 +244,10 @@ export class PropertyComponent implements OnChanges {
   }
   getPlotManagement(Licence_Service_ID) {
     let a;
-
+// debugger
     this.serviceService.getPlotManagementApi(Licence_Service_ID).subscribe(
       async (PlotManagementLists: any) => {
+        // debugger
         let PlotManagementList = PlotManagementLists.procPlot_Registrations;
         if (PlotManagementList.length > 0) {
           this.PlotManagementList = this.removeDuplicates(PlotManagementList);
@@ -1505,7 +1535,7 @@ export class PropertyComponent implements OnChanges {
                   // );
 
                   if (!isnullplot) {
-                    debugger
+                    // debugger
                     this.serviceService
             .GetProportyValidationURL(this.serviceService.LicenceserviceID)
             .subscribe((message:any) => {
