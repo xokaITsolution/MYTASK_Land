@@ -122,14 +122,9 @@
                             *ngIf="(Remaining_lease_payment.invalid && submitted) || (Remaining_lease_payment.dirty && Remaining_lease_payment.invalid)"
                             class="p-error">Remaining lease payment is required.</small>
                     </div>
-                    <div class="field">
-                        <label for="isold">Is Old</label>
-                        <input 
-                            id="isold" 
-                            type="checkbox" 
-                            [(ngModel)]="leasePaymentHeadDetail.Is_old" 
-                        />
-                    </div>
+                   
+                       <!-- Conditional input field for input number when checkbox is checked -->
+                     
                 </div>
             </section>
         </div>

@@ -266,7 +266,6 @@ else{
     else {
       this._service.getDataBy_lease_code(appNo).subscribe(
         (response) => {
-          
           if (response["proc_Lease_Payment_Heads"].length > 0) {
             let data = response["proc_Lease_Payment_Heads"][0];
             this.leaserPaymentHead.Lease_code = data.lease_code;
@@ -401,7 +400,6 @@ else{
   // }
   async updateLeasPaymentHeadData() {
 
-    // 
     if (this.leaserPaymentHead.Date_of_final_lease_payment == null || this.leaserPaymentHead.Lease_Period_end_date == null) {
       var datenow = await this.ServiceService
         .getgregorianToEthiopianDate(new Date().toISOString().split('T')[0])
@@ -429,47 +427,7 @@ else{
       // Update Lease_period_in_Year
       this.leaserPaymentHead.Lease_period_in_Year = this.leaserPaymentHead.Lease_period_in_Year - yearDifference;
     }
-    // else if(this.contract_date_prev != this.leaserPaymentHead.Contract_date){
-    //   ;
-    //   const contractDateObj = new Date(this.leaserPaymentHead.Contract_date);
-    //   const ethiopianDateObj = new Date(this.contract_date_prev);
-    //   const Lease_Period_end = new Date(this.leaserPaymentHead.Lease_Period_end_date);
-
-    //    const contractYear = contractDateObj.getFullYear();
-    //    const ethiopianYear = ethiopianDateObj.getFullYear();
-    //    const yearDifference = ethiopianYear - contractYear;
-
-    //   // Create a copy of the contract date for Date_of_final_lease_payment
-    //   const Date_of_final_lease_payment = new Date(contractDateObj);
-    //   const Lease_Period = new Date(contractDateObj);
-    //   // Create a copy of the contract date for Lease_Period_end_date
-    //   const Lease_Period_end_date = new Date(Lease_Period_end);
-
-    //   // Adjust Date_of_final_lease_payment by adding lease_period_prev
-    //   Date_of_final_lease_payment.setFullYear(Date_of_final_lease_payment.getFullYear() + this.lease_period_prev);
-    //   this.leaserPaymentHead.Date_of_final_lease_payment = Date_of_final_lease_payment;
-
-    //   // Adjust Lease_Period_end_date by adding Lease_period_in_Year
-    //   const year = Lease_Period_end_date.getFullYear() - (yearDifference);
-    //   Lease_Period.setFullYear(year);
-
-    //   this.leaserPaymentHead.Lease_Period_end_date = Lease_Period;
-    //   // Update Lease_period_in_Year
-    //   this.leaserPaymentHead.Lease_period_in_Year = this.leaserPaymentHead.Lease_period_in_Year - yearDifference;
-
-    //   // Format dates as day/month/year
-    //   const formatDate = (dateObj) => {
-    //     const day = String(dateObj.getDate()).padStart(2, '0');
-    //     const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    //     const year = dateObj.getFullYear();
-    //     return `${day}/${month}/${year}`;
-    //   };
-
-    //   this.leaserPaymentHead.Contract_date = formatDate(contractDateObj);
-    //   this.leaserPaymentHead.Date_of_final_lease_payment = formatDate(Date_of_final_lease_payment);
-    //   this.leaserPaymentHead.Lease_Period_end_date = formatDate(Lease_Period);
-    // }
-
+ 
     else if (this.contract_date_prev != this.leaserPaymentHead.Contract_date) {
       
       const contractDateObj = new Date(this.leaserPaymentHead.Contract_date);
@@ -509,6 +467,7 @@ else{
       (response) => {
         this.notificationsService.success("Success", "Successfully Updated");
         this.completed.emit();
+        this._service.updated=true;
         this.getLeasPaymentHeadData(this.leaserPaymentHead.Lease_code);
         this.leaserPaymentHead.Transfer_type = this.Deed_Transfer_Lookup.type;
         this.leaserPaymentHead.Customer_Type = this.Customer_Type_Lookup.customer_Type;

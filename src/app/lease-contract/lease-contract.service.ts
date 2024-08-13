@@ -58,6 +58,7 @@ export class LeaseContractService {
   contract_date: any;
   transfer_ID: any;
   disablefins: any;
+  updated: boolean=false;
   constructor(private http: HttpClient) {}
   insert_data( data: any) {
     return this.http.post(this.Lease_Contract, data);

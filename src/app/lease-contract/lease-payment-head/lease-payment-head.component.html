@@ -210,7 +210,31 @@
                             class="p-error">Is
                             Active is required.</small>
                     </div>
-   
+                    <div class="field">
+                        <label for="isold">Is Old</label>
+                        <input 
+                            id="isold" 
+                            type="checkbox" 
+                            [(ngModel)]="leaserPaymentHead.Is_old" 
+                        />
+                    </div>
+                    <div class="field" *ngIf="leaserPaymentHead.Is_old">
+                        <label for="Old_Lease_Amount">Old Total lease amount</label>
+                        <input 
+                            class="form-control" 
+                            #Old_Lease_Amount="ngModel" 
+                            id="Old_Lease_Amount" 
+                            type="number"
+                            required 
+                            pInputText 
+                            [(ngModel)]="leaserPaymentHead.Old_Lease_Amount"
+                            [ngClass]="{ 'ng-dirty': (Old_Lease_Amount.invalid && submitted) || (Old_Lease_Amount.dirty && Old_Lease_Amount.invalid) }" 
+                        />
+                        <small
+                            *ngIf="(Old_Lease_Amount.invalid && submitted) || (Old_Lease_Amount.dirty && Old_Lease_Amount.invalid)"
+                            class="p-error">Old Lease Amount is required.</small>
+                    </div>
+                    
                 </div>
               
             </section>

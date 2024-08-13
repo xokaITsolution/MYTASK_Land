@@ -5,12 +5,12 @@
   gap: 10px;
 }
 
-/* .field input[type="checkbox"] {
+.field input[type="checkbox"] {
   width: 40px;
   height: 40px;
-  margin-top: 5px; 
-  margin-left: 5px; 
-} */
+  margin-top: 5px; /* Adjust as needed for spacing */
+  margin-left: 5px; /* Align the checkbox with the label */
+}
 
 .form-control {
   padding: 8px;
