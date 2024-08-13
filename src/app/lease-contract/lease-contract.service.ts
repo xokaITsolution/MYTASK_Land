@@ -32,6 +32,7 @@ export class LeaseContractService {
   get_constraction_level1 = environment.rootPathApi + "proc_Contraction_Level/proc_Contraction_Level";
   View_cert_for_get_appby_plot_Id =`${environment.rootPathApi}view/View_cert_for_get_appby_plot_Id/`;
    getDataBy_lease_code1=`${environment.rootPathApi}proc_Lease_Payment_Head/Lease_code/`
+   getlevel1=`${environment.rootPathApi}proc_Contraction_Level/proc_Contraction_Level`
    public get_payment_plan1 =
    environment.rootPathApi +
    "proc_Payment_Plan?Lease_cdoe=";
@@ -59,6 +60,11 @@ export class LeaseContractService {
   transfer_ID: any;
   disablefins: any;
   updated: boolean=false;
+  Is_old: any;
+  Old_Lease_Amount: any;
+  parent_lease_code: any;
+  is_inter_free: any;
+
   constructor(private http: HttpClient) {}
   insert_data( data: any) {
     return this.http.post(this.Lease_Contract, data);
@@ -72,18 +78,23 @@ export class LeaseContractService {
     Amount_of_down_payment:any,
     contract_date:any,
     Service_ID:any,
-    tskID:any
+    tskID:any,
+    is_inter_free:any
     ){
       // let ad = this.Proc_Genereate_Lease_Plan+
       // '?Lease_code='+Lease_Code+'&PlotID='+Plot_ID+'&Lease_Payment_grace_Period='+Lease_Payment_grace_Period+'&Lease_Payment_Year='+Lease_Payment_Year+'&Total_lease_amount_to_be_paid='+Total_lease_amount_to_be_paid
       return this.http.get(this.Proc_Genereate_Lease_Plan+
         '?Lease_code='+Lease_Code+'&PlotID='+Plot_ID+'&Lease_Payment_grace_Period='+Lease_Payment_grace_Period+
         '&Lease_Payment_Year='+Lease_Payment_Year+'&Total_lease_amount_to_be_paid='+Total_lease_amount_to_be_paid+
-        '&Amount_of_down_payment='+Amount_of_down_payment+'&contract_date='+contract_date+'&Service_ID='+Service_ID+'&tskID='+tskID
+        '&Amount_of_down_payment='+Amount_of_down_payment+'&contract_date='+contract_date+'&Service_ID='+Service_ID+'&tskID='+tskID+
+        '&is_inter_free='+is_inter_free
       );
   }
   updatewithprop(data){
     return this.http.put(this.withdrawprop,data)
+  }
+  getlevel(){
+    return this.http.get(this.getlevel1);
   }
   getwithpropbyId(cid,titdeed) {
     return this.http.get<any[]>(
@@ -115,11 +126,11 @@ export class LeaseContractService {
     return this.http.get(this.get_withdraw1+id)
    }
   insert_data_proc_Lease_to_Lease( data: any) {
-    // debugger
+    // 
     return this.http.post(this.Lease_To_lease, data);
   }
   insert_data_proc_Freehold_to_Lease( data: any) {
-    // debugger
+    // 
     return this.http.post(this.Freehold_To_lease, data);
   }
   getDataBy_lease_code(ID){
@@ -154,15 +165,15 @@ export class LeaseContractService {
     return this.http.put<any>(this.Freehold_To_lease, data);
   }
   get_all(){
-    // debugger
+    // 
     return this.http.get(this.contract_type);
   }
   get_all_by_contract_type_id(ID){
-    // debugger
+    // 
     return this.http.get(this.contract_type+"/"+ID);
   }
   get_license_service (AppNo){
-    // debugger
+    // 
     return this.http.get(this.License_ServiceURL +
       "?" +
       "sortOrder=test&currentFilter=" +
@@ -176,11 +187,11 @@ export class LeaseContractService {
     return this.http.put(this.PropertyDynamicDataCollectionTransactionByProperty, data)
   }
   get_by_ID(ID){
-    // debugger
+    // 
     return this.http.get(this.lease_payment_head +ID);
   }
   get_organizationby_org_code(ID){
-    // debugger
+    // 
     return this.http.get(this.get_organization +ID);
   }
   getViewAspNetUsersWorkInfoDetail(User_ID) {
@@ -194,7 +205,7 @@ export class LeaseContractService {
     return string.replace(/\//g, "%2F");
   }
   get_veiw_contract(ID){
-    // debugger
+    // 
     return this.http.get(this.veiw_contract +ID);
   }
   get_worad_from_plot_regstration(ID){
@@ -221,12 +232,12 @@ export class LeaseContractService {
       return this.http.put<any>(url, data);
     }
     getDataById(id: any): Observable<any> {
-      // debugger
+      // 
       const url = `${this.lease_payment_head}${id}`;
       return this.http.get<any>(url);
     }
     getDataByleasecode(id: any): Observable<any> {
-      // debugger
+      // 
       const url = `${this.leaserPaymentHeadDetail}/${id}`;
       return this.http.get<any>(url);
     }

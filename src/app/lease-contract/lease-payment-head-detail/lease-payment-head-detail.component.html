@@ -68,7 +68,7 @@
                     </div>
                     <div class="field" [ngClass]="{ 'minimized': isNumberInserted }">
                         <label for="Plot_size_By_Lease_Price">Plot size By Lease Price</label>
-                        <input class="form-control" [disabled]="disable" (input)="checkIfNumberInserted($event.target.value)"
+                        <input class="form-control" [disabled]="disable || is_disabled" (input)="checkIfNumberInserted($event.target.value)"
                             #Plot_size_By_Lease_Price="ngModel" id="Plot_size_By_Lease_Price" type="number" required
                             pInputText [(ngModel)]="leasePaymentHeadDetail.Plot_size_By_Lease_Price" />
                         <!-- (change)="checkIfNumberInserted($event.target.value)" -->

@@ -24,6 +24,7 @@ import { BsModalRef, BsModalService } from "ngx-bootstrap";
 import { ActivatedRoute } from "@angular/router";
 import { PlatformLocation } from "../plot-managment/plot-managment.component";
 import { NgForm } from "@angular/forms";
+import { LeaseContractService } from "src/app/lease-contract/lease-contract.service";
 
 @Component({
   selector: "app-property-register",
@@ -76,6 +77,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   ishavespashal: boolean = false;
   technicaluser: any;
   isbuilding: boolean;
+  conlevellist: any[]=[];
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -88,7 +90,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     private ngxSmartModalService: NgxSmartModalService,
     private confirmationService: ConfirmationService,
     private renderer: Renderer2,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private _service:LeaseContractService
   ) {
     this.propertyRegister = new PropertyRegister();
     this.propformLocation = new PropformLocation();
@@ -122,6 +125,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     this.routerService.params.subscribe((params) => {
       this.urlParams = params;
     });
+    
     if (environment.Lang_code === "am-et") {
       this.language = "amharic";
     } else {
@@ -141,6 +145,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       //
       //this.getplotlocbyid(this.propertyRegister.plot_ID);
       this.getproplocbyid(this.propertyRegister.plot_ID);
+      
     }
 
     // if (this.LicenceData !== undefined && this.LicenceData !== null) {
@@ -190,6 +195,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     console.log("is new :: ", this.isnew);
     console.log("is disable :: ", this.disable);
     this.GetpropertyUselookup();
+    this.getlevel();
   }
 
   selectedDateTime(dates: any, selecter) {
@@ -199,6 +205,12 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
 
       console.log(this.propertyRegister.registration_Date);
     }
+  }
+  getlevel(){
+    this._service.getlevel().subscribe(res=>{
+      debugger
+      this.conlevellist=res["proc_Contraction_Levels"]
+    })
   }
   async getEthiopianToGregorian(date) {
     if (date) {
@@ -1810,6 +1822,7 @@ export class PropertyRegister {
   public is_commerscial;
   public room_No;
   public proprty_Use;
+  public Con_level:any;
 }
 export class PropformLocation {
   public proporty_Id: any;
@@ -1835,4 +1848,5 @@ export class PropformLocation {
   public imageType: any;
   public hight_Meter: any;
   public geoForwgs84: any;
+  
 }

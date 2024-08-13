@@ -21,4 +21,5 @@ export class LeaserPaymentHead {
   lease_payment_advance_per:any;
   Is_old:any
   Old_Lease_Amount:any
+  is_inter_free:any
 }

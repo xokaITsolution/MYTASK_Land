@@ -91,7 +91,7 @@
                     <div class="field">
                         <label for="Lease_period_in_Year">Lease period in Year</label>
                         <input class="form-control" #Lease_period_in_Year="ngModel" id="Lease_period_in_Year"
-                            [disabled]="true" type="number" required pInputText
+                            [disabled]="!leaserPaymentHead.Is_old" type="number" required pInputText
                             [(ngModel)]="leaserPaymentHead.Lease_period_in_Year"
                             [ngClass]="{ 'ng-dirty': (Lease_period_in_Year.invalid && submitted) || (Lease_period_in_Year.dirty && Lease_period_in_Year.invalid) }" />
                         <small
@@ -194,7 +194,8 @@
 
                     <div class="field">
                         <label for="Lease_Payment_Year">Lease Payment Year</label>
-                        <input [disabled]="!edityear|| disable" class="form-control" #Lease_Payment_Year="ngModel" id="Lease_Payment_Year" type="number"
+                        <!-- ||!edityear|| disable -->
+                        <input [disabled]="!leaserPaymentHead.Is_old " class="form-control" #Lease_Payment_Year="ngModel" id="Lease_Payment_Year" type="number"
                             [disabled]="true" required pInputText [(ngModel)]="leaserPaymentHead.Lease_Payment_Year"
                             [ngClass]="{ 'ng-dirty': (Lease_Payment_Year.invalid && submitted) || (Lease_Payment_Year.dirty && Lease_Payment_Year.invalid) }" />
                         <small
@@ -233,6 +234,14 @@
                         <small
                             *ngIf="(Old_Lease_Amount.invalid && submitted) || (Old_Lease_Amount.dirty && Old_Lease_Amount.invalid)"
                             class="p-error">Old Lease Amount is required.</small>
+                    </div>
+                    <div class="field">
+                        <label for="isinterfree">Is Interest Free</label>
+                        <input 
+                            id="isinterfree" 
+                            type="checkbox" 
+                            [(ngModel)]="leaserPaymentHead.is_inter_free" 
+                        />
                     </div>
                     
                 </div>
