@@ -14,7 +14,7 @@ import { error } from 'console';
   styleUrls: ['./free-hold-to-lease.component.css']
 })
 export class FreeHoldToLeaseComponent implements OnInit {
-  @Output() completed = new EventEmitter();
+
   newFreeHoldToLease: FreeHoldToLease = {} as FreeHoldToLease;
   constructor(private _toast: MessageService, private _service: LeaseContractService,
     private activatedRoute: ActivatedRoute, private ServiceService: ServiceService,
@@ -63,7 +63,7 @@ export class FreeHoldToLeaseComponent implements OnInit {
       (response) => {
         // itHasError = false;
         this.ServiceService.disablefins = false;
-        this.completed.emit();
+        this._service.completed.emit();
         this.notificationsService.success("Success", "Successfully Updated");
         // this.showToast('success', 'success', 'Success');
        
@@ -77,7 +77,7 @@ export class FreeHoldToLeaseComponent implements OnInit {
       this._service.insert_data_proc_Freehold_to_Lease(this.newFreeHoldToLease).subscribe(
         data => {
           this.ServiceService.disablefins = false;
-          this.completed.emit();
+          this._service.completed.emit();
           // this.showToast('success', 'success', 'Success');
           this.notificationsService.success("Success", "Successfully inserted");
 

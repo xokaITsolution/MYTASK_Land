@@ -178,7 +178,7 @@ export class LeasePaymentHeadDetailComponent {
         this.updated = true;
         this.getpayment_plan()
         this.getLeasPaymentHeadDataDetail()
-        // this.completed.emit();
+        this._service.completed.emit();
       },
       (error) => {
         this.notificationsService.error("Error", "Something Went Wrong");

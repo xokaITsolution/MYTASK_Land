@@ -35,6 +35,7 @@ export class LandWizardComponent implements AfterViewInit{
   contractList:any[]=[];
   selectedRowIndex: number;
   showform: boolean=false;
+  disabled: any;
 
   constructor(
     public messageService: MessageService,
@@ -61,6 +62,7 @@ export class LandWizardComponent implements AfterViewInit{
       },
     ];
     this.ServiceService.disable=this.disable
+    this.disabled=this.disable
     this.ServiceService.tskID=this.tskID;
     console.log("this.tskID",this.tskID);
     this.getLeasPaymentHeadData(this.AppNo);
@@ -111,8 +113,8 @@ export class LandWizardComponent implements AfterViewInit{
     // debugger
     this._service.getView_lease_payment_head(ID).subscribe(
       (response:any) => {
-       
-        if ([response].length>0){
+      //  debugger
+        if (response.length>0){
           
           if (Array.isArray(response)) {
             this.contractList = response;
@@ -121,8 +123,10 @@ export class LandWizardComponent implements AfterViewInit{
           }
         }
         else{ 
+          // debugger
           this.ServiceService.getPlotManagementApi(this.licenceData.Parcel_ID).subscribe(
             async (res: any) => {
+              // debugger
               // let appno= res["procPlot_Registrations"][0].application_No 
               this._service.getView_lease_payment_head(res["procPlot_Registrations"][0].application_No ).subscribe(
                 (response) => { 

@@ -15,7 +15,7 @@ import { error } from 'console';
   styleUrls: ['./lease-to-lease.component.css']
 })
 export class LeaseToLeaseComponent implements OnInit {
-  @Output() completed = new EventEmitter();
+  // @Output() completed = new EventEmitter();
   AppNo: any;
   isnew = true;
   ReportPath;
@@ -193,7 +193,7 @@ debugger
         // itHasError = false;
         this.notificationsService.success("Success", "Successfully Updated");
         this.ServiceService.disablefins = false;
-        this.completed.emit();
+        this._service.completed.emit();
       },
       (error) => {
         this.notificationsService.error("error", `unable to update lease to lease!  ${error['status'] == 0 ? error['message'] : JSON.stringify(JSON.stringify(error['error']))}`);
@@ -204,7 +204,7 @@ debugger
     debugger
     this._service.insert_data_proc_Lease_to_Lease(this.newLeaseTolease).subscribe(
       data => { this.ServiceService.disablefins = false;
-        this.completed.emit();
+        this._service.completed.emit();
         this.notificationsService.success("Success", "Success");
        
         this.isnew = false;

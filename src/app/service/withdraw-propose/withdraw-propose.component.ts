@@ -48,6 +48,7 @@ isCertifcatePrintforConfirmation: boolean;
   }
 
   selectprop(propose){
+    
     this.serachplotExists=false;
     let cid,titdeed;
     if(propose.transfer_To_Customer!=null){
@@ -58,11 +59,17 @@ isCertifcatePrintforConfirmation: boolean;
       cid=propose.customer_ID
       titdeed=propose.title_Deed_No
     }
+    this.certReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
+      environment.certReportPath + "/" + titdeed
+    );
     this.ServiceService.getwithpropbyId(cid,titdeed).subscribe(data=>{
       
       if(data["proc_withdraw_proposes"].length>0){
 
         this.newWithdrawPropose=data["proc_withdraw_proposes"][0];
+        this.certReportPath = this.sanitizer.bypassSecurityTrustResourceUrl(
+          environment.certReportPath + "/" + data["proc_withdraw_proposes"][0].title_Deed_No
+        );
         this.ServiceService.getWithdrawproposebyid(data["proc_withdraw_proposes"][0].title_Deed_No,data["proc_withdraw_proposes"][0].customer_ID).
           subscribe(data1=>{
             

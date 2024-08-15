@@ -288,7 +288,10 @@
                   <!-- <lib-lease-bid [custid]=1></lib-lease-bid> -->
                   <lib-bid-detail (completed)="saveFormm('{}');"></lib-bid-detail>
   
+                </div>  <div *ngIf="ID==25">
+                  <lib-return-cpio (completed)="saveFormm('{}');"></lib-return-cpio>
                 </div>
+  
                 <div *ngIf="ID==21">
                   <lib-lease-yearly-bid-plan (generateApplication)="generateApplication($event)"
                   (completed1)="saveFormm('{}');"
@@ -508,7 +511,7 @@
           [tskID]="tskID" [AppNo]="AppNo" [todoid]="todoID"></app-payment>
         </div>
         <div *ngIf="preAppID==14">
-          <app-land-wizard [AppNo]="AppNo" [disable]="true"></app-land-wizard>
+          <app-land-wizard [AppNo]="AppNo" [tskID]="tskID" [licenceData]="licenceData" [disable]="true"></app-land-wizard>
 
         </div>
         <div *ngIf="preAppID==13" >

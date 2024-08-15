@@ -35,7 +35,7 @@ export const environment = {
   appbase: window["_app_base"],
   location: window["locations"],
   // username: "cn_land_technical",
-  // username: "cn_land_Bankteamleader",
+  // username: "cn_tech_officer",
   //username: "0910156313",
   rootPathApii: window["rootPathApii"],
   rootPathnational:window['rootPathnational'],

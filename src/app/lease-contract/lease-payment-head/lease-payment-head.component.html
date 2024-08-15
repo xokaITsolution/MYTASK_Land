@@ -235,7 +235,7 @@
                             *ngIf="(Old_Lease_Amount.invalid && submitted) || (Old_Lease_Amount.dirty && Old_Lease_Amount.invalid)"
                             class="p-error">Old Lease Amount is required.</small>
                     </div>
-                    <div class="field">
+                    <div class="field"  *ngIf="leaserPaymentHead.Is_old">
                         <label for="isinterfree">Is Interest Free</label>
                         <input 
                             id="isinterfree" 
