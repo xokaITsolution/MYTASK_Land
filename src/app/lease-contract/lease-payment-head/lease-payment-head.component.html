@@ -6,46 +6,6 @@
 
             <section>
                 <div class="p-fluid">
-
-                    <!-- <div class="field">
-                        <label for="Lease_code">Lease code</label>
-                        <input class="form-control" #Lease_code="ngModel" id="Lease_code" type="text" required
-                            pInputText [(ngModel)]="leaserPaymentHead.Lease_code"
-                            [ngClass]="{ 'ng-dirty': (Lease_code.invalid && submitted) || (Lease_code.dirty && Lease_code.invalid) }" />
-                        <small *ngIf="(Lease_code.invalid && submitted) || (Lease_code.dirty && Lease_code.invalid)"
-                            class="p-error">Lease code is required.</small>
-                    </div>
-
-                    <div class="field">
-                        <label for="Application_No">Application No</label>
-                        <input class="form-control" #Application_No="ngModel" id="Application_No" type="text" required
-                            pInputText [(ngModel)]="leaserPaymentHead.Application_No"
-                            [ngClass]="{ 'ng-dirty': (Application_No.invalid && submitted) || (Application_No.dirty && Application_No.invalid) }" />
-                        <small
-                            *ngIf="(Application_No.invalid && submitted) || (Application_No.dirty && Application_No.invalid)"
-                            class="p-error">Application No is required.</small>
-                    </div>
-
-                    <div class="field">
-                        <label for="Application_code">Application code</label>
-                        <input class="form-control" #Application_code="ngModel" id="Application_code" type="text"
-                            required pInputText [(ngModel)]="leaserPaymentHead.Application_code"
-                            [ngClass]="{ 'ng-dirty': (Application_code.invalid && submitted) || (Application_code.dirty && Application_code.invalid) }" />
-                        <small
-                            *ngIf="(Application_code.invalid && submitted) || (Application_code.dirty && Application_code.invalid)"
-                            class="p-error">Application code is required.</small>
-                    </div>
-
-                    <div class="field">
-                        <label for="Todolis_ID">Todolis ID</label>
-                        <input class="form-control" #Todolis_ID="ngModel" id="Todolis_ID" type="text" required
-                            pInputText [(ngModel)]="leaserPaymentHead.Todolis_ID"
-                            [ngClass]="{ 'ng-dirty': (Todolis_ID.invalid && submitted) || (Todolis_ID.dirty && Todolis_ID.invalid) }" />
-                        <small *ngIf="(Todolis_ID.invalid && submitted) || (Todolis_ID.dirty && Todolis_ID.invalid)"
-                            class="p-error">Todolis ID is required.</small>
-                    </div> -->
-
-
                     <div class="field">
                         <label for="Lease_Payment_grace_Period">Lease Payment grace Period</label>
                         <input class="form-control" #Lease_Payment_grace_Period="ngModel"
@@ -57,13 +17,7 @@
                             class="p-error">Lease Payment grace Period is required.</small>
                     </div>
 
-                    <!-- <div  class="form-group row">
-                        <label for="LeaseCode" class="col-sm-4 col-form-label" translate>Lease Code</label>
-                        <div class="col-sm-8">
-                          <input type="text" disabled class="form-control" [(ngModel)]="newLeaseContract.lease_code"
-                            name="LeaseCode" id="LeaseCode" [placeholder]="'Lease Code'">
-                        </div>
-                      </div> -->
+                  
                     <div class="field">
                         <label for="Total_lease_amount_to_be_paid">Total lease amount to be paid</label>
                         <input class="form-control" #Total_lease_amount_to_be_paid="ngModel" [disabled]="true"
@@ -128,20 +82,6 @@
                             [ngClass]="{ 'is-invalid': ContractDate.invalid }" required>
                         </div>
                       </div>
-                    <!-- <div class="form-group row">
-                        <label for="ContactType" class="col-sm-4 col-form-label" translate>Contact Type</label>
-                        <div class="col-sm-8">
-                          <select class="form-control" [(ngModel)]="leaserPaymentHead.contact_Type" name="ContactType"
-                            id="ContactType" required>
-                          
-                            <option value="" disabled selected>Select Contract Type</option>
-                            <option *ngFor="let contractType of contractTypearray"
-                              [value]="contractType.contract_Type">
-                              {{ contractType.name }}
-                            </option>
-                          </select>
-                        </div>
-                      </div> -->
                 </div>
             </section>
             <!-- right column of the form -->
@@ -190,17 +130,24 @@
                             *ngIf="(Lease_Period_end_date.invalid && submitted) || (Lease_Period_end_date.dirty && Lease_Period_end_date.invalid)"
                             class="p-error">Lease Period end date is required.</small>
                     </div>
-
-
                     <div class="field">
                         <label for="Lease_Payment_Year">Lease Payment Year</label>
-                        <!-- ||!edityear|| disable -->
-                        <input [disabled]="!leaserPaymentHead.Is_old " class="form-control" #Lease_Payment_Year="ngModel" id="Lease_Payment_Year" type="number"
-                            [disabled]="true" required pInputText [(ngModel)]="leaserPaymentHead.Lease_Payment_Year"
-                            [ngClass]="{ 'ng-dirty': (Lease_Payment_Year.invalid && submitted) || (Lease_Payment_Year.dirty && Lease_Payment_Year.invalid) }" />
+                        <input 
+                            
+                            class="form-control" 
+                            #Lease_Payment_Year="ngModel" 
+                            id="Lease_Payment_Year" 
+                            type="number"
+                            required 
+                            pInputText 
+                            readonly="!edityear"
+                            [(ngModel)]="leaserPaymentHead.Lease_Payment_Year"
+                            [ngClass]="{ 'ng-dirty': (Lease_Payment_Year.invalid && submitted) || (Lease_Payment_Year.dirty && Lease_Payment_Year.invalid) }" 
+                        />
                         <small
                             *ngIf="(Lease_Payment_Year.invalid && submitted) || (Lease_Payment_Year.dirty && Lease_Payment_Year.invalid)"
-                            class="p-error">Lease Payment Year is required.</small>
+                            class="p-error">Lease Payment Year is required.
+                        </small>
                     </div>
                     <div class="field">
                         <label for="Is_Active">Is Active</label>
@@ -250,8 +197,10 @@
         </div>
         <div class="card-footer"><button type="button" [disabled]="disable" class="btn btn-secondary btn-success" label="Update"
                 (click)="updateLeasPaymentHeadData()">Update</button>
-                <!-- <button pButton pInputText label="Next" (click)="nextPage()"></button> -->
+            
         </div>
+        <p>edityear: {{ edityear }}</p>
+<p>leaserPaymentHead.Is_old: {{ leaserPaymentHead.Is_old }}</p>
     </div>
     <br>
 </div>

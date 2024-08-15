@@ -23,7 +23,7 @@ export class LeasePaymentHeadComponent implements OnInit {
   Proprty_Use: any;
   Application_No: any;
   contractTypearray: any[];
-  edityear: boolean = false;
+  edityear: boolean =false;
   lease_period_prev: any;
   disable: any;
   contract_date_prev: any;
@@ -47,18 +47,22 @@ export class LeasePaymentHeadComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((p) => {
       console.log("Observable Params:", p);
-      // this.ServiceService.tiltledeed = p["AppNo"];
       this.Application_No = p["AppNo"];
     });
-    // this.getAPPdata();
-    // this.getLeasPaymentHeadData(this.Application_No);
+
     this.disable = this.ServiceService.disable;
 
-    if (this._service.Service_ID == "86997006-53c7-4bbd-9f56-e79721b4561e" || this._service.Service_ID == "05db54fc-e388-4e5e-aaaa-bd6141c8e533") {
-      this.edityear = true;
+    // Check the Service_ID and set edityear accordingly
+    if (
+        this._service.Service_ID === "86997006-53c7-4bbd-9f56-e79721b4561e" || 
+        this._service.Service_ID === "05db54fc-e388-4e5e-aaaa-bd6141c8e533"
+    ) {
+        this.edityear = false;
+    } else {
+        this.edityear = true;
     }
+}
 
-  }
   getTransferType(id: string) {
     this._service.getTransferType(id).subscribe(
       (response) => {
