@@ -148,12 +148,11 @@ export class LeasePaymentHeadComponent implements OnInit {
   }
 
   async getLeasPaymentHeadData(appNo: any) {
-
+debugger
     if (this._service.Service_ID == "e9a61e6a-d580-4cfa-921d-36e751d87a05" || this._service.Service_ID == "8a8588ae-0267-48b7-88ac-f3f18ac02167") {
       this._service.get_View_cert_for_get_appby_plot_Id(this._service.ploteId).subscribe(data => {
         this._service.getDataById(data[0].application_No).subscribe(async data1 => {
           let data2 = data1["proc_Lease_Payment_Heads"][0];
-
           this._service.parent_lease_code=data2.lease_code
           var datenow = await this.ServiceService
             .getgregorianToEthiopianDate(new Date().toISOString().split('T')[0])
@@ -191,6 +190,71 @@ export class LeasePaymentHeadComponent implements OnInit {
                 this.leaserPaymentHead.Lease_Payment_Year = data.lease_Payment_Year;
 
               }
+              this.leaserPaymentHead.Lease_code = data.lease_code;
+              this.leaserPaymentHead.Application_No = data.application_No;
+              this.leaserPaymentHead.Application_code = data.application_code;
+              this.leaserPaymentHead.Todolis_ID = data.todolis_ID;
+              this.leaserPaymentHead.Lease_Payment_grace_Period = data.lease_Payment_grace_Period;
+              this._service.Lease_Payment_grace_Period = data.lease_Payment_grace_Period;
+              this.leaserPaymentHead.Total_lease_amount_to_be_paid =
+                data.total_lease_amount_to_be_paid;
+              this.leaserPaymentHead.Amount_of_the_annual_lease_payment =
+                data.amount_of_the_annual_lease_payment;
+              this._service.contract_date = this.leaserPaymentHead.Contract_date
+              this.leaserPaymentHead.Is_old=data.is_old
+              this.leaserPaymentHead.Old_Lease_Amount=data.old_lease_amount
+              this.leaserPaymentHead.is_inter_free=data.is_inter_free
+              this._service.is_inter_free = this.leaserPaymentHead.is_inter_free;
+              this._service.Is_old = this.leaserPaymentHead.Is_old;
+              this._service.Old_Lease_Amount = this.leaserPaymentHead.Old_Lease_Amount;
+              this.leaserPaymentHead.Date_of_final_lease_payment = data2.date_of_final_lease_payment.split("T")[0]
+              this.leaserPaymentHead.Lease_Period_end_date = data2.lease_Period_end_date.split("T")[0];
+              this.leaserPaymentHead.Contract_date = data2.contract_date.split("T")[0];
+              this.contract_date_prev = data2.contract_date.split("T")[0];
+              this._service.contract_date = this.leaserPaymentHead.Contract_date
+
+              this.leaserPaymentHead.Remaining_lease_Payment =
+                data.remaining_lease_payment;
+              this.leaserPaymentHead.Customer_Type = data.customer_Type;
+              this.leaserPaymentHead.Transfer_type = data.transfer_Type;
+              this.leaserPaymentHead.Proporty_Use = data.proporty_Use;
+
+              this.lease_period_prev = data.lease_Payment_Year + data.lease_Payment_grace_Period;
+              this._service.Lease_Payment_Year = data.lease_Payment_Year;
+              // this.lease_period_prev = data.lease_Payment_Year;
+              this.leaserPaymentHead.Is_Active = data.is_Active;
+              this.leaserPaymentHead.Parent = data.parent;
+              this.leaserPaymentHead.lease_payment_advance_per = data.lease_payment_advance_per;
+              this._service.lease_payment_advance_per = data.lease_payment_advance_per;
+              this.getTransferType(this.leaserPaymentHead.Transfer_type);
+              this.getProportyUse(this.leaserPaymentHead.Proporty_Use);
+              this.getCustomerType(this.leaserPaymentHead.Customer_Type);
+              this.leaserPaymentHead.Contract_date = data2.contract_date.split("T")[0];
+            
+            })
+
+        })
+      })
+    }
+    else if(this._service.Service_ID == "793b8814-f845-429e-a472-dc47e797d3fe"){
+      // debugger
+      this._service.get_View_lease_for_get_appby_plot_Id(this._service.licenceData.Plot_Merge_1).subscribe(data => {
+        this._service.get_View_lease_for_get_appby_app_no(data[0].application_No).subscribe(async( data1:any) => {
+          debugger
+          let data2  = data1;
+          let AVG_lease_Payment_Year=0,AVG_lease_period_in_Year=0;
+          for(let i=0;i<data1.length;i++){
+            AVG_lease_Payment_Year = data1[i].lease_Payment_Year+AVG_lease_Payment_Year;
+            AVG_lease_period_in_Year =data[i].lease_period_in_Year+AVG_lease_period_in_Year;
+          }
+          AVG_lease_Payment_Year=AVG_lease_Payment_Year/data1.length;
+          AVG_lease_period_in_Year=AVG_lease_period_in_Year/data1.length
+          this._service.getDataBy_lease_code(appNo).subscribe(
+            (response) => {
+              debugger
+              let data = response["proc_Lease_Payment_Heads"][0];
+                this.leaserPaymentHead.Lease_period_in_Year = data.AVG_lease_period_in_Year;
+                this.leaserPaymentHead.Lease_Payment_Year = AVG_lease_Payment_Year;
               this.leaserPaymentHead.Lease_code = data.lease_code;
               this.leaserPaymentHead.Application_No = data.application_No;
               this.leaserPaymentHead.Application_code = data.application_code;

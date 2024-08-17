@@ -31,6 +31,8 @@ export class LeaseContractService {
   View_lease_payment_head=`${environment.rootPathApi}view/View_lease_payment_head/`
   get_constraction_level1 = environment.rootPathApi + "proc_Contraction_Level/proc_Contraction_Level";
   View_cert_for_get_appby_plot_Id =`${environment.rootPathApi}view/View_cert_for_get_appby_plot_Id/`;
+  View_cert_for_get_appby_plot_Id1 =`${environment.rootPathApi}view/View_lease_for_get_appby_plot_Id/Plot_Id?Plot_Id=`;
+  View_cert_for_get_appby_plot_Id2 =`${environment.rootPathApi}view/View_lease_for_get_appby_plot_Id/App_No/`;
    getDataBy_lease_code1=`${environment.rootPathApi}proc_Lease_Payment_Head/Lease_code/`
    getlevel1=`${environment.rootPathApi}proc_Contraction_Level/proc_Contraction_Level`
    public get_payment_plan1 =
@@ -64,6 +66,7 @@ export class LeaseContractService {
   Old_Lease_Amount: any;
   parent_lease_code: any;
   is_inter_free: any;
+  licenceData: any;
 
   constructor(private http: HttpClient) {}
   insert_data( data: any) {
@@ -140,6 +143,12 @@ export class LeaseContractService {
   get_View_cert_for_get_appby_plot_Id(ID){
    
     return this.http.get(this.View_cert_for_get_appby_plot_Id+ID);
+  }
+  get_View_lease_for_get_appby_plot_Id(ID){
+    return this.http.get(this.View_cert_for_get_appby_plot_Id1+ID);
+  }
+  get_View_lease_for_get_appby_app_no(ID){
+    return this.http.get(this.View_cert_for_get_appby_plot_Id2+ID);
   }
   get_constraction_level() {
     return this.http.get(this.get_constraction_level1 );

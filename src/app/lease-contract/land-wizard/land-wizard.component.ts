@@ -69,6 +69,7 @@ export class LandWizardComponent implements AfterViewInit{
     this._service.completed=this.completed;
     this._service.Service_ID=this.licenceData.Service_ID;
     this._service.ploteId=this.licenceData.Parcel_ID;
+    this._service.licenceData=this.licenceData
   }
   ngAfterViewInit() {
     // Ensures that child components are available after view initialization
@@ -99,7 +100,7 @@ export class LandWizardComponent implements AfterViewInit{
     this.showform = true;
     this.cdr.detectChanges();  // Ensure change detection is triggered
     // Use setTimeout to ensure the component is fully initialized before calling the method
-    debugger
+    // 
     this._service.lease_code = lease_contract.lease_code
     setTimeout(() => {
       if (this.childComponent1) {
@@ -110,10 +111,10 @@ export class LandWizardComponent implements AfterViewInit{
   }
 
   getLeasPaymentHeadData(ID: any) {
-    // debugger
+    // 
     this._service.getView_lease_payment_head(ID).subscribe(
       (response:any) => {
-      //  debugger
+       
         if (response.length>0){
           
           if (Array.isArray(response)) {
@@ -123,10 +124,10 @@ export class LandWizardComponent implements AfterViewInit{
           }
         }
         else{ 
-          // debugger
+          // 
           this.ServiceService.getPlotManagementApi(this.licenceData.Parcel_ID).subscribe(
             async (res: any) => {
-              // debugger
+              // 
               // let appno= res["procPlot_Registrations"][0].application_No 
               this._service.getView_lease_payment_head(res["procPlot_Registrations"][0].application_No ).subscribe(
                 (response) => { 

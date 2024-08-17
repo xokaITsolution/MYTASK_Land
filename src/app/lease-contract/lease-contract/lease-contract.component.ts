@@ -127,7 +127,7 @@ debugger
   get_lease_contract(lease_code) {
     this._service.get_Lease_contract_by_Id(lease_code).
       subscribe(data => {
-        // 
+        debugger
         if (data['proc_Lease_Contracts'].length > 0) {
           // this.contractList = [data['proc_Lease_Contracts'][0]];
           this.get_contract_type1(data['proc_Lease_Contracts'][0].contact_Type)
@@ -135,6 +135,7 @@ debugger
           this.newLeaseContract.sdp = this.orginizationlookup.name_am;
           this.newLeaseContract.Con_level = data['proc_Lease_Contracts'][0].con_level
           this._service.contract_NO = data['proc_Lease_Contracts'][0].contract_NO;
+          
           this.enable_edit = true;
           this.isnew = false;
           this.enablenext = true;
@@ -158,7 +159,7 @@ debugger
     })
   }
   selected(data) {
-
+debugger
     // this.get_lease_contract(this._service.lease_code);
     this.get_lease_contract(data.lease_code);
     this.newLeaseContract.Con_level = data.con_level
@@ -166,6 +167,7 @@ debugger
     this.showForm = true;
     this.newLeaseContract.sdp = this.orginizationlookup.name_am;
     this.newLeaseContract.lease_code = data.lease_code;
+   
     // this.newLeaseContract.contract_date=data.contract_date;
     // this.newLeaseContract.sdp=this.orginizationlookup.name_am;
     // this.newLeaseContract.contract_date =  this.newLeaseContract.contract_date.split("T")[0];
@@ -328,5 +330,6 @@ export class LeaseContract {
   public Con_level: any;
   public team_leader_approved_by: any;
   public lease_owner_appreved_by: any;
+  public remark:any
 
 }

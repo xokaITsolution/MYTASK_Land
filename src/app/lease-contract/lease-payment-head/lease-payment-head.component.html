@@ -132,22 +132,16 @@
                     </div>
                     <div class="field">
                         <label for="Lease_Payment_Year">Lease Payment Year</label>
-                        <input 
-                            
+                        <input  
                             class="form-control" 
                             #Lease_Payment_Year="ngModel" 
                             id="Lease_Payment_Year" 
                             type="number"
                             required 
                             pInputText 
-                            readonly="!edityear"
-                            [(ngModel)]="leaserPaymentHead.Lease_Payment_Year"
-                            [ngClass]="{ 'ng-dirty': (Lease_Payment_Year.invalid && submitted) || (Lease_Payment_Year.dirty && Lease_Payment_Year.invalid) }" 
+                            [readonly]="!(leaserPaymentHead.Is_old || !edityear)"
+                            [(ngModel)]="leaserPaymentHead.Lease_Payment_Year" 
                         />
-                        <small
-                            *ngIf="(Lease_Payment_Year.invalid && submitted) || (Lease_Payment_Year.dirty && Lease_Payment_Year.invalid)"
-                            class="p-error">Lease Payment Year is required.
-                        </small>
                     </div>
                     <div class="field">
                         <label for="Is_Active">Is Active</label>
@@ -199,8 +193,8 @@
                 (click)="updateLeasPaymentHeadData()">Update</button>
             
         </div>
-        <p>edityear: {{ edityear }}</p>
-<p>leaserPaymentHead.Is_old: {{ leaserPaymentHead.Is_old }}</p>
+        <!-- <p>edityear: {{ edityear }}</p>
+<p>leaserPaymentHead.Is_old: {{ leaserPaymentHead.Is_old }}</p> -->
     </div>
     <br>
 </div>
