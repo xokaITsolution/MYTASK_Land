@@ -238,22 +238,33 @@ debugger
     }
     else if(this._service.Service_ID == "793b8814-f845-429e-a472-dc47e797d3fe"){
       // debugger
-      this._service.get_View_lease_for_get_appby_plot_Id(this._service.licenceData.Plot_Merge_1).subscribe(data => {
+      this._service.get_View_lease_for_get_appby_plot_Id(this._service.licenceData.Plot_Merge_1).subscribe((data:any) => {
+        if (data && data.length > 0) {
+
         this._service.get_View_lease_for_get_appby_app_no(data[0].application_No).subscribe(async( data1:any) => {
           debugger
           let data2  = data1;
-          let AVG_lease_Payment_Year=0,AVG_lease_period_in_Year=0;
-          for(let i=0;i<data1.length;i++){
-            AVG_lease_Payment_Year = data1[i].lease_Payment_Year+AVG_lease_Payment_Year;
-            AVG_lease_period_in_Year =data[i].lease_period_in_Year+AVG_lease_period_in_Year;
-          }
-          AVG_lease_Payment_Year=AVG_lease_Payment_Year/data1.length;
-          AVG_lease_period_in_Year=AVG_lease_period_in_Year/data1.length
+          let AVG_lease_Payment_Year = 0, AVG_lease_period_in_Year = 0;
+          if (data1 && data1.length > 0) {
+            for (let i = 0; i < data1.length; i++) {
+                AVG_lease_Payment_Year += data1[i].lease_Payment_Year;
+                AVG_lease_period_in_Year += data1[i].lease_period_in_Year;
+            }
+            
+            AVG_lease_Payment_Year /= data1.length;
+            AVG_lease_period_in_Year /= data1.length;
+            
+            // You can now use AVG_lease_Payment_Year and AVG_lease_period_in_Year for further processing.
+            console.log("Average Lease Payment Year:", AVG_lease_Payment_Year);
+            console.log("Average Lease Period in Year:", AVG_lease_period_in_Year);
+        } else {
+            console.warn("No data returned for the application number.");
+        }
           this._service.getDataBy_lease_code(appNo).subscribe(
             (response) => {
               debugger
               let data = response["proc_Lease_Payment_Heads"][0];
-                this.leaserPaymentHead.Lease_period_in_Year = data.AVG_lease_period_in_Year;
+                this.leaserPaymentHead.Lease_period_in_Year = AVG_lease_period_in_Year;
                 this.leaserPaymentHead.Lease_Payment_Year = AVG_lease_Payment_Year;
               this.leaserPaymentHead.Lease_code = data.lease_code;
               this.leaserPaymentHead.Application_No = data.application_No;
@@ -299,6 +310,9 @@ debugger
             })
 
         })
+      } else {
+        console.warn("No data returned for the Plot_Merge_1.");
+    }
       })
     }
     else {
