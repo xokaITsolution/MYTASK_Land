@@ -21,6 +21,10 @@ import { FieldsetModule } from 'primeng/fieldset';
 import { ToastModule } from 'primeng/toast';
 import { ConReviewTransactionComponent } from './con-review-transaction/con-review-transaction.component';
 import { ConReviewTransactionDetailComponent } from './con-review-transaction-detail/con-review-transaction-detail.component';
+import { CompensationPaymentComponent } from './compensation-payment/compensation-payment.component';
+import { DialogModule } from "primeng/dialog";
+import { DialogService, MessageService } from "primeng/api";
+import { ProgressSpinnerModule } from "primeng/progressspinner";
 
 
 @NgModule({
@@ -34,6 +38,8 @@ import { ConReviewTransactionDetailComponent } from './con-review-transaction-de
     StepsModule,
     CheckboxModule,
     FormsModule,
+    DialogModule,
+    ProgressSpinnerModule,
     ToastModule,
     TableModule,
     FieldsetModule
@@ -46,9 +52,11 @@ import { ConReviewTransactionDetailComponent } from './con-review-transaction-de
     LeaseToLeaseComponent,
     FreeHoldToLeaseComponent,
     ConReviewTransactionComponent,
-    ConReviewTransactionDetailComponent
+    ConReviewTransactionDetailComponent,
+    CompensationPaymentComponent
   ],
-  providers: [LeaseContractService],
-  exports: [LeaseContractComponent,LandWizardComponent,ConReviewTransactionComponent,ConReviewTransactionDetailComponent],
+  providers: [LeaseContractService,MessageService,DialogService],
+  exports: [LeaseContractComponent,LandWizardComponent,ConReviewTransactionComponent,
+    CompensationPaymentComponent,ConReviewTransactionDetailComponent],
 })
 export class LeaseContractModule {}

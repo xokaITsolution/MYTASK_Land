@@ -7,6 +7,8 @@ import { MenuItem } from "primeng/api";
 import { EventEmitter } from "@angular/core";
 import { ServiceService } from "src/app/service/service.service";
 import { LeaseContractService } from "../lease-contract.service";
+import { Observable } from 'rxjs';
+
 
 @Component({
   selector: "app-lease-payment-head",
@@ -28,6 +30,14 @@ export class LeasePaymentHeadComponent implements OnInit {
   disable: any;
   contract_date_prev: any;
   disabledate: boolean = false;
+  merged: any;
+  showmeged_plots: boolean;
+  proposeList: any[];
+  AVG_con_date: any;
+  AVG_lease_Period_end_date: any;
+  AVG_date_of_final_lease_payment: any;
+  AVG_lease_period_in_Year: any;
+  AVG_lease_Payment_Year: any;
 
   constructor(
 
@@ -146,9 +156,195 @@ export class LeasePaymentHeadComponent implements OnInit {
 
     return result;
   }
+  //  Average_calculate(plot_id){
+       
+  //   this._service.get_View_lease_for_get_appby_plot_Id(plot_id).subscribe((data1:any) => {
+  //     if (data1 && data1.length > 0) {
+  //       // this._service.get_View_lease_for_get_appby_app_no(data[0].application_No).subscribe(async (data1: any) => {
+  //         this.proposeList=data1;
+  //         debugger
+  //         this.merged=true
+  //         let AVG_lease_Payment_Year = 0,AVG_lease_period_in_Year = 0,totaldate_of_final_lease_paymentMilliseconds = 0,
+  //          AVG_remaining_lease_payment=0
+  //          let totalYearsLeaseEnd = 0, totalMonthsLeaseEnd = 0, totalDaysLeaseEnd = 0;
+  //          let totalYearscon_date = 0, totalMonthscon_date = 0, totalDayscon_date = 0;
+  //          let totalYearsFinalPayment = 0, totalMonthsFinalPayment = 0, totalDaysFinalPayment = 0;
+  //         // let AVG_date_of_final_lease_payment,AVG_lease_Period_end_date,AVG_con_date;
+      
+  //         if (data1 && data1.length > 0) {
+  //           // debugger
+  //             for (let i = 0; i < data1.length; i++) {
+  //                 AVG_lease_Payment_Year += data1[i].lease_Payment_Year;
+  //                 AVG_lease_period_in_Year += data1[i].lease_period_in_Year;
+  //                 AVG_remaining_lease_payment += data1[i].remaining_lease_payment
+  //                 if (data1[i].date_of_final_lease_payment) {
+  //                   const dateFinalPayment = new Date(data1[i].date_of_final_lease_payment.split("T")[0]);
+  //                   totalYearsFinalPayment += dateFinalPayment.getFullYear();
+  //                   totalMonthsFinalPayment += dateFinalPayment.getMonth() + 1; // Months are zero-based
+  //                   totalDaysFinalPayment += dateFinalPayment.getDate();
+  //                   // debugger
+  //               }
+  //                 // totaldate_of_final_lease_paymentMilliseconds += new Date(data1[i].date_of_final_lease_payment.split("T")[0]).getTime();
+  //                 if (data1[i].lease_Period_end_date) {
+  //                   const dateLeaseEnd = new Date(data1[i].lease_Period_end_date.split("T")[0]);
+  //                   totalYearsLeaseEnd += dateLeaseEnd.getFullYear();
+  //                   totalMonthsLeaseEnd += dateLeaseEnd.getMonth() + 1; // Months are zero-based
+  //                   totalDaysLeaseEnd += dateLeaseEnd.getDate();
+  //               }
+  //               if (data1[i].contract_date) {
+  //                 const datecon_date = new Date(data1[i].contract_date.split("T")[0]);
+  //                 totalYearscon_date += datecon_date.getFullYear();
+  //                 totalMonthscon_date += datecon_date.getMonth() + 1; // Months are zero-based
+  //                 totalDayscon_date += datecon_date.getDate();
+  //             }
+  //                 // debugger
+  //             }
+  //             this.AVG_lease_Payment_Year /= data1.length;
+  //             this.AVG_lease_period_in_Year /= data1.length;
+  //             AVG_remaining_lease_payment /=data1.length
+  //             this._service.AVG_remaining_lease_payment=AVG_remaining_lease_payment
+  //             const avgYearFinalPayment = Math.floor(totalYearsFinalPayment / data1.length);
+  //             const avgMonthFinalPayment = Math.floor(totalMonthsFinalPayment / data1.length);
+  //             const avgDayFinalPayment = Math.floor(totalDaysFinalPayment / data1.length);
+  //             this.AVG_date_of_final_lease_payment = `${avgYearFinalPayment}-${avgMonthFinalPayment.toString().padStart(2, '0')}-${avgDayFinalPayment.toString().padStart(2, '0')}`;
+  //             // AVG_lease_Period_end_date=new Date(totallease_Period_end_date / data1.length);
+  //             const avgYearLeaseEnd = Math.floor(totalYearsLeaseEnd / data1.length);
+  //             const avgMonthLeaseEnd = Math.floor(totalMonthsLeaseEnd / data1.length);
+  //             const avgDayLeaseEnd = Math.floor(totalDaysLeaseEnd / data1.length);
+  //             this.AVG_lease_Period_end_date = `${avgYearLeaseEnd}-${avgMonthLeaseEnd.toString().padStart(2, '0')}-${avgDayLeaseEnd.toString().padStart(2, '0')}`;
 
-  async getLeasPaymentHeadData(appNo: any) {
+  //             const avgYearcon_date = Math.floor(totalYearscon_date / data1.length);
+  //             const avgMonthcon_date = Math.floor(totalMonthscon_date / data1.length);
+  //             const avgDaycon_date = Math.floor(totalDayscon_date / data1.length);
+  //             this.AVG_con_date = `${avgYearcon_date}-${avgMonthcon_date.toString().padStart(2, '0')}-${avgDaycon_date.toString().padStart(2, '0')}`;
+  //     // debugger
+  //         } else {
+  //             console.warn("No data returned for the application number.");
+  //         }
+  //       // })
+  //     } else {
+  //       console.warn("No data returned for the Plot_Merge_1.");
+  //   }
+  //     })
+  //  }
+
+  Average_calculate(plot_id: string): Observable<void> {
+    return new Observable<void>((observer) => {
+      this._service.get_View_lease_for_get_appby_plot_Id(plot_id).subscribe((data1: any) => {
+        if (data1 && data1.length > 0) {
+          debugger
+            // Initialize proposeList if undefined
+        this.proposeList = this.proposeList || [];
+        
+          this.proposeList = [...this.proposeList, ...data1];
+          console.log("AVG_con_date",this.proposeList);
+          let AVG_lease_Payment_Year = 0, AVG_lease_period_in_Year = 0,
+            AVG_remaining_lease_payment = 0;
+          let totalYearsLeaseEnd = 0, totalMonthsLeaseEnd = 0, totalDaysLeaseEnd = 0;
+          let totalYearscon_date = 0, totalMonthscon_date = 0, totalDayscon_date = 0;
+          let totalYearsFinalPayment = 0, totalMonthsFinalPayment = 0, totalDaysFinalPayment = 0;
+          for (let i = 0; i < data1.length; i++) {
+            AVG_lease_Payment_Year += data1[i].lease_Payment_Year;
+            AVG_lease_period_in_Year += data1[i].lease_period_in_Year;
+            AVG_remaining_lease_payment += data1[i].remaining_lease_payment;
+            if (data1[i].date_of_final_lease_payment) {
+              const dateFinalPayment = new Date(data1[i].date_of_final_lease_payment.split("T")[0]);
+              totalYearsFinalPayment += dateFinalPayment.getFullYear();
+              totalMonthsFinalPayment += dateFinalPayment.getMonth() + 1; // Months are zero-based
+              totalDaysFinalPayment += dateFinalPayment.getDate();
+            }
+            if (data1[i].lease_Period_end_date) {
+              const dateLeaseEnd = new Date(data1[i].lease_Period_end_date.split("T")[0]);
+              totalYearsLeaseEnd += dateLeaseEnd.getFullYear();
+              totalMonthsLeaseEnd += dateLeaseEnd.getMonth() + 1; // Months are zero-based
+              totalDaysLeaseEnd += dateLeaseEnd.getDate();
+            }
+            if (data1[i].contract_date) {
+              const datecon_date = new Date(data1[i].contract_date.split("T")[0]);
+              totalYearscon_date += datecon_date.getFullYear();
+              totalMonthscon_date += datecon_date.getMonth() + 1; // Months are zero-based
+              totalDayscon_date += datecon_date.getDate();
+            }
+          }
+  
+          this.AVG_lease_Payment_Year /= data1.length;
+          this.AVG_lease_period_in_Year /= data1.length;
+          AVG_remaining_lease_payment /= data1.length;
+          this._service.AVG_remaining_lease_payment = AVG_remaining_lease_payment;
+  
+          const avgYearFinalPayment = Math.floor(totalYearsFinalPayment / data1.length);
+          const avgMonthFinalPayment = Math.floor(totalMonthsFinalPayment / data1.length);
+          const avgDayFinalPayment = Math.floor(totalDaysFinalPayment / data1.length);
+          this.AVG_date_of_final_lease_payment = `${avgYearFinalPayment}-${avgMonthFinalPayment.toString().padStart(2, '0')}-${avgDayFinalPayment.toString().padStart(2, '0')}`;
+  
+          const avgYearLeaseEnd = Math.floor(totalYearsLeaseEnd / data1.length);
+          const avgMonthLeaseEnd = Math.floor(totalMonthsLeaseEnd / data1.length);
+          const avgDayLeaseEnd = Math.floor(totalDaysLeaseEnd / data1.length);
+          this.AVG_lease_Period_end_date = `${avgYearLeaseEnd}-${avgMonthLeaseEnd.toString().padStart(2, '0')}-${avgDayLeaseEnd.toString().padStart(2, '0')}`;
+  
+          const avgYearcon_date = Math.floor(totalYearscon_date / data1.length);
+          const avgMonthcon_date = Math.floor(totalMonthscon_date / data1.length);
+          const avgDaycon_date = Math.floor(totalDayscon_date / data1.length);
+          this.AVG_con_date = `${avgYearcon_date}-${avgMonthcon_date.toString().padStart(2, '0')}-${avgDaycon_date.toString().padStart(2, '0')}`;
+          
+          
+  debugger
+          // Notify that the calculation is complete
+          observer.next();
+          observer.complete();
+        } else {
+          console.warn("No data returned for the plot.");
+          observer.complete();  // Complete the observable even if no data is returned
+        }
+      });
+    });
+  }
+
+   // Method to handle the API request
+makeLeaseCodeRequest(appNo: string) {
+  this._service.getDataBy_lease_code(appNo).subscribe((response) => {
+    let data = response["proc_Lease_Payment_Heads"][0];
 debugger
+    // Assign values to leaserPaymentHead from response data
+    this.leaserPaymentHead.Lease_period_in_Year = this.AVG_lease_period_in_Year;
+    this.leaserPaymentHead.Lease_Payment_Year = this.AVG_lease_Payment_Year;
+    this.leaserPaymentHead.Lease_code = data.lease_code;
+    this.leaserPaymentHead.Application_No = data.application_No;
+    this.leaserPaymentHead.Application_code = data.application_code;
+    this.leaserPaymentHead.Todolis_ID = data.todolis_ID;
+    this.leaserPaymentHead.Lease_Payment_grace_Period = data.lease_Payment_grace_Period;
+    this._service.Lease_Payment_grace_Period = data.lease_Payment_grace_Period;
+    this.leaserPaymentHead.Total_lease_amount_to_be_paid = data.total_lease_amount_to_be_paid;
+    this.leaserPaymentHead.Amount_of_the_annual_lease_payment = data.amount_of_the_annual_lease_payment;
+    this.leaserPaymentHead.Is_old = data.is_old;
+    this.leaserPaymentHead.Old_Lease_Amount = data.old_lease_amount;
+    this.leaserPaymentHead.is_inter_free = data.is_inter_free;
+    this._service.is_inter_free = this.leaserPaymentHead.is_inter_free;
+    this._service.Is_old = this.leaserPaymentHead.Is_old;
+    this._service.Old_Lease_Amount = this.leaserPaymentHead.Old_Lease_Amount;
+    this.leaserPaymentHead.Date_of_final_lease_payment = this.AVG_date_of_final_lease_payment.split("T")[0];
+    this.leaserPaymentHead.Lease_Period_end_date = this.AVG_lease_Period_end_date;
+    this.leaserPaymentHead.Contract_date = this.AVG_con_date;
+    this._service.contract_date = this.leaserPaymentHead.Contract_date;
+    this.leaserPaymentHead.Remaining_lease_Payment = data.remaining_lease_payment;
+    this.leaserPaymentHead.Customer_Type = data.customer_Type;
+    this.leaserPaymentHead.Transfer_type = data.transfer_Type;
+    this.leaserPaymentHead.Proporty_Use = data.proporty_Use;
+    this.lease_period_prev = data.lease_Payment_Year + data.lease_Payment_grace_Period;
+    this._service.Lease_Payment_Year = data.lease_Payment_Year;
+    this.leaserPaymentHead.Is_Active = data.is_Active;
+    this.leaserPaymentHead.Parent = data.parent;
+    this.leaserPaymentHead.lease_payment_advance_per = data.lease_payment_advance_per;
+    this._service.lease_payment_advance_per = data.lease_payment_advance_per;
+
+    // Call functions that depend on fetched data
+    this.getTransferType(this.leaserPaymentHead.Transfer_type);
+    this.getProportyUse(this.leaserPaymentHead.Proporty_Use);
+    this.getCustomerType(this.leaserPaymentHead.Customer_Type);
+  });
+}
+  async getLeasPaymentHeadData(appNo: any) {
+// debugger
     if (this._service.Service_ID == "e9a61e6a-d580-4cfa-921d-36e751d87a05" || this._service.Service_ID == "8a8588ae-0267-48b7-88ac-f3f18ac02167") {
       this._service.get_View_cert_for_get_appby_plot_Id(this._service.ploteId).subscribe(data => {
         this._service.getDataById(data[0].application_No).subscribe(async data1 => {
@@ -236,88 +432,30 @@ debugger
         })
       })
     }
-    else if(this._service.Service_ID == "793b8814-f845-429e-a472-dc47e797d3fe"){
-      // debugger
-      this._service.get_View_lease_for_get_appby_plot_Id(this._service.licenceData.Plot_Merge_1).subscribe((data:any) => {
-        if (data && data.length > 0) {
-
-        this._service.get_View_lease_for_get_appby_app_no(data[0].application_No).subscribe(async( data1:any) => {
-          debugger
-          let data2  = data1;
-          let AVG_lease_Payment_Year = 0, AVG_lease_period_in_Year = 0;
-          if (data1 && data1.length > 0) {
-            for (let i = 0; i < data1.length; i++) {
-                AVG_lease_Payment_Year += data1[i].lease_Payment_Year;
-                AVG_lease_period_in_Year += data1[i].lease_period_in_Year;
-            }
-            
-            AVG_lease_Payment_Year /= data1.length;
-            AVG_lease_period_in_Year /= data1.length;
-            
-            // You can now use AVG_lease_Payment_Year and AVG_lease_period_in_Year for further processing.
-            console.log("Average Lease Payment Year:", AVG_lease_Payment_Year);
-            console.log("Average Lease Period in Year:", AVG_lease_period_in_Year);
-        } else {
-            console.warn("No data returned for the application number.");
-        }
-          this._service.getDataBy_lease_code(appNo).subscribe(
-            (response) => {
-              debugger
-              let data = response["proc_Lease_Payment_Heads"][0];
-                this.leaserPaymentHead.Lease_period_in_Year = AVG_lease_period_in_Year;
-                this.leaserPaymentHead.Lease_Payment_Year = AVG_lease_Payment_Year;
-              this.leaserPaymentHead.Lease_code = data.lease_code;
-              this.leaserPaymentHead.Application_No = data.application_No;
-              this.leaserPaymentHead.Application_code = data.application_code;
-              this.leaserPaymentHead.Todolis_ID = data.todolis_ID;
-              this.leaserPaymentHead.Lease_Payment_grace_Period = data.lease_Payment_grace_Period;
-              this._service.Lease_Payment_grace_Period = data.lease_Payment_grace_Period;
-              this.leaserPaymentHead.Total_lease_amount_to_be_paid =
-                data.total_lease_amount_to_be_paid;
-              this.leaserPaymentHead.Amount_of_the_annual_lease_payment =
-                data.amount_of_the_annual_lease_payment;
-              this._service.contract_date = this.leaserPaymentHead.Contract_date
-              this.leaserPaymentHead.Is_old=data.is_old
-              this.leaserPaymentHead.Old_Lease_Amount=data.old_lease_amount
-              this.leaserPaymentHead.is_inter_free=data.is_inter_free
-              this._service.is_inter_free = this.leaserPaymentHead.is_inter_free;
-              this._service.Is_old = this.leaserPaymentHead.Is_old;
-              this._service.Old_Lease_Amount = this.leaserPaymentHead.Old_Lease_Amount;
-              this.leaserPaymentHead.Date_of_final_lease_payment = data2.date_of_final_lease_payment.split("T")[0]
-              this.leaserPaymentHead.Lease_Period_end_date = data2.lease_Period_end_date.split("T")[0];
-              this.leaserPaymentHead.Contract_date = data2.contract_date.split("T")[0];
-              this.contract_date_prev = data2.contract_date.split("T")[0];
-              this._service.contract_date = this.leaserPaymentHead.Contract_date
-
-              this.leaserPaymentHead.Remaining_lease_Payment =
-                data.remaining_lease_payment;
-              this.leaserPaymentHead.Customer_Type = data.customer_Type;
-              this.leaserPaymentHead.Transfer_type = data.transfer_Type;
-              this.leaserPaymentHead.Proporty_Use = data.proporty_Use;
-
-              this.lease_period_prev = data.lease_Payment_Year + data.lease_Payment_grace_Period;
-              this._service.Lease_Payment_Year = data.lease_Payment_Year;
-              // this.lease_period_prev = data.lease_Payment_Year;
-              this.leaserPaymentHead.Is_Active = data.is_Active;
-              this.leaserPaymentHead.Parent = data.parent;
-              this.leaserPaymentHead.lease_payment_advance_per = data.lease_payment_advance_per;
-              this._service.lease_payment_advance_per = data.lease_payment_advance_per;
-              this.getTransferType(this.leaserPaymentHead.Transfer_type);
-              this.getProportyUse(this.leaserPaymentHead.Proporty_Use);
-              this.getCustomerType(this.leaserPaymentHead.Customer_Type);
-              this.leaserPaymentHead.Contract_date = data2.contract_date.split("T")[0];
-            
-            })
-
-        })
-      } else {
-        console.warn("No data returned for the Plot_Merge_1.");
+    else if (this._service.Service_ID == "793b8814-f845-429e-a472-dc47e797d3fe") {
+      this.merged=true
+ // Start by performing the calculation for Plot_Merge_1 if it exists
+ // First, perform the calculation for Plot_Merge_1
+ if (this._service.licenceData.Plot_Merge_1) {
+  this.Average_calculate(this._service.licenceData.Plot_Merge_1).subscribe(() => {
+// debugger
+    // Once Plot_Merge_1 calculation is done, check if Plot_Merge_2 exists
+    if (this._service.licenceData.Plot_Merge_2) {
+      this.Average_calculate(this._service.licenceData.Plot_Merge_2).subscribe(() => {
+        // debugger
+        this.makeLeaseCodeRequest(appNo);
+      });
+    } else {
+      this.makeLeaseCodeRequest(appNo);
     }
-      })
+  });
+} 
     }
+    
     else {
       this._service.getDataBy_lease_code(appNo).subscribe(
         (response) => {
+          debugger
           if (response["proc_Lease_Payment_Heads"].length > 0) {
             let data = response["proc_Lease_Payment_Heads"][0];
             this.leaserPaymentHead.Lease_code = data.lease_code;
@@ -464,6 +602,9 @@ debugger
   //     // return datenow.nowTime;
   //   }
   // }
+  get_merged_plots(){
+    this.showmeged_plots=true;
+  }
   async updateLeasPaymentHeadData() {
 
     if (this.leaserPaymentHead.Date_of_final_lease_payment == null || this.leaserPaymentHead.Lease_Period_end_date == null) {

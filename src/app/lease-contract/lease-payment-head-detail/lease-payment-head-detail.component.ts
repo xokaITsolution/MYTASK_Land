@@ -35,6 +35,7 @@ export class LeasePaymentHeadDetailComponent {
   disable: any;
   forcheck_0_payment: number;
   is_disabled: boolean;
+  merged: any;
   constructor(
     private router: Router,
     private _service: LeaseContractService,
@@ -167,7 +168,7 @@ export class LeasePaymentHeadDetailComponent {
   }
 
   updateleaserPaymentHeadDetail() {
-    debugger
+    // debugger
     if (this.forcheck_0_payment == 0) {
       this.leasePaymentHeadDetail.Amount_of_down_payment = this.forcheck_0_payment;
     }
@@ -187,7 +188,7 @@ export class LeasePaymentHeadDetailComponent {
     );
   }
   Generate_lease_plan() {
-    debugger
+    // debugger
     this._service.Generate_lease_plan(this.leasePaymentHeadDetail.Lease_code,
       this.leasePaymentHeadDetail.PlotID,
       this._service.Lease_Payment_grace_Period,
@@ -197,7 +198,8 @@ export class LeasePaymentHeadDetailComponent {
       this._service.contract_date,
       this._service.Service_ID,
       this.ServiceService.tskID,
-    this._service.is_inter_free).subscribe(data => {
+    this._service.is_inter_free,
+    this._service.Is_old).subscribe(data => {
 
         this.Enable = false
         this.updated = true;
@@ -250,24 +252,7 @@ export class LeasePaymentHeadDetailComponent {
             let data = response.proc_Leas_Payment_Head_Details[0];
             this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid=data.total_Plot_Size*amount_of_one_care;
             this.leasePaymentHeadDetail.Plot_Size_By_Lease_Bid_Price = 0
-            // if (data.plot_size_By_Lease_Price == 0 && data.plot_Size_By_Lease_Bid_Price == 0) {
-            //   this.leasePaymentHeadDetail.Plot_Size_By_Lease_Bid_Price = data.total_Plot_Size
-            //   const bid_price = data.total_Plot_Size * data.current_lease_bid_price;
-            //   const lease_prce = data.plot_size_By_Lease_Price * data.current_lease_Price;
-            //   this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid = bid_price + lease_prce;
-            //   this.leasePaymentHeadDetail.Amount_of_down_payment =
-            //     this._service.lease_payment_advance_per * this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid;
-            // }
-            // else {
-            //   //  this.leasePaymentHeadDetail.Plot_Size_By_Lease_Bid_Price = data.plot_Size_By_Lease_Bid_Price
-            //   this.checkIfNumberInserted(data.plot_size_By_Lease_Price)
-            //   this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid = data.total_lease_amount_to_be_paid
               this.leasePaymentHeadDetail.Amount_of_down_payment = data.amount_of_down_payment;
-            // }
-            // Setting display values
-            // if (this._service.Is_old) {
-            //   this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid = this._service.Old_Lease_Amount
-            // }
             const totalLeaseAmount = this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid;
             const roundedAmount = +totalLeaseAmount.toFixed(3);
             this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid = roundedAmount;
@@ -292,14 +277,53 @@ export class LeasePaymentHeadDetailComponent {
               data.remaining_lease_payment;
             this.leasePaymentHeadDetail.Updated_By_userid = data.updated_By_userid;
             this.leasePaymentHeadDetail.Updated_date = data.updated_date;
-
-            // this.leasePaymentHeadDetail.Time = data.Time;
           },
           (error) => {
             this.notificationsService.error("Error", "Something Went Wrong");
           }
         );
       })
+    }
+    else if(this._service.Service_ID == "793b8814-f845-429e-a472-dc47e797d3fe"){
+      this._service.getDataByleasecode(this._service.lease_code).subscribe(
+        (response) => {
+          this.is_disabled=true;
+          let data = response.proc_Leas_Payment_Head_Details[0];
+          this.leasePaymentHeadDetail.Plot_Size_By_Lease_Bid_Price = data.total_Plot_Size
+
+          this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid = this._service.AVG_remaining_lease_payment
+          const totalLeaseAmount = this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid;
+          const roundedAmount = +totalLeaseAmount.toFixed(3);
+          this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid = roundedAmount;
+          this.leasePaymentHeadDetail.Total_lease_amount_to_be_paid_display = roundedAmount.toLocaleString();
+          this.leasePaymentHeadDetail.Amount_of_down_payment = data.amount_of_down_payment;
+          // // if(this.leasePaymentHeadDetail.Amount_of_down_payment!=0){
+          // const Amount_of_down_payment = this.leasePaymentHeadDetail.Amount_of_down_payment;
+          // const roundedAmount1 = +Amount_of_down_payment.toFixed(3);
+          // this.leasePaymentHeadDetail.Amount_of_down_payment = roundedAmount1
+          // this.leasePaymentHeadDetail.Amount_of_down_payment_display = roundedAmount1.toLocaleString();
+          // // }
+          this.leasePaymentHeadDetail.Lease_code = data.lease_code;
+          this.leasePaymentHeadDetail.PlotID = data.plotID;
+          this.leasePaymentHeadDetail.Total_Plot_Size = data.total_Plot_Size;
+          this.leasePaymentHeadDetail.Current_lease_bid_price =
+            data.current_lease_bid_price;
+
+          this.leasePaymentHeadDetail.Current_lease_Price =
+            data.current_lease_Price;
+          this.leasePaymentHeadDetail.Plot_size_By_Lease_Price =
+            data.plot_size_By_Lease_Price;
+          this.leasePaymentHeadDetail.Remaining_lease_payment =
+            data.remaining_lease_payment;
+          this.leasePaymentHeadDetail.Updated_By_userid = data.updated_By_userid;
+          this.leasePaymentHeadDetail.Updated_date = data.updated_date;
+
+          // this.leasePaymentHeadDetail.Time = data.Time;
+        },
+        (error) => {
+          this.notificationsService.error("Error", "Something Went Wrong");
+        }
+      );
     }
     else {
       this._service.getDataByleasecode(this._service.lease_code).subscribe(

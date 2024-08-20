@@ -1,6 +1,11 @@
 <div class="container">
     <div class="card">
         <h2> Lease Payment Head </h2>
+ 
+        <div class="card-header"><button type="button" *ngIf="merged" class="btn btn-secondary btn-success" label="Merged plots"
+            (click)="get_merged_plots()">Merged plots</button>
+        
+    </div>
         <div class="form-container">
             <!-- left column of the form -->
 
@@ -189,7 +194,7 @@
               
             </section>
         </div>
-        <div class="card-footer"><button type="button" [disabled]="disable" class="btn btn-secondary btn-success" label="Update"
+        <div class="card-footer"><button type="button" [disabled]="!(leaserPaymentHead.Contract_date || !disable)" class="btn btn-secondary btn-success" label="Update"
                 (click)="updateLeasPaymentHeadData()">Update</button>
             
         </div>
@@ -198,3 +203,58 @@
     </div>
     <br>
 </div>
+<p-dialog [(visible)]="showmeged_plots" [responsive]="true"
+  [style]="{'minHeight':'10%','height':'800px','minWidth':'10%','width':'80%' }" [maximizable]="true"
+  [baseZIndex]="10000">
+  <p-table [value]="proposeList" [paginator]="true" [rows]="5">
+    <ng-template pTemplate="header">
+      <tr>
+        <th translate>Plot Id</th>
+        <th translate>contract_date</th>
+        <th translate>total_Plot_Size</th>
+        <th translate>remaining_lease_payment</th>
+        <th translate>lease_period_in_Year</th>
+        <th translate>lease_Payment_Year</th>
+        <th translate>date_of_final_lease_payment</th>
+        <th translate>lease_Period_end_date</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-propose>
+      <tr class="some-class" tabindex="1"
+        [class.uistatehighlight]="rowData === highlighted">
+
+        <!-- <td>{{Plot.Plot_ID}} </td> -->
+        <!-- <td>
+          <select class="form-control" disabled [(ngModel)]="Plot.Plot_Status" name="Statuss" id="Statuss">
+            <option disabled translate>select</option>
+            <option *ngFor="let Status of serviceService.PlotStutusLook" [value]="Status.Plot_Status_ID">
+              {{Status.Name}}
+            </option>
+          </select>
+        </td> -->
+        <td>{{propose.parcel_ID}}</td>
+        <td>{{propose.contract_date}}</td>
+        <td>{{propose.total_Plot_Size}}</td>
+        <td>{{propose.remaining_lease_payment}}</td>
+        <td>{{propose.lease_period_in_Year}}</td>
+        <td>{{propose.lease_Payment_Year}}</td>
+        <td>{{propose.date_of_final_lease_payment}}</td>
+        <td>{{propose.lease_Period_end_date}}</td>
+        <!-- <td>
+          <button type="button" class="btn btn-primary" (click)="SelectPLot(Plot);serachplotExists=false"
+            translate>select</button>
+        </td> -->
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-footer>
+    <!-- *ngIf="toogleSpin" -->
+    <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="8"></p-progressSpinner>
+    <button type="button" class="btn btn-danger" (click)="showmeged_plots=false" translate>close
+    </button>
+
+  </p-footer>
+
+
+</p-dialog>

@@ -16,6 +16,15 @@
         >Supervisor Task</a
       >
     </li>
+    <li
+    class="nav-item"
+    (click)="tab = 'compensation-payment'"
+    [class.active]="tab == 'compensation-payment'"
+  >
+    <a class="nav-link" [routerLink]="['/task/compensation-payment']" translate
+      >compensation-payment</a
+    >
+  </li>
       <li
       class="nav-item"
       (click)="tab = 'Customer'"

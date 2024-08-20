@@ -277,6 +277,9 @@
               <div *ngIf="ID==16">
                 <app-con-review-transaction-detail [licenceData]="licenceData"></app-con-review-transaction-detail>
               </div>
+              <div *ngIf="ID==17">
+                <app-compensation-payment [licenceData]="licenceData"></app-compensation-payment>
+              </div>
               <div *ngIf="ID==9">
                 <app-property (completed)="saveFormm('{}');" (getpro)="getPropertyTypeLookUP()" [LicenceData]="licenceData"
                         [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="false" [AppNo]="AppNo"

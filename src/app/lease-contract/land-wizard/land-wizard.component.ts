@@ -114,7 +114,7 @@ export class LandWizardComponent implements AfterViewInit{
     // 
     this._service.getView_lease_payment_head(ID).subscribe(
       (response:any) => {
-       
+       debugger
         if (response.length>0){
           
           if (Array.isArray(response)) {

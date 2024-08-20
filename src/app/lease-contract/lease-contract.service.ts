@@ -67,6 +67,7 @@ export class LeaseContractService {
   parent_lease_code: any;
   is_inter_free: any;
   licenceData: any;
+  AVG_remaining_lease_payment: number;
 
   constructor(private http: HttpClient) {}
   insert_data( data: any) {
@@ -82,7 +83,8 @@ export class LeaseContractService {
     contract_date:any,
     Service_ID:any,
     tskID:any,
-    is_inter_free:any
+    is_inter_free:any,
+    Is_old:any
     ){
       // let ad = this.Proc_Genereate_Lease_Plan+
       // '?Lease_code='+Lease_Code+'&PlotID='+Plot_ID+'&Lease_Payment_grace_Period='+Lease_Payment_grace_Period+'&Lease_Payment_Year='+Lease_Payment_Year+'&Total_lease_amount_to_be_paid='+Total_lease_amount_to_be_paid
@@ -90,7 +92,7 @@ export class LeaseContractService {
         '?Lease_code='+Lease_Code+'&PlotID='+Plot_ID+'&Lease_Payment_grace_Period='+Lease_Payment_grace_Period+
         '&Lease_Payment_Year='+Lease_Payment_Year+'&Total_lease_amount_to_be_paid='+Total_lease_amount_to_be_paid+
         '&Amount_of_down_payment='+Amount_of_down_payment+'&contract_date='+contract_date+'&Service_ID='+Service_ID+'&tskID='+tskID+
-        '&is_inter_free='+is_inter_free
+        '&is_inter_free='+is_inter_free + '&Is_old='+Is_old
       );
   }
   updatewithprop(data){

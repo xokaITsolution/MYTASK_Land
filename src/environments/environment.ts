@@ -18,14 +18,13 @@ export const environment = {
   iconpath: window["iconpath"],
   formPath: window["formPath"],
   city: window["city"], 
-  
   // username: "ar_Tech_leader",
   // username: "EteneshSaleyesus", 
   // cn_land_expleader
   // username: "cn_land_expleader",
-  // username: "cn_leaseowner", 
+  username: "cn_lease_cashier", 
   // username: "lease_serveyor", 
-  username: "lease_owner",
+  // username: "lease_owner",
   // username: "ar_basemap",  
   numberOfpick: window["numberOfpick"],
   // username: "lease_cashier",

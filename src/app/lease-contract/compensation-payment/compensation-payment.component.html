@@ -1,0 +1,52 @@
+<div class="container">
+    <div class="card">
+        <h2> Lease Payment Head </h2>
+        <div class="form-container">
+            <!-- left column of the form -->
+
+            <section>
+                <div class="p-fluid">
+
+                    <div class="field">
+                        <label for="plotId">Plot Id</label>
+                        <input class="form-control" #plotId="ngModel" id="plotId" type="text" required pInputText
+                            [(ngModel)]="newcomp_payment.Plot_ID" [disabled]="true" />
+                    </div>
+                    <div class="field">
+                        <label for="compAmount">Compensation Amount</label>
+                        <input class="form-control" #compAmount="ngModel" id="compAmount" type="number" required
+                            pInputText [(ngModel)]="newcomp_payment.compensation_amount" />
+
+                    </div>
+
+                </div>
+            </section>
+            <!-- right column of the form -->
+            <section>
+
+                <div class="p-fluid">
+                    <div class="field">
+                        <label for="rehabAmount">Rehabitation Amount</label>
+                        <input class="form-control" #rehabAmount="ngModel" id="rehabAmount" type="text" required
+                            pInputText [(ngModel)]="newcomp_payment.rehabitation" [disabled]="true" />
+                    </div>
+                    <div class="field">
+                        <label for="iscleaned">Is Cleaned</label>
+                        <input 
+                            id="iscleaned" 
+                            type="checkbox" 
+                            [(ngModel)]="newcomp_payment.is_cleaned" 
+                        />
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="card-footer"><button type="button" class="btn btn-secondary btn-success"
+                label="Update">Update</button>
+
+        </div>
+        <!-- <p>edityear: {{ edityear }}</p>
+<p>leaserPaymentHead.Is_old: {{ leaserPaymentHead.Is_old }}</p> -->
+    </div>
+    <br>
+</div>

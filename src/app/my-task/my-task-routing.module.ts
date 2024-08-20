@@ -13,6 +13,7 @@ import { GisMapComponent } from "../service/gis-map/gis-map.component";
 
 import { NetworkDatabaseMonitoringToolComponent } from "../service/network-database-monitoring-tool/network-database-monitoring-tool.component";
 import { CertificateCheckStatusComponent } from "./certificate-check-status/certificate-check-status.component";
+import { CompensationPaymentComponent } from "../lease-contract/compensation-payment/compensation-payment.component";
 
 const routes: Routes = [
   {
@@ -38,6 +39,11 @@ const routes: Routes = [
       {
         path: "SupervisorTask",
         component: SupervisorTaskComponent,
+        pathMatch: "prefix",
+      },
+      {
+        path: "compensation-payment",
+        component: CompensationPaymentComponent,
         pathMatch: "prefix",
       },
       {
