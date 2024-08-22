@@ -1,3 +1,4 @@
+import { ConReviewTransactionComponent } from './../lease-contract/con-review-transaction/con-review-transaction.component';
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { MyTaskComponent } from "./my-task/my-task.component";
@@ -43,7 +44,7 @@ const routes: Routes = [
       },
       {
         path: "compensation-payment",
-        component: CompensationPaymentComponent,
+        component: ConReviewTransactionComponent,
         pathMatch: "prefix",
       },
       {

@@ -692,6 +692,7 @@ export class ServiceComponent implements OnInit  {
   }
 
   saveFormm2(formData) {
+    // debugger
     console.log("save-form", JSON.stringify(formData));
     this.serviceService
       .saveFormm(
@@ -710,7 +711,7 @@ export class ServiceComponent implements OnInit  {
       .subscribe(
         (response) => {
           console.log("save-from-response", response);
-
+// debugger
           this.serviceService.disablefins = false;
           this.AppNo = response[0];
           this.DocID = response[1];
@@ -862,7 +863,6 @@ export class ServiceComponent implements OnInit  {
     this.activatedRoute.params.subscribe((params: Params) => {
       console.log("leaseappppppp", params);
       // this.ID = params['id'];
-      
       this.docid =params["docid"];
       this.formcode = params["formcode"];
       this.AppNo = params["AppNo"];

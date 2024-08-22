@@ -259,13 +259,21 @@
     <label for="conlevel" class="col-sm-3 col-form-label" translate>Constraction Level</label>
     <div class="col-sm-9">
     
-    <select [disabled]="disable" class="form-control" [(ngModel)]="propertyRegister.Con_level" name="conlevel" 
+    <select [disabled]="disable" class="form-control" [(ngModel)]="propertyRegister.con_level" name="conlevel" 
       id="conlevel" #conlevel="ngModel" [ngClass]="{ 'is-invalid': conlevel.invalid }" required>
       <option *ngFor="let conlevel of conlevellist" [value]="conlevel.id">
         {{conlevel.name}}
       </option>
     </select>
 
+    </div>
+  </div>
+  <div class="form-group row col-md-6" >
+    <label class="col-sm-3 col-form-label" for="Room_No" translate=""></label>
+    <div class="col-sm-9">
+      <input class="form-control" id="Room_No" name="Room_No" [placeholder]="'Room No'|translate" type="text"
+        [(ngModel)]="propertyRegister.room_No" 
+        [disabled]="disable" >
     </div>
   </div>
 

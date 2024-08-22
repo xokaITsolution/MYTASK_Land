@@ -1,4 +1,37 @@
-<div class="container">
+<div>
+    <p-table #structure [value]="compensationList" [paginator]="true" [rows]="10">
+      <ng-template pTemplate="header">
+        <tr>
+          <th translate>plot_ID</th>
+          <th translate>Compensation Amount</th>
+          <th translate>Rehabitation Amount</th>
+          <th translate>Is Cleaned</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-lease_contract let-rowIndex="rowIndex">
+        
+         <!-- [ngClass]="{'selected-row': selectedRowIndex === rowIndex}" 
+          (click)="selected(lease_contract, rowIndex)" 
+          class="some-class" -->
+          <tr 
+         
+          (click)='highlighted = lease_contract;selected(lease_contract)' class="some-class" tabindex="1"
+            [class.uistatehighlight]="lease_contract === highlighted">
+          <td>{{lease_contract.plot_ID}}</td>
+          <td>{{lease_contract.compensation_amount}}</td>
+          <td>{{lease_contract.rehabitation}}</td>
+          <td>{{lease_contract.is_cleaned}}</td>
+          <!-- <td><button class="btn btn-primary" type="button" 
+              (click)="selectRow(rowIndex);selected(lease_contract)"  translate>
+              Edit
+            </button></td> -->
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+
+<div class="container" *ngIf="show">
     <div class="card">
         <h2> Lease Payment Head </h2>
         <div class="form-container">
@@ -10,7 +43,7 @@
                     <div class="field">
                         <label for="plotId">Plot Id</label>
                         <input class="form-control" #plotId="ngModel" id="plotId" type="text" required pInputText
-                            [(ngModel)]="newcomp_payment.Plot_ID" [disabled]="true" />
+                            [(ngModel)]="newcomp_payment.plot_ID" [disabled]="true" />
                     </div>
                     <div class="field">
                         <label for="compAmount">Compensation Amount</label>
@@ -36,13 +69,15 @@
                             id="iscleaned" 
                             type="checkbox" 
                             [(ngModel)]="newcomp_payment.is_cleaned" 
+                            (ngModelChange)="onIsCleanedChange($event)"
                         />
                     </div>
                 </div>
             </section>
         </div>
-        <div class="card-footer"><button type="button" class="btn btn-secondary btn-success"
+        <div class="card-footer"><button type="button" *ngIf="enable" class="btn btn-secondary btn-success" (click)="updatecompensation()"
                 label="Update">Update</button>
+                <button *ngIf="!enable" class="btn btn-secondary btn-success" type="button" label="Save" (click)="savecompensation()">save</button>
 
         </div>
         <!-- <p>edityear: {{ edityear }}</p>

@@ -8,14 +8,14 @@ import { environment } from 'src/environments/environment';
 })
 export class LeaseContractService {
   apiUrl=environment.rootPathApi;
-  private proc_Lease_Payment_Head = environment.rootPath3 + "proc_Lease_Payment_Head";
+  private proc_Lease_Payment_Head = environment.rootPathApi + "proc_Lease_Payment_Head";
   Lease_Contract =`${environment.rootPathApi}proc_Lease_Contract`;
   ConReviewTran =`${environment.rootPathApi}proc_Con_Review_Transaction/proc_ConReviewTransaction`;
   lease_payment_head = environment.rootPathApi + "proc_Lease_Payment_Head/"
   veiw_contract = environment.rootPathApi + "view/View_Contract/Lease_Code?Lease_Code="
   contract_type =`${environment.rootPathApi}proc_Lease_Contract_Type`;
   private License_ServiceURL = environment.rootPath + "License_Service";
-  private leaserPaymentHeadDetail = environment.rootPath3 + "proc_Leas_Payment_Head_Detail";
+  private leaserPaymentHeadDetail = environment.rootPathApi + "proc_Leas_Payment_Head_Detail";
   Lease_To_lease =`${environment.rootPathApi}proc_Lease_to_Lease`;
   Freehold_To_lease =`${environment.rootPathApi}Service_fee/proc_FreeHold_to_Lease`;
   Proc_Genereate_Lease_Plan=`${environment.rootPathApi}Proc_Genereate_Lease_Plan`;
@@ -35,9 +35,11 @@ export class LeaseContractService {
   View_cert_for_get_appby_plot_Id2 =`${environment.rootPathApi}view/View_lease_for_get_appby_plot_Id/App_No/`;
    getDataBy_lease_code1=`${environment.rootPathApi}proc_Lease_Payment_Head/Lease_code/`
    getlevel1=`${environment.rootPathApi}proc_Contraction_Level/proc_Contraction_Level`
+   get_compensationBy_plot_Id1=`${environment.rootPathApi}proc_compensation_payment`
    public get_payment_plan1 =
    environment.rootPathApi +
    "proc_Payment_Plan?Lease_cdoe=";
+ 
     getWithdrawpropose1 = environment.rootPathApi+'view/View_Withdraw_propose'
     get_withdraw1 = environment.rootPathApi+'view/View_withdraw_prop_active/Lease_Code?Licence_Service_Id='
     private getwithpropbyId1 =
@@ -121,6 +123,9 @@ export class LeaseContractService {
   get_payment_plan(lease_code) {
     return this.http.get(this.get_payment_plan1 + lease_code);
   }
+  get_compensationBy_plot_Id(plot_id) {
+    return this.http.get(this.get_compensationBy_plot_Id1+ "/" + plot_id);
+  }
   getWithdrawproposebyid(titdeed,cid) {
     return this.http.get(this.getWithdrawpropose1+"/"+titdeed+"/"+cid)
    }
@@ -138,8 +143,10 @@ export class LeaseContractService {
     // 
     return this.http.post(this.Freehold_To_lease, data);
   }
+  savecompensation( data: any) {
+    return this.http.post(this.get_compensationBy_plot_Id1, data);
+  }
   getDataBy_lease_code(ID){
-    
     return this.http.get(this.getDataBy_lease_code1 +ID);
   }
   get_View_cert_for_get_appby_plot_Id(ID){
@@ -174,6 +181,9 @@ export class LeaseContractService {
   updateFreeholdTolease(data:any): Observable<any>{
 
     return this.http.put<any>(this.Freehold_To_lease, data);
+  }
+  updatecompensation(data:any): Observable<any>{
+    return this.http.put<any>(this.get_compensationBy_plot_Id1, data);
   }
   get_all(){
     // 
@@ -251,6 +261,9 @@ export class LeaseContractService {
       // 
       const url = `${this.leaserPaymentHeadDetail}/${id}`;
       return this.http.get<any>(url);
+    }
+    get_lease_payment_head_plot(id: any): Observable<any> {
+      return this.http.get(this.leaserPaymentHeadDetail +"/Plot_ID/" + id);
     }
     getTransferType(id: any): Observable<any> {
       const url = `${this.apiUrl}Deed_Transfer_Lookup/procDeed_Transfer_Lookup/${id}`;

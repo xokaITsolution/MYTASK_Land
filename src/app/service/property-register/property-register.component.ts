@@ -134,6 +134,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     this.pictoShow = null;
     console.log("chang detected");
     if (this.selectedpro !== undefined && this.selectedpro !== null) {
+      debugger
       this.propertyRegister = new PropertyRegister();
       this.propertyRegister = this.selectedpro;
       this.propertyRegister.plot_ID = this.selectedpro.plot_ID;
@@ -1081,9 +1082,11 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   })
   }
   getcurrentlocationdata() {
+    debugger
     this.serviceService
       .getProploc(this.selectedpro.property_ID)
       .subscribe((response: any) => {
+        debugger
         this.proploceach = response.procProporty_Locations;
         console.log(
           "🚀 ~ .subscribe ~ propformLocation:",
@@ -1822,7 +1825,7 @@ export class PropertyRegister {
   public is_commerscial;
   public room_No;
   public proprty_Use;
-  public Con_level:any;
+  public con_level:any;
 }
 export class PropformLocation {
   public proporty_Id: any;

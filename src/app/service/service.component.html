@@ -278,7 +278,7 @@
                 <app-con-review-transaction-detail [licenceData]="licenceData"></app-con-review-transaction-detail>
               </div>
               <div *ngIf="ID==17">
-                <app-compensation-payment [licenceData]="licenceData"></app-compensation-payment>
+                <app-compensation-payment [licenceData]="licenceData" (completed)="saveFormm2();"></app-compensation-payment>
               </div>
               <div *ngIf="ID==9">
                 <app-property (completed)="saveFormm('{}');" (getpro)="getPropertyTypeLookUP()" [LicenceData]="licenceData"
@@ -518,7 +518,7 @@
 
         </div>
         <div *ngIf="preAppID==13" >
-          <app-lease-contract [disable]="true" (completed)="EnableFinss();plot();saveFormmplot('{}');"></app-lease-contract>
+          <app-lease-contract [licenceData]="licenceData" ></app-lease-contract>
         </div>
         <div *ngIf="preAppID==15">
           <app-withdraw-propose ></app-withdraw-propose>

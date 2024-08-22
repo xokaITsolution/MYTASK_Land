@@ -1,70 +1,140 @@
-<!-- <div>
-    <div>
-      <p-table #structure [value]="contractList" [paginator]="true" [rows]="10">
-        <ng-template pTemplate="header">
-          <tr>
-            <th translate>contact_type</th>
-            <th translate>contract_date</th>
-            <th></th>
-            <th>
-              <button class="btn btn-primary" type="button" (click)="showForm=true" translate>
-                Add New
-              </button>
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-lease_contract>
-          <tr>
-            <td>{{lease_contract.contact_Type}}</td>
-            <td>{{lease_contract.contract_date}}</td>
-            <td>
-              <button class="btn btn-primary" type="button" (click)="selected(lease_contract)" *ngIf="enable_edit" translate>
-                Edit
-              </button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
+<!--
+        <div class="form-container">
+         
+
+            <section>
+                <div class="p-fluid">
+                    <div class="field">
+                        <label for="Lease_Payment_grace_Period">Design In Month Start Date</label>
+                        <input type="date" disabled="true" class="form-control"
+                            [(ngModel)]="newConstraction_review.design_in_month_start_date" name="ContractDate" id="ContractDate"
+                            [placeholder]="'Contract Date'" #ContractDate="ngModel" />
+                    </div>
+
+
+                    <div class="field">
+                        <label for="Total_lease_amount_to_be_paid">Design In Month End Date</label>
+                        <input type="date" disabled="true" class="form-control"
+                            [(ngModel)]="newConstraction_review.design_in_month_end_date" name="ContractDate" id="ContractDate"
+                            [placeholder]="'Contract Date'" #ContractDate="ngModel" />
+                    </div>
+
+
+                    <div class="field">
+                        <label for="Amount_of_the_annual_lease_payment">Building Licence Start Date</label>
+                        <input type="date" disabled="true" class="form-control"
+                            [(ngModel)]="newConstraction_review.building_licence_start_date" name="ContractDate" id="ContractDate"
+                            [placeholder]="'Contract Date'" #ContractDate="ngModel" />
+                    </div>
+
+
+                    <div class="field">
+                        <label for="Lease_period_in_Year">Building Licence End Date</label>
+                        <input type="date" disabled="true" class="form-control"
+                            [(ngModel)]="newConstraction_review.building_licence_end_date" name="ContractDate" id="ContractDate"
+                            [placeholder]="'Contract Date'" #ContractDate="ngModel" />
+                    </div>
+
+                    <div class="field">
+                        <label for="Date_of_final_lease_payment">Start Constraction Period Start Date </label>
+                        <input type="date" disabled="true" class="form-control"
+                            [(ngModel)]="newConstraction_review.start_constraction_period_start_date" name="ContractDate" id="ContractDate"
+                            [placeholder]="'Contract Date'" #ContractDate="ngModel" />
+                    </div>
+                    <div class="field">
+                        <label for="Remaining_lease_Payment">Start Constraction Period End Date</label>
+                        <input type="date" [disabled]="disable || disabledate" class="form-control"
+                            [(ngModel)]="newConstraction_review.start_constraction_period_end_date" name="ContractDate" id="ContractDate"
+                            [placeholder]="'Contract Date'" #ContractDate="ngModel" />
+                    </div>
+                    <div class="field">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="Remaining_lease_Payment_1">Approved</label>
+                        <input 
+                            id="isinterfree" 
+                            type="checkbox" 
+                            [(ngModel)]="newConstraction_review.approved_start" 
+                        />
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="Remaining_lease_Payment_2">With Penality</label>
+                                <input 
+                                id="isinterfree" 
+                                type="checkbox" 
+                                [(ngModel)]="newConstraction_review.penality_start" 
+                            />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+         
+            <section>
+
+                <div class="p-fluid">
+                    <div class="field">
+                        <label for="ContractDate">End Constraction Period Start Date</label>
+                        <input type="date" disabled="true" class="form-control"
+                            [(ngModel)]="newConstraction_review.end_constraction_period_start_date" name="ContractDate" id="ContractDate"
+                            [placeholder]="'Contract Date'" #ContractDate="ngModel" />
+                    </div>
+                    <div class="field">
+                        <label for="ContractDate">End Constraction Period End Date</label>
+                        <input type="date" [disabled]="disable || disabledate" class="form-control"
+                            [(ngModel)]="newConstraction_review.end_constraction_period_end_date" name="ContractDate" id="ContractDate"
+                            [placeholder]="'Contract Date'" #ContractDate="ngModel" />
+                    </div>
+                    <div class="field">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="Remaining_lease_Payment_1">Approved</label>
+                        <input 
+                            id="isinterfree" 
+                            type="checkbox" 
+                            [(ngModel)]="newConstraction_review.approved_end" 
+                        />
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="Remaining_lease_Payment_2">With Penality</label>
+                                <input 
+                                id="isinterfree" 
+                                type="checkbox" 
+                                [(ngModel)]="newConstraction_review.penality_end" 
+                            />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="ContractDate">Extended Start Date</label>
+                        <input type="date" disabled="true" class="form-control"
+                            [(ngModel)]="newConstraction_review.extended_start_date" name="ContractDate" id="ContractDate"
+                            [placeholder]="'Contract Date'" #ContractDate="ngModel" />
+                    </div>
+                    <div class="field">
+                        <label for="ContractDate">Extended End Date</label>
+                        <input type="date" disabled="true" class="form-control"
+                            [(ngModel)]="newConstraction_review.extended_end_date" name="ContractDate" id="ContractDate"
+                            [placeholder]="'Contract Date'" #ContractDate="ngModel" />
+                    </div>
+                    <div class="field">
+                        <label for="Total_lease_amount_to_be_paid">Con Period Extended Month</label>
+                        <input type="number" disabled="true" class="form-control"
+                            [(ngModel)]="newConstraction_review.extende_month" name="ContractDate" id="ContractDate"
+                            [placeholder]="'Contract Date'" #ContractDate="ngModel" />
+                    </div>
+                </div>
+
+
+            </section>
+
+        </div>
+        <div class="card-footer"><button type="button" class="btn btn-secondary btn-success"
+                label="Update">Update</button>
+
+        </div>
+
     </div>
-  </div>
-  
-  <div *ngIf="showForm" class="container">
-    <div class="card">
-      <h2>Construction Review</h2>
-      <div class="form-container">
-        <section>
-          <div class="p-fluid">
-            <div class="field">
-              <label for="customer_id">Property ID</label>
-              <input class="form-control" #customer_id="ngModel" id="customer_id" type="text"
-                required pInputText [(ngModel)]="newLevel.CID" />
-            </div>
-            <div class="field">
-              <label for="status">Status</label>
-              <input class="form-control" #status="ngModel" id="status" type="checkbox" required pInputText
-                [disabled]="true" [(ngModel)]="leaserPaymentHead.status" />
-            </div>
-          </div>
-        </section>
-        
-        <section class="form-column">
-          <div class="p-fluid">
-            <div class="field">
-              <label for="date">Date</label>
-              <input class="form-control" #date="ngModel" [disabled]="true"
-                id="date" type="date" required pInputText [(ngModel)]="leaserPaymentHead.date" />
-            </div>
-          </div>
-        </section>
-      </div>
-  
-      <div class="card-footer">
-        <button class="btn btn-secondary btn-success" type="button" label="Update"
-          (click)="InsertnewConReviewTran();showFormdetail=true">Save</button>
-      </div>
-    </div>
-  </div>
-  <div *ngIf="showFormdetail">
-    <app-con-review-transaction-detail></app-con-review-transaction-detail>
-  </div>
-   -->
+    <br>
+</div> -->
