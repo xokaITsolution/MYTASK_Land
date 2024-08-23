@@ -22,4 +22,5 @@ export class LeaserPaymentHead {
   Is_old:any
   Old_Lease_Amount:any
   is_inter_free:any
+  with_penality:any
 }

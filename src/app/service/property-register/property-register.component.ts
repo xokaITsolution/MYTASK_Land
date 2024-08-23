@@ -34,7 +34,6 @@ import { LeaseContractService } from "src/app/lease-contract/lease-contract.serv
 export class PropertyRegisterComponent implements OnInit, OnChanges {
   @Output() completed = new EventEmitter();
   @Output() completeddel = new EventEmitter();
-
   public propertyRegister: PropertyRegister;
   public propformLocation: PropformLocation;
   @Input() selectedpro;
@@ -78,6 +77,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   technicaluser: any;
   isbuilding: boolean;
   conlevellist: any[]=[];
+  with_Penality: boolean=false
   constructor(
     public serviceService: ServiceService,
     public serviceComponent: ServiceComponent,
@@ -121,11 +121,14 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     return mappedArray;
   }
   async ngOnChanges() {
-    // debugger
     this.routerService.params.subscribe((params) => {
       this.urlParams = params;
     });
-    
+    if (this.LicenceData.Service_ID=="4541c498-70c6-449d-9caf-6914324f64d0" || 
+    this.LicenceData.Service_ID=="83ede7d2-c2c0-451e-a5a3-532b157e69dd"){
+      
+this.with_Penality=true;
+    }
     if (environment.Lang_code === "am-et") {
       this.language = "amharic";
     } else {
@@ -134,8 +137,8 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     this.pictoShow = null;
     console.log("chang detected");
     if (this.selectedpro !== undefined && this.selectedpro !== null) {
-      debugger
       this.propertyRegister = new PropertyRegister();
+      debugger
       this.propertyRegister = this.selectedpro;
       this.propertyRegister.plot_ID = this.selectedpro.plot_ID;
       this.propertyRegister.property_Parent_ID =
@@ -188,6 +191,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
     this.routerService.params.subscribe((params) => {
       this.urlParams = params;
     });
+    
     if (environment.Lang_code === "am-et") {
       this.language = "amharic";
     } else {
@@ -209,7 +213,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   }
   getlevel(){
     this._service.getlevel().subscribe(res=>{
-      debugger
+      
       this.conlevellist=res["proc_Contraction_Levels"]
     })
   }
@@ -250,7 +254,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       )
       .subscribe((rec: any) => {
         console.log("🚀 ~ .subscribe ~ rec:", rec);
-
+// 
         if (rec.length > 0) {
           this.messagefortoast = `The property with ID ${rec[0].property_ID} currently has an active map certificate version identified by the title deed number ${rec[0].title_Deed_No}. Would you like to deactivate the map certificate version? Upon clicking 'Yes,' the map will be deactivated.`;
 
@@ -269,6 +273,7 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
       this.serviceService
       .GetProportyValidationbyURL(this.serviceService.LicenceserviceID)
       .subscribe(async (message:any) => {
+      
        
         if (message.Message == "1" || this.serviceService.Service_ID ==='81F8770B-2C1E-4255-8BE1-341089703FA1'.toLocaleLowerCase() ) {
             if (this.propertyRegister.property_Parent_ID == 0) {
@@ -278,12 +283,14 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
               parseInt(this.propertyRegister.property_Type_ID) == 2 &&
               parseInt(this.propertyRegister.property_Parent_ID) == 0
             ) {
+              
               const toastt = this.notificationsService.warn(
                 "Please note that you cannot add የጋራ መኖርያ ቤቶች/Appartments/Condominiums without first adding a parent building. Kindly ensure that you add the building details before proceeding with adding the apartments"
               );
               return;
             }
             if (this.serviceService.isproportinal == true) {
+              
               let totalsize =
                 parseInt(this.propertyRegister.building_Size_M2) +
                 // parseInt(this.propertyRegister.proportional_from_Compound_Size) +
@@ -1082,11 +1089,11 @@ export class PropertyRegisterComponent implements OnInit, OnChanges {
   })
   }
   getcurrentlocationdata() {
-    debugger
+    
     this.serviceService
       .getProploc(this.selectedpro.property_ID)
       .subscribe((response: any) => {
-        debugger
+        
         this.proploceach = response.procProporty_Locations;
         console.log(
           "🚀 ~ .subscribe ~ propformLocation:",
@@ -1826,6 +1833,8 @@ export class PropertyRegister {
   public room_No;
   public proprty_Use;
   public con_level:any;
+  public with_penality:any;
+  
 }
 export class PropformLocation {
   public proporty_Id: any;

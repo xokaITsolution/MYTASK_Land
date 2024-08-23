@@ -308,8 +308,7 @@ export class LeasePaymentHeadComponent implements OnInit {
   makeLeaseCodeRequest(appNo: string) {
     this.Average_calculate().subscribe(() => {
       this._service.getDataBy_lease_code(appNo).subscribe((response) => {
-        let data = response["proc_Lease_Payment_Heads"][0];
-        
+        let data = response["proc_Lease_Payment_Heads"][0];     
         // Assign values to leaserPaymentHead from response data
         this.leaserPaymentHead.Lease_period_in_Year = this.AVG_lease_period_in_Year;
         this.leaserPaymentHead.Lease_Payment_Year = this.AVG_lease_Payment_Year;
@@ -341,7 +340,8 @@ export class LeasePaymentHeadComponent implements OnInit {
         this.leaserPaymentHead.Parent = data.parent;
         this.leaserPaymentHead.lease_payment_advance_per = data.lease_payment_advance_per;
         this._service.lease_payment_advance_per = data.lease_payment_advance_per;
-
+        this.leaserPaymentHead.with_penality=data.with_penality;
+        this._service.with_penality=data.with_penality;
         // Call functions that depend on fetched data
         this.getTransferType(this.leaserPaymentHead.Transfer_type);
         this.getProportyUse(this.leaserPaymentHead.Proporty_Use);
@@ -428,6 +428,9 @@ export class LeasePaymentHeadComponent implements OnInit {
               this.leaserPaymentHead.Parent = data.parent;
               this.leaserPaymentHead.lease_payment_advance_per = data.lease_payment_advance_per;
               this._service.lease_payment_advance_per = data.lease_payment_advance_per;
+              this.leaserPaymentHead.with_penality=data.with_penality;
+              this._service.with_penality=data.with_penality;
+
               this.getTransferType(this.leaserPaymentHead.Transfer_type);
               this.getProportyUse(this.leaserPaymentHead.Proporty_Use);
               this.getCustomerType(this.leaserPaymentHead.Customer_Type);
@@ -527,6 +530,9 @@ export class LeasePaymentHeadComponent implements OnInit {
             this.leaserPaymentHead.Is_Active = data.is_Active;
             this.leaserPaymentHead.Parent = data.parent;
             this.leaserPaymentHead.lease_payment_advance_per = data.lease_payment_advance_per;
+            this.leaserPaymentHead.with_penality=data.with_penality;
+            this._service.with_penality=data.with_penality;
+
             this._service.lease_payment_advance_per = data.lease_payment_advance_per;
             this.getTransferType(this.leaserPaymentHead.Transfer_type);
             this.getProportyUse(this.leaserPaymentHead.Proporty_Use);
@@ -594,6 +600,9 @@ export class LeasePaymentHeadComponent implements OnInit {
                     this.leaserPaymentHead.Parent = data.parent;
                     this.leaserPaymentHead.lease_payment_advance_per = data.lease_payment_advance_per;
                     this._service.lease_payment_advance_per = data.lease_payment_advance_per;
+                    this.leaserPaymentHead.with_penality=data.with_penality;
+                    this._service.with_penality=data.with_penality;
+
                     this.getTransferType(this.leaserPaymentHead.Transfer_type);
                     this.getProportyUse(this.leaserPaymentHead.Proporty_Use);
                     this.getCustomerType(this.leaserPaymentHead.Customer_Type);

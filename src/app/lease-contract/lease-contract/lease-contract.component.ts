@@ -331,5 +331,6 @@ export class LeaseContract {
   public team_leader_approved_by: any;
   public lease_owner_appreved_by: any;
   public remark:any
+  public trans_no:any
 
 }

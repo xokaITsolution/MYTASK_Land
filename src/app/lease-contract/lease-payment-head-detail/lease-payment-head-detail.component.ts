@@ -199,7 +199,8 @@ export class LeasePaymentHeadDetailComponent {
       this._service.Service_ID,
       this.ServiceService.tskID,
     this._service.is_inter_free,
-    this._service.Is_old).subscribe(data => {
+    this._service.Is_old,
+  this._service.with_penality).subscribe(data => {
 
         this.Enable = false
         this.updated = true;

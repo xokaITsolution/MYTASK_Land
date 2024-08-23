@@ -70,6 +70,7 @@ export class LeaseContractService {
   is_inter_free: any;
   licenceData: any;
   AVG_remaining_lease_payment: number;
+  with_penality: any;
 
   constructor(private http: HttpClient) {}
   insert_data( data: any) {
@@ -86,7 +87,8 @@ export class LeaseContractService {
     Service_ID:any,
     tskID:any,
     is_inter_free:any,
-    Is_old:any
+    Is_old:any,
+    with_penality:any
     ){
       // let ad = this.Proc_Genereate_Lease_Plan+
       // '?Lease_code='+Lease_Code+'&PlotID='+Plot_ID+'&Lease_Payment_grace_Period='+Lease_Payment_grace_Period+'&Lease_Payment_Year='+Lease_Payment_Year+'&Total_lease_amount_to_be_paid='+Total_lease_amount_to_be_paid

@@ -162,7 +162,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
 
     this.titleDeedRegistrationService.getAllby().subscribe(
       async (titleDeedRegistration: any) => {
-        debugger
+        
         let a;
         a = titleDeedRegistration.procDeed_Registrations.filter(
           (x) => x.property_ID === propertyid 
@@ -643,7 +643,7 @@ export class TitleDeedRegistrationComponent implements OnInit, OnChanges {
   // }
 
   async getFromFromDeed(Ownership_ID) {
-    debugger
+    
     for (let i = 0; i < this.titleDeedRegistrationList.length; i++) {
       // this.titleDeedRegistration.Date=await this.getgregorianToEthiopianDate(this.titleDeedRegistrationList[i].Date)
       if (this.titleDeedRegistrationList[i].Ownership_ID == Ownership_ID) {

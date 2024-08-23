@@ -871,7 +871,7 @@ export class ServiceComponent implements OnInit  {
       this.getAll(this.AppNo);
       this.tskTyp = params["tskTyp"];
       this.tskID = params["tskID"];
-
+// debugger
       // if (this.serviceService.propertytaskslist != undefined) {
       //   let filterpropertyid = this.serviceService.propertytaskslist.filter(
       //     (x: any) => x.id.toLocaleLowerCase() === this.tskID
@@ -1527,7 +1527,7 @@ export class ServiceComponent implements OnInit  {
         (message) => {
           const toast = this.notificationsService.success("Sucess", "Saved");
           this.issendnote = true;
-          if(this.ID=12){
+          if(this.ID==12){
             this.saveFormm('{}')
           }
          

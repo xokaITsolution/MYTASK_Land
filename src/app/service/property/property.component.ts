@@ -244,10 +244,9 @@ export class PropertyComponent implements OnChanges {
   }
   getPlotManagement(Licence_Service_ID) {
     let a;
-// 
     this.serviceService.getPlotManagementApi(Licence_Service_ID).subscribe(
       async (PlotManagementLists: any) => {
-        // 
+        
         let PlotManagementList = PlotManagementLists.procPlot_Registrations;
         if (PlotManagementList.length > 0) {
           this.PlotManagementList = this.removeDuplicates(PlotManagementList);
@@ -477,6 +476,7 @@ export class PropertyComponent implements OnChanges {
       .getPropertyLists(this.SelectedProperty.plot_ID)
       .subscribe(
         (PropertyList: any) => {
+          
           this.PropertyList = PropertyList.procProperty_Registrations;
           this.PropertyList = Object.assign([], this.PropertyList);
           console.log("PropertyList", PropertyList);
@@ -591,6 +591,7 @@ export class PropertyComponent implements OnChanges {
       this.serviceService.files,
       this.serviceService.insertedProperty
     );
+    // 
     this.selectedFile = selectedChild;
     if (selectedChild) {
       this.nodeSelect("1");
