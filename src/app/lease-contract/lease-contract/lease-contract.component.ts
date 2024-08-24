@@ -72,7 +72,6 @@ export class LeaseContractComponent implements OnInit {
     this.getLeasPaymentHeadData(this.licenceData.Application_No);
   }
   getLeasPaymentHeadData(appNo: any) {
-debugger
     this._service.getView_lease_payment_head(appNo).subscribe(
       (response: any) => {
         debugger
@@ -89,7 +88,7 @@ debugger
         else {
           this.ServiceService.getPlotManagementApi(this.licenceData.Parcel_ID).subscribe(
             async (res: any) => {
-              // debugger
+              debugger
               this._service.App_no = res["procPlot_Registrations"][0].application_No
               this._service.getView_lease_payment_head(res["procPlot_Registrations"][0].application_No).subscribe(
                 (response) => {

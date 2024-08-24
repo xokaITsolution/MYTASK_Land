@@ -188,7 +188,7 @@ export class LeasePaymentHeadDetailComponent {
     );
   }
   Generate_lease_plan() {
-    // debugger
+    debugger
     this._service.Generate_lease_plan(this.leasePaymentHeadDetail.Lease_code,
       this.leasePaymentHeadDetail.PlotID,
       this._service.Lease_Payment_grace_Period,
@@ -201,7 +201,6 @@ export class LeasePaymentHeadDetailComponent {
     this._service.is_inter_free,
     this._service.Is_old,
   this._service.with_penality).subscribe(data => {
-
         this.Enable = false
         this.updated = true;
         this.enablepaymentreport = false

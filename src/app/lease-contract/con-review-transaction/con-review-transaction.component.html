@@ -1,9 +1,17 @@
-<!--
-        <div class="form-container">
-         
 
+        <div class="container">
+            <div class="card">
+                <h2>Constraction Extend </h2>
+                <div class="form-container">
+                    <!-- left column of the form -->        
             <section>
                 <div class="p-fluid">
+                    <div class="field">
+                        <label for="Lease_Payment_grace_Period">Plot ID</label>
+                        <input type="text" disabled="true" class="form-control"
+                            [(ngModel)]="newConstraction_review.plot_ID" name="ContractDate" id="ContractDate"
+                            [placeholder]="'Contract Date'" #ContractDate="ngModel" />
+                    </div>
                     <div class="field">
                         <label for="Lease_Payment_grace_Period">Design In Month Start Date</label>
                         <input type="date" disabled="true" class="form-control"
@@ -137,4 +145,4 @@
 
     </div>
     <br>
-</div> -->
+</div>

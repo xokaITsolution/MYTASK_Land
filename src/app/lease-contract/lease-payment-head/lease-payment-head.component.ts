@@ -342,6 +342,7 @@ export class LeasePaymentHeadComponent implements OnInit {
         this._service.lease_payment_advance_per = data.lease_payment_advance_per;
         this.leaserPaymentHead.with_penality=data.with_penality;
         this._service.with_penality=data.with_penality;
+        
         // Call functions that depend on fetched data
         this.getTransferType(this.leaserPaymentHead.Transfer_type);
         this.getProportyUse(this.leaserPaymentHead.Proporty_Use);
@@ -532,7 +533,7 @@ export class LeasePaymentHeadComponent implements OnInit {
             this.leaserPaymentHead.lease_payment_advance_per = data.lease_payment_advance_per;
             this.leaserPaymentHead.with_penality=data.with_penality;
             this._service.with_penality=data.with_penality;
-
+debugger
             this._service.lease_payment_advance_per = data.lease_payment_advance_per;
             this.getTransferType(this.leaserPaymentHead.Transfer_type);
             this.getProportyUse(this.leaserPaymentHead.Proporty_Use);

@@ -476,7 +476,7 @@ export class PropertyComponent implements OnChanges {
       .getPropertyLists(this.SelectedProperty.plot_ID)
       .subscribe(
         (PropertyList: any) => {
-          
+          debugger
           this.PropertyList = PropertyList.procProperty_Registrations;
           this.PropertyList = Object.assign([], this.PropertyList);
           console.log("PropertyList", PropertyList);

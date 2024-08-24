@@ -17,6 +17,7 @@ export class LeaseContractService {
   private License_ServiceURL = environment.rootPath + "License_Service";
   private leaserPaymentHeadDetail = environment.rootPathApi + "proc_Leas_Payment_Head_Detail";
   Lease_To_lease =`${environment.rootPathApi}proc_Lease_to_Lease`;
+  get_constraction_review1 =`${environment.rootPathApi}proc_Lease_Contraction_Property`;
   Freehold_To_lease =`${environment.rootPathApi}Service_fee/proc_FreeHold_to_Lease`;
   Proc_Genereate_Lease_Plan=`${environment.rootPathApi}Proc_Genereate_Lease_Plan`;
   procPlot_Registration=`${environment.rootPathApi}Plot_Registration/procPlot_Registration`;
@@ -127,6 +128,9 @@ export class LeaseContractService {
   }
   get_compensationBy_plot_Id(plot_id) {
     return this.http.get(this.get_compensationBy_plot_Id1+ "/" + plot_id);
+  }
+  get_constraction_review(plot_id) {
+    return this.http.get(this.get_constraction_review1+ "/" + plot_id);
   }
   getWithdrawproposebyid(titdeed,cid) {
     return this.http.get(this.getWithdrawpropose1+"/"+titdeed+"/"+cid)

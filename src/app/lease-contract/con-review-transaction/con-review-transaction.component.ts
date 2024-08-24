@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { LeaseContractService } from '../lease-contract.service';
@@ -15,7 +15,8 @@ import { Guid } from 'guid-typescript';
 export class ConReviewTransactionComponent implements OnInit {
   AppNo: any;
   newConstraction_review: Constraction_review = {} as Constraction_review;
-  licenceData: any;
+  @Input() licenceData:any
+  @Output() completed = new EventEmitter();
   licenceService: any;
 
   constructor(private _toast: MessageService, public _service: LeaseContractService,
@@ -24,11 +25,27 @@ export class ConReviewTransactionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.activatedRoute.params.subscribe((p) => {
-      console.log("Observable Params:", p);
-      this.AppNo = p["AppNo"];
-    });
-    // this.newConstraction_review.ID = Guid.create().toString();
+  this.get_constraction_review();
+  this.licenceData.Parcel_ID
+  debugger
+  }
+  get_constraction_review(){
+    this._service.get_constraction_review( this.licenceData.Parcel_ID).subscribe(data=>{
+      debugger
+        let data1=this.newConstraction_review=data["proc_Lease_Contraction_Propertys"][0]
+        this.newConstraction_review.plot_id=data1.plot_ID
+        this.newConstraction_review.property_id=data1.proporty_ID
+        this.newConstraction_review.design_in_month_start_date=data1.design_in_Month_StartDate.split("T")[0]
+        this.newConstraction_review.design_in_month_end_date=data1.design_in_MonthEnd_Date.split("T")[0]
+        this.newConstraction_review.building_licence_start_date=data1.building_Licence_StartDate.split("T")[0]
+        this.newConstraction_review.building_licence_end_date=data1.building_Licence_EndDate.split("T")[0]
+        this.newConstraction_review.start_constraction_period_start_date=data1.start_Con_Period_Normal_startDate.split("T")[0]
+        this.newConstraction_review.start_constraction_period_end_date=data1.start_Con_Period_Normal_Endate.split("T")[0]
+        this.newConstraction_review.end_constraction_period_start_date=data1.end_Con_Period_Normal_startDate.split("T")[0]
+        this.newConstraction_review.end_constraction_period_end_date=data1.end_Con_Period_Normal_enddate.split("T")[0]
+        this.newConstraction_review.extended_start_date=data1.end_Con_Period_Extended_start_date.split("T")[0]
+        this.newConstraction_review.extended_end_date=data1.end_Con_Period_Extended_Endate.split("T")[0]
+    })
   }
 }
 export class Constraction_review {

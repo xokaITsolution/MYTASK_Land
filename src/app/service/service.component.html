@@ -280,6 +280,10 @@
               <div *ngIf="ID==17">
                 <app-compensation-payment [licenceData]="licenceData" (completed)="saveFormm2();"></app-compensation-payment>
               </div>
+              <div *ngIf="ID==18">
+                <app-con-review-transaction [licenceData]="licenceData" (completed)="saveFormm2();"></app-con-review-transaction>
+              </div>
+              
               <div *ngIf="ID==9">
                 <app-property (completed)="saveFormm('{}');" (getpro)="getPropertyTypeLookUP()" [LicenceData]="licenceData"
                         [Licence_Service_ID]="licenceData.Licence_Service_ID" [disable]="false" [AppNo]="AppNo"
@@ -304,9 +308,9 @@
                 <div *ngIf="ID==22">
                   <lib-lease-ready-for-bid (completed)="saveFormm('{}');"></lib-lease-ready-for-bid>
                 </div>
-                <div *ngIf="ID==24">
+                <!-- <div *ngIf="ID==24">
                   <lib-bid-result (completed)="saveFormm('{}');"></lib-bid-result>
-                </div>
+                </div> -->
   
               <div *ngIf="ID==404;" translate>
                 Form not found
