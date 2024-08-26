@@ -39,6 +39,7 @@ export class ConReviewTransactionComponent implements OnInit {
         this.newConstraction_review.design_in_month_end_date=data1.design_in_MonthEnd_Date.split("T")[0]
         this.newConstraction_review.building_licence_start_date=data1.building_Licence_StartDate.split("T")[0]
         this.newConstraction_review.building_licence_end_date=data1.building_Licence_EndDate.split("T")[0]
+        this.newConstraction_review.extende_month=data1.con_Period_Extended_Month
         this.newConstraction_review.start_constraction_period_start_date=data1.start_Con_Period_Normal_startDate.split("T")[0]
         this.newConstraction_review.start_constraction_period_end_date=data1.start_Con_Period_Normal_Endate.split("T")[0]
         this.newConstraction_review.end_constraction_period_start_date=data1.end_Con_Period_Normal_startDate.split("T")[0]
